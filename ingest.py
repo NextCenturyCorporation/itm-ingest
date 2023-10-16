@@ -3,10 +3,11 @@ from json_util import read_json_file, is_json_file
 from pymongo import MongoClient
 import os
 
-host = 'localhost'
+host = "localhost"
 port = 27017
-database_name = 'dashboard'
-collection_name = 'testing_collection'
+database_name = "dashboard"
+collection_name = "testing_collection"
+
 
 def upload_to_mongodb(data, collection_name):
     client = MongoClient(host, port)
@@ -14,25 +15,27 @@ def upload_to_mongodb(data, collection_name):
     collection = db[collection_name]
 
     result = collection.insert_one(data)
-    
+
     print(f"Data uploaded to MongoDB with document ID: {result.inserted_id}")
+
 
 def create_collection(collection_name):
     client = MongoClient(host, port)
     db = client[database_name]
-    
+
     try:
         if collection_name in db.list_collection_names():
             print(f"Collection '{collection_name}' already exists.")
         else:
             db.create_collection(collection_name)
             print(f"Collection '{collection_name}' created successfully.")
-    
+
         # Return the collection whether it's new or existing
         return db[collection_name]
     except Exception as e:
         print(f"Error creating collection '{collection_name}': {e}")
         return None
+
 
 def create_connection():
     client = MongoClient(host, port)
@@ -40,31 +43,53 @@ def create_connection():
 
     return db
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Upload JSON data to MongoDB')
-    parser.add_argument('file_path', help='Path to the JSON file to upload')
+
+def upload_json_file(file_path, collection_name):
+    if not is_json_file(file_path):
+        print(f"Skipping non-JSON file: {file_path}")
+        return
+
+    json_data = read_json_file(file_path)
+    upload_to_mongodb(json_data, collection_name)
+
+
+def upload_json_files_in_folder(folder_path, collection_name):
+    if not os.path.exists(folder_path):
+        print(f"Error: The specified folder '{folder_path}' does not exist.")
+        return
+
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+        if os.path.isfile(item_path):
+            upload_json_file(item_path, collection_name)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Upload JSON data to MongoDB")
+    parser.add_argument(
+        "input_path",
+        help="Path to the JSON file or folder containing JSON files to upload",
+    )
     args = parser.parse_args()
-    
-    if not is_json_file(args.file_path):
-        print("Error: The specified file is not a JSON file.")
-        exit(1)
-    
+
     db = create_connection()
     print(db)
-    
+
     created_collection = create_collection(collection_name)
     print(created_collection)
 
-    json_file_path = args.file_path
-    json_data = read_json_file(json_file_path)
-
-    upload_to_mongodb(json_data, collection_name)
-
-    collection = db[collection_name]
-    inserted_data = collection.find_one()
-    
-    if inserted_data:
-        print("Data in the collection:")
-        print(inserted_data)
+    # uploading one file or directory
+    if os.path.isfile(args.input_path):
+        upload_json_file(args.input_path, collection_name)
+    elif os.path.isdir(args.input_path):
+        upload_json_files_in_folder(args.input_path, collection_name)
     else:
-        print("No data found in the collection.")
+        print(
+            f"Error: The specified path '{args.input_path}' is neither a file nor a folder."
+        )
+    
+    collection = db[collection_name]
+    all_documents = collection.find()
+    for document in all_documents:
+        print("Data in the collection:")
+        print(document)

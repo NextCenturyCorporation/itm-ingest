@@ -1,0 +1,200 @@
+{
+    "configData": {
+        "scene": "sim-none",
+        "narrative": "Base Scene Narrative 1",
+        "questions": [
+            {
+                "question": "Who do you want to evacuate?",
+                "answerChoices": [
+                    "Military Marine",
+                    "Civilian"
+                ]
+            },
+            {
+                "question": "Where would you evacuate the casualty?",
+                "answerChoices": [
+                    "Field Hospital",
+                    "Intelligence Facility",
+                    "Military Outpost"
+                ]
+            }
+        ],
+        "scenarioData": {
+            "name": "ITM Tutorial",
+            "description": "ITM Tutorial in Default Room",
+            "difficulty": 1
+        },
+        "playerData": {
+            "startPosition": {
+                "x": 1.3259999752044678,
+                "y": 0.0,
+                "z": -2.799999952316284
+            },
+            "startAngle": 0.0
+        },
+        "patientDataList": [
+            {
+                "name": "Tutorial Military Marine",
+                "patient": "Military Mike",
+                "position": {
+                    "x": 3.0,
+                    "y": 0.0,
+                    "z": 3.0
+                },
+                "angle": -180.0,
+                "triageLevel": "minimal",
+                "sort": "walker",
+                "pulse": "normal",
+                "breath": "normal",
+                "hearing": "normal",
+                "pose": "standing",
+                "side": "right",
+                "mood": "calm",
+                "injuriesControlPatientStates": false,
+                "injuries": [
+                    "R Forearm Laceration",
+                    "L Bicep Puncture",
+                    "L Shoulder Puncture",
+                    "R Stomach Puncture",
+                    "L Thigh Laceration"
+                ],
+                "burnVictim": false,
+                "bodyTexture": 0,
+                "topTexture": 0,
+                "bottomTexture": 0,
+                "shoeTexture": 0,
+                "hairTexture": 0,
+                "bodyNormalMap": 0,
+                "topAlphaMask": -1,
+                "bottomAlphaMask": -1,
+                "bodyColor": "original",
+                "topColor": "black",
+                "bottomColor": "black",
+                "shoeColor": "black",
+                "hairColor": "original",
+                "headGear": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "faceGear": [],
+                "backGear": [
+                    0,
+                    1
+                ],
+                "chestGear": [],
+                "beltGear": [
+                    0,
+                    1
+                ],
+                "legGear": [],
+                "gunGear": [
+                    0
+                ]
+            },
+            {
+                "name": "Local Civilian with Internal Bleeding",
+                "patient": "Civilian Bob",
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 2.0
+                },
+                "angle": -90.0,
+                "triageLevel": "delayed",
+                "sort": "still",
+                "pulse": "faint",
+                "breath": "normal",
+                "hearing": "none",
+                "pose": "fetal",
+                "side": "right",
+                "mood": "calm",
+                "injuriesControlPatientStates": false,
+                "injuries": [
+                    "R Forearm Laceration",
+                    "L Bicep Puncture",
+                    "L Shoulder Puncture",
+                    "R Stomach Puncture",
+                    "L Wrist Amputation",
+                    "R Shin Amputation"
+                ],
+                "burnVictim": false,
+                "bodyTexture": 1,
+                "topTexture": 2,
+                "bottomTexture": 1,
+                "shoeTexture": 0,
+                "hairTexture": -1,
+                "bodyNormalMap": -1,
+                "topAlphaMask": -1,
+                "bottomAlphaMask": -1,
+                "bodyColor": "gold",
+                "topColor": "original",
+                "bottomColor": "tan",
+                "shoeColor": "original",
+                "hairColor": "original",
+                "headGear": [],
+                "faceGear": [],
+                "backGear": [],
+                "chestGear": [],
+                "beltGear": [],
+                "legGear": [],
+                "gunGear": []
+            }
+        ]
+    },
+    "actionList": [
+        {
+            "actionType": "Question",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "succesfulTreatement": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "question": "Who do you want to evacuate?",
+            "answerChoices": [
+                "Military Marine",
+                "Civilian"
+            ],
+            "answer": "Military Marine"
+        },
+        {
+            "actionType": "Question",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "succesfulTreatement": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "question": "Where would you evacuate the casualty?",
+            "answerChoices": [
+                "Field Hospital",
+                "Intelligence Facility",
+                "Military Outpost"
+            ],
+            "answer": "Military Outpost"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Local Civilian with Internal Bleeding",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "succesfulTreatement": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "faint",
+            "breathing": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": ""
+        }
+    ]
+}
