@@ -3,14 +3,14 @@ from json_util import read_json_file, is_json_file
 from pymongo import MongoClient
 import os
 
-host = "localhost"
-port = 27017
 database_name = "dashboard"
 collection_name = "testing_collection"
+user='simplemongousername'
+password='simplemongopassword'
+#host='dashboard-mongo:27017'
+host = 'localhost:27017'
 
-
-def upload_to_mongodb(data, collection_name):
-    client = MongoClient(host, port)
+def upload_to_mongodb(data, collection_name, client):
     db = client[database_name]
     collection = db[collection_name]
 
@@ -19,8 +19,7 @@ def upload_to_mongodb(data, collection_name):
     print(f"Data uploaded to MongoDB with document ID: {result.inserted_id}")
 
 
-def create_collection(collection_name):
-    client = MongoClient(host, port)
+def create_collection(collection_name, client):
     db = client[database_name]
 
     try:
@@ -38,22 +37,22 @@ def create_collection(collection_name):
 
 
 def create_connection():
-    client = MongoClient(host, port)
-    db = client[database_name]
+    # auth failed
+    # client = MongoClient(host, username=user, password=password, authSource="dashboard")
+    client = MongoClient(host)
+    return client
 
-    return db
 
-
-def upload_json_file(file_path, collection_name):
+def upload_json_file(file_path, collection_name, client):
     if not is_json_file(file_path):
         print(f"Skipping non-JSON file: {file_path}")
         return
 
     json_data = read_json_file(file_path)
-    upload_to_mongodb(json_data, collection_name)
+    upload_to_mongodb(json_data, collection_name, client)
 
 
-def upload_json_files_in_folder(folder_path, collection_name):
+def upload_json_files_in_folder(folder_path, collection_name, client):
     if not os.path.exists(folder_path):
         print(f"Error: The specified folder '{folder_path}' does not exist.")
         return
@@ -61,7 +60,17 @@ def upload_json_files_in_folder(folder_path, collection_name):
     for item in os.listdir(folder_path):
         item_path = os.path.join(folder_path, item)
         if os.path.isfile(item_path):
-            upload_json_file(item_path, collection_name)
+            upload_json_file(item_path, collection_name, client)
+
+def empty_collection(collection_name, client):
+    db = client[database_name]
+    collection = db[collection_name]
+
+    try:
+        result = collection.delete_many({})
+        print(f"Collection '{collection_name}' emptied. Deleted {result.deleted_count} documents.")
+    except Exception as e:
+        print(f"Error emptying collection '{collection_name}': {e}")
 
 
 if __name__ == "__main__":
@@ -72,24 +81,22 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    db = create_connection()
-    print(db)
+    client = create_connection()
 
-    created_collection = create_collection(collection_name)
-    print(created_collection)
-
+    created_collection = create_collection(collection_name, client)
     # uploading one file or directory
     if os.path.isfile(args.input_path):
-        upload_json_file(args.input_path, collection_name)
+        upload_json_file(args.input_path, collection_name, client)
     elif os.path.isdir(args.input_path):
-        upload_json_files_in_folder(args.input_path, collection_name)
+        upload_json_files_in_folder(args.input_path, collection_name, client)
     else:
         print(
             f"Error: The specified path '{args.input_path}' is neither a file nor a folder."
         )
     
-    collection = db[collection_name]
-    all_documents = collection.find()
+    all_documents = created_collection.find()
+    
+    print("Data in the collection:")
     for document in all_documents:
-        print("Data in the collection:")
         print(document)
+
