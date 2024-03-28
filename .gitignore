@@ -1,0 +1,11 @@
+# virtual environment
+ingest
+
+# junk folder
+__pycache__
+
+# output folder
+output
+
+# annoying mac file
+*.DS_Store
