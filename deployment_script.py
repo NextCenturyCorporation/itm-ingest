@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import os
 from scripts._0_0_2_add_evaluation_data_to_mvps import add_evaluation_name_to_mvp_data
 
 VERSION_COLLECTION = "itm_version"
@@ -34,6 +35,9 @@ def main():
         print("New db version, execute scripts")
         # Place scripts here to run
         add_evaluation_name_to_mvp_data(mongoDB)
+
+        # Run Script for Probe Matching and importing human data
+        os.system("python3 probe_matcher.py -i metrics-data/")
 
         # Now update db version
         update_db_version(mongoDB)
