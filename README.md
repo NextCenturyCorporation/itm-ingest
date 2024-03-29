@@ -54,3 +54,11 @@ The probe matcher will output two json files for each input json found: one for 
 | `metrics-data` | Contains all of the valid simulator outputs in the same organizational structure unity outputs. |
 | `adept-evals` | The yaml files for each adept evaluation scenario |
 | `soartech-evals` | The yaml files for each soartech evaluation scenario |
+
+# Deplolyment Script Usage
+
+To utilize this function, you will need to manually run the deployment script.
+We will eventually have a Jenkins job that will run the script whenever ingest is updated.
+Also if you would like to run a new script you will need to modify the script that is being called in deployment script and bump the version.
+
+The script will only run if the version is a newer version of the db, the script also create the collection for the version if it doesn't exist yet.
