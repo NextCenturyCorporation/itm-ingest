@@ -30,7 +30,7 @@ def update_db_version(mongoDB):
 
 def main():
     client = MongoClient(
-        "mongodb://simplemongousername:simplemongopassword@localhost:27017/?authSource=dashboard")
+        "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard")
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
