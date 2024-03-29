@@ -1,11 +1,12 @@
 from pymongo import MongoClient
 import os
 from scripts._0_0_2_add_evaluation_data_to_mvps import add_evaluation_name_to_mvp_data
+from scripts._0_0_3_add_eval_3_adm_data import add_eval_3_adm_data
 
 VERSION_COLLECTION = "itm_version"
 
 # Change this version if running a new deploy script
-db_version = "0.0.2"
+db_version = "0.0.3"
 
 
 def check_version(mongoDB):
@@ -29,12 +30,13 @@ def update_db_version(mongoDB):
 
 def main():
     client = MongoClient(
-        "mongodb://simplemongousername:simplemongopassword@localhost:27017/?authSource=dashboard")
+        "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard")
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
         # Place scripts here to run
         add_evaluation_name_to_mvp_data(mongoDB)
+        add_eval_3_adm_data(mongoDB)
 
         # Run Script for Probe Matching and importing human data
         os.system("python3 probe_matcher.py -i metrics-data/")
