@@ -2,6 +2,8 @@ import yaml, argparse, json, os, csv
 from logger import LogLevel, Logger
 from pymongo import MongoClient
 from datetime import datetime
+import requests
+from decouple import config 
 
 SEND_TO_MONGO = True
 EVAL_NUM = 3
@@ -81,10 +83,13 @@ class ProbeMatcher:
     csv_file = None
     timestamp = None
 
-    def __init__(self, json_path, csv_path):
+
+    def __init__(self, json_path, csv_path, adept_sid, soartech_sid):
         '''
         Load in the file and parse the yaml
         '''
+        self.adept_sid = adept_sid
+        self.soartech_sid = soartech_sid
         # get environment from json to choose correct adept/soartech yamls
         self.json_file = open(json_path, 'r')
         self.json_data = json.load(self.json_file)
@@ -276,11 +281,18 @@ class ProbeMatcher:
             else:
                 self.logger.log(LogLevel.WARN, f'No match found for scene {scene_ind}')
                 scene_ind += 1
+        adept_align = self.get_session_alignment(f'{config("ADEPT_URL")}/api/v1/response', 
+                                   f'{config("ADEPT_URL")}/api/v1/alignment/session?session_id={self.adept_sid}&target_id={config("ADEPT_TARGET")}&population=false',
+                                   match_data,
+                                   self.adept_sid,
+                                   self.adept_yaml['id'])
+        match_data = {'alignment': adept_align, 'data': match_data}
         if SEND_TO_MONGO:
+            mid = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
             try:
-                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': self.participantId + '_ad_' + self.environment.split('.yaml')[0]})
-            except: 
-                pass
+                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
+            except:
+                mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
         json.dump(match_data, self.output_adept, indent=4)      
 
 
@@ -351,12 +363,19 @@ class ProbeMatcher:
             else:
                 self.logger.log(LogLevel.WARN, f'No match found for scene {scene_ind}')
                 scene_ind += 1
+        adept_align = self.get_session_alignment(f'{config("ADEPT_URL")}/api/v1/response', 
+                                   f'{config("ADEPT_URL")}/api/v1/alignment/session?session_id={self.adept_sid}&target_id={config("ADEPT_TARGET")}&population=false',
+                                   match_data,
+                                   self.adept_sid,
+                                   self.adept_yaml['id'])
+        match_data = {'alignment': adept_align, 'data': match_data}
         if SEND_TO_MONGO:
+            mid = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
             try:
-                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': self.participantId + '_ad_' + self.environment.split('.yaml')[0]})
+                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
             except:
-                pass
-        json.dump(match_data, self.output_adept, indent=4)      
+                mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
+        json.dump(match_data, self.output_adept, indent=4)     
 
 
     def check_adept_desert(self):
@@ -407,11 +426,18 @@ class ProbeMatcher:
             else:
                 self.logger.log(LogLevel.WARN, f'No match found for scene {scene_ind}')
                 scene_ind += 1
+        adept_align = self.get_session_alignment(f'{config("ADEPT_URL")}/api/v1/response', 
+                                   f'{config("ADEPT_URL")}/api/v1/alignment/session?session_id={self.adept_sid}&target_id={config("ADEPT_TARGET")}&population=false',
+                                   match_data,
+                                   self.adept_sid,
+                                   self.adept_yaml['id'])
+        match_data = {'alignment': adept_align, 'data': match_data}
         if SEND_TO_MONGO:
+            mid = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
             try:
-                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': self.participantId + '_ad_' + self.environment.split('.yaml')[0]})
+                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
             except:
-                pass
+                mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
         json.dump(match_data, self.output_adept, indent=4)  
 
 
@@ -565,12 +591,24 @@ class ProbeMatcher:
                         "user_action": close_action
                     })
                     scene_ind = close_probe.get('next_scene', scene_ind + 1)
+
+        st_align = None
+        try:
+            st_align = self.get_session_alignment(f'{config("ST_URL")}/api/v1/response', 
+                                    f'{config("ST_URL")}/api/v1/alignment/session?session_id={self.soartech_sid}&target_id={config("ST_TARGET")}',
+                                    match_data,
+                                    self.soartech_sid,
+                                    self.soartech_yaml['id'])
+        except:
+            pass
+        match_data = {'alignment': st_align, 'data': match_data}
         if SEND_TO_MONGO:
+            mid = self.participantId + '_st_' + self.environment.split('.yaml')[0]
             try:
-                mongo_collection_matches.insert_one({'scenario_id': self.soartech_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'st', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': self.participantId + '_st_' + self.environment.split('.yaml')[0]})
+                mongo_collection_matches.insert_one({'scenario_id': self.soartech_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
             except:
-                pass
-        json.dump(match_data, self.output_soartech, indent=4)
+                mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.soartech_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
+        json.dump(match_data, self.output_soartech, indent=4)  
 
 
     def get_scene_by_index(self, scenes, index):
@@ -597,6 +635,24 @@ class ProbeMatcher:
             if a['actionType'] == 'Tag' and a['casualty'].lower() == char_id.lower():
                 latest_found = a
         return latest_found
+    
+
+    def get_session_alignment(self, probe_url, align_url, probes, sid, scenario):
+        '''
+        Takes in the list of probes/matches and the urls to access and returns the session alignment
+        '''
+        for x in probes:
+            if 'probe' in x and 'choice' in x['probe']:
+                requests.post(probe_url, json={
+                    "response": {
+                        "choice": x['probe']['choice'],
+                        "justification": "justification",
+                        "probe_id": x['probe']['probe_id'],
+                        "scenario_id": scenario,
+                    },
+                    "session_id": sid
+                })
+        return requests.get(align_url).json()
 
 
 if __name__ == '__main__':
@@ -609,11 +665,12 @@ if __name__ == '__main__':
         exit(1)
     if SEND_TO_MONGO:
         # instantiate mongo client
-        client = MongoClient("mongodb://simplemongousername:simplemongopassword@localhost:27017/?authSource=dashboard")
+        client = MongoClient(config('MONGO_URL'))
         db = client.dashboard
         # create new collection for simulation runs
         mongo_collection_matches = db['humanSimulator']
         mongo_collection_raw = db['humanSimulatorRaw']
+
     # dirs = ['metrics-data/json/json', 'metrics-data/json', 'metrics-data/unknown json id']
     # for d in dirs:
     #     for x in os.listdir(d):
@@ -637,10 +694,13 @@ if __name__ == '__main__':
                         print(f"\n** Processing {f} **")
                         # json found! grab matching csv and send to the probe matcher
                         try:
-                            matcher = ProbeMatcher(os.path.join(parent, f), os.path.join(args.input_dir, dir.split('_')[0] + '_.csv'))
+                            # start a new server session for each json
+                            adept_sid = requests.post(f'{config("ADEPT_URL")}/api/v1/new_session').text
+                            soartech_sid = requests.post(f'{config("ST_URL")}/api/v1/new_session?user_id=default_use').json()
+                            matcher = ProbeMatcher(os.path.join(parent, f), os.path.join(args.input_dir, dir.split('_')[0] + '_.csv'), adept_sid, soartech_sid)
                             if matcher.environment != '':
                                 matcher.match_probes()
                             break
-                        except:
-                            pass
+                        except Exception as e:
+                            print(e)
     print(json.dumps(ENVIRONMENTS_BY_PID, indent=4))
