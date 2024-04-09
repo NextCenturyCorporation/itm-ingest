@@ -671,36 +671,23 @@ if __name__ == '__main__':
         mongo_collection_matches = db['humanSimulator']
         mongo_collection_raw = db['humanSimulatorRaw']
 
-    # dirs = ['metrics-data/json/json', 'metrics-data/json', 'metrics-data/unknown json id']
-    # for d in dirs:
-    #     for x in os.listdir(d):
-    #         if not os.path.isdir(os.path.join(d, x)):
-    #             try:
-    #                 os.mkdir(f'metrics-data/{x.split(".json")[0]}')
-    #                 os.mkdir(f'metrics-data/{x.split(".json")[0]}/{x.split(".json")[0]}')
-    #                 os.system(f'mv {os.path.join(d, x)} metrics-data/{x.split(".json")[0]}/{x.split(".json")[0]}/{x}')
-    #             except:
-    #                 pass
     # go through the input directory and find all sub directories
     sub_dirs = [name for name in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, name))]
     # for each subdirectory, see if a json file exists
     for dir in sub_dirs:
-        grandparent = os.path.join(args.input_dir, dir)
-        for d in os.listdir(grandparent):
-            parent = os.path.join(grandparent, d)
-            if os.path.isdir(parent):
-                for f in os.listdir(parent):
-                    if '.json' in f:
-                        print(f"\n** Processing {f} **")
-                        # json found! grab matching csv and send to the probe matcher
-                        try:
-                            # start a new server session for each json
-                            adept_sid = requests.post(f'{config("ADEPT_URL")}/api/v1/new_session').text
-                            soartech_sid = requests.post(f'{config("ST_URL")}/api/v1/new_session?user_id=default_use').json()
-                            matcher = ProbeMatcher(os.path.join(parent, f), os.path.join(args.input_dir, dir.split('_')[0] + '_.csv'), adept_sid, soartech_sid)
-                            if matcher.environment != '':
-                                matcher.match_probes()
-                            break
-                        except Exception as e:
-                            print(e)
+        parent = os.path.join(args.input_dir, dir)
+        if os.path.isdir(parent):
+            for f in os.listdir(parent):
+                if '.json' in f:
+                    print(f"\n** Processing {f} **")
+                    # json found! grab matching csv and send to the probe matcher
+                    try:
+                        adept_sid = requests.post(f'{config("ADEPT_URL")}/api/v1/new_session').text
+                        soartech_sid = requests.post(f'{config("ST_URL")}/api/v1/new_session?user_id=default_use').json()
+                        matcher = ProbeMatcher(os.path.join(parent, f), os.path.join(parent, dir + '.csv'), adept_sid, soartech_sid)
+                        if matcher.environment != '':
+                            matcher.match_probes()
+                        break
+                    except Exception as e:
+                        print(e)
     print(json.dumps(ENVIRONMENTS_BY_PID, indent=4))
