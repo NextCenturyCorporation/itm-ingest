@@ -37,7 +37,7 @@ def main():
         update_hum_sim_order_avg_across_scenes(mongoDB)
 
         # Run Script for Probe Matching and importing human data
-        #os.system("python3 probe_matcher.py -i metrics-data/")
+        os.system("python3 probe_matcher.py -i metrics-data/")
 
         # Now update db version
         update_db_version(mongoDB)
