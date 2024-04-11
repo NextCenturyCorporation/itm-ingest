@@ -3,11 +3,12 @@ import os
 from scripts._0_0_3_add_eval_3_adm_data import add_eval_3_adm_data
 from scripts._0_0_4_update_human_sim_records import update_hum_sim_order_avg_across_scenes
 from scripts._0_0_5_remove_old_adm_data import remove_old_adm_records
+from scripts._0_0_6_set_admin_users import add_admin_user_role
 
 VERSION_COLLECTION = "itm_version"
 
 # Change this version if running a new deploy script
-db_version = "0.0.5"
+db_version = "0.0.6"
 
 
 def check_version(mongoDB):
@@ -40,6 +41,7 @@ def main():
         update_hum_sim_order_avg_across_scenes(mongoDB)
         remove_old_adm_records(mongoDB)
         add_eval_3_adm_data(mongoDB)
+        add_admin_user_role(mongoDB)
 
         # Run Script for Probe Matching and importing human data
         os.system("python3 probe_matcher.py -i metrics-data/")
