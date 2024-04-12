@@ -11,4 +11,4 @@ def update_scenario_index(mongoDB):
         {"$set": {"results.Omnibus: Medic-C vs Medic-D.scenarioIndex": 10}}
     )
 
-    print("Updates completed successfully.")
+    print("Scenario indices updated successfully.")
