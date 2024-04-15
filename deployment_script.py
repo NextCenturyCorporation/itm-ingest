@@ -5,11 +5,11 @@ from scripts._0_0_4_update_human_sim_records import update_hum_sim_order_avg_acr
 from scripts._0_0_5_remove_old_adm_data import remove_old_adm_records
 from scripts._0_0_6_set_admin_users import add_admin_user_role
 from scripts._0_0_7_update_scenario_index import update_scenario_index
-
+from scripts._0_0_8_add_textbased_alignment import add_textbased_alignments
 VERSION_COLLECTION = "itm_version"
 
 # Change this version if running a new deploy script
-db_version = "0.0.7"
+db_version = "0.0.8"
 
 
 def check_version(mongoDB):
@@ -44,6 +44,7 @@ def main():
         add_eval_3_adm_data(mongoDB)
         add_admin_user_role(mongoDB)
         update_scenario_index(mongoDB)
+        add_textbased_alignments(mongoDB)
 
         # Run Script for Probe Matching and importing human data
         os.system("python3 probe_matcher.py -i metrics-data/")
