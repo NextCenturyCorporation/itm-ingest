@@ -1,7 +1,7 @@
 import os, json, requests
 from decouple import config
 # Constants
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), '..', 'textbased-configs')
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), '..', 'metrics-textbased-configs')
 ADEPT_URL = config('ADEPT_URL')
 ST_URL = config('ST_URL')
 def load_scenario_config(scenario_name):
