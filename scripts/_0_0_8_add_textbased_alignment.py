@@ -135,8 +135,8 @@ def get_adept_alignment(scenario_results, scenario_id):
     if start_session.status_code == 200:
         session_id = start_session.json()
         responses = submit_responses(scenario_results, scenario_id, ADEPT_URL, session_id)
-        high_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-HIGH')
-        low_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-LOW')
+        high_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-eval-HIGH')
+        low_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-eval-LOW')
         scenario_results['highAlignmentData'] = high_alignment_data
         scenario_results['lowAlignmentData'] = low_alignment_data
         # remove field from previous script that just held HIGH alignment
