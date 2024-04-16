@@ -139,6 +139,8 @@ def get_adept_alignment(scenario_results, scenario_id):
         low_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-LOW')
         scenario_results['highAlignmentData'] = high_alignment_data
         scenario_results['lowAlignmentData'] = low_alignment_data
+        # remove field from previous script that just held HIGH alignment
+        scenario_results['alignmentData'] = None
         scenario_results['serverSessionId'] = session_id
         print(scenario_results['highAlignmentData'])
         print(scenario_results['lowAlignmentData'])
@@ -153,6 +155,8 @@ def get_soartech_alignment(scenario_results, scenario_id):
         low_alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_low')
         scenario_results['highAlignmentData'] = high_alignment_data
         scenario_results['lowAlignmentData'] = low_alignment_data 
+        # remove field from previous script that just held HIGH alignment
+        scenario_results['alignmentData'] = None
         scenario_results['serverSessionId'] = session_id
         print(scenario_results['highAlignmentData'])
         print(scenario_results['lowAlignmentData'])
