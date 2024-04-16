@@ -135,10 +135,13 @@ def get_adept_alignment(scenario_results, scenario_id):
     if start_session.status_code == 200:
         session_id = start_session.json()
         responses = submit_responses(scenario_results, scenario_id, ADEPT_URL, session_id)
-        alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-HIGH')
-        scenario_results['alignmentData'] = alignment_data
+        high_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-HIGH')
+        low_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-LOW')
+        scenario_results['highAlignmentData'] = high_alignment_data
+        scenario_results['lowAlignmentData'] = low_alignment_data
         scenario_results['serverSessionId'] = session_id
-        print(alignment_data)
+        print(scenario_results['highAlignmentData'])
+        print(scenario_results['lowAlignmentData'])
 
 def get_soartech_alignment(scenario_results, scenario_id):
     url = f"{ST_URL}/api/v1/new_session?user_id=default_user"
@@ -146,10 +149,13 @@ def get_soartech_alignment(scenario_results, scenario_id):
     if start_session.status_code == 201:
         session_id = start_session.json()
         responses = submit_responses(scenario_results, scenario_id, ST_URL, session_id)
-        alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_high')
-        scenario_results['alignmentData'] = alignment_data if alignment_data else None
+        high_alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_high')
+        low_alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_low')
+        scenario_results['highAlignmentData'] = high_alignment_data
+        scenario_results['lowAlignmentData'] = low_alignment_data 
         scenario_results['serverSessionId'] = session_id
-        print(scenario_results['alignmentData'])
+        print(scenario_results['highAlignmentData'])
+        print(scenario_results['lowAlignmentData'])
 
 def load_problem_probes():
     problem_probes_file = os.path.join(CONFIG_PATH, 'problemProbes.json')
