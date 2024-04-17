@@ -140,7 +140,7 @@ def get_adept_alignment(scenario_results, scenario_id):
         scenario_results['highAlignmentData'] = high_alignment_data
         scenario_results['lowAlignmentData'] = low_alignment_data
         # remove field from previous script that just held HIGH alignment
-        scenario_results['alignmentData'] = None
+        scenario_results['alignmentData'] = ""
         scenario_results['serverSessionId'] = session_id
         print(scenario_results['highAlignmentData'])
         print(scenario_results['lowAlignmentData'])
@@ -156,7 +156,7 @@ def get_soartech_alignment(scenario_results, scenario_id):
         scenario_results['highAlignmentData'] = high_alignment_data
         scenario_results['lowAlignmentData'] = low_alignment_data 
         # remove field from previous script that just held HIGH alignment
-        scenario_results['alignmentData'] = None
+        scenario_results['alignmentData'] = ""
         scenario_results['serverSessionId'] = session_id
         print(scenario_results['highAlignmentData'])
         print(scenario_results['lowAlignmentData'])
