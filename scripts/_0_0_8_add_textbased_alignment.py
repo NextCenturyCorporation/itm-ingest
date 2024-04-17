@@ -11,10 +11,8 @@ def load_scenario_config(scenario_name):
         with open(config_file, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        print(f"Configuration file not found: {config_file}")
         return None
     except json.JSONDecodeError:
-        print(f"Error decoding JSON from the file: {config_file}")
         return None
     
 scenarioMappings = {
@@ -120,7 +118,7 @@ def submit_responses(scenario_results, scenario_id, url_base, session_id):
                     response = requests.post(response_url, json=response_payload)
                     responses.append(response)
                 except requests.RequestException as e:
-                    print(f"Failed to send response for {question_name}: {e}")      
+                    continue   
     return responses
 
 
@@ -135,10 +133,13 @@ def get_adept_alignment(scenario_results, scenario_id):
     if start_session.status_code == 200:
         session_id = start_session.json()
         responses = submit_responses(scenario_results, scenario_id, ADEPT_URL, session_id)
-        alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-train-HIGH')
-        scenario_results['alignmentData'] = alignment_data
+        high_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-eval-HIGH')
+        low_alignment_data = get_alignment_data(ADEPT_URL, session_id, 'ADEPT-metrics_eval-alignment-target-eval-LOW')
+        scenario_results['highAlignmentData'] = high_alignment_data
+        scenario_results['lowAlignmentData'] = low_alignment_data
+        # remove field from previous script that just held HIGH alignment
+        scenario_results['alignmentData'] = ""
         scenario_results['serverSessionId'] = session_id
-        print(alignment_data)
 
 def get_soartech_alignment(scenario_results, scenario_id):
     url = f"{ST_URL}/api/v1/new_session?user_id=default_user"
@@ -146,10 +147,13 @@ def get_soartech_alignment(scenario_results, scenario_id):
     if start_session.status_code == 201:
         session_id = start_session.json()
         responses = submit_responses(scenario_results, scenario_id, ST_URL, session_id)
-        alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_high')
-        scenario_results['alignmentData'] = alignment_data if alignment_data else None
+        high_alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_high')
+        low_alignment_data = get_alignment_data(ST_URL, session_id, 'maximization_low')
+        scenario_results['highAlignmentData'] = high_alignment_data
+        scenario_results['lowAlignmentData'] = low_alignment_data 
+        # remove field from previous script that just held HIGH alignment
+        scenario_results['alignmentData'] = ""
         scenario_results['serverSessionId'] = session_id
-        print(scenario_results['alignmentData'])
 
 def load_problem_probes():
     problem_probes_file = os.path.join(CONFIG_PATH, 'problemProbes.json')
@@ -157,10 +161,8 @@ def load_problem_probes():
         with open(problem_probes_file, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        print(f"Problem probes configuration file not found: {problem_probes_file}")
         return {}
     except json.JSONDecodeError:
-        print(f"Error decoding JSON from the file: {problem_probes_file}")
         return {}
 
 
@@ -199,11 +201,13 @@ def add_textbased_alignments(mongo_db):
         elif "SoarTech" in result.get('title'):
             get_soartech_alignment(result, scenarioNameToID.get(result.get('title')))
         else:
-            print("Error: unrecognized scenario title")
+            continue
 
         user_scenario_results_collection.update_one(
             {'_id': result['_id']},
             {'$set': result}
         )
+
+    print("TextBased Alignment Scores Added to Mongo")
 
 
