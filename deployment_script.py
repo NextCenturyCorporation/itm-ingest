@@ -1,10 +1,11 @@
 from pymongo import MongoClient
 import os
 from scripts._0_0_8_add_textbased_alignment import add_textbased_alignments
+from scripts._0_0_9_soartech_get_session_data import get_all_session_data
 VERSION_COLLECTION = "itm_version"
 
 # Change this version if running a new deploy script
-db_version = "0.0.8"
+db_version = "0.0.9"
 
 
 def check_version(mongoDB):
@@ -34,6 +35,7 @@ def main():
         print("New db version, execute scripts")
 
         add_textbased_alignments(mongoDB)
+        get_all_session_data(mongoDB)
 
 
         # Now update db version
