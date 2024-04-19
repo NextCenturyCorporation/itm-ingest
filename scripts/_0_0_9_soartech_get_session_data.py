@@ -1,5 +1,10 @@
 from decouple import config
 import requests, json
+import pandas as pd
+import os
+from pandas import ExcelWriter
+from pandas import json_normalize
+from datetime import datetime
 ST_URL = config('ST_URL')
 
 def omnibus_history(omnibus):
@@ -40,7 +45,7 @@ def get_session_data(session_id):
         response = requests.get(session_data_url)
         return response.json() if response.status_code == 200 else None
 
-def run_delegation_dms(mongo_db):
+def run_delegation_dms():
     omnibus_a_collective_decisions = {
         'submarine-1': {
             'probe-1.1': 'choice-0',
@@ -112,9 +117,24 @@ def get_st_sessions_data(mongo_db):
 
 def get_all_session_data(mongo_db):
     human_data = get_st_sessions_data(mongo_db)
-    delegation_data = run_delegation_dms(mongo_db)
+    delegation_data = run_delegation_dms()
 
     print("Human Data ")
     print(json.dumps(human_data, indent=2))
     print('Delegation Data')
     print(json.dumps(delegation_data, indent=2))
+
+    save_to_excel(human_data, delegation_data)
+
+def save_to_excel(human_data, delegation_data):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    filename = f"{current_date}.xlsx"
+    full_path = os.path.join('session-data-history', filename)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+    human_df = pd.DataFrame(human_data)
+    delegation_df = pd.DataFrame(delegation_data)
+
+    with ExcelWriter(full_path) as writer:
+        human_df.to_excel(writer, sheet_name='Human Data', index=False)
+        delegation_df.to_excel(writer, sheet_name='Delegation Data', index=False)
