@@ -135,6 +135,11 @@ def save_to_excel(human_data, delegation_data):
     human_df = pd.DataFrame(human_data)
     delegation_df = pd.DataFrame(delegation_data)
 
+    if 'Participant ID' in human_df.columns:
+        human_df = human_df[['Participant ID'] + [col for col in human_df.columns if col != 'Participant ID']]
+        human_df = human_df.sort_values(by='Participant ID')
+        
+        
     with ExcelWriter(full_path) as writer:
         human_df.to_excel(writer, sheet_name='Human Data', index=False)
         delegation_df.to_excel(writer, sheet_name='Delegation Data', index=False)
