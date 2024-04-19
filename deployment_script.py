@@ -1,10 +1,11 @@
 from pymongo import MongoClient
 import os
 from scripts._0_0_8_add_textbased_alignment import add_textbased_alignments
+from scripts._0_0_9_add_scenario_names import add_scenario_names
 VERSION_COLLECTION = "itm_version"
 
 # Change this version if running a new deploy script
-db_version = "0.0.8"
+db_version = "0.0.9"
 
 
 def check_version(mongoDB):
@@ -33,11 +34,11 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
 
-        add_textbased_alignments(mongoDB)
-
+        #add_textbased_alignments(mongoDB)
+        add_scenario_names(mongoDB)
 
         # Now update db version
-        update_db_version(mongoDB)
+        #update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
 
