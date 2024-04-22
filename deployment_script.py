@@ -34,7 +34,7 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
 
-        add_textbased_alignments(mongoDB)
+        #add_textbased_alignments(mongoDB)
         get_all_session_data(mongoDB)
 
 
