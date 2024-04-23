@@ -4,34 +4,37 @@ import os
 
 ST_URL = config('ST_URL')
 
-def omnibus_history(omnibus, scenario_id):
+def omnibus_history(omnibus):
     url = f"{ST_URL}/api/v1/new_session?user_id=default_user"
     start_session = requests.post(url)
     if start_session.status_code == 201:
-        session_id = start_session.json()  # Ensure this extracts the correct session ID
-        for probe_id, choices in omnibus.items():
-            if isinstance(choices, list):
-                send_response(scenario_id, probe_id, choices[0], session_id)
-            else:
-                send_response(scenario_id, probe_id, choices, session_id)
+        session_id = start_session.json()
+        for scenario_id, probes in omnibus.items():
+            for probe_id, choices in probes.items():
+                if isinstance(choices, list):
+                    send_response(scenario_id, probe_id, choices[0], session_id)
+                else:
+                    send_response(scenario_id, probe_id, choices, session_id)
 
         # Retrieve alignment information
-        high_alignment, low_alignment = get_alignment(session_id)
+        #high_alignment, low_alignment = get_alignment(session_id)
 
         # Retrieve session data
         session_data = get_session_data(session_id)
 
         # Ensure that alignment data is parsed from JSON
-        high_alignment_data = high_alignment.json() if high_alignment.status_code == 200 else {}
-        low_alignment_data = low_alignment.json() if low_alignment.status_code == 200 else {}
+        #high_alignment_data = high_alignment.json() if high_alignment.status_code == 200 else {}
+        #low_alignment_data = low_alignment.json() if low_alignment.status_code == 200 else {}
 
         # Append alignment data as a new dictionary at the end of the session_data list
+        '''
         if isinstance(session_data, list):
             alignment_summary = {
                 'high_alignment': high_alignment_data,
                 'low_alignment': low_alignment_data
             }
             session_data.append(alignment_summary)  # Append the alignment data as a single dictionary at the end of the list
+        '''
 
         return session_data
 
@@ -61,8 +64,6 @@ def get_alignment(session_id):
     low_url_alignment = f"{ST_URL}/api/v1/alignment/session?session_id={session_id}&target_id=maximization_low&population=false"
     high_response = requests.get(high_url_alignment)
     low_response = requests.get(low_url_alignment)
-    print(high_response)
-    print(low_response)
     return high_response, low_response
 
 def get_session_data(session_id):
@@ -123,31 +124,17 @@ def run_delegation_dms():
         }
     }
 
-    omnibus_a_history_submarine = omnibus_history(omnibus_a_collective_decisions['submarine-1'], 'submarine-1')
-    omnibus_a_history_submarine.append({'Participant ID': 'ST High submarine-1'})
-    omnibus_a_history_jungle = omnibus_history(omnibus_a_collective_decisions['jungle-1'], 'jungle-1')
-    omnibus_a_history_jungle.append({'Participant ID': 'ST High jungle-1'})
-    omnibus_a_history_desert = omnibus_history(omnibus_a_collective_decisions['desert-1'], 'desert-1')
-    omnibus_a_history_desert.append({'Participant ID': 'ST High desert-1'})
-    omnibus_a_history_urban = omnibus_history(omnibus_a_collective_decisions['urban-1'], 'urban-1')
-    omnibus_a_history_urban.append({'Participant ID': 'ST High urban-1'})
-
-    omnibus_b_history_submarine = omnibus_history(omnibus_b_collective_decisions['submarine-1'], 'submarine-1')
-    omnibus_b_history_submarine.append({'Participant ID': 'ST Low submarine-1'})
-    omnibus_b_history_jungle = omnibus_history(omnibus_b_collective_decisions['jungle-1'], 'jungle-1')
-    omnibus_b_history_jungle.append({'Participant ID': 'ST Low jungle-1'})
-    omnibus_b_history_desert = omnibus_history(omnibus_b_collective_decisions['desert-1'], 'desert-1')
-    omnibus_b_history_desert.append({'Participant ID': 'ST Low desert-1'})
-    omnibus_b_history_urban = omnibus_history(omnibus_b_collective_decisions['urban-1'], 'urban-1')
-    omnibus_b_history_urban.append({'Participant ID': 'ST Low urban-1'})
+    omnibus_a_history = omnibus_history(omnibus_a_collective_decisions)
+    omnibus_a_history.append({'Participant ID': 'ST High'})
+    omnibus_b_history = omnibus_history(omnibus_b_collective_decisions)
+    omnibus_b_history.append({'Participant ID': 'ST Low'})
 
 
-    return [omnibus_a_history_submarine, omnibus_a_history_jungle, omnibus_a_history_desert, omnibus_a_history_urban, 
-            omnibus_b_history_submarine, omnibus_b_history_jungle, omnibus_b_history_desert, omnibus_b_history_urban]
+    return [omnibus_a_history, omnibus_b_history]
 
 def get_st_sessions_textbased_data(mongo_db):
     user_scenario_results_collection = mongo_db['userScenarioResults']
-    user_scenario_results = user_scenario_results_collection.find({"title": {"$regex": "SoarTech", "$options": "i"}, "participantID": {"$regex": "^2024"}})
+    user_scenario_results = user_scenario_results_collection.find({"title": {"$regex": "SoarTech", "$options": "i"}, "participantID": {"$regex": "^(2024|2021)", "$options": "i"}})
     history = []
     for result in user_scenario_results:
         session_id = result['serverSessionId']
