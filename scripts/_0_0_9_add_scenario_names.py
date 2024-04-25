@@ -28,7 +28,7 @@ def add_scenario_names(mongoDB):
             if scenario_index in index_map:
                 page['scenarioName'] = index_map[scenario_index]
                 # add field to existing omnibus results for surveyResults page
-                if scenario_index in (9, 10):
+                if scenario_index in (9, 10) and page.get('pageType') is None:
                     page['pageType'] = 'singleMedic'
                 
 
