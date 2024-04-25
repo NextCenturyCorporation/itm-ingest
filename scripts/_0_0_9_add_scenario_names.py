@@ -36,6 +36,7 @@ def add_scenario_names(mongoDB):
                 {'_id': result['_id']},
                 {'$set': result}
             )
+    print("Scenario names added, omnibus pages updated")
 
 
     

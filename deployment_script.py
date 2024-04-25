@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 import os
-from scripts._0_0_8_add_textbased_alignment import add_textbased_alignments
 from scripts._0_0_9_add_scenario_names import add_scenario_names
 VERSION_COLLECTION = "itm_version"
 
