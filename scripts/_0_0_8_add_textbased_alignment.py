@@ -8,7 +8,7 @@ def load_scenario_config(scenario_name):
     """ Load JSON configuration for a given scenario name """
     config_file = f"{CONFIG_PATH}/{scenario_name}Config.json"
     try:
-        with open(config_file, 'r') as file:
+        with open(config_file, 'r', encoding="utf-8") as file:
             return json.load(file)
     except FileNotFoundError:
         return None
@@ -84,7 +84,7 @@ def add_probe_ids(scenario, scenario_mappings):
 def submit_responses(scenario_results, scenario_id, url_base, session_id):
     responses = []
     if not isinstance(scenario_results, dict):
-        return response_promises
+        return responses
 
     for field_name, field_value in scenario_results.items():
         # Ensure that field_value is a dictionary and has 'questions'
@@ -158,7 +158,7 @@ def get_soartech_alignment(scenario_results, scenario_id):
 def load_problem_probes():
     problem_probes_file = os.path.join(CONFIG_PATH, 'problemProbes.json')
     try:
-        with open(problem_probes_file, 'r') as file:
+        with open(problem_probes_file, 'r', encoding="utf-8") as file:
             return json.load(file)
     except FileNotFoundError:
         return {}
