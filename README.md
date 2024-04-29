@@ -43,7 +43,7 @@ To run the probe matcher, execute the following command:
 ```
 python3 probe_matcher.py -i [path_to_directory]
 ```
-Ensure that the path leads to the Unity Simulator data. The format should be: top-level -> id -> id -> json, with csvs directly under top-level. As the Unity file output organization format changes, the way of accessing this data may also change.
+Ensure that the path leads to the Unity Simulator data. The format should be: top-level -> id -> id -> json, with csvs directly under top-level. As the Unity file output organization format changes, the way of accessing this data may also change. For the metrics evaluation data, use the folder in this repo 'metrics-data'.
 
 ### Output
 The probe matcher will output two json files for each input json found: one for soartech and one for adept. If SEND_TO_MONGO is true, these json files (and the raw jsons found) will be sent to the mongo database
@@ -61,4 +61,4 @@ To utilize this function, you will need to manually run the deployment script.
 We will eventually have a Jenkins job that will run the script whenever ingest is updated.
 Also if you would like to run a new script you will need to modify the script that is being called in deployment script and bump the version.
 
-The script will only run if the version is a newer version of the db, the script also create the collection for the version if it doesn't exist yet.
+The script will only run if the version is a newer version of the db, the script also create the collection for the version if it doesn't exist yet. Set your .env file to point to the instances of the TA1 servers you have running locally. 

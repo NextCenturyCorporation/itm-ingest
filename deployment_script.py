@@ -1,8 +1,10 @@
 from pymongo import MongoClient
 import os
-from scripts._0_0_9_add_scenario_names import add_scenario_names
-VERSION_COLLECTION = "itm_version"
 
+from scripts._0_0_9_add_scenario_names import add_scenario_names
+from decouple import config
+VERSION_COLLECTION = "itm_version"
+MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
 db_version = "0.0.9"
 
@@ -27,8 +29,7 @@ def update_db_version(mongoDB):
 
 
 def main():
-    client = MongoClient(
-        "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard")
+    client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
