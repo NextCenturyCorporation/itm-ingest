@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 import os
+from decouple import config
 from scripts._0_0_8_add_textbased_alignment import add_textbased_alignments
 VERSION_COLLECTION = "itm_version"
-
+MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
 db_version = "0.0.8"
 
@@ -27,8 +28,7 @@ def update_db_version(mongoDB):
 
 
 def main():
-    client = MongoClient(
-        "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard")
+    client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
