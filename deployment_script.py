@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from decouple import config
 import os
 from scripts._0_0_9_add_scenario_names import add_scenario_names
-from scripts._0_0_10_fix_participant_id import fix_participant_id
+from scripts._0_1_0_fix_participant_id import fix_participant_id
 
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
