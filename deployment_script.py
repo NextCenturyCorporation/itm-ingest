@@ -4,11 +4,11 @@ import os
 from scripts._0_0_9_add_scenario_names import add_scenario_names
 from scripts._0_1_0_fix_participant_id import fix_participant_id
 from scripts._0_1_1_remove_old_textbased_results import remove_old_textbased_results
-
+from scripts._0_1_2_survey_interaction_data import survey_interaction_data
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.1"
+db_version = "0.1.2"
 
 
 def check_version(mongoDB):
@@ -36,12 +36,12 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
 
-        add_scenario_names(mongoDB)
-        fix_participant_id(mongoDB)
-        remove_old_textbased_results(mongoDB)
-
+        #add_scenario_names(mongoDB)
+        #fix_participant_id(mongoDB)
+        #remove_old_textbased_results(mongoDB)
+        survey_interaction_data(mongoDB)
         # Now update db version
-        update_db_version(mongoDB)
+        #update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
 
