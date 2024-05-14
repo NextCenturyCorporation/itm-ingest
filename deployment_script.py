@@ -4,11 +4,11 @@ import os
 from scripts._0_0_9_add_scenario_names import add_scenario_names
 from scripts._0_1_0_fix_participant_id import fix_participant_id
 from scripts._0_1_1_remove_old_textbased_results import remove_old_textbased_results
-
+from scripts._0_1_2_survey_results_table_fixes import fix_survey_results_table
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.1"
+db_version = "0.1.2"
 
 
 def check_version(mongoDB):
@@ -39,7 +39,7 @@ def main():
         add_scenario_names(mongoDB)
         fix_participant_id(mongoDB)
         remove_old_textbased_results(mongoDB)
-
+        fix_survey_results_table(mongoDB)
         # Now update db version
         update_db_version(mongoDB)
     else:
