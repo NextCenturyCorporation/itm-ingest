@@ -350,7 +350,8 @@ if __name__ == '__main__':
     while resp != 'q':
         try:
             print()
-            LOGGER.log(LogLevel.CRITICAL_INFO, "What would you like to do?\033[37m \n\t\n\tImport Survey from JSON (is)\n\tImport Page from JSON (ip)\n\tAdd Page (ap)\n\tDelete Page (dp)\n\tAdd Element to Page (ae)\n\tDelete Element From Page (de)\n\tView Current Survey as JSON (v)\n\tSave Changes (s)\n\tQuit (q)")
+            LOGGER.log(LogLevel.CRITICAL_INFO, "What would you like to do?\033[37m \n\t\n\tImport Survey from JSON (is)\n\tImport Page from JSON (ip)\n\tDelete Page (dp)\n\tView Current Survey as JSON (v)\n\tSave Changes (s)\n\tQuit (q)")
+            # future options: \n\tAdd Page (ap)\n\tAdd Element to Page (ae)\n\tDelete Element From Page (de)
             resp = input("").strip().lower()
             if resp == 'is':
                 if tool.cur_import_file != '':
@@ -384,20 +385,3 @@ if __name__ == '__main__':
         except Exception as e:
             # catch all errors because otherwise all progress will be lost!
             LOGGER.log(LogLevel.WARN, f"There was an error processing your input. Please try again. {e}")
-
-
-    # tool.push_changes()
-    # tool.add_page("Participant ID Page")
-    # el1 = SurveyElement(el_type="text", el_name="Participant ID", el_title="Enter Participant ID:", is_required=True)
-    # tool.add_element("Participant ID Page", el1)
-    # el2 = SurveyElement(el_type="checkbox", el_name="VR Scenarios Completed", el_title="Have you completed the VR simulator? Select all that apply", is_required=True, 
-    #                     question_choices=["I have completed the VR desert environment ",
-    #                     "I have completed the VR urban environment",
-    #                     "I have completed the VR submarine environment ",
-    #                     "I have completed the VR  jungle environment"], show_none_item=True, none_text="I have not completed any VR environments")
-    # tool.add_element("Participant ID Page", el2)
-    # el3 = SurveyElement(el_type="radiogroup", el_name="VR Comfort Level", visible_if="{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
-    #                     el_title="After completing the VR experience, my current physical state is...", is_required=True,
-    #                     question_choices=["Very uncomfortable", "Slightly uncomfortable", "Neutral", "Comfortable", "Very comfortable"])
-    # tool.add_element("Participant ID Page", el3)
-    # el4 = SurveyElement(el_type="comment", el_name="Additional Information About Discomfort")
