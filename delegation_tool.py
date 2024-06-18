@@ -179,7 +179,8 @@ class DelegationTool:
         Adds the initial survey base to the database
         '''
         if not is_new:
-            overwrite = input("This will overwrite all previous delegation survey data in the database. Are you sure you want to do this? (y/n) ")
+            LOGGER.log(LogLevel.WARN, "This will overwrite all previous delegation survey data in the database. Are you sure you want to do this? (y/n) ")
+            overwrite = input("")
         if is_new or overwrite.strip() in ['y', 'Y']:
             self.survey = {
                 "title": "ITM Delegation Survey",
@@ -280,7 +281,7 @@ class DelegationTool:
         Move a page with page_name from a json file to the survey 
         '''
         self.cur_import_file = json_dest
-        f = open(json_dest, 'r')
+        f = open(json_dest, 'r', encoding='utf-8')
         data = json.load(f)
         if 'pages' not in data:
             LOGGER.log(LogLevel.WARN, "Error: json needs a 'pages' key at the top level to run 'import_page_from_json")
@@ -328,10 +329,10 @@ class DelegationTool:
         '''
         Places an entire json full of survey data (found at path) in the survey
         '''
-        LOGGER.log(LogLevel.WARN, "This overwrites all current survey data. Are you sure you want to continue? (y/n)")
+        LOGGER.log(LogLevel.WARN, "This will overwrite all current survey data. Are you sure you want to continue? (y/n)")
         resp = input("")
         if resp.strip() in ['y', 'Y']:
-            f = open(path, 'r')
+            f = open(path, 'r', encoding='utf-8')
             self.cur_import_file = path
             data = json.load(f)
             self.survey = data
@@ -373,7 +374,13 @@ if __name__ == '__main__':
             if resp == 's':
                 tool.push_changes()
             if resp == 'v':
-                print(json.dumps(tool.survey, indent=4))
+                survey_copy = copy.deepcopy(tool.survey)
+                for p in survey_copy['pages']:
+                    for e in p['elements']:
+                        if 'patients' in e:
+                            for pat in e['patients']:
+                                pat['imgUrl'] = 'Image data omitted from printout.'
+                print(json.dumps(survey_copy, indent=4))
             if resp == 'q':
                 if len(tool.changes_summary) > 0:
                     LOGGER.log(LogLevel.WARN, "Changes are not saved. Are you sure you want to quit? (y/n)")
