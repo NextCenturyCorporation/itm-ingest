@@ -2,6 +2,7 @@
 from pymongo import MongoClient
 from decouple import config 
 import json, copy, os, yaml
+from logger import LogLevel, Logger
 
 '''
 Gets all of the metrics eval (eval #3) ADMs from the 'test' collection in mongo.
@@ -9,29 +10,11 @@ Gets all the data required from those datasets to add to the survey.
 Pushes each individual adm to the admMedics collection in mongo.
 '''
 
+LOGGER = Logger('ADM Converter')
+
 names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 loop_ind = 0
 names_used = []
-
-character_sets = [['Patient V', 'Patient U'], ['Patient X', 'Patient W'], ['Marine 1 Male', 'Marine 2 Male', 'Marine 3 Male', 'Marine 4 Male', 'Civilian 1 Female'],
-                  ['Adept Shooter', 'Adept Victim'], ['Open World Marine 1 Male', 'Open World Marine 2 Female', 'Open World Marine 3 Male', 'Open World Marine 4 Male'],
-                  ['electrician', 'bystander'], ['Navy Soldier 1 Male', 'Navy Soldier 2 Male', 'Navy Soldier 3 Male', 'Navy Soldier 4 Female'], ['Local Soldier 1', 'US Soldier 1'],
-                  ['Open World Civilian 1 Male', 'Open World Civilian 2 Female', 'Open World Marine 1 Female', 'Open World Marine 2 Male']]
-
-
-character_shift = {
-    'patient X': 'Patient X',
-    'patient U': 'Patient U',
-    'patient V': 'Patient V',
-    'patient W': 'Patient W'
-}
-
-
-location_shift = {
-    "leftarm": "left arm",
-    "rightarm": "right arm"
-}
-
 
 env_map = {
     "MetricsEval.MD1-Urban": {
@@ -95,8 +78,7 @@ def get_string_from_action(action):
     elif params['action_type'] == 'SEARCH':
         printable = 'Search for more casualties'
     elif params['action_type'] == 'SITREP':
-        # TODO: change text on this one
-        printable = "Get situation report"
+        printable = "Ask patients for a quick, verbal self-assessment"
     elif params['action_type'] == 'CHECK_PULSE':
         printable = f"Take {params['character']}'s pulse"
     elif params['action_type'] == 'CHECK_RESPIRATION':
@@ -106,8 +88,7 @@ def get_string_from_action(action):
     elif params['action_type'] in ['END_SCENE']:
         printable = -1
     else:
-        # TODO: add logging so this is warning
-        print('String not found for ' + params)
+        LOGGER.log(LogLevel.WARN, 'String not found for ' + params)
     return printable
 
 
@@ -157,7 +138,7 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index):
                 img = document['_id']
                 break
         if not found_patient:
-            print(f"Warning: could not find image for patient {patient['id']} in scenario {scenario_index}")
+            LOGGER.log(LogLevel.WARN, f"Warning: could not find image for patient {patient['id']} in scenario {scenario_index}")
 
         patients.append({
             "name": patient['id'],
@@ -341,65 +322,6 @@ def set_medic_from_adm(document, template, mongo_collection):
         return page_data
 
 
-def set_medic_from_human():
-
-    ## SIM ACTIONS
-    # sim_delegates = db['humanSimulatorRaw'].find({})
-    # for document in sim_delegates:
-    #     # print(document)
-    #     print(document['data']['configData']['scene'])
-    #     action_set = [document['pid'] + ' - ' + document['data']['configData']['scene']]
-    #     cur_character_set = None
-    #     for action in document['data']['actionList']:
-    #         action_type = action['actionType']
-    #         character = character_shift[action['casualty']] if action['casualty'] in character_shift else action['casualty']
-    #         location = action['treatmentLocation'].lower()
-    #         location = location_shift[location] if location in location_shift else location
-    #         for x in character_sets:
-    #             if character is not None and character in x: 
-    #                 if x != cur_character_set:
-    #                     if cur_character_set != None:
-    #                         action_set.append('\n---\n')
-    #                     cur_character_set = x
-    #         printable = None
-    #         if action_type == 'Treatment':
-    #             printable = f"Treat {character} with {action['treatment'].lower().replace('iv', 'IV')} on {location}"
-    #         elif action_type == 'Tag':
-    #             printable = f"Tag {character} as {action['tagType'].lower()}"
-    #         elif action_type in ['SpO2', 'Pulse', 'Breathing']:
-    #             printable = f"Perform vitals assessment on {character}"
-    #         elif action_type == 'Question' and action['answer'] == 'Search':
-    #             action_set.append('\n---\n')
-    #             cur_character_set = None
-    #             printable = 'Search for more casualties'
-                
-    #         if printable is not None and action_set[-1] != printable:
-    #             action_set.append(printable)
-
-    #     for x in action_set:
-    #         print(x)
-    #     print()
-
-    ## TEXT RESPONSES
-    # text_scenarios = db['userScenarioResults'].find({})
-    # for document in text_scenarios:
-    #     non_actions = ['Do not treat', 'Not assessing local capabilities for their value']
-    #     actions = []
-    #     for page_id in document:
-    #         page = document[page_id]
-    #         if isinstance(page, dict) and 'questions' in page:
-    #             for q in page['questions']:
-    #                 if 'response' in page['questions'][q]:
-    #                     resp = page['questions'][q]['response'].strip()
-    #                     if resp not in non_actions:
-    #                         if len(actions) == 0 or actions[-1] != resp:
-    #                             actions.append(resp)
-    #     for x in actions:
-    #         print(x)
-    #     print()
-    pass
-
-
 if __name__ == '__main__':
     f = open('single_medic_template.json', 'r', encoding='utf-8')
     template = json.load(f)
@@ -415,7 +337,6 @@ if __name__ == '__main__':
     adms = db['test'].find({'evalNumber': 3})
     for document in adms:
         medic_data = set_medic_from_adm(document, template, medic_mongo_collection)
-        # medic_mongo_collection.insert_one(medic_data)
         json_output['pages'].append(medic_data)
     
     json.dump(json_output, output, indent=4)
