@@ -73,3 +73,7 @@ The overall goal is to take adm actions/responses and map them out into the prop
 ### Running the Tool
 To run this tool, run `python3 convert_adms_for_delegation.py`.
 
+
+## Recommendations for Setup
+- Run `python3 update_survey_config.py` and press `Enter` for one-time initialization. This will add the three initial survey versions (0.0, 1.0, 2.0) and correct patient ids for images to the database.
+- Run `python3 convert_adms_for_delegation.py`. This will add the adm medics to the database. 
