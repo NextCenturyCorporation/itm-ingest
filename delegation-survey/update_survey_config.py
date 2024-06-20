@@ -387,7 +387,7 @@ class DelegationTool:
             LOGGER.log(LogLevel.WARN, "Could not find medic to add to survey. Please check that all details match.")
 
 
-    def add_db_medic_to_survey_by_details(self, adm_name, adm_alignment, scenario_writer, environment):
+    def add_db_medic_to_survey_by_details(self, adm_name, adm_alignment, scenario_writer, environment, append=False):
         '''
         Finds a document from the adm medic colleciton in mongo that matches the parameters given.
         Adds it to the survey at the end of all singleMedics
@@ -410,7 +410,12 @@ class DelegationTool:
         found_medic = False
         for doc in found_docs:
             found_medic = True
-            self.insert_new_medic(doc)
+            if not append:
+                self.insert_new_medic(doc)
+            else:
+                del doc['_id']
+                self.survey['pages'].append(doc)
+                self.changes_summary.append(f"Appended new medic '{doc['name']}' to survey")
             return doc['name']
         if not found_medic:
             LOGGER.log(LogLevel.WARN, f"Could not find medic to add to survey. Please check that all details match. adm_name: {adm_name}, adm_alignment: {adm_alignment}, scenario_writer: {scenario_writer}, environment: {environment}")
@@ -473,22 +478,18 @@ class DelegationTool:
         for el in template['elements']:
             el['name'] = el['name'].replace('Medic-ST1', name1).replace('Medic-ST2', name2)
             el['title'] = el['title'].replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+            tmp_choices = []
             for choice in el.get('choices', []):
-                choice = choice.replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+                tmp_choices.append(choice.replace('Medic-ST1', name1).replace('Medic-ST2', name2))
+            if len(tmp_choices) > 0:
+                el['choices'] = tmp_choices
+            tmp_dms = []
             for dm in el.get('decisionMakers', []):
-                dm = dm.replace('Medic-ST1', name1).replace('Medic-ST2', name2)
-        i = 0
-        insert_ind = -1
-        for page in self.survey['pages']:
-            if 'omnibus' in page.get('name', '').lower():
-                insert_ind = i
-                break
-            i += 1
-        if insert_ind > -1:
-            self.survey['pages'].insert(insert_ind, template)
-        else:
-            self.survey['pages'].insert(3, template)
-        self.changes_summary.append(f"Inserted new medic comparison '{template['name']}' at index {insert_ind if insert_ind > -1 else 3}")
+                tmp_dms.append(dm.replace('Medic-ST1', name1).replace('Medic-ST2', name2))
+            if len(tmp_dms) > 0:
+                el['decisionMakers'] = tmp_dms
+        self.survey['pages'].append(template)
+        self.changes_summary.append(f"Appended new medic comparison '{template['name']}' to survey")
 
 
     def setup_omnibus_pages(self, first_medics, second_medics, first_name, second_name, scenario_name, scenario_index, alignment):
@@ -615,9 +616,8 @@ def version3_setup():
     tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Note page', None) 
     
     # add comparison options to survey
-    tool.survey['TadDMs'] = []
-    tool.survey['KitwareDMs'] = []
-    tool.survey['comparisonPages'] = []
+    tool.survey['validSingleSets'] = []
+    tool.survey['validOmniSets'] = []
 
     # add all medics to survey
     alignments = ['high', 'low']
@@ -639,6 +639,24 @@ def version3_setup():
     # for better performance
     omni_ind = 1 # start at 1 for O1, O2, O3 instead of O0
     scenario_ind = 9 # start at 9 for omnibus
+    medic_map = {}
+    omni_map = {}
+    valid_single_sets = [
+        ['ST high kitware jungle', 'AD low kitware desert', 'ST low TAD urban', 'AD high TAD submarine'],
+        ['ST high kitware desert', 'AD low kitware jungle', 'ST low TAD submarine', 'AD high TAD urban'],
+        ['ST high kitware urban', 'AD low kitware submarine', 'ST low TAD jungle', 'AD high TAD desert'],
+        ['ST high kitware submarine', 'AD low kitware urban', 'ST low TAD desert', 'AD high TAD jungle'],
+        ['ST low kitware jungle', 'AD high kitware desert', 'ST high TAD urban', 'AD low TAD submarine'],
+        ['ST low kitware desert', 'AD high kitware jungle', 'ST high TAD submarine', 'AD low TAD urban'],
+        ['ST low kitware urban', 'AD high kitware submarine', 'ST high TAD jungle', 'AD low TAD desert'],
+        ['ST low kitware submarine', 'AD high kitware urban', 'ST high TAD desert', 'AD low TAD jungle']
+    ]
+    valid_omni_sets = [
+        ['ST high kitware', 'AD low TAD'],
+        ['ST low kitware', 'AD high TAD'],
+        ['AD high kitware', 'ST low TAD'],
+        ['AD low kitware', 'ST high TAD']
+    ]
     for alignment in alignments:
         for writer in writers:
             # keep track of the names of each medic for each writer over all 4 environments (for omnibus)
@@ -648,33 +666,46 @@ def version3_setup():
             kit_baseline = []
             for env in envs:
                 # create individual medic pages for parallax
-                name1 = tool.add_db_medic_to_survey_by_details('TAD aligned', alignment, writer, env)
+                name1 = tool.add_db_medic_to_survey_by_details('TAD aligned', alignment, writer, env, True)
                 tad_aligned.append(name1)
-                name2 = tool.add_db_medic_to_survey_by_details('TAD baseline', alignment, writer, env)
+                name2 = tool.add_db_medic_to_survey_by_details('TAD baseline', alignment, writer, env, True)
                 tad_baseline.append(name2)
-                tool.survey['TadDMs'].append([name1, name2])
                 # create comparison pages
                 tool.append_comparison_page(name1, name2, scenario_indices[writer + ' ' + env], alignment)
-                tool.survey['comparisonPages'].append(name1 + ' vs ' + name2)
 
                 # create individual medic pages for kitware            
-                name3 = tool.add_db_medic_to_survey_by_details('kitware-single-kdma-adm-baseline', alignment, writer, env)
+                name3 = tool.add_db_medic_to_survey_by_details('kitware-single-kdma-adm-baseline', alignment, writer, env, True)
                 kit_aligned.append(name3)
-                name4 = tool.add_db_medic_to_survey_by_details('kitware-hybrid-kaleido-aligned', alignment, writer, env)
+                name4 = tool.add_db_medic_to_survey_by_details('kitware-hybrid-kaleido-aligned', alignment, writer, env, True)
                 kit_baseline.append(name4)
-                tool.survey['KitwareDMs'].append([name3, name4])
                 # create comparison pages
                 tool.append_comparison_page(name3, name4, scenario_indices[writer + ' ' + env], alignment)
-                tool.survey['comparisonPages'].append(name3 + ' vs ' + name4)
+                
+                medic_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} TAD {env.lower()}"] = [name1, name2]
+                medic_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} kitware {env.lower()}"] = [name3, name4]
         
             # create omnibus pages and omnibus comparison pages
             tool.setup_omnibus_pages(tad_aligned, tad_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - TAD ({alignment})", scenario_ind, alignment)
+            omni_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} TAD"] = ['Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1)]
             omni_ind += 2
             scenario_ind += 1
 
             tool.setup_omnibus_pages(kit_aligned, kit_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - Kitware ({alignment})", scenario_ind, alignment)
+            omni_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} kitware"] = ['Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1)]
             omni_ind += 2
-            scenario_ind += 1            
+            scenario_ind += 1    
+
+    for s in valid_single_sets:
+        tmp_set = []
+        for description in s:
+            tmp_set.append(medic_map[description])
+        tool.survey['validSingleSets'].append(tmp_set)
+
+    for s in valid_omni_sets:
+        tmp_set = []
+        for description in s:
+            tmp_set.append(omni_map[description])
+        tool.survey['validOmniSets'].append(tmp_set)
 
     # add final page
     tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Post-Scenario Measures', None) 
