@@ -237,7 +237,10 @@ class DelegationTool:
         # Check to make sure user wants to update; show list of changes
         for x in self.changes_summary:
             print('\t'+x)
-            time.sleep(0.25)
+            if len(self.changes_summary) < 5:
+                time.sleep(0.25)
+            else:
+                time.sleep(0.02)
         LOGGER.log(LogLevel.WARN, "Push all to database? (y/n) ")
         resp = input("")
         if resp.strip() in ['y', 'Y']:
@@ -355,8 +358,9 @@ class DelegationTool:
         '''
         Takes patient data and a path to an image and adds it to the delegationMedia database
         '''
-        img_file = open(img_path, 'rb').read() 
-        img_url = base64.b64encode(img_file).decode('utf-8')
+        img_file = open(img_path, 'rb')
+        img_url = base64.b64encode(img_file.read()).decode('utf-8')
+        img_file.close()
         # see if imgurl is already in image database
         res = self.image_mongo_collection.find({'url': img_url})
         found = False
@@ -367,6 +371,7 @@ class DelegationTool:
             res = self.image_mongo_collection.insert_one({'url': img_url, 'patientIds': [patient_id], 'description': description, 'scenario': scenario_index, 'mediaType': 'img'})
             return res.inserted_id
         
+
     def add_db_medic_to_survey_by_name(self, medic_name):
         '''
         Finds a document from the adm medic colleciton in mongo that matches the name given.
@@ -406,9 +411,10 @@ class DelegationTool:
         for doc in found_docs:
             found_medic = True
             self.insert_new_medic(doc)
-            break
+            return doc['name']
         if not found_medic:
-            LOGGER.log(LogLevel.WARN, "Could not find medic to add to survey. Please check that all details match.")
+            LOGGER.log(LogLevel.WARN, f"Could not find medic to add to survey. Please check that all details match. adm_name: {adm_name}, adm_alignment: {adm_alignment}, scenario_writer: {scenario_writer}, environment: {environment}")
+            return None
 
 
     def insert_new_medic(self, doc):
@@ -419,7 +425,7 @@ class DelegationTool:
         i = 0
         insert_ind = -1
         for page in self.survey['pages']:
-            if 'singleMedic' in page.get('name', ''):
+            if 'omnibus' in page.get('name', '').lower():
                 insert_ind = i
                 break
             i += 1
@@ -428,6 +434,120 @@ class DelegationTool:
         else:
             self.survey['pages'].insert(3, doc)
         self.changes_summary.append(f"Inserted new medic '{doc['name']}' at index {insert_ind if insert_ind > -1 else 3}")
+
+
+    def export_survey_json(self, path):
+        '''
+        Exports the current state of the survey to a json file
+        '''
+        f = open(path, 'w', encoding='utf-8')
+        survey_copy = copy.deepcopy(self.survey)
+        for p in survey_copy['pages']:
+            for e in p['elements']:
+                if 'patients' in e:
+                    for pat in e['patients']:
+                        pat['imgUrl'] = str(pat['imgUrl'])
+        json.dump(survey_copy, f, indent=4)
+        f.close()
+
+
+    def clear_survey_version(self):
+        '''
+        Restarts a survey version with the bare bones.
+        '''
+        self.initialize_survey(self.survey['version'], False)
+        self.changes_summary.append("Cleared all data from survey")
+
+
+    def append_comparison_page(self, name1, name2, scenario_index, alignment):
+        '''
+        Given the names of two medics, a scenario index, and an alignment label,
+        adds a new comparison page to the survey
+        '''
+        f = open(os.path.join('templates', 'comparison_template.json'), 'r', encoding='utf-8')
+        template = json.load(f)
+        f.close()
+        template['scenarioIndex'] = scenario_index
+        template['alignment'] = alignment
+        template['name'] = template['name'].replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+        for el in template['elements']:
+            el['name'] = el['name'].replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+            el['title'] = el['title'].replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+            for choice in el.get('choices', []):
+                choice = choice.replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+            for dm in el.get('decisionMakers', []):
+                dm = dm.replace('Medic-ST1', name1).replace('Medic-ST2', name2)
+        i = 0
+        insert_ind = -1
+        for page in self.survey['pages']:
+            if 'omnibus' in page.get('name', '').lower():
+                insert_ind = i
+                break
+            i += 1
+        if insert_ind > -1:
+            self.survey['pages'].insert(insert_ind, template)
+        else:
+            self.survey['pages'].insert(3, template)
+        self.changes_summary.append(f"Inserted new medic comparison '{template['name']}' at index {insert_ind if insert_ind > -1 else 3}")
+
+
+    def setup_omnibus_pages(self, first_medics, second_medics, first_name, second_name, scenario_name, scenario_index, alignment):
+        '''
+        Adds the single and comparison omnibus pages for the given medics with the assigned names
+        '''
+        def single_omni_page(medics, name):
+            '''
+            Sub-function to create a single omnibus page. Returns the created page in json
+            '''
+            f = open(os.path.join('templates', 'single_omni_template.json'), 'r', encoding='utf-8')
+            single_template = json.load(f)
+            f.close()
+            single_template['name'] = single_template['name'].replace('Medic-D', name)
+            single_template['scenarioName'] = scenario_name
+            single_template['scenarioIndex'] = scenario_index
+            single_template['alignment'] = alignment
+            for el in single_template['elements']:
+                if 'decisionMakers' in el:
+                    el['decisionMakers'] = medics
+                el['name'] = el['name'].replace('Medic-D', name)
+                el['title'] = el['title'].replace('Medic-D', name)
+                if 'dmName' in el:
+                    el['dmName'] = el['dmName'].replace('Medic-D', name)
+                new_choices = []
+                for choice in el.get('choices', []):
+                    new_choices.append(choice.replace('Medic-D', name))
+                if len(new_choices) > 0:
+                    el['choices'] = new_choices
+            return single_template
+
+        self.survey['pages'].append(single_omni_page(first_medics, first_name))
+        self.changes_summary.append(f"Appended omnibus page '{first_name}' for '{scenario_name}' to survey")
+        self.survey['pages'].append(single_omni_page(second_medics, second_name))
+        self.changes_summary.append(f"Appended omnibus page '{second_name}' for '{scenario_name}' to survey")
+
+        f = open(os.path.join('templates', 'comparison_omni_template.json'), 'r', encoding='utf-8')
+        comparison_template = json.load(f)
+        f.close()
+        comparison_template['name'] = comparison_template['name'].replace('Medic-C', first_name).replace('Medic-D', second_name)
+        comparison_template['scenarioIndex'] = scenario_index
+        comparison_template['scenarioName'] = scenario_name
+        comparison_template['alignment'] = alignment
+        for el in comparison_template['elements']:
+            new_dms = []
+            for dm in el.get('decisionMakers', []):
+                new_dms.append(dm.replace('Medic-C', first_name).replace('Medic-D', second_name))
+            if len(new_dms) > 0:
+                el['decisionMakers'] = new_dms
+            el['name'] = el['name'].replace('Medic-C', first_name).replace('Medic-D', second_name)
+            el['title'] = el['title'].replace('Medic-C', first_name).replace('Medic-D', second_name)
+            new_choices = []
+            for choice in el.get('choices', []):
+                new_choices.append(choice.replace('Medic-C', first_name).replace('Medic-D', second_name))
+            if len(new_choices) > 0:
+                el['choices'] = new_choices
+
+        self.survey['pages'].append(comparison_template)
+        self.changes_summary.append(f"Appended omnibus comparison page for '{first_name}' vs '{second_name}' for '{scenario_name}' to survey")
 
 
 def one_time_db_initialization():
@@ -482,18 +602,106 @@ def one_time_db_initialization():
     tool.add_img_to_db(os.path.join(img_dir, 'st_urb_shoulder.png'), 'casualty_w', 'Has an injury to the chest with multiple rib fractures on the left chest and progressively worsening difficulty in breathing.', 4)
 
 
+def version3_setup():
+    '''
+    Creates survey version 3.0
+    '''
+    tool = DelegationTool(3.0)
+    tool.clear_survey_version()
+
+    # add starting pages to survey
+    tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Participant ID Page', None) 
+    tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Survey Introduction', None)
+    tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Note page', None) 
+    
+    # add comparison options to survey
+    tool.survey['TadDMs'] = []
+    tool.survey['KitwareDMs'] = []
+    tool.survey['comparisonPages'] = []
+
+    # add all medics to survey
+    alignments = ['high', 'low']
+    envs = ['Desert', 'Submarine', 'Jungle', 'Urban']
+    writers = ['Adept', 'SoarTech']
+    scenario_indices = {
+        "Adept Urban": 8,
+        "Adept Jungle": 6,
+        "Adept Desert": 7,
+        "Adept Submarine": 5,
+        "SoarTech Desert": 3,
+        "SoarTech Jungle": 2,
+        "SoarTech Submarine": 1,
+        "SoarTech Urban": 4
+    }
+
+    # optionally, some of this (like comparison pages and omnibus) can be done inside the dashboard
+    # to avoid bloating the database, but we want to try to keep processing outside of the dashboard
+    # for better performance
+    omni_ind = 1 # start at 1 for O1, O2, O3 instead of O0
+    scenario_ind = 9 # start at 9 for omnibus
+    for alignment in alignments:
+        for writer in writers:
+            # keep track of the names of each medic for each writer over all 4 environments (for omnibus)
+            tad_aligned = []
+            tad_baseline = []
+            kit_aligned = []
+            kit_baseline = []
+            for env in envs:
+                # create individual medic pages for parallax
+                name1 = tool.add_db_medic_to_survey_by_details('TAD aligned', alignment, writer, env)
+                tad_aligned.append(name1)
+                name2 = tool.add_db_medic_to_survey_by_details('TAD baseline', alignment, writer, env)
+                tad_baseline.append(name2)
+                tool.survey['TadDMs'].append([name1, name2])
+                # create comparison pages
+                tool.append_comparison_page(name1, name2, scenario_indices[writer + ' ' + env], alignment)
+                tool.survey['comparisonPages'].append(name1 + ' vs ' + name2)
+
+                # create individual medic pages for kitware            
+                name3 = tool.add_db_medic_to_survey_by_details('kitware-single-kdma-adm-baseline', alignment, writer, env)
+                kit_aligned.append(name3)
+                name4 = tool.add_db_medic_to_survey_by_details('kitware-hybrid-kaleido-aligned', alignment, writer, env)
+                kit_baseline.append(name4)
+                tool.survey['KitwareDMs'].append([name3, name4])
+                # create comparison pages
+                tool.append_comparison_page(name3, name4, scenario_indices[writer + ' ' + env], alignment)
+                tool.survey['comparisonPages'].append(name3 + ' vs ' + name4)
+        
+            # create omnibus pages and omnibus comparison pages
+            tool.setup_omnibus_pages(tad_aligned, tad_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - TAD ({alignment})", scenario_ind, alignment)
+            omni_ind += 2
+            scenario_ind += 1
+
+            tool.setup_omnibus_pages(kit_aligned, kit_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - Kitware ({alignment})", scenario_ind, alignment)
+            omni_ind += 2
+            scenario_ind += 1            
+
+    # add final page
+    tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Post-Scenario Measures', None) 
+
+    # save changes
+    tool.push_changes()
+    tool.export_survey_json(os.path.join('survey-configs', 'surveyConfig3x.json'))
+ 
+
 if __name__ == '__main__':
     LOGGER.log(LogLevel.CRITICAL_INFO, 'Welcome to the Delegation Survey Tool')
-    LOGGER.log(LogLevel.INFO, "To get started, enter the version number you'd like to work on, or press enter to complete the one time initialization:")
+    LOGGER.log(LogLevel.INFO, "To get started, enter the version number you'd like to work on, or press enter for more options:")
     resp = input("")
     if resp == '':
-        one_time_db_initialization()
+        resp = input("Would you like to:\n\t1. Complete the one time intialization\n\t2. Setup survey version 3.0\n")
+        if resp == '1':
+            one_time_db_initialization()
+        elif resp == '2':
+            version3_setup()
+        else:
+            LOGGER.log(LogLevel.WARN, "Option not recognized. Exiting...")
         exit(0)
     tool = DelegationTool(float(resp))
     while resp != 'q':
         try:
             print()
-            LOGGER.log(LogLevel.CRITICAL_INFO, "What would you like to do?\033[37m \n\t\n\tImport Survey from JSON (is)\n\tImport Page from JSON (ip)\n\tImport Image (ii)\n\tImport ADM Medic (m)\n\tDelete Page (dp)\n\tView Current Survey as JSON (v)\n\tSave Changes (s)\n\tQuit (q)")
+            LOGGER.log(LogLevel.CRITICAL_INFO, "What would you like to do?\033[37m \n\t\n\tImport Survey from JSON (is)\n\tImport Page from JSON (ip)\n\tImport Image (ii)\n\tImport ADM Medic (m)\n\tDelete Page (dp)\n\tView Current Survey as JSON (v)\n\tExport Current Survey as JSON (e)\n\tClear Survey (c)\n\tSave Changes (s)\n\tQuit (q)")
             # future options: \n\tAdd Page (ap)\n\tAdd Element to Page (ae)\n\tDelete Element From Page (de)
             resp = input("").strip().lower()
             if resp == 'is':
@@ -539,6 +747,11 @@ if __name__ == '__main__':
                             for pat in e['patients']:
                                 pat['imgUrl'] = 'Image data omitted from printout.'
                 print(json.dumps(survey_copy, indent=4))
+            if resp == 'e':
+                path = input("Where would you like to store the exported json? ").strip()
+                tool.export_survey_json(path)
+            if resp == 'c':
+                tool.clear_survey_version()
             if resp == 'q':
                 if len(tool.changes_summary) > 0:
                     LOGGER.log(LogLevel.WARN, "Changes are not saved. Are you sure you want to quit? (y/n)")

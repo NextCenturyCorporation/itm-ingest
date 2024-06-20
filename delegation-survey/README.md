@@ -12,6 +12,8 @@ If you enter a survey version number at the beginning of the script running, a m
 - Import ADM Medic (m)
 - Delete Page (dp)
 - View Current Survey as JSON (v)
+- Export Current Survey as JSON (e)
+- Clear Survey (c)
 - Save Changes (s)
 - Quit (q)
 
@@ -55,6 +57,14 @@ Deletes the first page found in the survey with the given name
 #### View Current Survey as JSON
 Prints out the current survey, including unsaved changes.
 
+#### Export Current Survey as JSON
+Parameters:
+- path for export
+Exports the current unsaved survey state to a json file.
+
+#### Clear Survey
+Removes all data from the survey config aside from bare bones.
+
 #### Save Changes
 Prints the list of changes that will be saved, and exports all changes to the databse.
 
@@ -62,9 +72,15 @@ Prints the list of changes that will be saved, and exports all changes to the da
 Exits the program. Confirms your desire to quit if there are unsaved changes.
 
 
-### Option 2: One-Time Initialization
-If you press `Enter` upon running the script, a one-time initialization script will be run.
+### Option 2: One-Time Initialization or Version 3 setup
+If you press `Enter` upon running the script, you will be presented with 2 additional options. 
+
+#### Option 1: One-Time Initialization
+If you select `1`, a one-time initialization script will be run.
 This script will add survey versions 0.0 (test survey config, equivalent to survey config 2x but without any required questions), 1.0, and 2.0 to the mongo database. You _must_ run this script, or use the command line tool to complete the equivalent actions, in order for the dashboard to work. This script will also add missing images, or missing patient ids for each image, to the database. This will need to be run before running Tool 2.
+
+#### Option 2: Survey version 3.0 setup
+If you select `2`, Version 3.0 will be initialized with the baseline and aligned medics in the database. It will also add the comparison pages, omnibus medics, and omnibus comparisons to the database. You must run Tool 2 before running this successfully. 
 
 
 ## Tool 2: Convert ADMs for Delegation
@@ -75,5 +91,6 @@ To run this tool, run `python3 convert_adms_for_delegation.py`.
 
 
 ## Recommendations for Setup
-- Run `python3 update_survey_config.py` and press `Enter` for one-time initialization. This will add the three initial survey versions (0.0, 1.0, 2.0) and correct patient ids for images to the database.
+- Run `python3 update_survey_config.py` and press `Enter` and `1` for one-time initialization. This will add the three initial survey versions (0.0, 1.0, 2.0) and correct patient ids for images to the database.
 - Run `python3 convert_adms_for_delegation.py`. This will add the adm medics to the database. 
+- Run `python3 update_survey_config.py` and press `Enter` and `2` to set up survey version 3.0

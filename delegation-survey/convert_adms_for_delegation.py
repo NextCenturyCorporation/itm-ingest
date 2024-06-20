@@ -1,4 +1,5 @@
-
+import sys
+sys.path.insert(0, '..')
 from pymongo import MongoClient
 from decouple import config 
 import json, copy, os, yaml
@@ -12,7 +13,8 @@ Pushes each individual adm to the admMedics collection in mongo.
 
 LOGGER = Logger('ADM Converter')
 
-names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+# reserve 'O' for omnibus
+names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 loop_ind = 0
 names_used = []
 
@@ -25,12 +27,12 @@ env_map = {
     "MetricsEval.MD4-Jungle": {
         "id": 6,
         "name": "Adept Jungle",
-            "situation":  "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured.",
+        "situation":  "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured.",
     },
     "MetricsEval.MD5-Desert": {
         "id": 7,
         "name": "Adept Desert",
-            "situation":  "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them.",
+        "situation":  "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them.",
     },
     "MetricsEval.MD6-Submarine": {
         "id": 5,
@@ -40,7 +42,7 @@ env_map = {
     "desert-1": {
         "id": 3,
         "name": "SoarTech Desert",
-            "situation":  "There is a vehicle accident in the desert where the medic’s unit is conducting operations. Two of your team members have injuries and it is unknown if there are other casualties.",
+        "situation":  "There is a vehicle accident in the desert where the medic’s unit is conducting operations. Two of your team members have injuries and it is unknown if there are other casualties.",
     },
     "jungle-1": {
         "id": 2,
@@ -183,7 +185,10 @@ def set_medic_from_adm(document, template, mongo_collection):
         kdmas = []
         supplies = []
         try:
-            doc_id = document['history'][0]['response']['id']
+            if document['history'][0]['command'] == 'Start Scenario':
+                doc_id = document['history'][0]['response']['id']
+            else:
+                doc_id = document['history'][1]['response']['id']
         except:
             return
         for action in document['history']:
@@ -323,7 +328,7 @@ def set_medic_from_adm(document, template, mongo_collection):
 
 
 if __name__ == '__main__':
-    f = open('single_medic_template.json', 'r', encoding='utf-8')
+    f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
     template = json.load(f)
     f.close()
     client = MongoClient(config('MONGO_URL'))
@@ -338,7 +343,7 @@ if __name__ == '__main__':
     for document in adms:
         medic_data = set_medic_from_adm(document, template, medic_mongo_collection)
         json_output['pages'].append(medic_data)
-    
+
     json.dump(json_output, output, indent=4)
     output.close()
 

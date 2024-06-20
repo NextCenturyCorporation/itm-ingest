@@ -1,0 +1,72 @@
+{
+    "name": "Omnibus: Medic-D",
+    "scenarioName": "Adept Omnibus",
+    "scenarioIndex": 10,
+    "pageType": "singleMedic",
+    "elements": [
+        {
+            "type": "omnibus",
+            "name": "Medic-D",
+            "title": "Medic-D",
+            "dmName": "Medic-D",
+            "decisionMakers": [
+                "Medic-AD2",
+                "Medic-AD4",
+                "Medic-AD6",
+                "Medic-AD8"
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-D: Do you agree with the decisions that this medic made?",
+            "title": "Do you agree with the decisions that this medic made?",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-D: The way this medic makes medical decisions is how I make decisions",
+            "title": "The way this medic makes medical decisions is how I make decisions",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-D: This medic is trustworthy",
+            "title": "This medic is trustworthy",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-D: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+            "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        }
+    ]
+}
