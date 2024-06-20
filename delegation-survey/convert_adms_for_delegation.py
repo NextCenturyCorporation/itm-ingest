@@ -337,15 +337,10 @@ if __name__ == '__main__':
 
     ## ADM RESPONSES    
     # only use metrics eval adms
-    output = open('adm_medics.json', 'w', encoding='utf-8')
-    json_output = {'pages': []}
     adms = db['test'].find({'evalNumber': 3})
     for document in adms:
         medic_data = set_medic_from_adm(document, template, medic_mongo_collection)
-        json_output['pages'].append(medic_data)
 
-    json.dump(json_output, output, indent=4)
-    output.close()
 
 
         
