@@ -338,8 +338,12 @@ if __name__ == '__main__':
     ## ADM RESPONSES    
     # only use metrics eval adms
     adms = db['test'].find({'evalNumber': 3})
+    added = 0
     for document in adms:
         medic_data = set_medic_from_adm(document, template, medic_mongo_collection)
+        if medic_data is not None:
+            added += 1
+    LOGGER.log(LogLevel.CRITICAL_INFO, f"Successfully added/updated {added} adm medics")
 
 
 
