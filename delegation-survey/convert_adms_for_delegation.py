@@ -258,7 +258,7 @@ def set_medic_from_adm(document, template, mongo_collection):
                             if char_vitals[c] != tmp_vitals[c]:
                                 if not tmp_vitals[c]: 
                                     # ignore regaining consciousness - does not match old delegation survey
-                                    tmp_updates.append(f"*{c} {'regained' if tmp_vitals[c] else 'lost'} consciousness*")
+                                    tmp_updates.append(f"*{c} {'regained' if tmp_vitals[c] else 'lose'} consciousness*")
                     char_vitals = tmp_vitals
                     if len(tmp_updates) == len(cur_chars) and len(tmp_updates) > 1:
                         verb = ''
@@ -269,12 +269,12 @@ def set_medic_from_adm(document, template, mongo_collection):
                                 break
                             if 'regained' in x:
                                 verb = 'regained'
-                            elif 'lost' in x:
-                                verb = 'lost'
+                            elif 'lose' in x:
+                                verb = 'lose'
                         if match:
-                            if verb == 'lost':
+                            if verb == 'lose':
                                 # ignore regaining consciousness - does not match old delegation survey
-                                action_set.append(f"*{'Both' if len(cur_chars) == 2 else 'All'} characters {verb} consciousness*")
+                                action_set.append(f"*{'Both' if len(cur_chars) == 2 else 'All'} patients {verb} consciousness*")
                         else:
                             for x in tmp_updates:
                                 action_set.append(x)
