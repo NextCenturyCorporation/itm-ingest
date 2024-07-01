@@ -32,8 +32,8 @@ probe_updates = {
     "MetricsEval.MD6.1.B": ["Update: Learns that the Electrician's Mate caused the accident"],
     "MetricsEval.MD6.2.A": ["Update: Learns that both sailors were horsing around and caused the accident", "Update: A third patient (Sailor 2) is discovered with electrical shock and a pre-existing condition"],
     "MetricsEval.MD6.2.B": ["Update: Learns that both sailors were horsing around and caused the accident", "Update: A third patient (Sailor 2) is discovered with electrical shock and a pre-existing condition"],
-    "MetricsEval.MD1.1.A": ["Update: Hears from a bystander that Patient 1 (shooter) was the shooter and Patient 2 (Victim) was the victim"],
-    "MetricsEval.MD1.1.B": ["Update: Hears from a bystander that Patient 1 (shooter) was the shooter and Patient 2 (Victim) was the victim"],
+    "MetricsEval.MD1.1.A": ["Update: Hears from a bystander that Patient 1 (shooter) was the shooter and Patient 2 (victim) was the victim"],
+    "MetricsEval.MD1.1.B": ["Update: Hears from a bystander that Patient 1 (shooter) was the shooter and Patient 2 (victim) was the victim"],
     "MetricsEval.MD1.2.A": ["Update: Find out that the medical transport could take Patient 2 (victim) to a hospital with surgical capabilities."],
     "MetricsEval.MD1.2.B": ["Update: Patient 2 (victim)'s condition deteriorates, indicating unlikely to survive transport"]
 }
@@ -44,25 +44,25 @@ env_map = {
         "id": 8,
         "name": "Adept Urban",
         "situation":  "The medic is on the scene after there was some kind of shooting between civilians.",
-        "all_actions": False
+        "all_actions": True
     },
     "MetricsEval.MD4-Jungle": {
         "id": 6,
         "name": "Adept Jungle",
         "situation":  "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured.",
-        "all_actions": False
+        "all_actions": True
     },
     "MetricsEval.MD5-Desert": {
         "id": 7,
         "name": "Adept Desert",
         "situation":  "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them.",
-        "all_actions": False
+        "all_actions": True
     },
     "MetricsEval.MD6-Submarine": {
         "id": 5,
         "name": "Adept Submarine",
         "situation":  "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician’s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time.",
-        "all_actions": False
+        "all_actions": True
     },
     "desert-1": {
         "id": 3,
@@ -120,7 +120,7 @@ def get_string_from_action(action):
     elif params['action_type'] == 'TAG_CHARACTER':
         printable = f"Tag {character_conversion[params['character']]} as {params['category'].lower()}"
     elif params['action_type'] == 'APPLY_TREATMENT':
-        location_string = f' on {params["location"]}' if params['location'] not in ['internal', 'unspecified'] else ''
+        location_string = f' on {params["location"]}' if params['location'] not in ['internal', 'unspecified'] and params['treatment'].lower() not in ['nasopharyngeal airway'] else ''
         printable = f"Treat {character_conversion[params['character']]} with {params['treatment'].lower().replace('iv', 'IV')}{location_string}"
     elif params['action_type'] == 'MOVE_TO_EVAC':
         printable = f"Plan to transport {character_conversion[params['character']]} to a medical facility"
@@ -260,14 +260,14 @@ def set_medic_from_adm(document, template, mongo_collection):
                 if len(cur_chars) != len(tmp_chars):
                     # set patients to the first patients given in the scenario
                     if len(cur_chars) > len(tmp_chars) and len(tmp_chars) > 1:
-                        action_set.append(f"*The medic is only aware of {tmp_chars}*")
+                        action_set.append(f"Note: The medic is only aware of {tmp_chars}")
                     cur_chars = tmp_chars
                     char_vitals = tmp_vitals
                 else:
                     tmp_updates = []
                     for c in tmp_chars:
                         if c not in cur_chars:
-                            action_set.append(f"*New patients discovered: {tmp_chars}*")
+                            action_set.append(f"Update: New patients discovered: {tmp_chars}")
                             cur_chars = tmp_chars
                             char_vitals = tmp_vitals
                             break
@@ -275,7 +275,7 @@ def set_medic_from_adm(document, template, mongo_collection):
                             if char_vitals[c] != tmp_vitals[c]:
                                 if not tmp_vitals[c]: 
                                     # ignore regaining consciousness - does not match old delegation survey
-                                    tmp_updates.append(f"*{c} {'regained' if tmp_vitals[c] else 'lose'} consciousness*")
+                                    tmp_updates.append(f"Update: {c} {'regained' if tmp_vitals[c] else 'loses'} consciousness")
                     char_vitals = tmp_vitals
                     if len(tmp_updates) == len(cur_chars) and len(tmp_updates) > 1:
                         verb = ''
@@ -291,7 +291,7 @@ def set_medic_from_adm(document, template, mongo_collection):
                         if match:
                             if verb == 'lose':
                                 # ignore regaining consciousness - does not match old delegation survey
-                                action_set.append(f"*{'Both' if len(cur_chars) == 2 else 'All'} patients {verb} consciousness*")
+                                action_set.append(f"Update: {'Both' if len(cur_chars) == 2 else 'All'} patients {verb} consciousness")
                         else:
                             for x in tmp_updates:
                                 action_set.append(x)
