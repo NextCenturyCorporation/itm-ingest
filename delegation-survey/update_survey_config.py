@@ -564,6 +564,10 @@ def one_time_db_initialization():
     tool.import_full_survey(os.path.join('survey-configs', 'surveyConfig2x.json'))
     tool.push_changes()
 
+    tool = DelegationTool(2.1)
+    tool.import_full_survey(os.path.join('survey-configs', 'surveyConfig2.1.json'))
+    tool.push_changes()
+
     tool = DelegationTool(0.0)
     tool.import_full_survey(os.path.join('survey-configs', 'test_config.json'))
     tool.push_changes()
