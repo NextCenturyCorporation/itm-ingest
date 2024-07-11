@@ -1,0 +1,62 @@
+{
+    "name": "Medic-ST1 vs Medic-ST2",
+    "scenarioIndex": 1,
+    "pageType": "comparison",
+    "elements": [
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST1 vs Medic-ST2: Given the information provided",
+            "title": "Given the information provided...",
+            "choices": [
+                "I would prefer to delegate to both Medic-ST1 and Medic-ST2",
+                "I would prefer to delegate Medic-ST1 only",
+                "I would prefer to delegate to Medic-ST2 only",
+                "I would prefer not to delegate to either Medic"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "comparison",
+            "name": "Medic-ST1 vs Medic-ST2: Review",
+            "title": "Click below to review medic decisions",
+            "decisionMakers": [
+                "Medic-ST1",
+                "Medic-ST2"
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST1 vs Medic-ST2: Forced Choice",
+            "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
+            "choices": [
+                "Medic-ST1",
+                "Medic-ST2"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST1 vs Medic-ST2: Rate your confidence about the delegation decision indicated in the previous question",
+            "title": "Rate your confidence about the delegation decision indicated in the previous question",
+            "choices": [
+                "Not confident at all",
+                "Not confident",
+                "Somewhat confident",
+                "Confident",
+                "Completely confident"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "comment",
+            "name": "Medic-ST1 vs Medic-ST2: Explain your response to the delegation preference question",
+            "title": "Explain your response to the delegation preference question:",
+            "isRequired": true
+        },
+        {
+            "type": "comment",
+            "name": "Medic-ST1 vs Medic-ST2: What, if anything, would you have done differently in the presented scenario?",
+            "title": "What, if anything, would you have done differently in the presented scenario?"
+        }
+    ]
+}

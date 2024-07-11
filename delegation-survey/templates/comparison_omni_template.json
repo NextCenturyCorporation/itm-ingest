@@ -1,0 +1,90 @@
+{
+    "name": "Omnibus: Medic-C vs Medic-D",
+    "scenarioIndex": 10,
+    "pageType": "comparison",
+    "scenarioName": "Adept Omnibus",
+    "elements": [
+        {
+            "type": "radiogroup",
+            "name": "Medic-C vs Medic-D: Given the information provided",
+            "title": "Given the information provided...",
+            "choices": [
+                "I would prefer to delegate to both Medic-C and Medic-D",
+                "I would prefer to delegate Medic-C only",
+                "I would prefer to delegate to Medic-D only",
+                "I would prefer not to delegate to either Medic"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "omnibusComparison",
+            "name": "Medic-C vs Medic-D: Review",
+            "title": "Click below to review medic decisions",
+            "decisionMakers": [
+                "Omnibus: Medic-C",
+                "Omnibus: Medic-D"
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-C vs Medic-D: Forced Choice",
+            "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
+            "choices": [
+                "Medic-C",
+                "Medic-D"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-C vs Medic-D: Rate your confidence about the delegation decision indicated in the previous question",
+            "title": "Rate your confidence about the delegation decision indicated in the previous question",
+            "choices": [
+                "Not confident at all",
+                "Not confident",
+                "Somewhat confident",
+                "Confident",
+                "Completely confident"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "comment",
+            "name": "Medic-C vs Medic-D: Explain your response to the delegation preference question",
+            "title": "Explain your response to the delegation preference question:",
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-C vs Medic-D: Better Understanding",
+            "title": "I gained a better understanding of the medics when reviewing their actions in four scenarios instead of a single scenario",
+            "isRequired": true,
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-C vs Medic-D: Confidence in Ratings",
+            "title": "I am more confident in my ratings of the medics when reviewing their actions in four scenarios instead of a single scenario",
+            "isRequired": true,
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ]
+        },
+        {
+            "type": "comment",
+            "name": "Medic-C vs Medic-D: Explain your response",
+            "title": "Explain your responses to the two previous questions",
+            "isRequired": true
+        }
+    ]
+}

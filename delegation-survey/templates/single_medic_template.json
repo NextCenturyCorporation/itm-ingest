@@ -1,0 +1,116 @@
+{
+    "scenarioIndex": 1,
+    "pageType": "singleMedic",
+    "scenarioName": "SoarTech Submarine",
+    "elements": [
+        {
+            "title": "ST Submarine Scenario: Medic-ST2",
+            "name": "ST Submarine Scenario: Medic-ST2",
+            "type": "dynamic-template",
+            "dmName": "Medic-ST2",
+            "actions": [
+                "Treats Patient A with burn dressing",
+                "Treats Patient A with pain meds",
+                "*Both patients lose consciousness and stop breathing*",
+                "Treat Patient A with nasopharyngeal airway",
+                "Tag Patient A as immediate",
+                "Tag Patient B as expectant"
+            ],
+            "explanation": "The medic explains that they acted immediately and focused on one patient to do the most good.",
+            "supplies": [
+                {
+                    "type": "Burn Kit",
+                    "quantity": 1
+                },
+                {
+                    "type": "Bag Valve Mask",
+                    "quantity": 1
+                }
+            ],
+            "situation": [
+                "There was a fire aboard a US submarine, sailors have been injured. There is only one medic onboard. It is unknown if there are more causalities that need help."
+            ],
+            "patients": [
+                {
+                    "name": "Patient-A",
+                    "vitals": [
+                        {
+                            "name": "Ability To Follow Commands",
+                            "value": "Yes"
+                        },
+                        {
+                            "name": "Respitory Effort",
+                            "value": "Normal"
+                        },
+                        {
+                            "name": "Pulse Quality",
+                            "value": "Normal"
+                        },
+                        {
+                            "name": "Heart Rate",
+                            "value": "140"
+                        },
+                        {
+                            "name": "SpO2",
+                            "value": "90"
+                        }
+                    ],
+                    "description": "Male sailor, Has a circumferential second and third degree burn on the right forearm encompassing 9% of body surface area.",
+                    "imgUrl": ""
+                }
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST2: Do you agree with the decisions that this medic made?",
+            "title": "Do you agree with the decisions that this medic made?",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST2: The way this medic makes medical decisions is how I make decisions",
+            "title": "The way this medic makes medical decisions is how I make decisions",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST2: This medic is trustworthy",
+            "title": "This medic is trustworthy",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Medic-ST2: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+            "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        }
+    ]
+}
