@@ -1,1766 +1,1763 @@
 {
-    "_id": "delegation_v2.1",
-    "survey": {
-      "title": "ITM Delegation Survey",
-      "logoPosition": "right",
-      "version": 2.1,
-      "completedHtml": "<h3>Thank you for completing the survey</h3>",
-      "pages": [
+  "title": "ITM Delegation Survey",
+  "logoPosition": "right",
+  "version": 2.1,
+  "completedHtml": "<h3>Thank you for completing the survey</h3>",
+  "pages": [
+    {
+      "name": "Participant ID Page",
+      "elements": [
         {
-          "name": "Participant ID Page",
-          "elements": [
-            {
-              "type": "text",
-              "name": "Participant ID",
-              "title": "Enter Participant ID:",
-              "isRequired": true
-            },
-            {
-              "type": "checkbox",
-              "name": "VR Scenarios Completed",
-              "title": "Have you completed the VR simulator? Select all that apply:",
-              "isRequired": true,
-              "choices": [
-                "I have completed the VR desert environment ",
-                "I have completed the VR urban environment",
-                "I have completed the VR submarine environment ",
-                "I have completed the VR  jungle environment"
-              ],
-              "showNoneItem": true,
-              "noneText": "I have not completed any VR environments"
-            },
-            {
-              "type": "radiogroup",
-              "name": "VR Comfort Level",
-              "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
-              "title": "After completing the VR experience, my current physical state is...",
-              "isRequired": true,
-              "choices": [
-                "Very uncomfortable",
-                "Slightly uncomfortable",
-                "Neutral",
-                "Comfortable",
-                "Very comfortable"
-              ]
-            },
-            {
-              "type": "comment",
-              "name": "Additonal Information About Discomfort",
-              "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
-              "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
-            },
-            {
-              "type": "radiogroup",
-              "name": "Have you completed the text-based scenarios",
-              "title": "Have you completed the text-based scenarios?",
-              "isRequired": true,
-              "choices": [
-                "(1) ST Jungle, AD Jungle; AD Submarine, ST Submarine",
-                "(2) AD Submarine, ST Submarine; ST Jungle, AD Jungle",
-                "(3) ST Desert, AD Desert; AD Urban, ST Urban",
-                "(4) AD Urban, ST Urban; ST Desert, AD Desert",
-                "I have not completed any text-based scenarios"
-              ]
-            }
+          "type": "text",
+          "name": "Participant ID",
+          "title": "Enter Participant ID:",
+          "isRequired": true
+        },
+        {
+          "type": "checkbox",
+          "name": "VR Scenarios Completed",
+          "title": "Have you completed the VR simulator? Select all that apply:",
+          "isRequired": true,
+          "choices": [
+            "I have completed the VR desert environment ",
+            "I have completed the VR urban environment",
+            "I have completed the VR submarine environment ",
+            "I have completed the VR  jungle environment"
+          ],
+          "showNoneItem": true,
+          "noneText": "I have not completed any VR environments"
+        },
+        {
+          "type": "radiogroup",
+          "name": "VR Comfort Level",
+          "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
+          "title": "After completing the VR experience, my current physical state is...",
+          "isRequired": true,
+          "choices": [
+            "Very uncomfortable",
+            "Slightly uncomfortable",
+            "Neutral",
+            "Comfortable",
+            "Very comfortable"
           ]
         },
         {
-          "name": "Survey Introduction",
-          "elements": [
-            {
-              "type": "html",
-              "name": "Survey21 Introduction",
-              "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how two different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
-            }
-          ]
+          "type": "comment",
+          "name": "Additonal Information About Discomfort",
+          "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
+          "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
         },
         {
-          "name": "Note page",
-          "elements": [
-            {
-              "type": "html",
-              "name": "Note",
-              "html": "Note that in some scenarios, there are buttons that expand/select the information for the medic and the patients. \n<br/><br/>\n\nNote that you can hit the \"previous\" button if you want to go back to any part of the survey."
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD1",
-          "scenarioIndex": 5,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Submarine",
-          "elements": [
-            {
-              "title": "Adept Submarine Scenario: Medic-AD1",
-              "name": "Adept Submarine Scenario: Medic-AD1",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD1",
-              "actions": [
-                "Requests the electrician’s mate brought first",
-                "Walks to the patients instead",
-                "Update: Learns that the electrician’s mate caused the accident",
-                "Switches to treat the other sailor first",
-                "Update: Learns that both sailors were horsing around and caused the accident",
-                "Update: A third patient is discovered with electrical shock and a pre-existing condition",
-                "Leaves the two original patients to treat the new patient"
-              ],
-              "explanation": "I considered who was to blame for the situation",
-              "supplies": [
-                {
-                  "type": "No supply constraints"
-                }
-              ],
-              "situation": [
-                "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician’s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-I",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male submarine sailor (the Electrician’s Mate), major electrical burns on right side and an ear bleed.",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec5"
-                  }
-                },
-                {
-                  "name": "Patient-J",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male submarine sailor (the sailor who wanted the treadmill repaired), major electrical burns on right side and an ear bleed.",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec6"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1: The way this medic makes medical decisions is how I make decisions",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD2",
-          "scenarioIndex": 5,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Submarine",
-          "elements": [
-            {
-              "title": "Adept Submarine Scenario: Medic-AD2",
-              "name": "Adept Submarine Scenario: Medic-AD2",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD2",
-              "actions": [
-                "Requests the other sailor brought first",
-                "Walks to the patients instead",
-                "Update: Learns that the electrician’s mate caused the accident",
-                "Switch to treat the electrician’s mate first",
-                "Update: Learns that both sailors were horsing around and caused the accident",
-                "Update: A third patient is discovered with electrical shock and a pre-existing condition",
-                "Remains to treat two original patients"
-              ],
-              "explanation": "I prioritized saving the most lives possible.",
-              "supplies": [
-                {
-                  "type": "No supply constraints"
-                }
-              ],
-              "situation": [
-                "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician’s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-I",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male submarine sailor (the Electrician’s Mate), major electrical burns on right side and an ear bleed.",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec5"
-                  }
-                },
-                {
-                  "name": "Patient-J",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male submarine sailor (the sailor who wanted the treadmill repaired), major electrical burns on right side and an ear bleed.",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec6"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD2: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD2: The way this medic makes medical decisions is how I make decisions",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD2: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD2: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD1 vs Medic-AD2",
-          "scenarioIndex": 5,
-          "pageType": "comparison",
-          "elements": [
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1 vs Medic-AD2: Given the information provided",
-              "title": "Given the information provided...",
-              "choices": [
-                "I would prefer to delegate to both Medic-AD1 and Medic-AD2",
-                "I would prefer to delegate Medic-AD1 only",
-                "I would prefer to delegate to Medic-AD2 only",
-                "I would prefer not to delegate to either Medic"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comparison",
-              "name": "Medic-AD1 vs Medic-AD2: Review",
-              "title": "Click below to review medic decisions",
-              "decisionMakers": [
-                "Medic-AD1",
-                "Medic-AD2"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1 vs Medic-AD2: Forced Choice",
-              "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
-              "choices": [
-                "Medic-AD1",
-                "Medic-AD2"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD1 vs Medic-AD2: Rate your confidence about the delegation decision indicated in the previous question",
-              "title": "Rate your confidence about the delegation decision indicated in the previous question",
-              "choices": [
-                "Not confident at all",
-                "Not confident",
-                "Somewhat confident",
-                "Confident",
-                "Completely confident"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD1 vs Medic-AD2: Explain your response to the delegation preference question",
-              "title": "Explain your response to the delegation preference question:",
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD1 vs Medic-AD2: What, if anything, would you have done differently in the presented scenario?",
-              "title": "What, if anything, would you have done differently in the presented scenario?"
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD3",
-          "scenarioIndex": 6,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Jungle",
-          "elements": [
-            {
-              "title": "Adept Jungle Scenario: Medic-AD3",
-              "name": "Adept Jungle Scenario: Medic-AD3",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD3",
-              "actions": [
-                "Treats the patient closer to the IED first (Patient K)",
-                "Update: Learns that Patient K poked at the IED and ignored a US soldier who yelled at him to leave it alone",
-                "Switch to treat Patient L",
-                "Update: Learns that Patient K tried to lure US soldiers to the explosion",
-                "Evacuates Patient L in the one available transport option"
-              ],
-              "explanation": "I considered who was to blame for the situation.",
-              "supplies": [
-                {
-                  "type": "No supply constraints"
-                }
-              ],
-              "situation": [
-                "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-K",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Asian male civilian, closer to the IED. Has burns and a puncture wound",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec7"
-                  }
-                },
-                {
-                  "name": "Patient-L",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Asian male civilian, further from the IED. Has fracture",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec8"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD4",
-          "scenarioIndex": 6,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Jungle",
-          "elements": [
-            {
-              "title": "Adept Jungle Scenario: Medic-AD4",
-              "name": "Adept Jungle Scenario: Medic-AD4",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD4",
-              "actions": [
-                "Treats the patient closer to the IED first (Patient K)",
-                "Update: Learns that Patient K poked at the IED and ignored a US soldier who yelled at him to leave it alone",
-                "Continues to treat Patient K",
-                "Update: Learns that Patient K tried to lure US soldiers to the explosion",
-                "Evacuates Patient K in the one available transport option"
-              ],
-              "explanation": "I prioritized the person with the more serious injury.",
-              "supplies": [
-                {
-                  "type": "No supply constraints"
-                }
-              ],
-              "situation": [
-                "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-K",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Asian male civilian, closer to the IED. Has burns and a puncture wound",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec7"
-                  }
-                },
-                {
-                  "name": "Patient-L",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Asian male civilian, further from the IED. Has fracture",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec8"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD4: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD4",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD4: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD4: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD3 vs Medic-AD4",
-          "scenarioIndex": 6,
-          "pageType": "comparison",
-          "elements": [
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3 vs Medic-AD4: Given the information provided",
-              "title": "Given the information provided...",
-              "choices": [
-                "I would prefer to delegate to both Medic-AD3 and Medic-AD4",
-                "I would prefer to delegate Medic-AD3 only",
-                "I would prefer to delegate to Medic-AD4 only",
-                "I would prefer not to delegate to either Medic"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comparison",
-              "name": "Medic-AD3 vs Medic-AD4: Review",
-              "title": "Click below to review medic decisions",
-              "decisionMakers": [
-                "Medic-AD3",
-                "Medic-AD4"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3 vs Medic-AD4: Forced Choice",
-              "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
-              "choices": [
-                "Medic-AD3",
-                "Medic-AD4"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD3 vs Medic-AD4: Rate your confidence about the delegation decision indicated in the previous question",
-              "title": "Rate your confidence about the delegation decision indicated in the previous question",
-              "choices": [
-                "Not confident at all",
-                "Not confident",
-                "Somewhat confident",
-                "Confident",
-                "Completely confident"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD3 vs Medic-AD4: Explain your response to the delegation preference question",
-              "title": "Explain your response to the delegation preference question:",
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD3 vs Medic-AD4: What, if anything, would you have done differently in the presented scenario?",
-              "title": "What, if anything, would you have done differently in the presented scenario?"
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD5",
-          "scenarioIndex": 7,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Desert",
-          "elements": [
-            {
-              "title": "Adept Desert Scenario: Medic-AD5",
-              "name": "Adept Desert Scenario: Medic-AD5",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD5",
-              "actions": [
-                "Decides en route to evacuate the local soldier (Patient N)",
-                "Update: Learns that Patient M saved the whole group from an ambush",
-                "Changes decision, plans to evacuate the US soldier (Patient M)",
-                "Update: Learns that Patient M was going to hurt his own unit leader",
-                "Changes decision, evacuates the local soldier (Patient N)"
-              ],
-              "explanation": "I considered the past actions of the casualties.",
-              "supplies": [
-                {
-                  "type": "The helicopter has one slot for a serious injury."
-                },
-                {
-                  "type": "The hospital is a military facility that serves both US and local forces. The patient who isn’t transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences."
-                }
-              ],
-              "situation": [
-                "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-M",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male US soldier, broken right shoulder",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec9"
-                  }
-                },
-                {
-                  "name": "Patient-N",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male local soldier, broken right shoulder",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9feca"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD6",
-          "scenarioIndex": 7,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Desert",
-          "elements": [
-            {
-              "title": "Adept Desert Scenario: Medic-AD6",
-              "name": "Adept Desert Scenario: Medic-AD6",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD6",
-              "actions": [
-                "Decides en route to evacuate the US soldier (Patient M)",
-                "Update: Learns that Patient N saved the whole group from an ambush",
-                "Confirms decision to evacuate the US soldier (Patient M)",
-                "Update: Learns that Patient M would have injured his own unit leader",
-                "Evacuates the US solider (Patient M)"
-              ],
-              "explanation": "I prioritized treating the US soldier.",
-              "supplies": [
-                {
-                  "type": "The helicopter has one slot for a serious injury."
-                },
-                {
-                  "type": "The hospital is a military facility that serves both US and local forces. The patient who isn’t transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences."
-                }
-              ],
-              "situation": [
-                "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-M",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male US soldier, broken right shoulder",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fec9"
-                  }
-                },
-                {
-                  "name": "Patient-N",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "90"
-                    }
-                  ],
-                  "description": "Male local soldier, broken right shoulder",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9feca"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD6: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD6",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD6: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD6: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD5 vs Medic-AD6",
-          "scenarioIndex": 7,
-          "pageType": "comparison",
-          "elements": [
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5 vs Medic-AD6: Given the information provided",
-              "title": "Given the information provided...",
-              "choices": [
-                "I would prefer to delegate to both Medic-AD5 and Medic-AD6",
-                "I would prefer to delegate Medic-AD5 only",
-                "I would prefer to delegate to Medic-AD6 only",
-                "I would prefer not to delegate to either Medic"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comparison",
-              "name": "Medic-AD5 vs Medic-AD6: Review",
-              "title": "Click below to review medic decisions",
-              "decisionMakers": [
-                "Medic-AD5",
-                "Medic-AD6"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5 vs Medic-AD6: Forced Choice",
-              "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
-              "choices": [
-                "Medic-AD5",
-                "Medic-AD6"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD5 vs Medic-AD6: Rate your confidence about the delegation decision indicated in the previous question",
-              "title": "Rate your confidence about the delegation decision indicated in the previous question",
-              "choices": [
-                "Not confident at all",
-                "Not confident",
-                "Somewhat confident",
-                "Confident",
-                "Completely confident"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD5 vs Medic-AD6: Explain your response to the delegation preference question",
-              "title": "Explain your response to the delegation preference question:",
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD5 vs Medic-AD6: What, if anything, would you have done differently in the presented scenario?",
-              "title": "What, if anything, would you have done differently in the presented scenario?"
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD7",
-          "scenarioIndex": 8,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Urban",
-          "elements": [
-            {
-              "title": "Adept Urban Scenario: Medic-AD7",
-              "name": "Adept Urban Scenario: Medic-AD7",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD7",
-              "actions": [
-                "Starts treating Patient P (not dressed in black)",
-                "Update: Hears from a bystander that Patient O was the shooter and Patient P the victim",
-                "Continues treating Patient P (victim)",
-                "Update: Patient P’s condition deteriorates, indicating unlikely to survive transport",
-                "Transports Patient P (victim) to the hospital"
-              ],
-              "explanation": "I considered who was to blame for the situation",
-              "supplies": [
-                {
-                  "type": "The local civilian hospital does not have significant surgical capabilities"
-                },
-                {
-                  "type": "There is not time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital."
-                }
-              ],
-              "situation": [
-                "The medic is on the scene after there was some kind of shooting between civilians."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-O",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "60"
-                    }
-                  ],
-                  "description": "Male civilian, all black clothing, shot in right shoulder and arm",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fecb"
-                  }
-                },
-                {
-                  "name": "Patient-P",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Slow"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Faint"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "30"
-                    }
-                  ],
-                  "description": "Male civilian, shot in right shoulder, arm, and chest",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fecc"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD8",
-          "scenarioIndex": 8,
-          "pageType": "singleMedic",
-          "scenarioName": "Adept Urban",
-          "elements": [
-            {
-              "title": "Adept Urban Scenario: Medic-AD8",
-              "name": "Adept Urban Scenario: Medic-AD8",
-              "type": "dynamic-template",
-              "dmName": "Medic-AD8",
-              "actions": [
-                "Starts treating Patient O (dressed in black)",
-                "Update: Hears from a bystander that Patient O was the shooter and Patient P the victim",
-                "Continues treating Patient O (shooter)",
-                "Update: Find out that the medical transport could take Patient P to a hospital with surgical capabilities.",
-                "Transports Patient O (shooter) to the hospital"
-              ],
-              "explanation": "I prioritized the person who had the more survivable injury.",
-              "supplies": [
-                {
-                  "type": "The local civilian hospital does not have significant surgical capabilities"
-                },
-                {
-                  "type": "There is not time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital."
-                }
-              ],
-              "situation": [
-                "The medic is on the scene after there was some kind of shooting between civilians."
-              ],
-              "patients": [
-                {
-                  "name": "Patient-O",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Normal"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "60"
-                    }
-                  ],
-                  "description": "Male civilian, all black clothing, shot in right shoulder and arm",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fecb"
-                  }
-                },
-                {
-                  "name": "Patient-P",
-                  "vitals": [
-                    {
-                      "name": "Ability To Follow Commands",
-                      "value": "Yes"
-                    },
-                    {
-                      "name": "Respitory Effort",
-                      "value": "Slow"
-                    },
-                    {
-                      "name": "Pulse Quality",
-                      "value": "Faint"
-                    },
-                    {
-                      "name": "Heart Rate",
-                      "value": "Fast"
-                    },
-                    {
-                      "name": "SpO2",
-                      "value": "30"
-                    }
-                  ],
-                  "description": "Male civilian, shot in right shoulder, arm, and right leg",
-                  "imgUrl": {
-                    "$oid": "66759ef02cb44f3e88d9fecc"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD8: Do you agree with the decisions that this medic made?",
-              "title": "Do you agree with the decisions that this medic made?",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD8",
-              "title": "The way this medic makes medical decisions is how I make decisions",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD8: This medic is trustworthy",
-              "title": "This medic is trustworthy",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD8: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            }
-          ]
-        },
-        {
-          "name": "Medic-AD7 vs Medic-AD8",
-          "scenarioIndex": 8,
-          "pageType": "comparison",
-          "elements": [
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7 vs Medic-AD8: Given the information provided",
-              "title": "Given the information provided...",
-              "choices": [
-                "I would prefer to delegate to both Medic-AD7 and Medic-AD8",
-                "I would prefer to delegate Medic-AD7 only",
-                "I would prefer to delegate to Medic-AD8 only",
-                "I would prefer not to delegate to either Medic"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comparison",
-              "name": "Medic-AD7 vs Medic-AD8: Review",
-              "title": "Click below to review medic decisions",
-              "decisionMakers": [
-                "Medic-AD7",
-                "Medic-AD8"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7 vs Medic-AD8: Forced Choice",
-              "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
-              "choices": [
-                "Medic-AD7",
-                "Medic-AD8"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "Medic-AD7 vs Medic-AD8: Rate your confidence about the delegation decision indicated in the previous question",
-              "title": "Rate your confidence about the delegation decision indicated in the previous question",
-              "choices": [
-                "Not confident at all",
-                "Not confident",
-                "Somewhat confident",
-                "Confident",
-                "Completely confident"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD7 vs Medic-AD8: Explain your response to the delegation preference question",
-              "title": "Explain your response to the delegation preference question:",
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Medic-AD7 vs Medic-AD8: What, if anything, would you have done differently in the presented scenario?",
-              "title": "What, if anything, would you have done differently in the presented scenario?"
-            }
-          ]
-        },
-        {
-          "name": "Post-Scenario Measures",
-          "elements": [
-            {
-                "type": "comment",
-                "name": "Did the nature of the decision maker (human or AI) change anything about the way you evaluated them?",
-                "title": "Did the nature of the decision maker (human or AI) change anything about the way you evaluated them?"
-            },
-            {
-                "type": "comment",
-                "name": "What was the biggest influence on your delegation decision between different medics?",
-                "title": "What was the biggest influence on your delegation decision between different medics?"
-            },
-            {
-              "type": "radiogroup",
-              "name": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
-              "title": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I was easily able to imagine myself as the medic in these scenarios",
-              "title": "I was easily able to imagine myself as the medic in these scenarios",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
-              "title": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "The VR training experience was helpful in making the delegation decisions in these scenarios",
-              "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
-              "title": "The VR training experience was helpful in making the delegation decisions in these scenarios",
-              "isRequired": true,
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
-              "title": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I am a computer gaming enthusiast",
-              "title": "I am a computer gaming enthusiast",
-              "choices": [
-                "No",
-                "Not sure",
-                "Yes"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I consider myself a seasoned first responder",
-              "title": "I consider myself a seasoned first responder",
-              "choices": [
-                "No",
-                "Not sure",
-                "Yes"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I have completed the SALT Triage Certificate Training Course",
-              "title": "I have completed the SALT Triage Certificate Training Course",
-              "choices": [
-                "No",
-                "Not sure",
-                "Yes"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I have completed disaster response training such as those offered by the American Red Cross, FEMA, or the Community Emergency Response Team (CERT)",
-              "title": "I have completed disaster response training such as those offered by the American Red Cross, FEMA, or the Community Emergency Response Team (CERT)",
-              "choices": [
-                "No",
-                "Not sure",
-                "Yes"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "radiogroup",
-              "name": "I have completed disaster response training provided by the United States Military",
-              "title": "I have completed disaster response training provided by the United States Military",
-              "choices": [
-                "No",
-                "Not sure",
-                "Yes"
-              ],
-              "isRequired": true
-            },
-            {
-              "type": "text",
-              "name": "How many disaster drills (or simulated mass casualty events with live actors) have you participated in before today (Please enter a whole number)",
-              "title": "How many disaster drills (or simulated mass casualty events with live actors) have you participated in before today (Please enter a whole number)",
-              "inputType": "number",
-              "min": 0,
-              "isRequired": true
-            },
-            {
-              "type": "checkbox",
-              "name": "What is your current role (choose all that apply):",
-              "title": "What is your current role (choose all that apply):",
-              "isRequired": true,
-              "choices": [
-                "M-3 medical student",
-                "M-4 medical student",
-                "EM resident",
-                "EM/IM resident",
-                "EM faculty",
-                "Emergency medical technician",
-                "Paramedic",
-                "Military Background"
-              ],
-              "showOtherItem": true,
-              "otherText": "Other (specify)"
-            },
-            {
-              "type": "comment",
-              "name": "Branch and Status",
-              "visible": false,
-              "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
-              "title": "Please provide the branch of the military, as well as current status (active/retired/reserves) ",
-              "isRequired": true
-            },
-            {
-              "type": "comment",
-              "name": "Military Medical Training",
-              "visible": false,
-              "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
-              "title": "Please list any military medical training you have received:",
-              "isRequired": true
-            },
-            {
-              "type": "text",
-              "name": "Years experience in military medical role",
-              "visible": false,
-              "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
-              "title": "How many years of experience do you have serving in a medical role in the military?",
-              "isRequired": true,
-              "min": 0,
-              "inputType": "number"
-            },
-            {
-              "type": "radiogroup",
-              "name": "I feel that people are generally reliable",
-              "title": "I feel that people are generally reliable",
-              "isRequired": true,
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "I usually trust people until they give me a reason not to trust them",
-              "title": "I usually trust people until they give me a reason not to trust them",
-              "isRequired": true,
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ]
-            },
-            {
-              "type": "radiogroup",
-              "name": "Trusting another person is not difficult for me",
-              "title": "Trusting another person is not difficult for me",
-              "isRequired": true,
-              "choices": [
-                "Strongly disagree",
-                "Disagree",
-                "Neither agree nor disagree",
-                "Agree",
-                "Strongly agree"
-              ]
-            }
+          "type": "radiogroup",
+          "name": "Have you completed the text-based scenarios",
+          "title": "Have you completed the text-based scenarios?",
+          "isRequired": true,
+          "choices": [
+            "(1) ST Jungle, AD Jungle; AD Submarine, ST Submarine",
+            "(2) AD Submarine, ST Submarine; ST Jungle, AD Jungle",
+            "(3) ST Desert, AD Desert; AD Urban, ST Urban",
+            "(4) AD Urban, ST Urban; ST Desert, AD Desert",
+            "I have not completed any text-based scenarios"
           ]
         }
-      ],
-      "widthMode": "responsive",
-      "showTitle": false,
-      "showQuestionNumbers": false,
-      "showProgressBar": "top",
-      "adeptDMs": [
-        [
-          "Medic-AD1",
-          "Medic-AD2"
-        ],
-        [
-          "Medic-AD3",
-          "Medic-AD4"
-        ],
-        [
-          "Medic-AD5",
-          "Medic-AD6"
-        ],
-        [
-          "Medic-AD7",
-          "Medic-AD8"
-        ]
-      ],
-      "comparisonPages": [
-        "Medic-AD1 vs Medic-AD2",
-        "Medic-AD3 vs Medic-AD4",
-        "Medic-AD5 vs Medic-AD6",
-        "Medic-AD7 vs Medic-AD8"
-      ],
-      "instructionPages": [
+      ]
+    },
+    {
+      "name": "Survey Introduction",
+      "elements": [
         {
-          "name": "Treat as Human",
-          "elements": [
-           {
-            "type": "expression",
-            "name": "Please evaluate these triage decision makers as if they are human medics.",
-            "title": "Please evaluate these triage decision makers as if they are human medics."
-           }
+          "type": "html",
+          "name": "Survey21 Introduction",
+          "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how two different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+        }
+      ]
+    },
+    {
+      "name": "Note page",
+      "elements": [
+        {
+          "type": "html",
+          "name": "Note",
+          "html": "Note that in some scenarios, there are buttons that expand/select the information for the medic and the patients. \n<br/><br/>\n\nNote that you can hit the \"previous\" button if you want to go back to any part of the survey."
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD1",
+      "scenarioIndex": 5,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Submarine",
+      "elements": [
+        {
+          "title": "Adept Submarine Scenario: Medic-AD1",
+          "name": "Adept Submarine Scenario: Medic-AD1",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD1",
+          "actions": [
+            "Requests the electrician’s mate brought first",
+            "Walks to the patients instead",
+            "Update: Learns that the electrician’s mate caused the accident",
+            "Switches to treat the other sailor first",
+            "Update: Learns that both sailors were horsing around and caused the accident",
+            "Update: A third patient is discovered with electrical shock and a pre-existing condition",
+            "Leaves the two original patients to treat the new patient"
+          ],
+          "explanation": "I considered who was to blame for the situation",
+          "supplies": [
+            {
+              "type": "No supply constraints"
+            }
+          ],
+          "situation": [
+            "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician’s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
+          ],
+          "patients": [
+            {
+              "name": "Patient-I",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male submarine sailor (the Electrician’s Mate), major electrical burns on right side and an ear bleed.",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec5"
+              }
+            },
+            {
+              "name": "Patient-J",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male submarine sailor (the sailor who wanted the treadmill repaired), major electrical burns on right side and an ear bleed.",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec6"
+              }
+            }
           ]
-         },
-         {
-          "name": "Treat as AI",
-          "elements": [
-           {
-            "type": "expression",
-            "name": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic.",
-            "title": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic."
-           }
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1: The way this medic makes medical decisions is how I make decisions",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD2",
+      "scenarioIndex": 5,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Submarine",
+      "elements": [
+        {
+          "title": "Adept Submarine Scenario: Medic-AD2",
+          "name": "Adept Submarine Scenario: Medic-AD2",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD2",
+          "actions": [
+            "Requests the other sailor brought first",
+            "Walks to the patients instead",
+            "Update: Learns that the electrician’s mate caused the accident",
+            "Switch to treat the electrician’s mate first",
+            "Update: Learns that both sailors were horsing around and caused the accident",
+            "Update: A third patient is discovered with electrical shock and a pre-existing condition",
+            "Remains to treat two original patients"
+          ],
+          "explanation": "I prioritized saving the most lives possible.",
+          "supplies": [
+            {
+              "type": "No supply constraints"
+            }
+          ],
+          "situation": [
+            "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician’s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
+          ],
+          "patients": [
+            {
+              "name": "Patient-I",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male submarine sailor (the Electrician’s Mate), major electrical burns on right side and an ear bleed.",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec5"
+              }
+            },
+            {
+              "name": "Patient-J",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male submarine sailor (the sailor who wanted the treadmill repaired), major electrical burns on right side and an ear bleed.",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec6"
+              }
+            }
           ]
-         }
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD2: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD2: The way this medic makes medical decisions is how I make decisions",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD2: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD2: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD1 vs Medic-AD2",
+      "scenarioIndex": 5,
+      "pageType": "comparison",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1 vs Medic-AD2: Given the information provided",
+          "title": "Given the information provided...",
+          "choices": [
+            "I would prefer to delegate to both Medic-AD1 and Medic-AD2",
+            "I would prefer to delegate Medic-AD1 only",
+            "I would prefer to delegate to Medic-AD2 only",
+            "I would prefer not to delegate to either Medic"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comparison",
+          "name": "Medic-AD1 vs Medic-AD2: Review",
+          "title": "Click below to review medic decisions",
+          "decisionMakers": [
+            "Medic-AD1",
+            "Medic-AD2"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1 vs Medic-AD2: Forced Choice",
+          "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
+          "choices": [
+            "Medic-AD1",
+            "Medic-AD2"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD1 vs Medic-AD2: Rate your confidence about the delegation decision indicated in the previous question",
+          "title": "Rate your confidence about the delegation decision indicated in the previous question",
+          "choices": [
+            "Not confident at all",
+            "Not confident",
+            "Somewhat confident",
+            "Confident",
+            "Completely confident"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD1 vs Medic-AD2: Explain your response to the delegation preference question",
+          "title": "Explain your response to the delegation preference question:",
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD1 vs Medic-AD2: What, if anything, would you have done differently in the presented scenario?",
+          "title": "What, if anything, would you have done differently in the presented scenario?"
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD3",
+      "scenarioIndex": 6,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Jungle",
+      "elements": [
+        {
+          "title": "Adept Jungle Scenario: Medic-AD3",
+          "name": "Adept Jungle Scenario: Medic-AD3",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD3",
+          "actions": [
+            "Treats the patient closer to the IED first (Patient K)",
+            "Update: Learns that Patient K poked at the IED and ignored a US soldier who yelled at him to leave it alone",
+            "Switch to treat Patient L",
+            "Update: Learns that Patient K tried to lure US soldiers to the explosion",
+            "Evacuates Patient L in the one available transport option"
+          ],
+          "explanation": "I considered who was to blame for the situation.",
+          "supplies": [
+            {
+              "type": "No supply constraints"
+            }
+          ],
+          "situation": [
+            "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
+          ],
+          "patients": [
+            {
+              "name": "Patient-K",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Asian male civilian, closer to the IED. Has burns and a puncture wound",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec7"
+              }
+            },
+            {
+              "name": "Patient-L",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Asian male civilian, further from the IED. Has fracture",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec8"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD4",
+      "scenarioIndex": 6,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Jungle",
+      "elements": [
+        {
+          "title": "Adept Jungle Scenario: Medic-AD4",
+          "name": "Adept Jungle Scenario: Medic-AD4",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD4",
+          "actions": [
+            "Treats the patient closer to the IED first (Patient K)",
+            "Update: Learns that Patient K poked at the IED and ignored a US soldier who yelled at him to leave it alone",
+            "Continues to treat Patient K",
+            "Update: Learns that Patient K tried to lure US soldiers to the explosion",
+            "Evacuates Patient K in the one available transport option"
+          ],
+          "explanation": "I prioritized the person with the more serious injury.",
+          "supplies": [
+            {
+              "type": "No supply constraints"
+            }
+          ],
+          "situation": [
+            "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
+          ],
+          "patients": [
+            {
+              "name": "Patient-K",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Asian male civilian, closer to the IED. Has burns and a puncture wound",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec7"
+              }
+            },
+            {
+              "name": "Patient-L",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Asian male civilian, further from the IED. Has fracture",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec8"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD4: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD4",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD4: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD4: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD3 vs Medic-AD4",
+      "scenarioIndex": 6,
+      "pageType": "comparison",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3 vs Medic-AD4: Given the information provided",
+          "title": "Given the information provided...",
+          "choices": [
+            "I would prefer to delegate to both Medic-AD3 and Medic-AD4",
+            "I would prefer to delegate Medic-AD3 only",
+            "I would prefer to delegate to Medic-AD4 only",
+            "I would prefer not to delegate to either Medic"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comparison",
+          "name": "Medic-AD3 vs Medic-AD4: Review",
+          "title": "Click below to review medic decisions",
+          "decisionMakers": [
+            "Medic-AD3",
+            "Medic-AD4"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3 vs Medic-AD4: Forced Choice",
+          "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
+          "choices": [
+            "Medic-AD3",
+            "Medic-AD4"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD3 vs Medic-AD4: Rate your confidence about the delegation decision indicated in the previous question",
+          "title": "Rate your confidence about the delegation decision indicated in the previous question",
+          "choices": [
+            "Not confident at all",
+            "Not confident",
+            "Somewhat confident",
+            "Confident",
+            "Completely confident"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD3 vs Medic-AD4: Explain your response to the delegation preference question",
+          "title": "Explain your response to the delegation preference question:",
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD3 vs Medic-AD4: What, if anything, would you have done differently in the presented scenario?",
+          "title": "What, if anything, would you have done differently in the presented scenario?"
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD5",
+      "scenarioIndex": 7,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Desert",
+      "elements": [
+        {
+          "title": "Adept Desert Scenario: Medic-AD5",
+          "name": "Adept Desert Scenario: Medic-AD5",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD5",
+          "actions": [
+            "Decides en route to evacuate the local soldier (Patient N)",
+            "Update: Learns that Patient M saved the whole group from an ambush",
+            "Changes decision, plans to evacuate the US soldier (Patient M)",
+            "Update: Learns that Patient M was going to hurt his own unit leader",
+            "Changes decision, evacuates the local soldier (Patient N)"
+          ],
+          "explanation": "I considered the past actions of the casualties.",
+          "supplies": [
+            {
+              "type": "The helicopter has one slot for a serious injury."
+            },
+            {
+              "type": "The hospital is a military facility that serves both US and local forces. The patient who isn’t transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences."
+            }
+          ],
+          "situation": [
+            "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
+          ],
+          "patients": [
+            {
+              "name": "Patient-M",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male US soldier, broken right shoulder",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec9"
+              }
+            },
+            {
+              "name": "Patient-N",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male local soldier, broken right shoulder",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9feca"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD6",
+      "scenarioIndex": 7,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Desert",
+      "elements": [
+        {
+          "title": "Adept Desert Scenario: Medic-AD6",
+          "name": "Adept Desert Scenario: Medic-AD6",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD6",
+          "actions": [
+            "Decides en route to evacuate the US soldier (Patient M)",
+            "Update: Learns that Patient N saved the whole group from an ambush",
+            "Confirms decision to evacuate the US soldier (Patient M)",
+            "Update: Learns that Patient M would have injured his own unit leader",
+            "Evacuates the US solider (Patient M)"
+          ],
+          "explanation": "I prioritized treating the US soldier.",
+          "supplies": [
+            {
+              "type": "The helicopter has one slot for a serious injury."
+            },
+            {
+              "type": "The hospital is a military facility that serves both US and local forces. The patient who isn’t transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences."
+            }
+          ],
+          "situation": [
+            "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
+          ],
+          "patients": [
+            {
+              "name": "Patient-M",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male US soldier, broken right shoulder",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fec9"
+              }
+            },
+            {
+              "name": "Patient-N",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Normal"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "90"
+                }
+              ],
+              "description": "Male local soldier, broken right shoulder",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9feca"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD6: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD6",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD6: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD6: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD5 vs Medic-AD6",
+      "scenarioIndex": 7,
+      "pageType": "comparison",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5 vs Medic-AD6: Given the information provided",
+          "title": "Given the information provided...",
+          "choices": [
+            "I would prefer to delegate to both Medic-AD5 and Medic-AD6",
+            "I would prefer to delegate Medic-AD5 only",
+            "I would prefer to delegate to Medic-AD6 only",
+            "I would prefer not to delegate to either Medic"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comparison",
+          "name": "Medic-AD5 vs Medic-AD6: Review",
+          "title": "Click below to review medic decisions",
+          "decisionMakers": [
+            "Medic-AD5",
+            "Medic-AD6"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5 vs Medic-AD6: Forced Choice",
+          "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
+          "choices": [
+            "Medic-AD5",
+            "Medic-AD6"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD5 vs Medic-AD6: Rate your confidence about the delegation decision indicated in the previous question",
+          "title": "Rate your confidence about the delegation decision indicated in the previous question",
+          "choices": [
+            "Not confident at all",
+            "Not confident",
+            "Somewhat confident",
+            "Confident",
+            "Completely confident"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD5 vs Medic-AD6: Explain your response to the delegation preference question",
+          "title": "Explain your response to the delegation preference question:",
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD5 vs Medic-AD6: What, if anything, would you have done differently in the presented scenario?",
+          "title": "What, if anything, would you have done differently in the presented scenario?"
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD7",
+      "scenarioIndex": 8,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Urban",
+      "elements": [
+        {
+          "title": "Adept Urban Scenario: Medic-AD7",
+          "name": "Adept Urban Scenario: Medic-AD7",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD7",
+          "actions": [
+            "Starts treating Patient P (not dressed in black)",
+            "Update: Hears from a bystander that Patient O was the shooter and Patient P the victim",
+            "Continues treating Patient P (victim)",
+            "Update: Patient P’s condition deteriorates, indicating unlikely to survive transport",
+            "Transports Patient P (victim) to the hospital"
+          ],
+          "explanation": "I considered who was to blame for the situation",
+          "supplies": [
+            {
+              "type": "The local civilian hospital does not have significant surgical capabilities"
+            },
+            {
+              "type": "There is not time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital."
+            }
+          ],
+          "situation": [
+            "The medic is on the scene after there was some kind of shooting between civilians."
+          ],
+          "patients": [
+            {
+              "name": "Patient-O",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Fast"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "60"
+                }
+              ],
+              "description": "Male civilian, all black clothing, shot in right shoulder and arm",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fecb"
+              }
+            },
+            {
+              "name": "Patient-P",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Slow"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Faint"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "30"
+                }
+              ],
+              "description": "Male civilian, shot in right shoulder, arm, and chest",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fecc"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD8",
+      "scenarioIndex": 8,
+      "pageType": "singleMedic",
+      "scenarioName": "Adept Urban",
+      "elements": [
+        {
+          "title": "Adept Urban Scenario: Medic-AD8",
+          "name": "Adept Urban Scenario: Medic-AD8",
+          "type": "dynamic-template",
+          "dmName": "Medic-AD8",
+          "actions": [
+            "Starts treating Patient O (dressed in black)",
+            "Update: Hears from a bystander that Patient O was the shooter and Patient P the victim",
+            "Continues treating Patient O (shooter)",
+            "Update: Find out that the medical transport could take Patient P to a hospital with surgical capabilities.",
+            "Transports Patient O (shooter) to the hospital"
+          ],
+          "explanation": "I prioritized the person who had the more survivable injury.",
+          "supplies": [
+            {
+              "type": "The local civilian hospital does not have significant surgical capabilities"
+            },
+            {
+              "type": "There is not time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital."
+            }
+          ],
+          "situation": [
+            "The medic is on the scene after there was some kind of shooting between civilians."
+          ],
+          "patients": [
+            {
+              "name": "Patient-O",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Fast"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Normal"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "60"
+                }
+              ],
+              "description": "Male civilian, all black clothing, shot in right shoulder and arm",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fecb"
+              }
+            },
+            {
+              "name": "Patient-P",
+              "vitals": [
+                {
+                  "name": "Ability To Follow Commands",
+                  "value": "Yes"
+                },
+                {
+                  "name": "Respitory Effort",
+                  "value": "Slow"
+                },
+                {
+                  "name": "Pulse Quality",
+                  "value": "Faint"
+                },
+                {
+                  "name": "Heart Rate",
+                  "value": "Fast"
+                },
+                {
+                  "name": "SpO2",
+                  "value": "30"
+                }
+              ],
+              "description": "Male civilian, shot in right shoulder, arm, and right leg",
+              "imgUrl": {
+                "$oid": "66759ef02cb44f3e88d9fecc"
+              }
+            }
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD8: Do you agree with the decisions that this medic made?",
+          "title": "Do you agree with the decisions that this medic made?",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD8",
+          "title": "The way this medic makes medical decisions is how I make decisions",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD8: This medic is trustworthy",
+          "title": "This medic is trustworthy",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD8: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Medic-AD7 vs Medic-AD8",
+      "scenarioIndex": 8,
+      "pageType": "comparison",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7 vs Medic-AD8: Given the information provided",
+          "title": "Given the information provided...",
+          "choices": [
+            "I would prefer to delegate to both Medic-AD7 and Medic-AD8",
+            "I would prefer to delegate Medic-AD7 only",
+            "I would prefer to delegate to Medic-AD8 only",
+            "I would prefer not to delegate to either Medic"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comparison",
+          "name": "Medic-AD7 vs Medic-AD8: Review",
+          "title": "Click below to review medic decisions",
+          "decisionMakers": [
+            "Medic-AD7",
+            "Medic-AD8"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7 vs Medic-AD8: Forced Choice",
+          "title": "If you had to choose just one of these decision-makers to give complete responsibility for medical triage, which one would you choose?",
+          "choices": [
+            "Medic-AD7",
+            "Medic-AD8"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Medic-AD7 vs Medic-AD8: Rate your confidence about the delegation decision indicated in the previous question",
+          "title": "Rate your confidence about the delegation decision indicated in the previous question",
+          "choices": [
+            "Not confident at all",
+            "Not confident",
+            "Somewhat confident",
+            "Confident",
+            "Completely confident"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD7 vs Medic-AD8: Explain your response to the delegation preference question",
+          "title": "Explain your response to the delegation preference question:",
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Medic-AD7 vs Medic-AD8: What, if anything, would you have done differently in the presented scenario?",
+          "title": "What, if anything, would you have done differently in the presented scenario?"
+        }
+      ]
+    },
+    {
+      "name": "Post-Scenario Measures",
+      "elements": [
+        {
+          "type": "comment",
+          "name": "Did the nature of the decision maker (human or AI) change anything about the way you evaluated them?",
+          "title": "Did the nature of the decision maker (human or AI) change anything about the way you evaluated them?"
+        },
+        {
+          "type": "comment",
+          "name": "What was the biggest influence on your delegation decision between different medics?",
+          "title": "What was the biggest influence on your delegation decision between different medics?"
+        },
+        {
+          "type": "radiogroup",
+          "name": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
+          "title": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I was easily able to imagine myself as the medic in these scenarios",
+          "title": "I was easily able to imagine myself as the medic in these scenarios",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
+          "title": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "The VR training experience was helpful in making the delegation decisions in these scenarios",
+          "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
+          "title": "The VR training experience was helpful in making the delegation decisions in these scenarios",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
+          "title": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I am a computer gaming enthusiast",
+          "title": "I am a computer gaming enthusiast",
+          "choices": [
+            "No",
+            "Not sure",
+            "Yes"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I consider myself a seasoned first responder",
+          "title": "I consider myself a seasoned first responder",
+          "choices": [
+            "No",
+            "Not sure",
+            "Yes"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I have completed the SALT Triage Certificate Training Course",
+          "title": "I have completed the SALT Triage Certificate Training Course",
+          "choices": [
+            "No",
+            "Not sure",
+            "Yes"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I have completed disaster response training such as those offered by the American Red Cross, FEMA, or the Community Emergency Response Team (CERT)",
+          "title": "I have completed disaster response training such as those offered by the American Red Cross, FEMA, or the Community Emergency Response Team (CERT)",
+          "choices": [
+            "No",
+            "Not sure",
+            "Yes"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "I have completed disaster response training provided by the United States Military",
+          "title": "I have completed disaster response training provided by the United States Military",
+          "choices": [
+            "No",
+            "Not sure",
+            "Yes"
+          ],
+          "isRequired": true
+        },
+        {
+          "type": "text",
+          "name": "How many disaster drills (or simulated mass casualty events with live actors) have you participated in before today (Please enter a whole number)",
+          "title": "How many disaster drills (or simulated mass casualty events with live actors) have you participated in before today (Please enter a whole number)",
+          "inputType": "number",
+          "min": 0,
+          "isRequired": true
+        },
+        {
+          "type": "checkbox",
+          "name": "What is your current role (choose all that apply):",
+          "title": "What is your current role (choose all that apply):",
+          "isRequired": true,
+          "choices": [
+            "M-3 medical student",
+            "M-4 medical student",
+            "EM resident",
+            "EM/IM resident",
+            "EM faculty",
+            "Emergency medical technician",
+            "Paramedic",
+            "Military Background"
+          ],
+          "showOtherItem": true,
+          "otherText": "Other (specify)"
+        },
+        {
+          "type": "comment",
+          "name": "Branch and Status",
+          "visible": false,
+          "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
+          "title": "Please provide the branch of the military, as well as current status (active/retired/reserves) ",
+          "isRequired": true
+        },
+        {
+          "type": "comment",
+          "name": "Military Medical Training",
+          "visible": false,
+          "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
+          "title": "Please list any military medical training you have received:",
+          "isRequired": true
+        },
+        {
+          "type": "text",
+          "name": "Years experience in military medical role",
+          "visible": false,
+          "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
+          "title": "How many years of experience do you have serving in a medical role in the military?",
+          "isRequired": true,
+          "min": 0,
+          "inputType": "number"
+        },
+        {
+          "type": "radiogroup",
+          "name": "I feel that people are generally reliable",
+          "title": "I feel that people are generally reliable",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I usually trust people until they give me a reason not to trust them",
+          "title": "I usually trust people until they give me a reason not to trust them",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Trusting another person is not difficult for me",
+          "title": "Trusting another person is not difficult for me",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        }
       ]
     }
-  }
+  ],
+  "widthMode": "responsive",
+  "showTitle": false,
+  "showQuestionNumbers": false,
+  "showProgressBar": "top",
+  "adeptDMs": [
+    [
+      "Medic-AD1",
+      "Medic-AD2"
+    ],
+    [
+      "Medic-AD3",
+      "Medic-AD4"
+    ],
+    [
+      "Medic-AD5",
+      "Medic-AD6"
+    ],
+    [
+      "Medic-AD7",
+      "Medic-AD8"
+    ]
+  ],
+  "comparisonPages": [
+    "Medic-AD1 vs Medic-AD2",
+    "Medic-AD3 vs Medic-AD4",
+    "Medic-AD5 vs Medic-AD6",
+    "Medic-AD7 vs Medic-AD8"
+  ],
+  "instructionPages": [
+    {
+      "name": "Treat as Human",
+      "elements": [
+        {
+          "type": "expression",
+          "name": "Please evaluate these triage decision makers as if they are human medics.",
+          "title": "Please evaluate these triage decision makers as if they are human medics."
+        }
+      ]
+    },
+    {
+      "name": "Treat as AI",
+      "elements": [
+        {
+          "type": "expression",
+          "name": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic.",
+          "title": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic."
+        }
+      ]
+    }
+  ]
+}
