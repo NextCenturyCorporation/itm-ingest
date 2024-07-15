@@ -8217,5 +8217,27 @@
     "showQuestionNumbers": false,
     "showProgressBar": "top",
     "validSingleSets": [],
-    "validOmniSets": []
+    "validOmniSets": [],
+    "agentPages": [
+        {
+            "name": "Treat as Human",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are human medics.",
+                    "title": "Please evaluate these triage decision makers as if they are human medics."
+                }
+            ]
+        },
+        {
+            "name": "Treat as AI",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic.",
+                    "title": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic."
+                }
+            ]
+        }
+    ]
 }
