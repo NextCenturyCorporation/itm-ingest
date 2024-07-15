@@ -661,44 +661,44 @@ def version3_setup():
         ['AD high kitware', 'ST low TAD'],
         ['AD low kitware', 'ST high TAD']
     ]
-    for alignment in alignments:
-        for writer in writers:
-            # keep track of the names of each medic for each writer over all 4 environments (for omnibus)
-            tad_aligned = []
-            tad_baseline = []
-            kit_aligned = []
-            kit_baseline = []
-            for env in envs:
-                # create individual medic pages for parallax
-                name1 = tool.add_db_medic_to_survey_by_details('TAD aligned', alignment, writer, env, True)
-                tad_aligned.append(name1)
-                name2 = tool.add_db_medic_to_survey_by_details('TAD baseline', alignment, writer, env, True)
-                tad_baseline.append(name2)
-                # create comparison pages
-                tool.append_comparison_page(name1, name2, scenario_indices[writer + ' ' + env], alignment)
+    for writer in writers:
+        # keep track of the names of each medic for each writer over all 4 environments (for omnibus)
+        tad_aligned = []
+        tad_baseline = []
+        kit_aligned = []
+        kit_baseline = []
+        for env in envs:
+            # create individual medic pages for parallax
+            name1 = tool.add_db_medic_to_survey_by_details('TAD aligned', 'high', writer, env, True)
+            tad_aligned.append(name1)
+            name2 = tool.add_db_medic_to_survey_by_details('TAD aligned', 'low', writer, env, True)
+            tad_baseline.append(name2)
+            # create comparison pages
+            tool.append_comparison_page(name1, name2, scenario_indices[writer + ' ' + env], 'high vs low')
 
-                # create individual medic pages for kitware            
-                name3 = tool.add_db_medic_to_survey_by_details('kitware-single-kdma-adm-baseline', alignment, writer, env, True)
-                kit_aligned.append(name3)
-                name4 = tool.add_db_medic_to_survey_by_details('kitware-hybrid-kaleido-aligned', alignment, writer, env, True)
-                kit_baseline.append(name4)
-                # create comparison pages
-                tool.append_comparison_page(name3, name4, scenario_indices[writer + ' ' + env], alignment)
-                
-                medic_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} TAD {env.lower()}"] = [name1, name2]
-                medic_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} kitware {env.lower()}"] = [name3, name4]
-        
-            # create omnibus pages and omnibus comparison pages
-            tool.setup_omnibus_pages(tad_aligned, tad_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - TAD ({alignment})", scenario_ind, alignment)
-            omni_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} TAD"] = ['Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1)]
-            omni_ind += 2
-            scenario_ind += 1
+            # create individual medic pages for kitware            
+            name3 = tool.add_db_medic_to_survey_by_details('kitware-hybrid-kaleido-aligned', 'high', writer, env, True)
+            kit_aligned.append(name3)
+            name4 = tool.add_db_medic_to_survey_by_details('kitware-hybrid-kaleido-aligned', 'low', writer, env, True)
+            kit_baseline.append(name4)
+            # create comparison pages
+            tool.append_comparison_page(name3, name4, scenario_indices[writer + ' ' + env], 'high vs low')
+            
+            medic_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {'high vs low'} TAD {env.lower()}"] = [name1, name2]
+            medic_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {'high vs low'} kitware {env.lower()}"] = [name3, name4]
+        ''' commenting out for now since 7-16 data collect doesn't use omnibus
+        # create omnibus pages and omnibus comparison pages
+        tool.setup_omnibus_pages(tad_aligned, tad_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - TAD ({alignment})", scenario_ind, alignment)
+        omni_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} TAD"] = ['Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1)]
+        omni_ind += 2
+        scenario_ind += 1
 
-            tool.setup_omnibus_pages(kit_aligned, kit_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - Kitware ({alignment})", scenario_ind, alignment)
-            omni_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} kitware"] = ['Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1)]
-            omni_ind += 2
-            scenario_ind += 1    
-
+        tool.setup_omnibus_pages(kit_aligned, kit_baseline, 'Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1), f"{writer} Omnibus - Kitware ({alignment})", scenario_ind, alignment)
+        omni_map[f"{'ST' if writer == 'SoarTech' else 'AD'} {alignment} kitware"] = ['Medic-O'+str(omni_ind), 'Medic-O'+str(omni_ind+1)]
+        omni_ind += 2
+        '''
+        scenario_ind += 1    
+    ''' not using for 7-16
     for s in valid_single_sets:
         tmp_set = []
         for description in s:
@@ -710,6 +710,7 @@ def version3_setup():
         for description in s:
             tmp_set.append(omni_map[description])
         tool.survey['validOmniSets'].append(tmp_set)
+    '''
 
     # add final page
     tool.import_page_from_json(os.path.join('survey-configs', 'surveyConfig2x.json'), 'Post-Scenario Measures', None) 
