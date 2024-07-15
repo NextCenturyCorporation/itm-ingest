@@ -1115,7 +1115,7 @@ def version3_setup():
 
     # add final page
     tool.import_page_from_json(
-        os.path.join("survey-configs", "surveyConfig2x.json"),
+        os.path.join("survey-configs", "surveyConfig2.1.json"),
         "Post-Scenario Measures",
         None,
     )
