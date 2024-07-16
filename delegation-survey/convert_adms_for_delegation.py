@@ -251,8 +251,10 @@ def set_medic_from_adm(document, template, mongo_collection):
                     for x in probe_updates[probe_choice]:
                         action_set.append(x)
             # set supplies to first supplies available
-            if len(supplies) == 0 and 'response' in action and 'supplies' in action['response']:
-                supplies = action['response']['supplies']
+            if action['response'] is not None and 'supplies' in action['response']:
+                supply_types = [supply['type'] for supply in supplies]
+                new_supplies = [supply for supply in action['response']['supplies'] if supply['type'] not in supply_types]
+                supplies.extend(new_supplies)
             # look for scene changes when characters shift
             if (len(cur_chars) == 0 and 'characters' in action['response']) or action['command'] == 'Change scene':
                 tmp_chars = []
@@ -354,6 +356,7 @@ def set_medic_from_adm(document, template, mongo_collection):
                     break
         page_data['name'] = name
         page_data['admName'] = meta['adm_name']
+        # CHECK THIS !!!
         page_data['admType'] = 'baseline' if meta['adm_name'] in ['kitware-single-kdma-adm-baseline', 'TAD baseline'] else 'aligned' if meta['adm_name'] in ['TAD aligned', 'kitware-single-kdma-adm-aligned-no-negatives'] else 'other'
         page_data['admAlignment'] = 'high' if 'high' in action_set[1].lower() else 'low'
         page_data['admAuthor'] = 'kitware' if 'kitware' in meta['adm_name'] else 'TAD'

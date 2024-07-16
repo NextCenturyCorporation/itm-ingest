@@ -3839,6 +3839,41 @@
                             "type": "Tourniquet",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are in a civil affairs element operating in a desert environment in support of our US embassy. While not directly a threat, drug cartels operate in the area, and there are unmarked land mines from previous conflicts. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
@@ -4065,6 +4100,41 @@
                         },
                         {
                             "type": "Tourniquet",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -4365,6 +4435,41 @@
                             "type": "Tourniquet",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are in a civil affairs element operating in a desert environment in support of our US embassy. While not directly a threat, drug cartels operate in the area, and there are unmarked land mines from previous conflicts. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
@@ -4586,6 +4691,41 @@
                         },
                         {
                             "type": "Tourniquet",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -4875,6 +5015,41 @@
                             "type": "Burn Dressing",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are the independent duty corpsman posted aboard the USS Turtle, a nuclear submarine. This is a Virginia class submarine. You are on an intelligence gathering mission. Your orders are to remain submerged at all costs. You are called to respond to a galley fire, where two Sailors have been injured.\n They are alert and speaking to you. When you arrive, it is unknown if there are more casualties that need help. The fire has been secured, and the crew is performing damage control operations. You are working alone.",
@@ -5093,6 +5268,41 @@
                     "supplies": [
                         {
                             "type": "Burn Dressing",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -5393,6 +5603,41 @@
                             "type": "Burn Dressing",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are the independent duty corpsman posted aboard the USS Turtle, a nuclear submarine. This is a Virginia class submarine. You are on an intelligence gathering mission. Your orders are to remain submerged at all costs. You are called to respond to a galley fire, where two Sailors have been injured.\n They are alert and speaking to you. When you arrive, it is unknown if there are more casualties that need help. The fire has been secured, and the crew is performing damage control operations. You are working alone.",
@@ -5605,6 +5850,41 @@
                     "supplies": [
                         {
                             "type": "Burn Dressing",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -5894,6 +6174,36 @@
                             "type": "Burn Dressing",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are in a civil affairs element operating in a mountainous jungle region during the rainy season of a friendly Asian country in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles catch fire, but your team is able to self-evacuate from the vehicle.\n Two of your team members have burns and you do not know if there are other casualties in the other car.",
@@ -6112,6 +6422,36 @@
                     "supplies": [
                         {
                             "type": "Burn Dressing",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -6409,6 +6749,36 @@
                             "type": "Burn Dressing",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are in a civil affairs element operating in a mountainous jungle region during the rainy season of a friendly Asian country in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles catch fire, but your team is able to self-evacuate from the vehicle.\n Two of your team members have burns and you do not know if there are other casualties in the other car.",
@@ -6625,6 +6995,36 @@
                     "supplies": [
                         {
                             "type": "Burn Dressing",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Pain Medications",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -6925,6 +7325,41 @@
                             "type": "Tourniquet",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are in a civil affairs element operating in a small urban environment in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
@@ -7155,6 +7590,41 @@
                         },
                         {
                             "type": "Tourniquet",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
                             "reusable": false,
                             "quantity": 1
                         }
@@ -7461,6 +7931,41 @@
                             "type": "Tourniquet",
                             "reusable": false,
                             "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
+                            "reusable": false,
+                            "quantity": 1
                         }
                     ],
                     "situation": "You are in a civil affairs element operating in a small urban environment in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
@@ -7685,6 +8190,41 @@
                         },
                         {
                             "type": "Tourniquet",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Nasopharyngeal airway",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "IV Bag",
                             "reusable": false,
                             "quantity": 1
                         }
