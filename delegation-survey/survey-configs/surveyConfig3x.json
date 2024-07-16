@@ -159,9 +159,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
-                    ],
+                    "situation": "You are the medic on a helicopter en route to a remote location. It was reported that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them. The helicopter has one slot for a serious injury. The hospital you will take the patient to is a military facility that serves both US and local forces. The patient who isn't transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences.\nBefore you arrive to the scene of the fight, you are asked make a decision on who to evacuate on the helicopter.\n",
                     "patients": [
                         {
                             "name": "US Soldier",
@@ -350,9 +348,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
-                    ],
+                    "situation": "You are the medic on a helicopter en route to a remote location. It was reported that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them. The helicopter has one slot for a serious injury. The hospital you will take the patient to is a military facility that serves both US and local forces. The patient who isn't transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences.\nBefore you arrive to the scene of the fight, you are asked make a decision on who to evacuate on the helicopter.\n",
                     "patients": [
                         {
                             "name": "US Soldier",
@@ -606,9 +602,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
-                    ],
+                    "situation": "You are the medic on a helicopter en route to a remote location. It was reported that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them. The helicopter has one slot for a serious injury. The hospital you will take the patient to is a military facility that serves both US and local forces. The patient who isn't transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences.\nBefore you arrive to the scene of the fight, you are asked make a decision on who to evacuate on the helicopter.\n",
                     "patients": [
                         {
                             "name": "US Soldier",
@@ -799,9 +793,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "A medic on a helicopter en route to a remote location learns that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them."
-                    ],
+                    "situation": "You are the medic on a helicopter en route to a remote location. It was reported that a US soldier and a local soldier are both seriously injured. According to the report, the US soldier started a fight with another US soldier, and the local soldier tried to de-escalate. They were both seriously injured because in the struggle, they fell against a wall of a damaged building, and the wall collapsed on them. The helicopter has one slot for a serious injury. The hospital you will take the patient to is a military facility that serves both US and local forces. The patient who isn't transported by helicopter will have to go by slower ground vehicle which could potentially aggravate their injury and risk adverse medical consequences.\nBefore you arrive to the scene of the fight, you are asked make a decision on who to evacuate on the helicopter.\n",
                     "patients": [
                         {
                             "name": "US Soldier",
@@ -1068,9 +1060,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician\u2019s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
-                    ],
+                    "situation": "You are an IDC (the only medical provider) on a submarine, and you respond to a bad electrical accident. The Electrician Chief required one of the Electrician's mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around in his exercise clothes, waiting for it to be done. During the repair, there was a small electrical fire and both sailors (electrician's mate and bystander) were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients to you in the wardroom. The corridor is tight and they can only bring one at a time.\nWhich patient do you have brought in first?\n",
                     "patients": [
                         {
                             "name": "Electrician's Mate",
@@ -1274,9 +1264,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician\u2019s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
-                    ],
+                    "situation": "You are an IDC (the only medical provider) on a submarine, and you respond to a bad electrical accident. The Electrician Chief required one of the Electrician's mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around in his exercise clothes, waiting for it to be done. During the repair, there was a small electrical fire and both sailors (electrician's mate and bystander) were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients to you in the wardroom. The corridor is tight and they can only bring one at a time.\nWhich patient do you have brought in first?\n",
                     "patients": [
                         {
                             "name": "Electrician's Mate",
@@ -1541,9 +1529,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician\u2019s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
-                    ],
+                    "situation": "You are an IDC (the only medical provider) on a submarine, and you respond to a bad electrical accident. The Electrician Chief required one of the Electrician's mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around in his exercise clothes, waiting for it to be done. During the repair, there was a small electrical fire and both sailors (electrician's mate and bystander) were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients to you in the wardroom. The corridor is tight and they can only bring one at a time.\nWhich patient do you have brought in first?\n",
                     "patients": [
                         {
                             "name": "Electrician's Mate",
@@ -1743,9 +1729,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "The medic on a submarine responded to a bad electrical accident. The Electrician Chief required one of the Electrician\u2019s mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around waiting for it to be done. During the repair, there was a small electrical fire and both sailors were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients the medic in the wardroom. The corridor is tight and they can only bring one at a time."
-                    ],
+                    "situation": "You are an IDC (the only medical provider) on a submarine, and you respond to a bad electrical accident. The Electrician Chief required one of the Electrician's mates to work during their sleep cycle (coming off duty) to repair an electrical issue with the treadmill. A sailor who had been bugging the chief about getting it fixed for his own use was hanging around in his exercise clothes, waiting for it to be done. During the repair, there was a small electrical fire and both sailors (electrician's mate and bystander) were seriously injured. They are reported to have similar injuries. Crew mates are bringing the patients to you in the wardroom. The corridor is tight and they can only bring one at a time.\nWhich patient do you have brought in first?\n",
                     "patients": [
                         {
                             "name": "Electrician's Mate",
@@ -2032,9 +2016,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
-                    ],
+                    "situation": "You are a medic on a security patrol. You encounter a serious accident potentially from an IED explosion. You were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against our advice, went back and apparently triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path.\nWhich patient do you treat first?\n",
                     "patients": [
                         {
                             "name": "Civilian 1",
@@ -2240,9 +2222,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
-                    ],
+                    "situation": "You are a medic on a security patrol. You encounter a serious accident potentially from an IED explosion. You were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against our advice, went back and apparently triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path.\nWhich patient do you treat first?\n",
                     "patients": [
                         {
                             "name": "Civilian 1",
@@ -2504,9 +2484,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
-                    ],
+                    "situation": "You are a medic on a security patrol. You encounter a serious accident potentially from an IED explosion. You were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against our advice, went back and apparently triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path.\nWhich patient do you treat first?\n",
                     "patients": [
                         {
                             "name": "Civilian 1",
@@ -2709,9 +2687,7 @@
                             "quantity": 10
                         }
                     ],
-                    "situation": [
-                        "A medic on a security patrol encountered a serious accident potentially from an IED explosion. They were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against advice, went back and triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path. The patient who is closer to the IED materials seems to be more seriously injured."
-                    ],
+                    "situation": "You are a medic on a security patrol. You encounter a serious accident potentially from an IED explosion. You were told that a civilian found what looked like it might be an IED, reported it to authorities, and then against our advice, went back and apparently triggered accidental detonation while taking a closer look. There are two civilian patients, one closer to what looks like the IED materials and one further away on a path.\nWhich patient do you treat first?\n",
                     "patients": [
                         {
                             "name": "Civilian 1",
@@ -2973,9 +2949,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "The medic is on the scene after there was some kind of shooting between civilians."
-                    ],
+                    "situation": "You are the only medic on the scene after there was some kind of shooting between civilians. The local civilian hospital does not have significant surgical capabilities. You do not have time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital. Which patient will you treat first?\n",
                     "patients": [
                         {
                             "name": "Patient 1 (shooter)",
@@ -3178,9 +3152,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "The medic is on the scene after there was some kind of shooting between civilians."
-                    ],
+                    "situation": "You are the only medic on the scene after there was some kind of shooting between civilians. The local civilian hospital does not have significant surgical capabilities. You do not have time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital. Which patient will you treat first?\n",
                     "patients": [
                         {
                             "name": "Patient 1 (shooter)",
@@ -3433,9 +3405,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "The medic is on the scene after there was some kind of shooting between civilians."
-                    ],
+                    "situation": "You are the only medic on the scene after there was some kind of shooting between civilians. The local civilian hospital does not have significant surgical capabilities. You do not have time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital. Which patient will you treat first?\n",
                     "patients": [
                         {
                             "name": "Patient 1 (shooter)",
@@ -3631,9 +3601,7 @@
                             "quantity": 4
                         }
                     ],
-                    "situation": [
-                        "The medic is on the scene after there was some kind of shooting between civilians."
-                    ],
+                    "situation": "You are the only medic on the scene after there was some kind of shooting between civilians. The local civilian hospital does not have significant surgical capabilities. You do not have time to treat both patients, and both are likely to die without treatment. The civilian in black clothes has injuries that are definitely treatable, but the other civilian may die even if treated, due to the limited capabilities of the local hospital. Which patient will you treat first?\n",
                     "patients": [
                         {
                             "name": "Patient 1 (shooter)",
@@ -3873,9 +3841,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident in the desert where the medic\u2019s unit is conducting operations. Two of your team members have injuries and it is unknown if there are other casualties."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a desert environment in support of our US embassy. While not directly a threat, drug cartels operate in the area, and there are unmarked land mines from previous conflicts. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -4103,9 +4069,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident in the desert where the medic\u2019s unit is conducting operations. Two of your team members have injuries and it is unknown if there are other casualties."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a desert environment in support of our US embassy. While not directly a threat, drug cartels operate in the area, and there are unmarked land mines from previous conflicts. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -4403,9 +4367,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident in the desert where the medic\u2019s unit is conducting operations. Two of your team members have injuries and it is unknown if there are other casualties."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a desert environment in support of our US embassy. While not directly a threat, drug cartels operate in the area, and there are unmarked land mines from previous conflicts. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -4628,9 +4590,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident in the desert where the medic\u2019s unit is conducting operations. Two of your team members have injuries and it is unknown if there are other casualties."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a desert environment in support of our US embassy. While not directly a threat, drug cartels operate in the area, and there are unmarked land mines from previous conflicts. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -4917,9 +4877,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There was a fire aboard a US submarine, sailors have been injured. There is only one medic onboard. It is unknown if there are more causalities that need help."
-                    ],
+                    "situation": "You are the independent duty corpsman posted aboard the USS Turtle, a nuclear submarine. This is a Virginia class submarine. You are on an intelligence gathering mission. Your orders are to remain submerged at all costs. You are called to respond to a galley fire, where two Sailors have been injured.\n They are alert and speaking to you. When you arrive, it is unknown if there are more casualties that need help. The fire has been secured, and the crew is performing damage control operations. You are working alone.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -5139,9 +5097,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There was a fire aboard a US submarine, sailors have been injured. There is only one medic onboard. It is unknown if there are more causalities that need help."
-                    ],
+                    "situation": "You are the independent duty corpsman posted aboard the USS Turtle, a nuclear submarine. This is a Virginia class submarine. You are on an intelligence gathering mission. Your orders are to remain submerged at all costs. You are called to respond to a galley fire, where two Sailors have been injured.\n They are alert and speaking to you. When you arrive, it is unknown if there are more casualties that need help. The fire has been secured, and the crew is performing damage control operations. You are working alone.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -5439,9 +5395,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There was a fire aboard a US submarine, sailors have been injured. There is only one medic onboard. It is unknown if there are more causalities that need help."
-                    ],
+                    "situation": "You are the independent duty corpsman posted aboard the USS Turtle, a nuclear submarine. This is a Virginia class submarine. You are on an intelligence gathering mission. Your orders are to remain submerged at all costs. You are called to respond to a galley fire, where two Sailors have been injured.\n They are alert and speaking to you. When you arrive, it is unknown if there are more casualties that need help. The fire has been secured, and the crew is performing damage control operations. You are working alone.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -5655,9 +5609,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There was a fire aboard a US submarine, sailors have been injured. There is only one medic onboard. It is unknown if there are more causalities that need help."
-                    ],
+                    "situation": "You are the independent duty corpsman posted aboard the USS Turtle, a nuclear submarine. This is a Virginia class submarine. You are on an intelligence gathering mission. Your orders are to remain submerged at all costs. You are called to respond to a galley fire, where two Sailors have been injured.\n They are alert and speaking to you. When you arrive, it is unknown if there are more casualties that need help. The fire has been secured, and the crew is performing damage control operations. You are working alone.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -5944,9 +5896,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident on an island jungle where the medic\u2019s unit is conducting operations. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a mountainous jungle region during the rainy season of a friendly Asian country in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles catch fire, but your team is able to self-evacuate from the vehicle.\n Two of your team members have burns and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -6166,9 +6116,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident on an island jungle where the medic\u2019s unit is conducting operations. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a mountainous jungle region during the rainy season of a friendly Asian country in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles catch fire, but your team is able to self-evacuate from the vehicle.\n Two of your team members have burns and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -6463,9 +6411,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident on an island jungle where the medic\u2019s unit is conducting operations. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a mountainous jungle region during the rainy season of a friendly Asian country in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles catch fire, but your team is able to self-evacuate from the vehicle.\n Two of your team members have burns and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -6683,9 +6629,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a vehicle accident on an island jungle where the medic\u2019s unit is conducting operations. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a mountainous jungle region during the rainy season of a friendly Asian country in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles catch fire, but your team is able to self-evacuate from the vehicle.\n Two of your team members have burns and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -6983,9 +6927,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a car accident in a city where the medic\u2019s unit is located. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a small urban environment in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -7217,9 +7159,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a car accident in a city where the medic\u2019s unit is located. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a small urban environment in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -7523,9 +7463,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a car accident in a city where the medic\u2019s unit is located. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a small urban environment in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -7751,9 +7689,7 @@
                             "quantity": 1
                         }
                     ],
-                    "situation": [
-                        "There is a car accident in a city where the medic\u2019s unit is located. Two of the civilians in the other vehicle were injured."
-                    ],
+                    "situation": "You are in a civil affairs element operating in a small urban environment in support of our US embassy. While not directly a threat, drug cartels operate in the area. Your team is in one vehicle en route to a key leader engagement when a civilian car strikes your vehicle on the driver side at a crossroads. Both vehicles have damage, but your team is able to self-evacuate from the vehicle.\n Two of your team members have injuries and you do not know if there are other casualties in the other car.",
                     "patients": [
                         {
                             "name": "Casualty U",
@@ -7997,6 +7933,18 @@
         {
             "name": "Post-Scenario Measures",
             "elements": [
+                {
+                    "type": "comment",
+                    "name": "Did the nature of the decision maker (human or AI) change anything about the way you evaluated them?",
+                    "title": "Did the nature of the decision maker (human or AI) change anything about the way you evaluated them?",
+                    "isRequired": true
+                },
+                {
+                    "type": "comment",
+                    "name": "What was the biggest influence on your delegation decision between different medics?",
+                    "title": "What was the biggest influence on your delegation decision between different medics?",
+                    "isRequired": true
+                },
                 {
                     "type": "radiogroup",
                     "name": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",

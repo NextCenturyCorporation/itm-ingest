@@ -231,11 +231,14 @@ def set_medic_from_adm(document, template, mongo_collection):
         doc_id = None
         kdmas = []
         supplies = []
+        situation = ""
         try:
             if document['history'][0]['command'] == 'Start Scenario':
                 doc_id = document['history'][0]['response']['id']
+                situation = document['history'][0]['response']['state']['unstructured']
             else:
                 doc_id = document['history'][1]['response']['id']
+                situation = document['history'][1]['response']['state']['unstructured']
         except:
             return
         for ind in range(len(document['history'])):
@@ -369,7 +372,7 @@ def set_medic_from_adm(document, template, mongo_collection):
         }
         medic_data['explanation'] = explanations[action_set[1].replace('Alignment Target - ', '')]
         medic_data['supplies'] = supplies
-        medic_data['situation'] =  [env_map[doc_id]['situation']]
+        medic_data['situation'] =  situation
         formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'])
         medic_data['patients'] = formatted_patients
         for el in page_data['elements']:
