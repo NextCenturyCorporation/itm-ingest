@@ -141,7 +141,7 @@ def get_string_from_action(action):
     return printable
 
 
-def get_and_format_patients_for_scenario(doc_id, scenario_index):
+def get_and_format_patients_for_scenario(doc_id, scenario_index, db):
     '''
     Takes in a patient from the adm data and formats it properly for the json.
     Returns the formatted patient data
@@ -219,7 +219,7 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index):
     return patients
 
 
-def set_medic_from_adm(document, template, mongo_collection):
+def set_medic_from_adm(document, template, mongo_collection, db):
         global names, loop_ind, names_used
         '''
         Takes in a full adm document and returns the json in the same form as template
@@ -231,11 +231,14 @@ def set_medic_from_adm(document, template, mongo_collection):
         doc_id = None
         kdmas = []
         supplies = []
+        situation = ""
         try:
             if document['history'][0]['command'] == 'Start Scenario':
                 doc_id = document['history'][0]['response']['id']
+                situation = document['history'][0]['response']['state']['unstructured']
             else:
                 doc_id = document['history'][1]['response']['id']
+                situation = document['history'][1]['response']['state']['unstructured']
         except:
             return
         for ind in range(len(document['history'])):
@@ -248,8 +251,10 @@ def set_medic_from_adm(document, template, mongo_collection):
                     for x in probe_updates[probe_choice]:
                         action_set.append(x)
             # set supplies to first supplies available
-            if len(supplies) == 0 and 'response' in action and 'supplies' in action['response']:
-                supplies = action['response']['supplies']
+            if action['response'] is not None and 'supplies' in action['response']:
+                supply_types = [supply['type'] for supply in supplies]
+                new_supplies = [supply for supply in action['response']['supplies'] if supply['type'] not in supply_types]
+                supplies.extend(new_supplies)
             # look for scene changes when characters shift
             if (len(cur_chars) == 0 and 'characters' in action['response']) or action['command'] == 'Change scene':
                 tmp_chars = []
@@ -351,6 +356,7 @@ def set_medic_from_adm(document, template, mongo_collection):
                     break
         page_data['name'] = name
         page_data['admName'] = meta['adm_name']
+        # CHECK THIS !!!
         page_data['admType'] = 'baseline' if meta['adm_name'] in ['kitware-single-kdma-adm-baseline', 'TAD baseline'] else 'aligned' if meta['adm_name'] in ['TAD aligned', 'kitware-single-kdma-adm-aligned-no-negatives'] else 'other'
         page_data['admAlignment'] = 'high' if 'high' in action_set[1].lower() else 'low'
         page_data['admAuthor'] = 'kitware' if 'kitware' in meta['adm_name'] else 'TAD'
@@ -369,8 +375,8 @@ def set_medic_from_adm(document, template, mongo_collection):
         }
         medic_data['explanation'] = explanations[action_set[1].replace('Alignment Target - ', '')]
         medic_data['supplies'] = supplies
-        medic_data['situation'] =  [env_map[doc_id]['situation']]
-        formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'])
+        medic_data['situation'] =  situation
+        formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db)
         medic_data['patients'] = formatted_patients
         for el in page_data['elements']:
             el['name'] = el['name'].replace('Medic-ST2', name)
@@ -384,8 +390,7 @@ def set_medic_from_adm(document, template, mongo_collection):
             del page_data['_id']
         return page_data
 
-
-if __name__ == '__main__':
+def main():
     f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
     template = json.load(f)
     f.close()
@@ -398,11 +403,10 @@ if __name__ == '__main__':
     adms = db['test'].find({'evalNumber': 3})
     added = 0
     for document in adms:
-        medic_data = set_medic_from_adm(document, template, medic_mongo_collection)
+        medic_data = set_medic_from_adm(document, template, medic_mongo_collection, db)
         if medic_data is not None:
             added += 1
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Successfully added/updated {added} adm medics")
 
-
-
-        
+if __name__ == '__main__':
+    main()
