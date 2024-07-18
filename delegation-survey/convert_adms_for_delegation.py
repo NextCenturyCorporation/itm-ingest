@@ -141,7 +141,7 @@ def get_string_from_action(action):
     return printable
 
 
-def get_and_format_patients_for_scenario(doc_id, scenario_index):
+def get_and_format_patients_for_scenario(doc_id, scenario_index, db):
     '''
     Takes in a patient from the adm data and formats it properly for the json.
     Returns the formatted patient data
@@ -219,7 +219,7 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index):
     return patients
 
 
-def set_medic_from_adm(document, template, mongo_collection):
+def set_medic_from_adm(document, template, mongo_collection, db):
         global names, loop_ind, names_used
         '''
         Takes in a full adm document and returns the json in the same form as template
@@ -376,7 +376,7 @@ def set_medic_from_adm(document, template, mongo_collection):
         medic_data['explanation'] = explanations[action_set[1].replace('Alignment Target - ', '')]
         medic_data['supplies'] = supplies
         medic_data['situation'] =  situation
-        formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'])
+        formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db)
         medic_data['patients'] = formatted_patients
         for el in page_data['elements']:
             el['name'] = el['name'].replace('Medic-ST2', name)
@@ -390,8 +390,7 @@ def set_medic_from_adm(document, template, mongo_collection):
             del page_data['_id']
         return page_data
 
-
-if __name__ == '__main__':
+def main():
     f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
     template = json.load(f)
     f.close()
@@ -404,11 +403,10 @@ if __name__ == '__main__':
     adms = db['test'].find({'evalNumber': 3})
     added = 0
     for document in adms:
-        medic_data = set_medic_from_adm(document, template, medic_mongo_collection)
+        medic_data = set_medic_from_adm(document, template, medic_mongo_collection, db)
         if medic_data is not None:
             added += 1
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Successfully added/updated {added} adm medics")
 
-
-
-        
+if __name__ == '__main__':
+    main()

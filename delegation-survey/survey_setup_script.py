@@ -1,8 +1,7 @@
-import subprocess
+import convert_adms_for_delegation
+import update_survey_config
 
-subprocess.run(['python', 'convert_adms_for_delegation.py'])
+if __name__ == '__main__':
+    convert_adms_for_delegation.main()
+    update_survey_config.version3_setup()
 
-inputs = b'\n2\ny\ny\ny\n'
-
-process = subprocess.Popen(['python', 'update_survey_config.py'], stdin=subprocess.PIPE)
-process.communicate(input=inputs)
