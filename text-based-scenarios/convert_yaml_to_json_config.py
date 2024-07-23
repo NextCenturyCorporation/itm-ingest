@@ -35,20 +35,41 @@ def partition_doc(scenario):
         page['name'] = scene['action_mapping'][0]['probe_id']
         
         # context for probe
-        context = None
-        if counter == 0:
-            context = starting_context
-        else:
-            context = scene['state']['unstructured']
+        context = starting_context if counter == 0 else scene['state']['unstructured']
         
         if context:
-            question = {
+            context_element = {
                 'name': 'context ' + page['name'],
                 'type': 'expression',
                 'description': context
             }
+            elements.append(context_element)
+        
+        # template that contains supplies and character info 
+        template_element = {
+            'name': 'template ' + page['name'],
+            'type': 'adeptVitals',
+            'supplies': starting_supplies,
+            'patients': scenario['state']['characters'] if counter == 0 else scene['state']['characters']
+        }
 
-            elements.append(question)
+        elements.append(template_element)
+
+        # Gets the elements from the action mapping to create the possible actions for the user
+        choices = []
+        for action in scene['action_mapping']:
+            choices.append(action['unstructured'])
+
+        question_element = {
+            'type': 'radiogroup',
+            'choices': choices,
+            'isRequired': True,
+            'title': 'What action do you take?',
+            'name': 'probe ' + page['name']
+        }
+
+        elements.append(question_element)
+
         page['elements'] = elements
         doc['pages'].append(page)
         counter += 1
