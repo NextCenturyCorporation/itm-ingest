@@ -1,4 +1,5 @@
 import yaml
+import os
 from decouple import config 
 from pymongo import MongoClient
 
@@ -35,20 +36,14 @@ def partition_doc(scenario):
         page['name'] = scene['action_mapping'][0]['probe_id']
         
         # context for probe
-        context = starting_context if counter == 0 else scene['state']['unstructured']
-        
-        if context:
-            context_element = {
-                'name': 'context ' + page['name'],
-                'type': 'expression',
-                'description': context
-            }
-            elements.append(context_element)
+        unstructured = starting_context if counter == 0 else scene['state']['unstructured']
         
         # template that contains supplies and character info 
         template_element = {
             'name': 'template ' + page['name'],
-            'type': 'adeptVitals',
+            'title': '',
+            'type': 'medicalScenario',
+            'unstructured': unstructured,
             'supplies': starting_supplies,
             'patients': scenario['state']['characters'] if counter == 0 else scene['state']['characters']
         }
@@ -87,12 +82,29 @@ def main():
     db = client.dashboard
     textbased_mongo_collection = db['textBasedConfig']
 
-    with open('desert.yaml', 'r') as file:
-        scenario = yaml.safe_load(file)
+    mre_folder = 'mre-yaml-files'
+    
+    for filename in os.listdir(mre_folder):
+        if filename.endswith('.yaml'):
+            file_path = os.path.join(mre_folder, filename)
+            with open(file_path, 'r') as file:
+                scenario = yaml.safe_load(file)
+                doc = partition_doc(scenario)
+                doc['eval'] = 'mre'
+                upload_config(doc, textbased_mongo_collection)
+            print(f"Processed and uploaded: {filename}")
 
-    doc = partition_doc(scenario)
+    dre_folder = 'dre-yaml-files'
 
-    upload_config(doc, textbased_mongo_collection)
+    for filename in os.listdir(dre_folder):
+        if filename.endswith('.yaml'):
+            file_path = os.path.join(dre_folder, filename)
+            with open(file_path, 'r') as file:
+                scenario = yaml.safe_load(file)
+                doc = partition_doc(scenario)
+                doc['eval'] = 'dre'
+                upload_config(doc, textbased_mongo_collection)
+            print(f"Processed and uploaded: {filename}")
 
 if __name__ == '__main__':
     main()
