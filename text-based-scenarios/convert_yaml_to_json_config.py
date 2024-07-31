@@ -44,13 +44,20 @@ def partition_doc(scenario):
 
         unstructured = scene.get('state', {}).get('unstructured', starting_context)
         
+        # Filter characters based on action_mapping
+        action_character_ids = set(action['character_id'] for action in scene['action_mapping'] if 'character_id' in action)
+        filtered_characters = [
+            character for character in scene.get('state', {}).get('characters', scenario['state']['characters'])
+            if character['id'] in action_character_ids
+        ]
+
         template_element = {
             'name': 'template ' + probe_id,
             'title': '',
             'type': 'medicalScenario',
             'unstructured': unstructured,
             'supplies': starting_supplies,
-            'patients': scene.get('state', {}).get('characters', scenario['state']['characters'])
+            'patients': filtered_characters
         }
 
         elements.append(template_element)
