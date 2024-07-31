@@ -21,36 +21,40 @@ def partition_doc(scenario):
     starting_supplies = scenario['state']['supplies']
 
     doc = {}
-
     doc['scenario_id'] = scenario_id
     doc['name'] = scenario['name']
     doc['pages'] = []
 
-    counter = 0
-    for scene in scenes:
-        # skip over dummy scene 
-        if len(scene['action_mapping']) <= 0:
-            continue
+    scene_map = {scene.get('id', str(i)): scene for i, scene in enumerate(scenes)}
+    processed_scenes = set()
+
+    def create_page(scene, previous_choices=None):
         page = {}
         elements = []
-        page['name'] = scene['action_mapping'][0]['probe_id']
+        probe_id = scene['action_mapping'][0]['probe_id']
+        page['name'] = probe_id
+
+        if previous_choices:
+            conditions = []
+            for prev_probe, choice, next_scene in previous_choices:
+                if next_scene == scene.get('id', ''):
+                    conditions.append(f"{{probe {prev_probe}}} == '{choice}'")
+            if conditions:
+                page['visibleIf'] = " or ".join(conditions)
+
+        unstructured = scene.get('state', {}).get('unstructured', starting_context)
         
-        # context for probe
-        unstructured = starting_context if counter == 0 else scene['state']['unstructured']
-        
-        # template that contains supplies and character info 
         template_element = {
-            'name': 'template ' + page['name'],
+            'name': 'template ' + probe_id,
             'title': '',
             'type': 'medicalScenario',
             'unstructured': unstructured,
             'supplies': starting_supplies,
-            'patients': scenario['state']['characters'] if counter == 0 else scene['state']['characters']
+            'patients': scene.get('state', {}).get('characters', scenario['state']['characters'])
         }
 
         elements.append(template_element)
 
-        # Gets the elements from the action mapping to create the possible actions for the user
         choices = []
         for action in scene['action_mapping']:
             choices.append(action['unstructured'])
@@ -60,16 +64,32 @@ def partition_doc(scenario):
             'choices': choices,
             'isRequired': True,
             'title': 'What action do you take?',
-            'name': 'probe ' + page['name']
+            'name': 'probe ' + probe_id
         }
 
         elements.append(question_element)
 
         page['elements'] = elements
-        doc['pages'].append(page)
-        counter += 1
+        return page
 
-    # SURVEY JS CONFIGS
+    def process_scene(scene_id, previous_choices=None):
+        if scene_id in processed_scenes:
+            return
+        processed_scenes.add(scene_id)
+
+        scene = scene_map[scene_id]
+        page = create_page(scene, previous_choices)
+        doc['pages'].append(page)
+
+        new_previous_choices = previous_choices or []
+        for action in scene['action_mapping']:
+            if 'next_scene' in action:
+                new_choices = new_previous_choices + [(scene['action_mapping'][0]['probe_id'], action['unstructured'], action['next_scene'])]
+                process_scene(action['next_scene'], new_choices)
+
+    # Start with the first scene
+    process_scene(next(iter(scene_map)))
+
     doc = add_surveyjs_configs(doc)
 
     return doc
