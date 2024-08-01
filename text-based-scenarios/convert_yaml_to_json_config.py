@@ -90,14 +90,30 @@ def partition_doc(scenario):
         processed_scenes.add(scene_id)
 
         scene = scene_map[scene_id]
+        
+        # Skip scenes with empty action_mapping
+        if not scene['action_mapping']:
+            return
+
         page = create_page(scene, previous_choices)
         doc['pages'].append(page)
 
         new_previous_choices = previous_choices or []
-        for action in scene['action_mapping']:
-            if 'next_scene' in action:
-                new_choices = new_previous_choices + [(scene['action_mapping'][0]['probe_id'], action['unstructured'], action['next_scene'])]
-                process_scene(action['next_scene'], new_choices)
+        
+        # Check if any action has a 'next_scene'
+        has_next_scene = any('next_scene' in action for action in scene['action_mapping'])
+        
+        if has_next_scene:
+            for action in scene['action_mapping']:
+                if 'next_scene' in action:
+                    new_choices = new_previous_choices + [(scene['action_mapping'][0]['probe_id'], action['unstructured'], action['next_scene'])]
+                    process_scene(action['next_scene'], new_choices)
+        else:
+            # If no 'next_scene' is specified, move to the next scene in the array
+            current_index = scenes.index(scene)
+            if current_index + 1 < len(scenes):
+                next_scene_id = scenes[current_index + 1].get('id', str(current_index + 1))
+                process_scene(next_scene_id, new_previous_choices)
 
     # Start with the first scene
     process_scene(next(iter(scene_map)))
