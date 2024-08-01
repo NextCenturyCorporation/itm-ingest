@@ -64,7 +64,12 @@ def partition_doc(scenario):
 
         choices = []
         for action in scene['action_mapping']:
-            choices.append(action['unstructured'])
+            # attach probe id and choice id to each option to make getting alignemnt easier later
+            choices.append(
+                {
+                    "value": {'probe_id': action['probe_id'], 'choice': action['choice']},
+                    "text": action['unstructured']
+                })
 
         question_element = {
             'type': 'radiogroup',
