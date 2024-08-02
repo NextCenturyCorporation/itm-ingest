@@ -33,6 +33,7 @@ def partition_doc(scenario):
         elements = []
         probe_id = scene['action_mapping'][0]['probe_id']
         page['name'] = probe_id
+        page['scenario_id'] = scenario_id
 
         if previous_choices:
             conditions = []
