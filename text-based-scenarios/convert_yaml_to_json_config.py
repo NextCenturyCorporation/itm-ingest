@@ -44,6 +44,9 @@ def partition_doc(scenario):
                 page['visibleIf'] = " or ".join(conditions)
 
         unstructured = scene.get('state', {}).get('unstructured', starting_context)
+
+        # Use scene-specific supplies if they exist, otherwise use starting supplies
+        current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
         # Filter characters based on action_mapping
         action_character_ids = set(action['character_id'] for action in scene['action_mapping'] if 'character_id' in action)
@@ -54,10 +57,9 @@ def partition_doc(scenario):
 
         template_element = {
             'name': 'template ' + probe_id,
-            'title': '',
             'type': 'medicalScenario',
             'unstructured': unstructured,
-            'supplies': starting_supplies,
+            'supplies': current_supplies,
             'patients': filtered_characters
         }
 
@@ -68,7 +70,7 @@ def partition_doc(scenario):
             # attach probe id and choice id to each option to make getting alignemnt easier later
             choices.append(
                 {
-                    "value": {'probe_id': action['probe_id'], 'choice': action['choice']},
+                    "value": {'action': action['unstructured'], 'probe_id': action['probe_id'], 'choice': action['choice']},
                     "text": action['unstructured']
                 })
 
