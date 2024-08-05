@@ -69,7 +69,7 @@ def partition_doc(scenario):
 
         choices = [
             {
-                "value": {'action': action['unstructured'], 'probe_id': action['probe_id'], 'choice': action['choice']},
+                "value": action['choice'],
                 "text": action['unstructured']
             } for action in scene['action_mapping']
         ]
