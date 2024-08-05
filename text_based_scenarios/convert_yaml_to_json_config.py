@@ -57,12 +57,18 @@ def partition_doc(scenario):
             if character['id'] in action_character_ids
         ]
 
+        # Extract event information from probe_config
+        event = None
+        if 'probe_config' in scene and scene['probe_config']:
+            event = scene['probe_config'][0].get('description')
+
         template_element = {
             'name': 'template ' + str(page['name']),
             'type': 'medicalScenario',
             'unstructured': unstructured,
             'supplies': current_supplies,
-            'patients': filtered_characters
+            'patients': filtered_characters,
+            'events': [{'message': event}] if event else []  # Add event as a list item if it exists
         }
         page['elements'].append(template_element)
 
