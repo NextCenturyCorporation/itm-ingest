@@ -148,29 +148,30 @@ def main():
     db = client.dashboard
     textbased_mongo_collection = db['textBasedConfig']
 
-    mre_folder = 'mre-yaml-files'
-    
-    for filename in os.listdir(mre_folder):
-        if filename.endswith('.yaml'):
-            file_path = os.path.join(mre_folder, filename)
-            with open(file_path, 'r') as file:
-                scenario = yaml.safe_load(file)
-                doc = partition_doc(scenario)
-                doc['eval'] = 'mre'
-                upload_config(doc, textbased_mongo_collection)
-            print(f"Processed and uploaded: {filename}")
+    # Get the directory of the current script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    dre_folder = 'dre-yaml-files'
+    # Construct absolute paths for MRE and DRE folders
+    mre_folder = os.path.join(current_dir, 'mre-yaml-files')
+    dre_folder = os.path.join(current_dir, 'dre-yaml-files')
 
-    for filename in os.listdir(dre_folder):
-        if filename.endswith('.yaml'):
-            file_path = os.path.join(dre_folder, filename)
-            with open(file_path, 'r') as file:
-                scenario = yaml.safe_load(file)
-                doc = partition_doc(scenario)
-                doc['eval'] = 'dre'
-                upload_config(doc, textbased_mongo_collection)
-            print(f"Processed and uploaded: {filename}")
+    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre')]:
+        if not os.path.exists(folder):
+            print(f"Warning: {folder} does not exist.")
+            continue
+
+        for filename in os.listdir(folder):
+            if filename.endswith('.yaml'):
+                file_path = os.path.join(folder, filename)
+                try:
+                    with open(file_path, 'r') as file:
+                        scenario = yaml.safe_load(file)
+                    doc = partition_doc(scenario)
+                    doc['eval'] = eval_type
+                    upload_config(doc, textbased_mongo_collection)
+                    print(f"Processed and uploaded: {filename}")
+                except Exception as e:
+                    print(f"Error processing {filename}: {str(e)}")
 
 if __name__ == '__main__':
     main()
