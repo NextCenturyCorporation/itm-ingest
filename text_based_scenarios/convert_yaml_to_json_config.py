@@ -34,6 +34,7 @@ def partition_doc(scenario):
         page = {
             'name': scene.get('id') or scene['action_mapping'][0].get('probe_id', f"scene_{len(doc['pages'])}"),
             'scenario_id': scenario_id,
+            'scenario_name': scenario['name'],
             'elements': []
         }
 
@@ -77,7 +78,8 @@ def partition_doc(scenario):
             'choices': choices,
             'isRequired': True,
             'title': 'What action do you take?',
-            'name': 'probe ' + str(page['name'])
+            'name': 'probe ' + str(page['name']),
+            'probe_id': scene['action_mapping'][0]['probe_id']
         }
         page['elements'].append(question_element)
 
