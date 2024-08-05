@@ -32,34 +32,32 @@ def partition_doc(scenario):
 
     def create_page(scene, previous_choices=None):
         page = {
-            'name': scene['action_mapping'][0]['probe_id'],
+            'name': scene.get('id') or scene['action_mapping'][0].get('probe_id', f"scene_{len(doc['pages'])}"),
             'scenario_id': scenario_id,
             'elements': []
         }
 
         if previous_choices:
             conditions = []
-            for prev_probe, choice, next_scene in previous_choices:
+            for prev_scene, choice, next_scene in previous_choices:
                 if next_scene == scene.get('id', ''):
-                    conditions.append(f"{{probe {prev_probe}}} == '{choice}'")
+                    conditions.append(f"{{probe {prev_scene}}} == '{choice}'")
             if conditions:
                 page['visibleIf'] = " and ".join(conditions)
 
         unstructured = scene.get('state', {}).get('unstructured', starting_context)
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
-        # Get characters for this scene
         scene_characters = get_scene_characters(scene)
 
-        # Filter characters based on action_mapping
-        action_character_ids = set(action['character_id'] for action in scene['action_mapping'] if 'character_id' in action)
+        action_character_ids = set(action.get('character_id') for action in scene['action_mapping'] if 'character_id' in action)
         filtered_characters = [
             character for character in scene_characters
             if character['id'] in action_character_ids
         ]
 
         template_element = {
-            'name': 'template ' + page['name'],
+            'name': 'template ' + str(page['name']),
             'type': 'medicalScenario',
             'unstructured': unstructured,
             'supplies': current_supplies,
@@ -69,7 +67,7 @@ def partition_doc(scenario):
 
         choices = [
             {
-                "value": action['choice'],
+                "value": action.get('choice', action.get('action_id', '')),
                 "text": action['unstructured']
             } for action in scene['action_mapping']
         ]
@@ -79,7 +77,7 @@ def partition_doc(scenario):
             'choices': choices,
             'isRequired': True,
             'title': 'What action do you take?',
-            'name': 'probe ' + page['name']
+            'name': 'probe ' + str(page['name'])
         }
         page['elements'].append(question_element)
 
@@ -91,18 +89,11 @@ def partition_doc(scenario):
         scene_characters = scene.get('state', {}).get('characters', [])
         
         if scene.get('persist_characters', False):
-            # Create a dictionary of characters by ID for easy lookup and update
             char_dict = {char['id']: char for char in all_characters}
-            
-            # Update or add new characters
             for new_char in scene_characters:
                 char_dict[new_char['id']] = new_char
-            
-            # Convert back to list
             all_characters = list(char_dict.values())
         else:
-            # If persist_characters is false, use only the characters defined in this scene
-            # If no characters are defined, fall back to initial characters
             all_characters = scene_characters if scene_characters else initial_characters.copy()
         
         return all_characters
@@ -121,13 +112,12 @@ def partition_doc(scenario):
 
         new_previous_choices = previous_choices or []
 
-        # Process next scenes based on action_mapping
         for action in scene['action_mapping']:
-            if 'next_scene' in action:
-                new_choices = new_previous_choices + [(scene['action_mapping'][0]['probe_id'], action['choice'], action['next_scene'])]
-                process_scene(action['next_scene'], new_choices)
+            next_scene = action.get('next_scene')
+            if next_scene:
+                new_choices = new_previous_choices + [(page['name'], action.get('choice', action.get('action_id', '')), next_scene)]
+                process_scene(next_scene, new_choices)
 
-        # If no next_scene is specified, move to the next sequential scene
         if not any('next_scene' in action for action in scene['action_mapping']):
             current_index = scenes.index(scene)
             if current_index + 1 < len(scenes):
@@ -135,7 +125,8 @@ def partition_doc(scenario):
                 process_scene(next_scene_id, new_previous_choices)
 
     # Start with the first scene
-    process_scene(next(iter(scene_map)))
+    first_scene_id = scenario.get('first_scene') or next(iter(scene_map))
+    process_scene(first_scene_id)
 
     doc = add_surveyjs_configs(doc)
     return doc
@@ -148,10 +139,7 @@ def main():
     db = client.dashboard
     textbased_mongo_collection = db['textBasedConfig']
 
-    # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Construct absolute paths for MRE and DRE folders
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
 
