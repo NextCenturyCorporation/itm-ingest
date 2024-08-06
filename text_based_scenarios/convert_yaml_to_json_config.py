@@ -19,6 +19,7 @@ def partition_doc(scenario):
     starting_context = scenario['state']['unstructured']
     starting_supplies = scenario['state']['supplies']
     initial_characters = scenario['state'].get('characters', [])
+    initial_events = scenario['state'].get('events', [])  # Extract initial events
 
     doc = {
         'scenario_id': scenario_id,
@@ -28,9 +29,9 @@ def partition_doc(scenario):
 
     scene_map = {scene.get('id', str(i)): scene for i, scene in enumerate(scenes)}
     processed_scenes = set()
-    all_characters = initial_characters.copy()  # Start with initial characters
+    all_characters = initial_characters.copy()
 
-    def create_page(scene, previous_choices=None):
+    def create_page(scene, is_first_scene, previous_choices=None):
         page = {
             'name': scene.get('id') or scene['action_mapping'][0].get('probe_id', f"scene_{len(doc['pages'])}"),
             'scenario_id': scenario_id,
@@ -57,10 +58,20 @@ def partition_doc(scenario):
             if character['id'] in action_character_ids
         ]
 
-        # Extract event information from probe_config
-        event = None
-        if 'probe_config' in scene and scene['probe_config']:
-            event = scene['probe_config'][0].get('description')
+        # Use initial events only for the first scene
+        if is_first_scene:
+            events = initial_events
+        else:
+            events = scene.get('state', {}).get('events', [])
+
+        event_messages = [{
+            'message': event['unstructured'],
+            'type': event.get('type'),
+            'source': event.get('source'),
+            'object': event.get('object', ''),
+            'action_id': event.get('action_id', ''),
+            'relevant_state': event.get('relevant_state', [])
+        } for event in events]
 
         template_element = {
             'name': 'template ' + str(page['name']),
@@ -68,7 +79,7 @@ def partition_doc(scenario):
             'unstructured': unstructured,
             'supplies': current_supplies,
             'patients': filtered_characters,
-            'events': [{'message': event}] if event else []  # Add event as a list item if it exists
+            'events': event_messages
         }
         page['elements'].append(template_element)
 
@@ -106,7 +117,7 @@ def partition_doc(scenario):
         
         return all_characters
 
-    def process_scene(scene_id, previous_choices=None):
+    def process_scene(scene_id, is_first_scene, previous_choices=None):
         if scene_id in processed_scenes:
             return
         processed_scenes.add(scene_id)
@@ -115,7 +126,7 @@ def partition_doc(scenario):
         if not scene['action_mapping']:
             return
 
-        page = create_page(scene, previous_choices)
+        page = create_page(scene, is_first_scene, previous_choices)
         doc['pages'].append(page)
 
         new_previous_choices = previous_choices or []
@@ -124,17 +135,17 @@ def partition_doc(scenario):
             next_scene = action.get('next_scene')
             if next_scene:
                 new_choices = new_previous_choices + [(page['name'], action.get('choice', action.get('action_id', '')), next_scene)]
-                process_scene(next_scene, new_choices)
+                process_scene(next_scene, False, new_choices)
 
         if not any('next_scene' in action for action in scene['action_mapping']):
             current_index = scenes.index(scene)
             if current_index + 1 < len(scenes):
                 next_scene_id = scenes[current_index + 1].get('id', str(current_index + 1))
-                process_scene(next_scene_id, new_previous_choices)
+                process_scene(next_scene_id, False, new_previous_choices)
 
     # Start with the first scene
     first_scene_id = scenario.get('first_scene') or next(iter(scene_map))
-    process_scene(first_scene_id)
+    process_scene(first_scene_id, True)
 
     doc = add_surveyjs_configs(doc)
     return doc
