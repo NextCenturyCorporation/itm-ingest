@@ -1,5 +1,6 @@
 import yaml
 import os
+import json
 from decouple import config 
 from pymongo import MongoClient
 
@@ -43,7 +44,12 @@ def partition_doc(scenario):
             conditions = []
             for prev_scene, choice, next_scene in previous_choices:
                 if next_scene == scene.get('id', ''):
-                    conditions.append(f"{{probe {prev_scene}}} == '{choice}'")
+                    condition = {
+                        'probe_id': choice['probe_id'],
+                        'unstructured': choice['unstructured'],
+                        'choice': choice['choice']
+                    }
+                    conditions.append(f"{{probe {prev_scene}}} = '{json.dumps(condition)}'")
             if conditions:
                 page['visibleIf'] = " and ".join(conditions)
 
@@ -85,7 +91,7 @@ def partition_doc(scenario):
 
         choices = [
             {
-                "value": action.get('choice', action.get('action_id', '')),
+                "value": json.dumps({'probe_id': action.get('probe_id'), 'unstructured': action['unstructured'], 'choice': action.get('choice', action.get('action_id', ''))}),
                 "text": action['unstructured']
             } for action in scene['action_mapping']
         ]
@@ -134,7 +140,7 @@ def partition_doc(scenario):
         for action in scene['action_mapping']:
             next_scene = action.get('next_scene')
             if next_scene:
-                new_choices = new_previous_choices + [(page['name'], action.get('choice', action.get('action_id', '')), next_scene)]
+                new_choices = new_previous_choices + [(page['name'], {'probe_id': action.get('probe_id'), 'unstructured': action['unstructured'], 'choice': action.get('choice', action.get('action_id', ''))}, next_scene)]
                 process_scene(next_scene, False, new_choices)
 
         if not any('next_scene' in action for action in scene['action_mapping']):
