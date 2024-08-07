@@ -1,6 +1,7 @@
 import yaml
 import os
 import json
+from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
 
@@ -20,7 +21,7 @@ def partition_doc(scenario):
     starting_context = scenario['state']['unstructured']
     starting_supplies = scenario['state']['supplies']
     initial_characters = scenario['state'].get('characters', [])
-    initial_events = scenario['state'].get('events', [])  # Extract initial events
+    initial_events = scenario['state'].get('events', [])
 
     doc = {
         'scenario_id': scenario_id,
@@ -28,7 +29,7 @@ def partition_doc(scenario):
         'pages': []
     }
 
-    scene_map = {scene.get('id', str(i)): scene for i, scene in enumerate(scenes)}
+    scene_map = OrderedDict((scene.get('id', str(i)), scene) for i, scene in enumerate(scenes))
     processed_scenes = set()
     all_characters = initial_characters.copy()
 
@@ -44,7 +45,7 @@ def partition_doc(scenario):
             conditions = []
             for prev_scene, choice, next_scene in previous_choices:
                 if next_scene == scene.get('id', ''):
-                    conditions.append(f"{{probe {prev_scene}}} = '{choice['unstructured']}")
+                    conditions.append(f"{{probe {prev_scene}}} = '{choice['unstructured']}'")
             if conditions:
                 page['visibleIf'] = " or ".join(conditions)
 
@@ -142,17 +143,14 @@ def partition_doc(scenario):
             next_scene = action.get('next_scene')
             if next_scene:
                 new_choices = new_previous_choices + [(page['name'], {'probe_id': action.get('probe_id'), 'unstructured': action['unstructured'], 'choice': action.get('choice', action.get('action_id', ''))}, next_scene)]
-                process_scene(next_scene, False, new_choices)
+                if next_scene not in processed_scenes:
+                    process_scene(next_scene, False, new_choices)
 
-        if not any('next_scene' in action for action in scene['action_mapping']):
-            current_index = scenes.index(scene)
-            if current_index + 1 < len(scenes):
-                next_scene_id = scenes[current_index + 1].get('id', str(current_index + 1))
-                process_scene(next_scene_id, False, new_previous_choices)
-
-    # Start with the first scene
-    first_scene_id = scenario.get('first_scene') or next(iter(scene_map))
-    process_scene(first_scene_id, True)
+    # Process scenes in the order they appear in the YAML file
+    for scene_id in scene_map.keys():
+        if scene_id not in processed_scenes:
+            is_first_scene = (scene_id == scenario.get('first_scene') or (not scenario.get('first_scene') and scene_id == next(iter(scene_map))))
+            process_scene(scene_id, is_first_scene)
 
     doc = add_surveyjs_configs(doc)
     return doc
