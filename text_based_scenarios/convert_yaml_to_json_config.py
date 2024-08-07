@@ -44,14 +44,9 @@ def partition_doc(scenario):
             conditions = []
             for prev_scene, choice, next_scene in previous_choices:
                 if next_scene == scene.get('id', ''):
-                    condition = {
-                        'probe_id': choice['probe_id'],
-                        'unstructured': choice['unstructured'],
-                        'choice': choice['choice']
-                    }
-                    conditions.append(f"{{probe {prev_scene}}} = '{json.dumps(condition)}'")
+                    conditions.append(f"{{probe {prev_scene}}} = '{choice['unstructured']}")
             if conditions:
-                page['visibleIf'] = " and ".join(conditions)
+                page['visibleIf'] = " or ".join(conditions)
 
         unstructured = scene.get('state', {}).get('unstructured', starting_context)
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
@@ -89,12 +84,17 @@ def partition_doc(scenario):
         }
         page['elements'].append(template_element)
 
-        choices = [
-            {
-                "value": json.dumps({'probe_id': action.get('probe_id'), 'unstructured': action['unstructured'], 'choice': action.get('choice', action.get('action_id', ''))}),
+        choices = []
+        question_mapping = {}
+        for action in scene['action_mapping']:
+            choices.append({
+                "value": action['unstructured'],
                 "text": action['unstructured']
-            } for action in scene['action_mapping']
-        ]
+            })
+            question_mapping[action['unstructured']] = {
+                "probe_id": action['probe_id'],
+                "choice": action['choice']
+            }
 
         question_element = {
             'type': 'radiogroup',
@@ -102,7 +102,8 @@ def partition_doc(scenario):
             'isRequired': True,
             'title': 'What action do you take?',
             'name': 'probe ' + str(page['name']),
-            'probe_id': scene['action_mapping'][0]['probe_id']
+            'probe_id': scene['action_mapping'][0]['probe_id'],
+            'question_mapping': question_mapping
         }
         page['elements'].append(question_element)
 
