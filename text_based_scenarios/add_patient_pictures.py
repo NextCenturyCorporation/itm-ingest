@@ -42,11 +42,11 @@ def main():
                 document = {
                     'casualtyId': casualty_id,
                     'imageByteCode': image_byte_code,
-                    'scenarioID': scenario_id
+                    'scenarioId': scenario_id
                 }
 
                 textbased_images_collection.insert_one(document)
-                print(f"Uploaded {file} to MongoDB with casualtyId: {casualty_id}, scenarioID: {scenario_id}")
+                print(f"Uploaded {file} to MongoDB with casualtyId: {casualty_id}, scenarioId: {scenario_id}")
 
 if __name__ == "__main__":
     main()
