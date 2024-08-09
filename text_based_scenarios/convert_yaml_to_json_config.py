@@ -29,6 +29,11 @@ def partition_doc(scenario):
         'pages': []
     }
 
+    # Generate unique IDs for scenes that don't have one
+    for i, scene in enumerate(scenes):
+        if 'id' not in scene:
+            scene['id'] = f"scene_{i+1}"
+
     scene_map = OrderedDict((scene['id'], scene) for scene in scenes)
     processed_scenes = set()
     all_characters = initial_characters.copy()
@@ -97,7 +102,7 @@ def partition_doc(scenario):
             'isRequired': True,
             'title': 'What action do you take?',
             'name': 'probe ' + str(page['name']),
-            'probe_id': scene['action_mapping'][0]['probe_id'],
+            'probe_id': scene['action_mapping'][0]['probe_id'] if scene['action_mapping'] else '',
             'question_mapping': question_mapping
         }
         page['elements'].append(question_element)
@@ -125,7 +130,7 @@ def partition_doc(scenario):
         processed_scenes.add(scene_id)
 
         scene = scene_map[scene_id]
-        if not scene['action_mapping']:
+        if not scene.get('action_mapping'):
             return
 
         page = create_page(scene, is_first_scene)
