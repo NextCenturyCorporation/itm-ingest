@@ -29,23 +29,21 @@ def partition_doc(scenario):
         'pages': []
     }
 
-    scene_map = OrderedDict((scene.get('id', str(i)), scene) for i, scene in enumerate(scenes))
+    scene_map = OrderedDict((scene['id'], scene) for scene in scenes)
     processed_scenes = set()
     all_characters = initial_characters.copy()
+    scene_conditions = {}
 
-    def create_page(scene, is_first_scene, previous_choices=None):
+    def create_page(scene, is_first_scene):
         page = {
-            'name': scene.get('id') or scene['action_mapping'][0].get('probe_id', f"scene_{len(doc['pages'])}"),
+            'name': scene['id'],
             'scenario_id': scenario_id,
             'scenario_name': scenario['name'],
             'elements': []
         }
 
-        if previous_choices:
-            conditions = []
-            for prev_scene, choice, next_scene in previous_choices:
-                if next_scene == scene.get('id', ''):
-                    conditions.append(f"{{probe {prev_scene}}} = '{choice['unstructured']}'")
+        if not is_first_scene:
+            conditions = scene_conditions.get(scene['id'], [])
             if conditions:
                 page['visibleIf'] = " or ".join(conditions)
 
@@ -60,11 +58,7 @@ def partition_doc(scenario):
             if character['id'] in action_character_ids
         ]
 
-        # Use initial events only for the first scene
-        if is_first_scene:
-            events = initial_events
-        else:
-            events = scene.get('state', {}).get('events', [])
+        events = scene.get('state', {}).get('events', []) if not is_first_scene else initial_events
 
         event_messages = [{
             'message': event['unstructured'],
@@ -94,7 +88,7 @@ def partition_doc(scenario):
             })
             question_mapping[action['unstructured']] = {
                 "probe_id": action['probe_id'],
-                "choice": action['choice']
+                "choice": action.get('choice', '')
             }
 
         question_element = {
@@ -125,7 +119,7 @@ def partition_doc(scenario):
         
         return all_characters
 
-    def process_scene(scene_id, is_first_scene, previous_choices=None):
+    def process_scene(scene_id, is_first_scene):
         if scene_id in processed_scenes:
             return
         processed_scenes.add(scene_id)
@@ -134,28 +128,27 @@ def partition_doc(scenario):
         if not scene['action_mapping']:
             return
 
-        page = create_page(scene, is_first_scene, previous_choices)
+        page = create_page(scene, is_first_scene)
         doc['pages'].append(page)
-
-        new_previous_choices = previous_choices or []
 
         for action in scene['action_mapping']:
             next_scene = action.get('next_scene')
             if next_scene:
-                new_choices = new_previous_choices + [(page['name'], {'probe_id': action.get('probe_id'), 'unstructured': action['unstructured'], 'choice': action.get('choice', action.get('action_id', ''))}, next_scene)]
-                if next_scene not in processed_scenes:
-                    process_scene(next_scene, False, new_choices)
+                condition = f"{{probe {scene['id']}}} = '{action['unstructured']}'"
+                if next_scene not in scene_conditions:
+                    scene_conditions[next_scene] = []
+                scene_conditions[next_scene].append(condition)
 
-    # Process scenes in the order they appear in the YAML file
+    # Process scenes in the exact order they appear in the YAML file
     for scene_id in scene_map.keys():
-        if scene_id not in processed_scenes:
-            is_first_scene = (scene_id == scenario.get('first_scene') or (not scenario.get('first_scene') and scene_id == next(iter(scene_map))))
-            process_scene(scene_id, is_first_scene)
+        is_first_scene = (scene_id == scenario.get('first_scene') or (not scenario.get('first_scene') and scene_id == next(iter(scene_map))))
+        process_scene(scene_id, is_first_scene)
 
     doc = add_surveyjs_configs(doc)
     return doc
 
 def upload_config(doc, textbased_mongo_collection):
+    # Upload the document
     textbased_mongo_collection.insert_one(doc)
 
 def main():
