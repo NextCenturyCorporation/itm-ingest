@@ -1,15 +1,12 @@
 from pymongo import MongoClient
 from decouple import config
 import os
-from scripts._0_0_9_add_scenario_names import add_scenario_names
-from scripts._0_1_0_fix_participant_id import fix_participant_id
-from scripts._0_1_1_remove_old_textbased_results import remove_old_textbased_results
-from scripts._0_1_2_survey_results_table_fixes import fix_survey_results_table
-from scripts._0_0_4_update_human_sim_records import update_hum_sim_order_avg_across_scenes
+from text_based_scenarios.convert_yaml_to_json_config import main as generate_textbased_configs
+from text_based_scenarios.add_patient_pictures import main as add_pictures
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.2"
+db_version = "0.1.3"
 
 
 def check_version(mongoDB):
@@ -37,13 +34,8 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
 
-        add_scenario_names(mongoDB)
-        fix_participant_id(mongoDB)
-        remove_old_textbased_results(mongoDB)
-        fix_survey_results_table(mongoDB)
-        # this script should fix issues on humanProbeData page of dashboard
-        update_hum_sim_order_avg_across_scenes(mongoDB)
-        # Now update db version
+        generate_textbased_configs()
+        add_pictures()
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
