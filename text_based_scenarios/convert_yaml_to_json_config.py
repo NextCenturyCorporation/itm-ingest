@@ -75,6 +75,7 @@ def partition_doc(scenario):
 
         template_element = {
             'name': 'template ' + str(page['name']),
+            'title': ' ',
             'type': 'medicalScenario',
             'unstructured': unstructured,
             'supplies': current_supplies,
