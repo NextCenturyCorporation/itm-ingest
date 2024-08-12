@@ -29,7 +29,6 @@ def partition_doc(scenario):
         'pages': []
     }
 
-    # Generate unique IDs for scenes that don't have one
     for i, scene in enumerate(scenes):
         if 'id' not in scene:
             scene['id'] = f"scene_{i+1}"
@@ -144,7 +143,6 @@ def partition_doc(scenario):
                     scene_conditions[next_scene] = []
                 scene_conditions[next_scene].append(condition)
 
-    # Process scenes in the exact order they appear in the YAML file
     for scene_id in scene_map.keys():
         is_first_scene = (scene_id == scenario.get('first_scene') or (not scenario.get('first_scene') and scene_id == next(iter(scene_map))))
         process_scene(scene_id, is_first_scene)
@@ -153,7 +151,6 @@ def partition_doc(scenario):
     return doc
 
 def upload_config(doc, textbased_mongo_collection):
-    # Upload the document
     textbased_mongo_collection.insert_one(doc)
 
 def main():
