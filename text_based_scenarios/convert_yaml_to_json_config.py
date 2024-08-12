@@ -122,7 +122,9 @@ def partition_doc(scenario):
         else:
             all_characters = scene_characters if scene_characters else initial_characters.copy()
         
-        return all_characters
+        visible_characters = [char for char in all_characters if not char.get('unseen', False)]
+
+        return visible_characters
 
     def process_scene(scene_id, is_first_scene):
         if scene_id in processed_scenes:
