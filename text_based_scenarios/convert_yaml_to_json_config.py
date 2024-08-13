@@ -84,28 +84,37 @@ def partition_doc(scenario):
         }
         page['elements'].append(template_element)
 
-        choices = []
-        question_mapping = {}
+        actions_by_probe = {}
         for action in scene['action_mapping']:
-            choices.append({
-                "value": action['unstructured'],
-                "text": action['unstructured']
-            })
-            question_mapping[action['unstructured']] = {
-                "probe_id": action['probe_id'],
-                "choice": action.get('choice', '')
-            }
+            probe_id = action.get('probe_id', 'default')
+            if probe_id not in actions_by_probe:
+                actions_by_probe[probe_id] = []
+            actions_by_probe[probe_id].append(action)
 
-        question_element = {
-            'type': 'radiogroup',
-            'choices': choices,
-            'isRequired': True,
-            'title': 'What action do you take?',
-            'name': 'probe ' + str(page['name']),
-            'probe_id': scene['action_mapping'][0]['probe_id'] if scene['action_mapping'] else '',
-            'question_mapping': question_mapping
-        }
-        page['elements'].append(question_element)
+            
+        for probe_id, actions in actions_by_probe.items():
+            choices = []
+            question_mapping = {}
+            for action in actions:
+                choices.append({
+                    "value": action['unstructured'],
+                    "text": action['unstructured']
+                })
+                question_mapping[action['unstructured']] = {
+                    "probe_id": action['probe_id'],
+                    "choice": action.get('choice', '')
+                }
+
+            question_element = {
+                'type': 'radiogroup',
+                'choices': choices,
+                'isRequired': True,
+                'title': 'What action do you take?',
+                'name': 'probe_{probe_id}_{page["name"]}',
+                'probe_id': probe_id,
+                'question_mapping': question_mapping
+            }
+            page['elements'].append(question_element)
 
         return page
 
