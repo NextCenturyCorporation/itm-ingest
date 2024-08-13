@@ -110,7 +110,7 @@ def partition_doc(scenario):
                 'choices': choices,
                 'isRequired': True,
                 'title': 'What action do you take?',
-                'name': 'probe_{probe_id}_{page["name"]}',
+                'name': 'probe ' + str(probe_id),
                 'probe_id': probe_id,
                 'question_mapping': question_mapping
             }
