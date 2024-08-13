@@ -20,8 +20,14 @@ def main():
     db = client.dashboard
     textbased_images_collection = db['textBasedImages']
 
+    # clear the existing collection
+    result = textbased_images_collection.delete_many({})
+    print(f"Cleared {result.deleted_count} images from the collection.")
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     picture_folder = os.path.join(current_dir, 'DRE-Screenshots')
+
+    documents_to_insert = []
 
     for root, dirs, files in os.walk(picture_folder):
         for file in files:
@@ -45,8 +51,14 @@ def main():
                     'scenarioId': scenario_id
                 }
 
-                textbased_images_collection.insert_one(document)
-                print(f"Uploaded {file} to MongoDB with casualtyId: {casualty_id}, scenarioId: {scenario_id}")
+                documents_to_insert.append(document)
+                print(f"Processed {file} with casualtyId: {casualty_id}, scenarioId: {scenario_id}")
+
+    if documents_to_insert:
+        result = textbased_images_collection.insert_many(documents_to_insert)
+        print(f"Uploaded {len(result.inserted_ids)} images to MongoDB, replacing the existing collection.")
+    else:
+        print("No documents to insert.")
 
 if __name__ == "__main__":
     main()
