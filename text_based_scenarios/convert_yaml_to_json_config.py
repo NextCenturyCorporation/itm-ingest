@@ -24,6 +24,17 @@ def process_unstructured_text(text):
 
     return text.strip()
 
+def get_scene_text(scene, is_first_scene, starting_context):
+    if is_first_scene:
+        return starting_context
+    
+    if 'probe_config' in scene:
+        probe_config = scene['probe_config']
+        if isinstance(probe_config, list) and probe_config and 'description' in probe_config[0]:
+            return probe_config[0]['description']
+    
+    return scene.get('state', {}).get('unstructured', '')
+
 def partition_doc(scenario):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
@@ -60,7 +71,7 @@ def partition_doc(scenario):
             if conditions:
                 page['visibleIf'] = " or ".join(conditions)
 
-        unstructured = scene.get('state', {}).get('unstructured', starting_context)
+        unstructured = get_scene_text(scene, is_first_scene, starting_context)
         processed_unstructured = process_unstructured_text(unstructured)
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
