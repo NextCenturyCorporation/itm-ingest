@@ -6,7 +6,7 @@ from text_based_scenarios.add_patient_pictures import main as add_pictures
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.3"
+db_version = "0.1.4"
 
 
 def check_version(mongoDB):
