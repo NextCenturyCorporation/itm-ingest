@@ -4,6 +4,7 @@ import json
 from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
+import difflib
 
 def add_surveyjs_configs(doc):
     doc['showQuestionNumbers'] = False
@@ -14,6 +15,13 @@ def add_surveyjs_configs(doc):
     doc['widthMode'] = 'responsive'
     doc['showProgressBar'] = 'top'
     return doc
+
+def get_text_difference(old_text, new_text):
+    # Find the difference between old_text and new_text.
+    differ = difflib.Differ()
+    diff = list(differ.compare(old_text.splitlines(), new_text.splitlines()))
+    new_lines = [line[2:] for line in diff if line.startswith('+ ')]
+    return '\n'.join(new_lines)
 
 def partition_doc(scenario):
     scenario_id = scenario['id']
@@ -37,8 +45,11 @@ def partition_doc(scenario):
     processed_scenes = set()
     all_characters = initial_characters.copy()
     scene_conditions = {}
+    previous_unstructured = starting_context
 
     def create_page(scene, is_first_scene):
+        nonlocal previous_unstructured
+
         page = {
             'name': scene['id'],
             'scenario_id': scenario_id,
@@ -51,7 +62,10 @@ def partition_doc(scenario):
             if conditions:
                 page['visibleIf'] = " or ".join(conditions)
 
-        unstructured = scene.get('state', {}).get('unstructured', starting_context)
+        current_unstructured = scene.get('state', {}).get('unstructured', starting_context)
+        new_unstructured = get_text_difference(previous_unstructured, current_unstructured)
+        previous_unstructured = current_unstructured
+
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
         scene_characters = get_scene_characters(scene)
@@ -77,7 +91,7 @@ def partition_doc(scenario):
             'name': 'template ' + str(page['name']),
             'title': ' ',
             'type': 'medicalScenario',
-            'unstructured': unstructured,
+            'unstructured': new_unstructured if new_unstructured else "No new information.",
             'supplies': current_supplies,
             'patients': filtered_characters,
             'events': event_messages
