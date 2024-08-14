@@ -15,6 +15,15 @@ def add_surveyjs_configs(doc):
     doc['showProgressBar'] = 'top'
     return doc
 
+def process_unstructured_text(text):
+    # split by $ if necessary
+    parts = text.split('$')
+    
+    if len(parts) > 1:
+        return parts[1].strip()
+
+    return text.strip()
+
 def partition_doc(scenario):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
@@ -52,6 +61,7 @@ def partition_doc(scenario):
                 page['visibleIf'] = " or ".join(conditions)
 
         unstructured = scene.get('state', {}).get('unstructured', starting_context)
+        processed_unstructured = process_unstructured_text(unstructured)
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
         scene_characters = get_scene_characters(scene)
@@ -77,7 +87,7 @@ def partition_doc(scenario):
             'name': 'template ' + str(page['name']),
             'title': ' ',
             'type': 'medicalScenario',
-            'unstructured': unstructured,
+            'unstructured': processed_unstructured,
             'supplies': current_supplies,
             'patients': filtered_characters,
             'events': event_messages
@@ -192,7 +202,6 @@ def main():
         
     upload_config(all_docs, textbased_mongo_collection)
     print(f"Uploaded {len(all_docs)} scenarios, replacing the existing collection.")
-
 
 if __name__ == '__main__':
     main()

@@ -147,7 +147,7 @@ scenes:
         You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit.
         You are told by radio, "The situation at the site is that we have two local allied force casualties. All we know is that one soldier (SPC Springer) started a fight, and another soldier (SPC Upton) tried to intervene. Springer has a messy compound fracture and Upton has maybe a dislocated shoulder or broken collarbone."
         You indicated that if you could only transport one patient, it would be Springer.
-        
+        $
         You find out more information by radio.
         Do you still think we should prioritize Springer?
       events:
@@ -220,7 +220,7 @@ scenes:
         You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit.
         You were told of two casualties at the site.
         You indicated that if you could only transport one patient, it would be Upton.
-        
+        $
         You find out more information by radio.
         Do you still think we should prioritize Upton?
       events:
@@ -291,7 +291,7 @@ scenes:
     state:
       unstructured: >
         You took a helicopter to a site where US soldiers fight alongside a local allied military unit.
-        
+        $
         You get to the scene, leave the helicopter, and see two casualties.
         They are both not in visible immediate danger, but both have a similar visible serious injury (such as significant shoulder area bleeding and a compound fracture of the upper arm such that you can't use a tourniquet) that doesn't entirely match the original reports.
         Someone tells you more information about the mechanism of injury. 
@@ -397,7 +397,7 @@ scenes:
         They are both not in visible immediate danger, but both have a similar visible serious injury (such as significant shoulder area bleeding and a compound fracture of the upper arm such that you can't use a tourniquet) that doesn't entirely match the original reports.
         Someone tells you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
-        
+        $
         You have assessed Springer and find that he has normal vital signs.
         Do you assess the second person (Upton) or begin treatment on Springer?
     end_scene_allowed: false
@@ -447,7 +447,7 @@ scenes:
         Someone tells you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
         You assessed Springer and found that he has normal vital signs.
-        
+        $
         You have assessed Upton and find that he has fast breathing and a fast pulse.
         Who do you treat first?
       characters:
@@ -526,7 +526,7 @@ scenes:
         Someone tells you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
         You assessed Springer and found that he has normal vital signs.
-        
+        $
         You begin treating Springer.
         The other person from the helicopter suggests that you assess Upton.
         Do you stop and assess Upton?
@@ -586,7 +586,7 @@ scenes:
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
         You assessed Springer and found that he has normal vital signs.
         You began treating Springer. The other person from the helicopter suggested that you assess Upton.
-
+        $
         You have assessed Upton and find that he has fast breathing and a fast pulse.
         Who do you treat first?
       characters:
@@ -664,7 +664,7 @@ scenes:
         They are both not in visible immediate danger, but both have a similar visible serious injury (such as significant shoulder area bleeding and a compound fracture of the upper arm such that you can't use a tourniquet) that doesn't entirely match the original reports.
         Someone told you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
-        
+        $
         You have assessed Upton and find that he has normal vital signs.
         Do you assess the second person (Springer) or begin treatment on Upton?
     end_scene_allowed: false
@@ -714,7 +714,7 @@ scenes:
         Someone told you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
         You assessed Upton and found that he has normal vital signs.
-
+        $
         You have assessed Springer and find that he has fast breathing and a fast pulse.
         Who do you treat first?
       characters:
@@ -793,7 +793,7 @@ scenes:
         Someone told you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
         You assessed Upton and found that he has normal vital signs.
-
+        $
         You begin treating Upton.
         The other person from the helicopter suggests that you assess Springer.
         Do you stop and assess Springer?
@@ -853,7 +853,7 @@ scenes:
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
         You assessed Upton and found that he has normal vital signs.
         You began treating Upton. The other person from the helicopter suggested that you assess Springer.
-
+        $
         You have assessed Springer and find that he has fast breathing and a fast pulse.
         Who do you treat first?
       characters:
@@ -931,7 +931,7 @@ scenes:
         They are both not in visible immediate danger, but both have a similar visible serious injury (such as significant shoulder area bleeding and a compound fracture of the upper arm such that you can't use a tourniquet) that doesn't entirely match the original reports.
         Someone told you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
-
+        $
         You have assessed and at least begun treating both patients.
         How much of the remaining supply of hemostatic gauze would you like to use on each patient?
         Each patient needed 3 treatments of gauze and you began with 5 total.
@@ -984,7 +984,7 @@ scenes:
         They are both not in visible immediate danger, but both have a similar visible serious injury (such as significant shoulder area bleeding and a compound fracture of the upper arm such that you can't use a tourniquet) that doesn't entirely match the original reports.
         Someone told you more information about the mechanism of injury.
         Someone told you, "What a day. First, we were out on patrol, and if it wasn't for both SPC Springer and SPC Upton here having keen eyes, our unit would've gotten shot up by insurgents in an ambush. Then Springer started arguing with the US unit commander about clean-up duty, and was starting to punch him when Upton stepped in to grab Springer. They were grappling with each other at that abandoned house and bumped into that wall, and it collapsed on them."
-
+        $
         After you have treated both people, their vital signs are now both normal.
         Somebody tells you that they can take one person in transport now, but the second person will have to wait.
         Who do you get ready to load into the helicopter?
@@ -1288,7 +1288,7 @@ scenes:
         You saw an injured US soldier about 20 ft away on the ground, and another US solder was with them.
         As you assessed the injured US soldier, you heard a commotion.
         An enemy insurgent ran over with his hands up and asked for help.
-
+        $
         Two uninjured US soldiers go with the POW to the vehicle and bring back the other casualty.
         You are assessing/treating the wounded US soldier, who has a delayed (moderate bleeding from a glancing shot, bleeding has slowed) rather than immediate injury, when the others return with the wounded insurgent, who has visible heavy bleeding from the abdomen.
         Do you stop treating the US soldier and either assess or treat the wounded insurgent?
@@ -1398,7 +1398,7 @@ scenes:
         An enemy insurgent ran over with his hands up and asked for help.
         Two uninjured US soldiers went with the POW to the vehicle and brought back the other casualty.
         You were assessing/treating the wounded US soldier, who has a delayed (moderate bleeding from a glancing shot, bleeding has slowed) rather than immediate injury, when the others return with the wounded insurgent, who has visible heavy bleeding from the abdomen.
-
+        $
         You continue to assess/treat the US soldier.
         The insurgent's friend tells you he is sorry they attacked you and gives more information about their backstory.
         Do you switch and assess/treat the insurgent instead?
@@ -1489,7 +1489,7 @@ scenes:
         Two uninjured US soldiers went with the POW to the vehicle and brought back the other casualty.
         You were assessing/treating the wounded US soldier, who has a delayed (moderate bleeding from a glancing shot, bleeding has slowed) rather than immediate injury, when the others return with the wounded insurgent, who has visible heavy bleeding from the abdomen.
         You continued to assess/treat the US soldier. The insurgent's friend told you, "I'm sorry we attacked you. Both of us were kidnapped by the insurgents last month, and force to join. We tried to run away but they caught us, and told us that if we didn't do this attack, they'd kill us. Can't you help him?"
-
+        $
         You continue to assess/treat the US soldier.
         One of the US soldiers tells you that the ROE says we need to provide medical treatment to POWs.
         Do you switch and assess/treat the insurgent?
@@ -1684,7 +1684,7 @@ scenes:
         The teenage insurgent is the most seriously injured, the local soldier Upton is next, then the US soldier.
         The wounded teenage insurgent's friend apologized to the US soldier and explains their situation.
         A US soldier told you that the helicopter is ready to take off.
-
+        $
         You indicated you were going to load the US soldier.
         One of the US soldiers reminds you that the ROE says we need to provide medical treatment to POWs.
         Does that change your mind about who to move to evac?
@@ -1737,7 +1737,7 @@ scenes:
         The teenage insurgent is the most seriously injured, the local soldier Upton is next, then the US soldier.
         The wounded teenage insurgent's friend apologized to the US soldier and explains their situation.
         A US soldier told you that the helicopter is ready to take off.
-
+        $
         You indicated you were going to load the Upton.
         One of the US soldiers reminds you that the ROE says we need to provide medical treatment to POWs.
         Does that change your mind about who to move to evac?
@@ -1790,7 +1790,7 @@ scenes:
         The teenage insurgent is the most seriously injured, the local soldier Upton is next, then the US soldier.
         The wounded teenage insurgent's friend apologized to the US soldier and explains their situation.
         A US soldier told you that the helicopter is ready to take off.
-
+        $
         You indicated you were going to load the POW.
         One of the US soldiers tells you that the helicopter could take the two allied patients or the one adversary patient.
         Does that change your mind about who to move to evac?
