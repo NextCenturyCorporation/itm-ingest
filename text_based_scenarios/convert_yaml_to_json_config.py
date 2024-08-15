@@ -103,6 +103,16 @@ def partition_doc(scenario):
             'patients': filtered_characters,
             'events': event_messages
         }
+
+        # Add mission information if present in the scene's state
+        if 'state' in scene and 'mission' in scene['state']:
+            mission = scene['state']['mission']
+            template_element['mission'] = {
+                'roe': mission.get('roe', ''),
+                'medical_policies': mission.get('medical_policies', []),
+                'unstructured': mission.get('unstructured', '')
+            }
+
         page['elements'].append(template_element)
 
         choices = []
