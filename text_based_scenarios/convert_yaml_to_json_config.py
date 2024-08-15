@@ -39,6 +39,7 @@ def partition_doc(scenario):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
+    starting_mission = scenario['state'].get('mission', {})
     starting_supplies = scenario['state']['supplies']
     initial_characters = scenario['state'].get('characters', [])
     initial_events = scenario['state'].get('events', [])
@@ -104,14 +105,15 @@ def partition_doc(scenario):
             'events': event_messages
         }
 
-        # Add mission information if present in the scene's state
-        if 'state' in scene and 'mission' in scene['state']:
-            mission = scene['state']['mission']
+        mission = starting_mission if is_first_scene else scene.get('state', {}).get('mission', {})
+        if mission:
             template_element['mission'] = {
                 'roe': mission.get('roe', ''),
                 'medical_policies': mission.get('medical_policies', []),
                 'unstructured': mission.get('unstructured', '')
             }
+        else:
+            template_element['mission'] = None
 
         page['elements'].append(template_element)
 
