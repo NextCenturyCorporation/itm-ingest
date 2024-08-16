@@ -30,7 +30,7 @@ def get_scene_text(scene, is_first_scene, starting_context):
     
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario):
+def partition_doc(scenario, transition_scenes):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
@@ -54,7 +54,7 @@ def partition_doc(scenario):
     all_characters = initial_characters.copy()
     scene_conditions = {}
 
-    def create_page(scene, is_first_scene):
+    def create_page(scene, is_first_scene, transition_info=None):
         page = {
             'name': scene['id'],
             'scenario_id': scenario_id,
@@ -107,6 +107,9 @@ def partition_doc(scenario):
             'events': event_messages,
             'blockedVitals': blocked_vitals
         }
+
+        if transition_info:
+            template_element['transitionInfo'] = transition_info
 
         mission = starting_mission if is_first_scene else scene.get('state', {}).get('mission', {})
         if mission:
@@ -162,7 +165,7 @@ def partition_doc(scenario):
 
         return visible_characters
 
-    def process_scene(scene_id, is_first_scene):
+    def process_scene(scene_id, is_first_scene, transition_info=None):
         if scene_id in processed_scenes:
             return
         processed_scenes.add(scene_id)
@@ -171,7 +174,18 @@ def partition_doc(scenario):
         if not scene.get('action_mapping'):
             return
 
-        page = create_page(scene, is_first_scene)
+        if scenario_id in transition_scenes and scene['id'] in transition_scenes[scenario_id]:
+            transition_info = {
+                'unstructured': process_unstructured_text(scene['state']['unstructured']),
+                'action': scene['action_mapping'][0]['unstructured']
+            }
+            # Skip creating a page for this transition scene
+            next_scene_id = scene['action_mapping'][0].get('next_scene')
+            if next_scene_id:
+                process_scene(next_scene_id, False, transition_info)
+            return
+
+        page = create_page(scene, is_first_scene, transition_info)
         doc['pages'].append(page)
 
         for action in scene['action_mapping']:
@@ -203,6 +217,11 @@ def main():
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
 
+    transition_scenes = {
+        'DryRunEval-MJ5-eval': ['Scene 2'],
+        'DryRunEval-MJ4-eval': ['Transition to Scene 2']
+    }
+
     all_docs = []
 
     for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre')]:
@@ -216,7 +235,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario)
+                    doc = partition_doc(scenario, transition_scenes)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
