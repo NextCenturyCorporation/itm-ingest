@@ -16,13 +16,8 @@ def add_surveyjs_configs(doc):
     return doc
 
 def process_unstructured_text(text):
-    # split by $ if necessary
     parts = text.split('$')
-    
-    if len(parts) > 1:
-        return parts[1].strip()
-
-    return text.strip()
+    return parts[1].strip() if len(parts) > 1 else text.strip()
 
 def get_scene_text(scene, is_first_scene, starting_context):
     if is_first_scene:
@@ -81,8 +76,15 @@ def partition_doc(scenario):
         action_character_ids = set(action.get('character_id') for action in scene['action_mapping'] if 'character_id' in action)
         filtered_characters = [
             character for character in scene_characters
-            if character['id'] in action_character_ids
+            if character['id'].lower() in {id.lower() for id in action_character_ids}
         ]
+
+        blocked_vitals = []
+        for character in filtered_characters:
+            for action in scene['action_mapping']:
+                if action['action_type'] == 'CHECK_ALL_VITALS' and action['character_id'].lower() == character['id'].lower():
+                    blocked_vitals.append(character['id'])
+                    break 
 
         events = scene.get('state', {}).get('events', []) if not is_first_scene else initial_events
 
@@ -102,7 +104,8 @@ def partition_doc(scenario):
             'unstructured': processed_unstructured,
             'supplies': current_supplies,
             'patients': filtered_characters,
-            'events': event_messages
+            'events': event_messages,
+            'blockedVitals': blocked_vitals
         }
 
         mission = starting_mission if is_first_scene else scene.get('state', {}).get('mission', {})
@@ -187,10 +190,7 @@ def partition_doc(scenario):
     return doc
 
 def upload_config(docs, textbased_mongo_collection):
-    # clear the existing collection
     textbased_mongo_collection.delete_many({})
-    
-    # insert all new scenarios
     if docs:
         textbased_mongo_collection.insert_many(docs)
 
