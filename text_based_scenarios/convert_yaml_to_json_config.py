@@ -122,7 +122,9 @@ def partition_doc(scenario):
         else:
             all_characters = scene_characters if scene_characters else initial_characters.copy()
         
-        return all_characters
+        visible_characters = [char for char in all_characters if not char.get('unseen', False)]
+
+        return visible_characters
 
     def process_scene(scene_id, is_first_scene):
         if scene_id in processed_scenes:
@@ -151,8 +153,13 @@ def partition_doc(scenario):
     doc = add_surveyjs_configs(doc)
     return doc
 
-def upload_config(doc, textbased_mongo_collection):
-    textbased_mongo_collection.insert_one(doc)
+def upload_config(docs, textbased_mongo_collection):
+    # clear the existing collection
+    textbased_mongo_collection.delete_many({})
+    
+    # insert all new scenarios
+    if docs:
+        textbased_mongo_collection.insert_many(docs)
 
 def main():
     client = MongoClient(config('MONGO_URL'))
@@ -162,6 +169,8 @@ def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
+
+    all_docs = []
 
     for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre')]:
         if not os.path.exists(folder):
@@ -176,10 +185,14 @@ def main():
                         scenario = yaml.safe_load(file)
                     doc = partition_doc(scenario)
                     doc['eval'] = eval_type
-                    upload_config(doc, textbased_mongo_collection)
-                    print(f"Processed and uploaded: {filename}")
+                    all_docs.append(doc)
+                    print(f"Processed: {filename}")
                 except Exception as e:
                     print(f"Error processing {filename}: {str(e)}")
+        
+    upload_config(all_docs, textbased_mongo_collection)
+    print(f"Uploaded {len(all_docs)} scenarios, replacing the existing collection.")
+
 
 if __name__ == '__main__':
     main()
