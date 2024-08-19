@@ -1,6 +1,5 @@
 import yaml
 import os
-import json
 from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
@@ -49,10 +48,25 @@ def partition_doc(scenario, transition_scenes):
         if 'id' not in scene:
             scene['id'] = f"scene_{i+1}"
 
-    scene_map = OrderedDict((scene['id'], scene) for scene in scenes)
-    processed_scenes = set()
-    all_characters = initial_characters.copy()
     scene_conditions = {}
+    all_characters = initial_characters.copy()
+
+    def get_scene_characters(scene):
+        nonlocal all_characters
+        
+        scene_characters = scene.get('state', {}).get('characters', [])
+        
+        if scene.get('persist_characters', False):
+            char_dict = {char['id']: char for char in all_characters}
+            for new_char in scene_characters:
+                char_dict[new_char['id']] = new_char
+            all_characters = list(char_dict.values())
+        else:
+            all_characters = scene_characters if scene_characters else initial_characters.copy()
+        
+        visible_characters = [char for char in all_characters if not char.get('unseen', False)]
+
+        return visible_characters
 
     def create_page(scene, is_first_scene, transition_info=None):
         page = {
@@ -61,11 +75,6 @@ def partition_doc(scenario, transition_scenes):
             'scenario_name': scenario['name'],
             'elements': []
         }
-
-        if not is_first_scene:
-            conditions = scene_conditions.get(scene['id'], [])
-            if conditions:
-                page['visibleIf'] = " or ".join(conditions)
 
         unstructured = get_scene_text(scene, is_first_scene, starting_context)
         processed_unstructured = process_unstructured_text(unstructured)
@@ -99,7 +108,7 @@ def partition_doc(scenario, transition_scenes):
 
         template_element = {
             'name': 'template ' + str(page['name']),
-            'title': ' ',
+            'title': str(page['name']),
             'type': 'medicalScenario',
             'unstructured': processed_unstructured,
             'supplies': current_supplies,
@@ -123,9 +132,23 @@ def partition_doc(scenario, transition_scenes):
 
         page['elements'].append(template_element)
 
+        # Separate actions with and without action_conditions
+        regular_actions = []
+        conditional_actions = {}
+
+        for action in scene['action_mapping']:
+            if 'action_conditions' in action and 'probe_responses' in action['action_conditions']:
+                probe_response = action['action_conditions']['probe_responses'][0]
+                if probe_response not in conditional_actions:
+                    conditional_actions[probe_response] = []
+                conditional_actions[probe_response].append(action)
+            else:
+                regular_actions.append(action)
+
+        # Create the main question
         choices = []
         question_mapping = {}
-        for action in scene['action_mapping']:
+        for action in regular_actions:
             choices.append({
                 "value": action['unstructured'],
                 "text": action['unstructured']
@@ -134,71 +157,84 @@ def partition_doc(scenario, transition_scenes):
                 "probe_id": action['probe_id'],
                 "choice": action.get('choice', '')
             }
+            if 'next_scene' in action:
+                question_mapping[action['unstructured']]['next_scene'] = action['next_scene']
+                next_scene = action['next_scene']
+                condition = f"{{probe {scene['id']}}} = '{action['unstructured']}'"
+                if next_scene not in scene_conditions:
+                    scene_conditions[next_scene] = []
+                scene_conditions[next_scene].append(condition)
 
-        question_element = {
+        main_question_element = {
             'type': 'radiogroup',
             'choices': choices,
             'isRequired': True,
             'title': 'What action do you take?',
             'name': 'probe ' + str(page['name']),
-            'probe_id': scene['action_mapping'][0]['probe_id'] if scene['action_mapping'] else '',
+            'probe_id': regular_actions[0]['probe_id'] if regular_actions else '',
             'question_mapping': question_mapping
         }
-        page['elements'].append(question_element)
+        page['elements'].append(main_question_element)
+
+        # Create conditional questions
+        for i, (probe_response, actions) in enumerate(conditional_actions.items()):
+            corresponding_action = next(
+                (a for a in regular_actions if a.get('choice') == probe_response),
+                None
+            )
+
+            if corresponding_action:
+                choices = []
+                question_mapping = {}
+                for action in actions:
+                    choices.append({
+                        "value": action['unstructured'],
+                        "text": action['unstructured']
+                    })
+                    question_mapping[action['unstructured']] = {
+                        "probe_id": action['probe_id'],
+                        "choice": action.get('choice', '')
+                    }
+                    if 'next_scene' in action:
+                        question_mapping[action['unstructured']]['next_scene'] = action['next_scene']
+                        next_scene = action['next_scene']
+                        condition = f"({{probe {scene['id']}}} = '{corresponding_action['unstructured']}') and ({{probe {corresponding_action['probe_id']}}} = '{action['unstructured']}')"
+                        if next_scene not in scene_conditions:
+                            scene_conditions[next_scene] = []
+                        scene_conditions[next_scene].append(condition)
+
+                conditional_question_element = {
+                    'type': 'radiogroup',
+                    'choices': choices,
+                    'isRequired': True,
+                    'title': 'Why did you choose the previous action?',
+                    'name': f'probe {corresponding_action["probe_id"]}',
+                    'probe_id': corresponding_action['probe_id'],
+                    'question_mapping': question_mapping,
+                    'visibleIf': f'{{probe {page["name"]}}} = "{corresponding_action["unstructured"]}"'
+                }
+                page['elements'].append(conditional_question_element)
 
         return page
 
-    def get_scene_characters(scene):
-        nonlocal all_characters
-        
-        scene_characters = scene.get('state', {}).get('characters', [])
-        
-        if scene.get('persist_characters', False):
-            char_dict = {char['id']: char for char in all_characters}
-            for new_char in scene_characters:
-                char_dict[new_char['id']] = new_char
-            all_characters = list(char_dict.values())
-        else:
-            all_characters = scene_characters if scene_characters else initial_characters.copy()
-        
-        visible_characters = [char for char in all_characters if not char.get('unseen', False)]
-
-        return visible_characters
-
-    def process_scene(scene_id, is_first_scene, transition_info=None):
-        if scene_id in processed_scenes:
-            return
-        processed_scenes.add(scene_id)
-
-        scene = scene_map[scene_id]
-        if not scene.get('action_mapping'):
-            return
-
+    # Process scenes in order
+    for scene in scenes:
         if scenario_id in transition_scenes and scene['id'] in transition_scenes[scenario_id]:
             transition_info = {
                 'unstructured': process_unstructured_text(scene['state']['unstructured']),
                 'action': scene['action_mapping'][0]['unstructured']
             }
             # Skip creating a page for this transition scene
-            next_scene_id = scene['action_mapping'][0].get('next_scene')
-            if next_scene_id:
-                process_scene(next_scene_id, False, transition_info)
-            return
+            continue
 
-        page = create_page(scene, is_first_scene, transition_info)
+        is_first_scene = (scene['id'] == scenario.get('first_scene') or (not scenario.get('first_scene') and scene == scenes[0]))
+        page = create_page(scene, is_first_scene)
         doc['pages'].append(page)
 
-        for action in scene['action_mapping']:
-            next_scene = action.get('next_scene')
-            if next_scene:
-                condition = f"{{probe {scene['id']}}} = '{action['unstructured']}'"
-                if next_scene not in scene_conditions:
-                    scene_conditions[next_scene] = []
-                scene_conditions[next_scene].append(condition)
-
-    for scene_id in scene_map.keys():
-        is_first_scene = (scene_id == scenario.get('first_scene') or (not scenario.get('first_scene') and scene_id == next(iter(scene_map))))
-        process_scene(scene_id, is_first_scene)
+    # Apply visibility conditions
+    for page in doc['pages']:
+        if page['name'] in scene_conditions:
+            page['visibleIf'] = " or ".join(scene_conditions[page['name']])
 
     doc = add_surveyjs_configs(doc)
     return doc
