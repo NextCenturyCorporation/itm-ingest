@@ -29,7 +29,7 @@ def get_scene_text(scene, is_first_scene, starting_context):
     
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario, transition_scenes):
+def partition_doc(scenario, transition_scenes, always_visible_edge_case):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
@@ -218,23 +218,32 @@ def partition_doc(scenario, transition_scenes):
         return page
 
     # Process scenes in order
+    transition_info = None
     for scene in scenes:
-        if scenario_id in transition_scenes and scene['id'] in transition_scenes[scenario_id]:
+        is_transition = scenario_id in transition_scenes and scene['id'] in transition_scenes[scenario_id]
+        
+        if is_transition:
             transition_info = {
                 'unstructured': process_unstructured_text(scene['state']['unstructured']),
                 'action': scene['action_mapping'][0]['unstructured']
             }
+            # Add event information to transition_info if it exists
+            if 'events' in scene['state']:
+                transition_info['events'] = scene['state']['events']
             # Skip creating a page for this transition scene
             continue
 
         is_first_scene = (scene['id'] == scenario.get('first_scene') or (not scenario.get('first_scene') and scene == scenes[0]))
-        page = create_page(scene, is_first_scene)
+        page = create_page(scene, is_first_scene, transition_info)
         doc['pages'].append(page)
+        transition_info = None  # Reset transition_info after use
 
     # Apply visibility conditions
     for page in doc['pages']:
         if page['name'] in scene_conditions:
             page['visibleIf'] = " or ".join(scene_conditions[page['name']])
+            if page['scenario_id'] in always_visible_edge_case and page['name'] in always_visible_edge_case[page['scenario_id']]:
+                page['visibleIf'] = None
 
     doc = add_surveyjs_configs(doc)
     return doc
@@ -255,7 +264,12 @@ def main():
 
     transition_scenes = {
         'DryRunEval-MJ5-eval': ['Scene 2'],
-        'DryRunEval-MJ4-eval': ['Transition to Scene 2', 'Transition to Scene 4']
+        'DryRunEval-MJ4-eval': ['Transition to Scene 2'],
+        'DryRunEval-MJ2-eval': ['Transition to Scene 4']
+    }
+
+    always_visible_edge_case = {
+        'DryRunEval-MJ2-eval': ['Scene 4']
     }
 
     all_docs = []
@@ -271,7 +285,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario, transition_scenes)
+                    doc = partition_doc(scenario, transition_scenes, always_visible_edge_case)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
