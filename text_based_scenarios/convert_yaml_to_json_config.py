@@ -132,16 +132,15 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
 
         page['elements'].append(template_element)
 
-        # Separate actions with and without action_conditions
         regular_actions = []
-        conditional_actions = {}
+        conditional_actions = []
 
         for action in scene['action_mapping']:
-            if 'action_conditions' in action and 'probe_responses' in action['action_conditions']:
-                probe_response = action['action_conditions']['probe_responses'][0]
-                if probe_response not in conditional_actions:
-                    conditional_actions[probe_response] = []
-                conditional_actions[probe_response].append(action)
+            if 'action_conditions' in action:
+                if action.get('action_condition_semantics') == 'not':
+                    regular_actions.append(action)
+                else:
+                    conditional_actions.append(action)
             else:
                 regular_actions.append(action)
 
@@ -176,44 +175,60 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
         }
         page['elements'].append(main_question_element)
 
-        # Create conditional questions
-        for i, (probe_response, actions) in enumerate(conditional_actions.items()):
-            corresponding_action = next(
-                (a for a in regular_actions if a.get('choice') == probe_response),
-                None
-            )
+        # Create conditional question
+        if conditional_actions:
+            choices = []
+            question_mapping = {}
+            for action in conditional_actions:
+                '''
+                Some of the 'why probe' questions options are only visible if a certain action is taken
+                Others are always visible so long as the first question isn't empty
+                i.e can only say "i am evacing him because he is a us soldier" if you chose to evac the us soldier
+                But you could always select 'I chose to evac them because they are the most injured/deserving'
+                '''
+                visible_if = 'probe_responses' in action['action_conditions']
 
-            if corresponding_action:
-                choices = []
-                question_mapping = {}
-                for action in actions:
+                if visible_if:
+                    dependent_response = action['action_conditions']['probe_responses'][0]
+                    matching_action_text = ""
+                    for reg_action in regular_actions:
+                        if reg_action['choice'] == dependent_response:
+                            matching_action_text = reg_action['unstructured']
+                            break
+                    choices.append({
+                        "value": action['unstructured'],
+                        "text": action['unstructured'],
+                        'visibleIf':  f"({{probe {scene['id']}}} == '{matching_action_text}')"
+                    })
+                else:
                     choices.append({
                         "value": action['unstructured'],
                         "text": action['unstructured']
                     })
-                    question_mapping[action['unstructured']] = {
-                        "probe_id": action['probe_id'],
-                        "choice": action.get('choice', '')
-                    }
-                    if 'next_scene' in action:
-                        question_mapping[action['unstructured']]['next_scene'] = action['next_scene']
-                        next_scene = action['next_scene']
-                        condition = f"({{probe {scene['id']}}} = '{corresponding_action['unstructured']}') and ({{probe {corresponding_action['probe_id']}}} = '{action['unstructured']}')"
-                        if next_scene not in scene_conditions:
-                            scene_conditions[next_scene] = []
-                        scene_conditions[next_scene].append(condition)
 
-                conditional_question_element = {
-                    'type': 'radiogroup',
-                    'choices': choices,
-                    'isRequired': True,
-                    'title': 'Why did you choose the previous action?',
-                    'name': f'probe {corresponding_action["probe_id"]}',
-                    'probe_id': corresponding_action['probe_id'],
-                    'question_mapping': question_mapping,
-                    'visibleIf': f'{{probe {page["name"]}}} = "{corresponding_action["unstructured"]}"'
+                question_mapping[action['unstructured']] = {
+                    "probe_id": action['probe_id'],
+                    "choice": action.get('choice', '')
                 }
-                page['elements'].append(conditional_question_element)
+                if 'next_scene' in action:
+                    question_mapping[action['unstructured']]['next_scene'] = action['next_scene']
+                    next_scene = action['next_scene']
+                    condition = f"({{probe {scene['id']}}} notempty) and ({{probe {scene['id']}_conditional}} = '{action['unstructured']}')"
+                    if next_scene not in scene_conditions:
+                        scene_conditions[next_scene] = []
+                    scene_conditions[next_scene].append(condition)
+
+            conditional_question_element = {
+                'type': 'radiogroup',
+                'choices': choices,
+                'isRequired': True,
+                'title': 'Why did you choose that action?',
+                'name': f'probe {scene["id"]}_conditional',
+                'probe_id': conditional_actions[0]['probe_id'],
+                'question_mapping': question_mapping,
+                'visibleIf': f'{{probe {scene["id"]}}} notempty'
+            }
+            page['elements'].append(conditional_question_element)
 
         return page
 
