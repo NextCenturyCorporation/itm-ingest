@@ -255,7 +255,7 @@ def main():
 
     transition_scenes = {
         'DryRunEval-MJ5-eval': ['Scene 2'],
-        'DryRunEval-MJ4-eval': ['Transition to Scene 2']
+        'DryRunEval-MJ4-eval': ['Transition to Scene 2', 'Transition to Scene 4']
     }
 
     all_docs = []
