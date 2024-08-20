@@ -15,7 +15,7 @@ def add_surveyjs_configs(doc):
     return doc
 
 def process_unstructured_text(text):
-    parts = text.split('$')
+    parts = text.split('<text_scenario_line_break>')
     return parts[1].strip() if len(parts) > 1 else text.strip()
 
 def get_scene_text(scene, is_first_scene, starting_context):
