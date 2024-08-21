@@ -88,12 +88,11 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
             if character['id'].lower() in {id.lower() for id in action_character_ids}
         ]
 
-        blocked_vitals = []
-        for character in filtered_characters:
-            for action in scene['action_mapping']:
-                if action['action_type'] == 'CHECK_ALL_VITALS' and action['character_id'].lower() == character['id'].lower():
-                    blocked_vitals.append(character['id'])
-                    break 
+        blocked_vitals = [
+            action['character_id']
+            for action in scene['action_mapping']
+            if action['action_type'] == 'CHECK_ALL_VITALS'
+        ]
 
         events = scene.get('state', {}).get('events', []) if not is_first_scene else initial_events
 

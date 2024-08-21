@@ -1142,7 +1142,7 @@ scenes:
       unstructured: >
 
         Immediately after the helicopter lands, there is an explosion and gunfire. 
-        After a moment, you hear a radio transmission: "There's been an attack. Keep the helicopter on the ground until you get an all clear." #Should this be an EVENT?
+        After a moment, you hear a radio transmission: "There's been an attack. Keep the helicopter on the ground until you get an all clear."
         Springer has sustained a further injury in the attack, and is now extremely injured (expectant, severe head injury, no pulse, no breathing).
         Upton is now inside the building.
         While you are assessing Springer, you hear shouts for help from behind the building.
@@ -1835,7 +1835,7 @@ scenes:
         The wounded teenage attacker's friend apologized to the US soldier and explains their situation.
         A US soldier told you that the helicopter is ready to take off.
         <text_scenario_line_break>
-        You indicated you were going to load the Upton.
+        You indicated you were going to load Upton.
         One of the US soldiers reminds you that the ROE says we need to provide medical treatment to POWs.
         Does that change your mind about who to move to evac?
       events:
