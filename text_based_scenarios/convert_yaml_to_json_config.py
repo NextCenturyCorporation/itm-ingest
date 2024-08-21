@@ -4,6 +4,23 @@ from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
 
+always_visible_characters = {
+    'DryRunEval-MJ5-eval': {
+        'Scene 3': ['us_soldier'],
+        'Probe 8': ['us_soldier']
+    }
+}
+
+transition_scenes = {
+    'DryRunEval-MJ5-eval': ['Scene 2'],
+    'DryRunEval-MJ4-eval': ['Transition to Scene 2'],
+    'DryRunEval-MJ2-eval': ['Transition to Scene 4']
+}
+
+always_visible_edge_case = {
+    'DryRunEval-MJ2-eval': ['Scene 4']
+}
+
 def add_surveyjs_configs(doc):
     doc['showQuestionNumbers'] = False
     doc['showPrevButton'] = False
@@ -29,7 +46,7 @@ def get_scene_text(scene, is_first_scene, starting_context):
     
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario, transition_scenes, always_visible_edge_case):
+def partition_doc(scenario):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
@@ -64,7 +81,18 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
         else:
             all_characters = scene_characters if scene_characters else initial_characters.copy()
         
-        visible_characters = [char for char in all_characters if not char.get('unseen', False)]
+        action_character_ids = set(action.get('character_id') for action in scene['action_mapping'] if 'character_id' in action)
+        
+        # Get the list of always visible characters for this scene
+        always_visible = always_visible_characters.get(scenario_id, {}).get(scene['id'], [])
+        
+        visible_characters = []
+        for char in all_characters:
+            if not char.get('unseen', False):
+                if (char['id'].lower() in {id.lower() for id in action_character_ids} or 
+                    char['id'] in always_visible or
+                    any(char['id'] == action.get('character_id') for action in scene['action_mapping'])):
+                    visible_characters.append(char)
 
         return visible_characters
 
@@ -81,12 +109,6 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
         scene_characters = get_scene_characters(scene)
-
-        action_character_ids = set(action.get('character_id') for action in scene['action_mapping'] if 'character_id' in action)
-        filtered_characters = [
-            character for character in scene_characters
-            if character['id'].lower() in {id.lower() for id in action_character_ids}
-        ]
 
         blocked_vitals = [
             action['character_id']
@@ -111,7 +133,7 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
             'type': 'medicalScenario',
             'unstructured': processed_unstructured,
             'supplies': current_supplies,
-            'patients': filtered_characters,
+            'patients': scene_characters,
             'events': event_messages,
             'blockedVitals': blocked_vitals
         }
@@ -179,12 +201,6 @@ def partition_doc(scenario, transition_scenes, always_visible_edge_case):
             choices = []
             question_mapping = {}
             for action in conditional_actions:
-                '''
-                Some of the 'why probe' questions options are only visible if a certain action is taken
-                Others are always visible so long as the first question isn't empty
-                i.e can only say "i am evacing him because he is a us soldier" if you chose to evac the us soldier
-                But you could always select 'I chose to evac them because they are the most injured/deserving'
-                '''
                 visible_if = 'probe_responses' in action['action_conditions']
 
                 if visible_if:
@@ -276,16 +292,6 @@ def main():
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
 
-    transition_scenes = {
-        'DryRunEval-MJ5-eval': ['Scene 2'],
-        'DryRunEval-MJ4-eval': ['Transition to Scene 2'],
-        'DryRunEval-MJ2-eval': ['Transition to Scene 4']
-    }
-
-    always_visible_edge_case = {
-        'DryRunEval-MJ2-eval': ['Scene 4']
-    }
-
     all_docs = []
 
     for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre')]:
@@ -299,7 +305,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario, transition_scenes, always_visible_edge_case)
+                    doc = partition_doc(scenario)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
