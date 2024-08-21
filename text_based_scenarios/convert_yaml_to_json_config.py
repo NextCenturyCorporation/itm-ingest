@@ -8,6 +8,9 @@ always_visible_characters = {
     'DryRunEval-MJ5-eval': {
         'Scene 3': ['us_soldier'],
         'Probe 8': ['us_soldier']
+    },
+    'DryRunEval-MJ4-eval': {
+        'Scene 2': ['US soldier']
     }
 }
 
@@ -89,10 +92,10 @@ def partition_doc(scenario):
         visible_characters = []
         for char in all_characters:
             if not char.get('unseen', False):
-                if (char['id'].lower() in {id.lower() for id in action_character_ids} or 
-                    char['id'] in always_visible or
-                    any(char['id'] == action.get('character_id') for action in scene['action_mapping'])):
+                if (char['id'].lower() in {id.lower() for id in action_character_ids} or any(char['id'] == action.get('character_id') for action in scene['action_mapping'])):
                     visible_characters.append(char)
+            if char['id'] in always_visible:
+                visible_characters.append(char)
 
         return visible_characters
 
