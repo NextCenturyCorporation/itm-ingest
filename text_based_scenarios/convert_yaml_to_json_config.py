@@ -89,15 +89,15 @@ def partition_doc(scenario):
         # Get the list of always visible characters for this scene
         always_visible = always_visible_characters.get(scenario_id, {}).get(scene['id'], [])
         
-        visible_characters = []
+        visible_characters = set()
         for char in all_characters:
             if not char.get('unseen', False):
                 if (char['id'].lower() in {id.lower() for id in action_character_ids} or any(char['id'] == action.get('character_id') for action in scene['action_mapping'])):
-                    visible_characters.append(char)
+                    visible_characters.add(char['id'])
             if char['id'] in always_visible:
-                visible_characters.append(char)
+                visible_characters.add(char['id'])
 
-        return visible_characters
+        return [char for char in all_characters if char['id'] in visible_characters]
 
     def create_page(scene, is_first_scene, transition_info=None):
         page = {
@@ -111,6 +111,14 @@ def partition_doc(scenario):
         processed_unstructured = process_unstructured_text(unstructured)
         current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
         
+        if transition_info:
+            # characters introduced in transition scenes
+            if 'characters' in transition_info:
+                for char in transition_info['characters']:
+                    if char not in all_characters:
+                        all_characters.append(char)
+                        char['unseen'] = False 
+
         scene_characters = get_scene_characters(scene)
 
         blocked_vitals = [
@@ -260,10 +268,13 @@ def partition_doc(scenario):
                 'unstructured': process_unstructured_text(scene['state']['unstructured']),
                 'action': scene['action_mapping'][0]['unstructured']
             }
-            # Add event information to transition_info if it exists
+            # event information to transition_info if it exists
             if 'events' in scene['state']:
                 transition_info['events'] = scene['state']['events']
-            # Skip creating a page for this transition scene
+            # character information to transition_info
+            if 'characters' in scene['state']:
+                transition_info['characters'] = scene['state']['characters']
+            # skip creating a page for this transition scene
             continue
 
         is_first_scene = (scene['id'] == scenario.get('first_scene') or (not scenario.get('first_scene') and scene == scenes[0]))
