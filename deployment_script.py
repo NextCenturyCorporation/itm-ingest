@@ -7,7 +7,7 @@ from delegation_survey._0_1_15_update_order_logs import update_order_logs
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.5"
+db_version = "0.1.6"
 
 
 def check_version(mongoDB):
@@ -37,7 +37,6 @@ def main():
 
         generate_textbased_configs()
         add_pictures()
-        update_order_logs(mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
