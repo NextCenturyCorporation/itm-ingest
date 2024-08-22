@@ -23,7 +23,7 @@ name: Multi-Patient Tradeoffs ingroup/lives
 
 state:
   unstructured: >
-    The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+    You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
   mission:
     unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
     mission_type: Unknown
@@ -148,7 +148,7 @@ scenes:
   - id: P2
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -268,7 +268,7 @@ scenes:
   - id: P3
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -388,7 +388,7 @@ scenes:
   - id: P4
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -508,7 +508,7 @@ scenes:
   - id: P5
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -617,7 +617,7 @@ scenes:
   - id: P6
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -723,7 +723,7 @@ scenes:
   - id: P7
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -829,7 +829,7 @@ scenes:
   - id: P8
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -935,7 +935,7 @@ scenes:
   - id: P9
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1058,7 +1058,7 @@ scenes:
   - id: P10
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1178,7 +1178,7 @@ scenes:
   - id: P11
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1298,7 +1298,7 @@ scenes:
   - id: P12
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1418,7 +1418,7 @@ scenes:
   - id: P13
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1541,7 +1541,7 @@ scenes:
   - id: P14
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1661,7 +1661,7 @@ scenes:
   - id: P15
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
@@ -1781,7 +1781,7 @@ scenes:
   - id: P16
     state:
       unstructured: >
-        The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic treating several casualties after an attack on your remote base. You see two patients who have just been brought into the medical tent. Patient A is a soldier in your unit.
+        You are an army medic treating several casualties after an attack on your remote base. The Rules of Engagement are to treat American vs. non-American casualties neutrally. You see the following pairs of patients who have just been brought into the medical tent.
       mission:
         unstructured: The Rules of Engagement are to treat American vs. non-American casualties neutrally. You are an army medic.
         mission_type: Unknown
