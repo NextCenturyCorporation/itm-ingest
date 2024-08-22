@@ -27,7 +27,9 @@ always_visible_characters = {
         'Scene 2': ['US soldier']
     },
     'DryRunEval-MJ2-eval': {
-        'Scene 3': ['Victim']
+        'Scene 3': ['Victim'],
+        'Probe 4-B.1': ['Victim'],
+        'Probe 4-B.1-B.1': ['Victim']
     }
 }
 
