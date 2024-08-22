@@ -4,13 +4,30 @@ from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
 
+v_gauze = 'Response 3-B.2-A-gauze-v'
+s_gauze = 'Response 3-B.2-B-gauze-s'
+special_case_probe = {
+    'DryRunEval-MJ2-eval': {
+        'Scene 2A': {
+            '5 Babson / 0 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, v_gauze],
+            '4 Babson / 1 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, s_gauze],
+            '3 Babson / 2 Alderson': [v_gauze, v_gauze, v_gauze, s_gauze, s_gauze],
+            'Do not treat either patient with gauze, look for new patients': 'Response 3-B.2-C'
+        }
+    }
+}
+
 always_visible_characters = {
     'DryRunEval-MJ5-eval': {
         'Scene 3': ['us_soldier'],
-        'Probe 8': ['us_soldier']
+        'Probe 8': ['us_soldier'],
+        'Probe 9-C.1': ['us_soldier']
     },
     'DryRunEval-MJ4-eval': {
         'Scene 2': ['US soldier']
+    },
+    'DryRunEval-MJ2-eval': {
+        'Scene 3': ['Victim']
     }
 }
 
@@ -186,10 +203,16 @@ def partition_doc(scenario):
                 "value": action['unstructured'],
                 "text": action['unstructured']
             })
-            question_mapping[action['unstructured']] = {
-                "probe_id": action['probe_id'],
-                "choice": action.get('choice', '')
-            }
+            if scenario_id in special_case_probe and scene['id'] in special_case_probe[scenario_id]:
+                question_mapping[action['unstructured']] = {
+                    "probe_id": action['probe_id'],
+                    "choice": special_case_probe[scenario_id][scene['id']][action['unstructured']]
+                }
+            else:
+                question_mapping[action['unstructured']] = {
+                    "probe_id": action['probe_id'],
+                    "choice": action.get('choice', '')
+                }
             if 'next_scene' in action:
                 question_mapping[action['unstructured']]['next_scene'] = action['next_scene']
                 next_scene = action['next_scene']

@@ -322,6 +322,7 @@ scenes:
         A person from your squad says, "You have 5 units of hemostatic gauze in your medical kit. It looks like the shooter's bleeding can be controlled with 2 units of gauze, and the victim's bleeding can be controlled with 5 units of gauze."
         You are told that there may be another injured person in the market.
         You may continue to treat the existing patients as needed or go to this other potential patient.
+        How do you allocate the 5 units of gauze you have available?
       events:
         - unstructured: A civilian bystander passes through the room and says, "I think there might be someone injured over in the other part of the market."
           type: inform
@@ -357,31 +358,28 @@ scenes:
     action_mapping:
       - action_id: treat_Shooter
         action_type: APPLY_TREATMENT
-        unstructured: Apply gauze to the shooter.
-        repeatable: true
+        unstructured: 5 Babson / 0 Alderson
         character_id: Shooter
         parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
-        choice: Response 3-B.2-A-gauze-s
+        choice: Response 3-B.2-A-gauze-v
       - action_id: treat_Victim
         action_type: APPLY_TREATMENT
-        unstructured: Apply gauze to the victim.
-        repeatable: true
+        unstructured: 4 Babson / 1 Alderson
         character_id: Victim
         parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-B-gauze-v
-      - action_id: go to US military member
-        action_type: MOVE_TO
-        unstructured: Done treating these existing patients for now.  Go to the US military member.
-        repeatable: false
-        character_id: US military member
+      - action_id: treat_Victim
+        action_type: APPLY_TREATMENT
+        unstructured: 3 Babson / 2 Alderson
+        character_id: Victim
+        parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
-        choice: Response 3-B.2-C
+        choice: Response 3-B.2-B-gauze-s
       - action_id: search
         action_type: SEARCH
-        unstructured: Done treating these existing patients for now.  Go look for other patients.
-        repeatable: false
+        unstructured: Do not treat either patient with gauze, look for new patients
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-C
     restricted_actions:
@@ -472,15 +470,8 @@ scenes:
     action_mapping:
       - action_id: go_back_to_Shooter
         action_type: MOVE_TO
-        unstructured: Go back to the more seriously injured patients.
+        unstructured: Go back to the previous patients.
         character_id: Shooter
-        probe_id: Probe 4
-        choice: Response 4-A
-        next_scene: Scene 4
-      - action_id: go_back_to_Victim
-        action_type: MOVE_TO
-        unstructured: Go back to the more seriously injured casualties.
-        character_id: Victim
         probe_id: Probe 4
         choice: Response 4-A
         next_scene: Scene 4
@@ -1398,7 +1389,7 @@ scenes:
         - id: US military member
           name: Bennett
           unstructured:
-            A US military member with a gunshot wound in the arm, and they have controlled the bleeding using a self-applied bandage. The have been shot in the back near the shoulder.
+            A US military member with a gunshot wound in the arm, and they have controlled the bleeding using a self-applied bandage. After removing his bullet proof vest, you see blood coming from right near the shoulder at the edge of the vest.
           unseen: false
           demographics:
             sex: M
@@ -1668,7 +1659,7 @@ scenes:
         The military transport arrives. Who do you load?
         Why did you chose that patient?
       events:
-        - unstructured: One of the member's of your squad asks you quietly, "You aren't going to prioritize our own guy?"
+        - unstructured: One of the members of your squad asks you quietly, "You aren't going to prioritize our own guy?"
           type: emphasize
           source: ally
           object: US military member
