@@ -179,6 +179,8 @@ def partition_doc(scenario):
         # Create the main question
         choices = []
         question_mapping = {}
+        # 'what action do you intend to take' if all actions are intent
+        all_intent_actions = all(action.get('intent_action', False) for action in regular_actions)
         for action in regular_actions:
             choices.append({
                 "value": action['unstructured'],
@@ -200,7 +202,7 @@ def partition_doc(scenario):
             'type': 'radiogroup',
             'choices': choices,
             'isRequired': True,
-            'title': 'What action do you take?',
+            'title': 'What action do you intend to take?' if all_intent_actions else 'What action do you take?',
             'name': 'probe ' + str(page['name']),
             'probe_id': regular_actions[0]['probe_id'] if regular_actions else '',
             'question_mapping': question_mapping
