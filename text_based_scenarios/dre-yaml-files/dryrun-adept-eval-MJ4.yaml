@@ -587,7 +587,7 @@ scenes:
         You learned that the kicker intentionally set off the IED and is considered hostile. A civilian medical transport is nearing.
         You have at least partially attended to the civilians.
         <text_scenario_line_break>
-        You are interrupted by the sound of gunfire (before you are able to take this action). A member of your unit screams and falls. Go to them.
+        Before you are able to take your last action, you are interrupted by the sound of gunfire. A member of your unit screams and falls. Go to them.
       threat_state:
         unstructured: You hear the sound of gunfire, and a member of your unit screams and falls.
         threats:
