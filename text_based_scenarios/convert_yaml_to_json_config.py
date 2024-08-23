@@ -68,7 +68,7 @@ def get_scene_text(scene, is_first_scene, starting_context):
     
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario):
+def partition_doc(scenario, filename):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
@@ -140,15 +140,19 @@ def partition_doc(scenario):
 
         scene_characters = get_scene_characters(scene)
 
-        blocked_vitals = [
-            action['character_id']
-            for action in scene['action_mapping']
-            if action['action_type'] == 'CHECK_ALL_VITALS'
-        ]
+        # Soartech always wants vitals visible
+        if 'soartech' in filename.lower():
+            blocked_vitals = [] 
+        else:
+            blocked_vitals = [
+                action['character_id']
+                for action in scene['action_mapping']
+                if action['action_type'] == 'CHECK_ALL_VITALS'
+            ]
 
-        # edge case
-        if scene.get('vitals_blocked', False):
-            blocked_vitals = [char['id'] for char in scene_characters]
+            # edge case adept
+            if scene.get('vitals_blocked', False):
+                blocked_vitals = [char['id'] for char in scene_characters]
 
         events = scene.get('state', {}).get('events', []) if not is_first_scene else initial_events
 
@@ -350,7 +354,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario)
+                    doc = partition_doc(scenario, filename)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
