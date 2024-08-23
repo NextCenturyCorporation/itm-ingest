@@ -146,6 +146,10 @@ def partition_doc(scenario):
             if action['action_type'] == 'CHECK_ALL_VITALS'
         ]
 
+        # edge case
+        if scene.get('vitals_blocked', False):
+            blocked_vitals = [char['id'] for char in scene_characters]
+
         events = scene.get('state', {}).get('events', []) if not is_first_scene else initial_events
 
         event_messages = [{

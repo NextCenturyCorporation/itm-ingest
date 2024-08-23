@@ -111,6 +111,7 @@ state:
 scenes:
   - id: Scene 0
     end_scene_allowed: false
+    vitals_blocked: true
     action_mapping:
       - action_id: evac_Springer
         action_type: MOVE_TO_EVAC
@@ -152,6 +153,7 @@ scenes:
         - [evac_Upton]
   
   - id: Probe 1-A.1
+    vitals_blocked: true
     state:
       unstructured: >
         You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit.
@@ -229,6 +231,7 @@ scenes:
         - [evac_Upton]
   
   - id: Probe 1-B.1
+    vitals_blocked: true
     state:
       unstructured: >
         You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit.
@@ -1144,6 +1147,7 @@ scenes:
         - [search_for_new_patients]
   
   - id: Scene 3
+    vitals_blocked: true
     state:
       unstructured: >
         You go partway around the building, and a US soldier tells you more about the situation.
