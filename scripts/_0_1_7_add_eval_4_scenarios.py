@@ -31,20 +31,3 @@ def load_ta1_yaml_files(ta1_folder, mongoDB):
     print("Finished load TA1 scene files.")
 
 
-# def add_eval_3_adm_data(mongoDB):
-#     adm_folder_name = "metrics-adm-data"
-#     adm_files = [f for f in os.listdir(adm_folder_name)]
-#     adm_files.sort()
-
-#     for file in adm_files:
-#         adm_history = load_json_file(adm_folder_name, file)
-#         adm_history["evalNumber"] = 3
-#         adm_history["evalName"] = "Metrics Evaluation"
-
-#         test_collection = mongoDB["test"]
-#         test_collection.insert_one(adm_history)
-
-#     print("Finished loading ADM files")
-
-#     load_ta1_yaml_files("adept-evals", mongoDB)
-#     load_ta1_yaml_files("soartech-evals", mongoDB)
