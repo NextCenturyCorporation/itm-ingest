@@ -143,6 +143,9 @@ def partition_doc(scenario, filename):
         # Soartech always wants vitals visible
         if 'soartech' in filename.lower():
             blocked_vitals = [] 
+            for char in scene_characters:
+                if 'vitals' in char and 'mental_status' in char['vitals']:
+                    del char['vitals']['mental_status']
         else:
             blocked_vitals = [
                 action['character_id']

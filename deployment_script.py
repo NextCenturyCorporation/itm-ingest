@@ -1,7 +1,8 @@
 from pymongo import MongoClient
 from decouple import config
 import os
-from scripts._0_1_7_add_eval_4_scenarios import load_ta1_yaml_files
+from text_based_scenarios.add_patient_pictures import main as add_pictures
+from text_based_scenarios.convert_yaml_to_json_config import main as generate_textbased_configs
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
