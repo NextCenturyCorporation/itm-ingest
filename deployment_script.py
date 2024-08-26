@@ -7,7 +7,7 @@ from delegation_survey._0_1_15_update_order_logs import update_order_logs
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.5"
+db_version = "0.1.7"
 
 
 def check_version(mongoDB):

@@ -493,7 +493,7 @@ class DelegationTool:
             )
 
     def add_db_medic_to_survey_by_details(
-        self, adm_name, adm_alignment, scenario_writer, environment, append=False
+        self, adm_name, adm_alignment, scenario_writer, environment=None, scenario_id=None, append=False
     ):
         """
         Finds a document from the adm medic colleciton in mongo that matches the parameters given.
@@ -507,6 +507,7 @@ class DelegationTool:
             "TAD baseline",
             "TAD severity-baseline",
             "TAD misaligned",
+            "foobar"
         ]:
             LOGGER.log(
                 LogLevel.WARN,
@@ -526,20 +527,30 @@ class DelegationTool:
                 "Scenario writer must be either 'Adept' or 'SoarTech'. Cannot add medic.",
             )
             return
-        environment = environment[0].upper() + environment[1:].lower()
-        if environment not in ["Desert", "Jungle", "Urban", "Submarine"]:
-            LOGGER.log(
-                LogLevel.WARN,
-                "Environment must be one of ['Desert', 'Jungle', 'Urban', 'Submarine']. Cannot add medic.",
+        found_docs = []
+        if environment is not None:
+            environment = environment[0].upper() + environment[1:].lower()
+            if environment not in ["Desert", "Jungle", "Urban", "Submarine"]:
+                LOGGER.log(
+                    LogLevel.WARN,
+                    "Environment must be one of ['Desert', 'Jungle', 'Urban', 'Submarine']. Cannot add medic.",
+                )
+                return
+            found_docs = self.medics_mongo_collection.find(
+                {
+                    "admName": adm_name,
+                    "admAlignment": adm_alignment,
+                    "scenarioName": scenario_writer + " " + environment,
+                }
             )
-            return
-        found_docs = self.medics_mongo_collection.find(
-            {
-                "admName": adm_name,
-                "admAlignment": adm_alignment,
-                "scenarioName": scenario_writer + " " + environment,
-            }
-        )
+        elif scenario_id is not None:
+                found_docs = self.medics_mongo_collection.find(
+                {
+                    "admName": adm_name,
+                    "admAlignment": adm_alignment,
+                    "scenarioIndex": scenario_id,
+                }
+            )
         found_medic = False
         for doc in found_docs:
             found_medic = True
@@ -1031,11 +1042,11 @@ def version3_setup():
         for env in envs:
             # create individual medic pages for parallax
             name1 = tool.add_db_medic_to_survey_by_details(
-                "TAD aligned", "high", writer, env, True
+                "TAD aligned", "high", writer, environment=env, append=True
             )
             tad_aligned.append(name1)
             name2 = tool.add_db_medic_to_survey_by_details(
-                "TAD aligned", "low", writer, env, True
+                "TAD aligned", "low", writer, environment=env, append=True
             )
             tad_baseline.append(name2)
             # create comparison pages
@@ -1045,11 +1056,11 @@ def version3_setup():
 
             # create individual medic pages for kitware
             name3 = tool.add_db_medic_to_survey_by_details(
-                "kitware-hybrid-kaleido-aligned", "high", writer, env, True
+                "kitware-hybrid-kaleido-aligned", "high", writer, environment=env, append=True
             )
             kit_aligned.append(name3)
             name4 = tool.add_db_medic_to_survey_by_details(
-                "kitware-hybrid-kaleido-aligned", "low", writer, env, True
+                "kitware-hybrid-kaleido-aligned", "low", writer, environment=env, append=True
             )
             kit_baseline.append(name4)
             # create comparison pages
@@ -1125,6 +1136,84 @@ def version3_setup():
     tool.export_survey_json(os.path.join("survey-configs", "surveyConfig3x.json"))
 
 
+def version4_setup():
+    """
+    Creates survey version 4.0.
+
+    Note that survey version 4.0 uses images from the text scenarios so that we are not storing duplicate information
+    """
+    tool = DelegationTool(4.0)
+    tool.clear_survey_version()
+
+    # add starting pages to survey
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2x.json"),
+        "Participant ID Page",
+        None,
+    )
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2x.json"),
+        "Survey Introduction",
+        None,
+    )
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2x.json"), "Note page", None
+    )
+
+    # add comparison options to survey
+    tool.survey["validSingleSets"] = []
+    tool.survey["validOmniSets"] = []
+
+    # tool.add_db_medic_to_survey_by_details(
+    #                 "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
+    #             )
+    # tool.add_db_medic_to_survey_by_details(
+    #                 "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
+    #             )
+    # tool.add_db_medic_to_survey_by_details(
+    #             "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
+    #         )
+    tool.add_db_medic_to_survey_by_details(
+                "foobar", "low", 'SoarTech', scenario_id='qol-dre-1-eval', append=True
+            )
+
+    # pages for treating as AI or Human
+    agent_pages = [
+        {
+            "name": "Treat as Human",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are human medics.",
+                    "title": "Please evaluate these triage decision makers as if they are human medics."
+                }
+            ]
+        },
+        {
+            "name": "Treat as AI",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic.",
+                    "title": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic."
+                }
+            ]
+        }
+    ]
+    tool.survey['agentPages'] = agent_pages
+
+    # add final page
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2.1.json"),
+        "Post-Scenario Measures",
+        None,
+    )
+
+    # save changes
+    tool.push_changes()
+    tool.export_survey_json(os.path.join("survey-configs", "surveyConfig4x.json"))
+
+
 if __name__ == "__main__":
     LOGGER.log(LogLevel.CRITICAL_INFO, "Welcome to the Delegation Survey Tool")
     LOGGER.log(
@@ -1134,12 +1223,14 @@ if __name__ == "__main__":
     resp = input("")
     if resp == "":
         resp = input(
-            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Setup survey version 3.0\n"
+            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Setup survey version 3.0\n\t3. Setup survey version 4.0\n"
         )
         if resp == "1":
             one_time_db_initialization()
         elif resp == "2":
             version3_setup()
+        elif resp == "3":
+            version4_setup()
         else:
             LOGGER.log(LogLevel.WARN, "Option not recognized. Exiting...")
         exit(0)
@@ -1193,7 +1284,7 @@ if __name__ == "__main__":
                         "Enter the environment (Desert, Submarine, Jungle, or Urban): "
                     )
                     tool.add_db_medic_to_survey_by_details(
-                        adm_name, alignment, scenario_writer, env
+                        adm_name, alignment, scenario_writer, environment=env
                     )
                 else:
                     tool.add_db_medic_to_survey_by_name(name)
