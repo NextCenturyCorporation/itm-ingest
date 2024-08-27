@@ -1,4 +1,8 @@
 id: DryRunEval-MJ2-eval
+# v3.0.2
+#   - Fix typo of relevant_state Vicitim should be Victim
+# v3.0.1
+#   - Remove residual reference to Bennet's new injury being in the back. (A similar change had been made in other fields in an earlier version because sim doesn't support back.)
 # v3.0.0
 #   - Simplified opening scenes due to frequent confusion about what is going on.
 #   - Edits to unstructured text/voiceover to match our internal validation study.
@@ -955,7 +959,7 @@ scenes:
       - action_id: indicate_innocent
         action_type: MESSAGE
         unstructured: The patient was picked because they were an innocent victim.
-        parameters: {"type": "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Vicitim].injuries[left side].source_character]"}
+        parameters: {"type": "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Victim].injuries[left side].source_character]"}
         probe_id: Probe 7
         choice: Response 7-D
         next_scene: Probe 8
@@ -1085,7 +1089,7 @@ scenes:
       - action_id: indicate_innocent
         action_type: MESSAGE
         unstructured: The patient was picked because they were an innocent victim.
-        parameters: {type: "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Vicitim].injuries[left side].source_character]"}
+        parameters: {type: "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Victim].injuries[left side].source_character]"}
         probe_id: Probe 7
         choice: Response 7-D
         next_scene: Probe 8
@@ -1124,8 +1128,8 @@ scenes:
           source: medic
           object: Victim
           relevant_state:
-            - characters[Vicitim].injuries[left side].status
-            - characters[Vicitim].vitals
+            - characters[Victim].injuries[left side].status
+            - characters[Victim].vitals
       characters:
         - id: Victim
           name: Babson
@@ -1203,7 +1207,7 @@ scenes:
       - action_id: indicate_innocent
         action_type: MESSAGE
         unstructured: The patient was picked because they were an innocent victim.
-        parameters: {type: "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Vicitim].injuries[left side].source_character]"}
+        parameters: {type: "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Victim].injuries[left side].source_character]"}
         probe_id: Probe 7
         choice: Response 7-D
         next_scene: Probe 8
@@ -1253,8 +1257,8 @@ scenes:
           source: medic
           object: Victim
           relevant_state:
-            - characters[Vicitim].injuries[left side].status
-            - characters[Vicitim].vitals
+            - characters[Victim].injuries[left side].status
+            - characters[Victim].vitals
         - unstructured: A member of your squad says, "Command says the local authorities are heading to the hospital and want to question any surviving gang member. So they want us to prioritize transporting the shooter."
           type: inform
           source: commander
@@ -1338,7 +1342,7 @@ scenes:
       - action_id: indicate_innocent
         action_type: MESSAGE
         unstructured: The patient was picked because they were an innocent victim.
-        parameters: {type: "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Vicitim].injuries[left side].source_character]"}
+        parameters: {type: "justify", "relevant_state": "[characters[Shooter].intent], [characters[Shooter].directness_of_causality], [characters[Victim].intent], [characters[Victim].injuries[left side].source_character]"}
         probe_id: Probe 7
         choice: Response 7-D
         next_scene: Probe 8
@@ -1375,7 +1379,7 @@ scenes:
         - id: US military member
           name: Bennett
           unstructured:
-            A US military member with a gunshot wound in the arm, and they have controlled the bleeding using a self-applied bandage. After removing his bullet proof vest, you see blood coming from right near the shoulder at the edge of the vest.
+            A US military member with a gunshot wound in the arm, and they have controlled the bleeding using a self-applied bandage. After removing his bullet proof vest, you see blood coming from near the shoulder at the edge of the vest.
           unseen: false
           demographics:
             sex: M
