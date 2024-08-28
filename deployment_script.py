@@ -36,7 +36,7 @@ def main():
 
         generate_textbased_configs()
         add_pictures()
-        #update_db_version(mongoDB)
+        update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
 
