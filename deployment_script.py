@@ -6,7 +6,7 @@ from text_based_scenarios.convert_yaml_to_json_config import main as generate_te
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.6"
+db_version = "0.1.8"
 
 
 def check_version(mongoDB):
@@ -36,7 +36,7 @@ def main():
 
         generate_textbased_configs()
         add_pictures()
-        update_db_version(mongoDB)
+        #update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
 
