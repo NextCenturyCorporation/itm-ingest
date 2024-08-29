@@ -1167,6 +1167,9 @@ def version4_setup():
     # tool.add_db_medic_to_survey_by_details(
     #                 "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
     #             )
+    tool.add_db_medic_to_survey_by_details(
+                "foobar", "low", 'Adept', scenario_id='DryRunEval-IG2-eval', append=True
+            )
     # tool.add_db_medic_to_survey_by_details(
     #                 "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
     #             )
@@ -1174,8 +1177,11 @@ def version4_setup():
     #             "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
     #         )
     tool.add_db_medic_to_survey_by_details(
-                "foobar", "low", 'SoarTech', scenario_id='qol-dre-1-eval', append=True
-            )
+            "foobar", "low", 'Adept', scenario_id='DryRunEval-IG5-eval', append=True
+        )
+    # tool.add_db_medic_to_survey_by_details(
+    #             "foobar", "low", 'SoarTech', scenario_id='qol-dre-1-eval', append=True
+    #         )
 
     # pages for treating as AI or Human
     agent_pages = [

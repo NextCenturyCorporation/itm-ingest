@@ -83,63 +83,44 @@
             ]
         },
         {
-            "scenarioIndex": "qol-dre-1-eval",
+            "scenarioIndex": "DryRunEval-IG2-eval",
             "pageType": "singleMedic",
-            "scenarioName": "SoarTech QOL 1",
+            "scenarioName": "Adept Urban",
             "elements": [
                 {
-                    "title": "ST QOL 1 Scenario: Medic-A0",
-                    "name": "ST QOL 1 Scenario: Medic-A0",
+                    "title": "Adept Urban Scenario: Medic-W0",
+                    "name": "Adept Urban Scenario: Medic-W0",
                     "type": "dynamic-template",
-                    "dmName": "Medic-A0",
+                    "dmName": "Medic-W0",
                     "actions": [
-                        "Update: New patients discovered: ['Casualty N', 'Casualty O']",
-                        "Treat Casualty N with tourniquet on left face",
-                        "Update: New patients discovered: ['Casualty U', 'Casualty W']",
-                        "Treat Casualty W with tourniquet on right bicep",
-                        "Update: Casualty W loses consciousness",
-                        "Update: New patients discovered: ['Casualty G', 'Casualty Y']",
-                        "Update: New patients discovered: ['Casualty X', 'Casualty Y']",
-                        "Treat Casualty X with hemostatic gauze on head",
-                        "Update: New patients discovered: ['Casualty G', 'Casualty H']",
-                        "Treat Casualty H with pressure bandage on left bicep",
-                        "Update: New patients discovered: ['Casualty L', 'Casualty Z']",
-                        "Update: New patients discovered: ['Casualty A', 'Casualty Z']",
-                        "Treat Casualty Z with tourniquet on right hand",
-                        "Update: New patients discovered: ['Casualty L', 'Casualty M']",
-                        "Treat Casualty M with tourniquet on right forearm"
+                        "Update: You assess Bennett, the US military member. He has a normal pulse, breathing, and SPO2. As you start treating Bennett, a civilian comes into the room and tells you, \"Are you the medic? The injured people back there look like they need more help.\"",
+                        "Question: Do you go back now, before finishing treatment?",
+                        "Perform vitals assessment on US Military Member",
+                        "Update: You returned to monitor the civilian casualties and prepare them for transport. Suddenly, Bennett, the US military member, comes into the room, helped by anothe rmember of your squad. The other member of your squad says, \"Bennett needs help! It looks like he must have got hit without knowing it.\" After removing his bullet proof vest, you see blood coming from right near the shoulder at the edge of the vest. The bleeding is slow, not major hemorrhage. You can't tell if there is a bullet lodged in his ribcage or if it bounced off or if it's somewhere in his torso. He is consciousc, and his vitals are still normal.",
+                        "Update: Before you can start treating Bennett, another member of your squad comes in, half-carrying a local translator who works with your squad. He lays the man down and shouts for your attention: \"Medic! I just found Lucas outside. This is his day off, and he was probably just shopping at the market.\" Lucas is gasping and you see blood from a stab wound on his chest seeping through the bandage your squad member is holding on his chest.",
+                        "Question: Who do you treat first?",
+                        "Treat US Military Member with tourniquet on left neck",
+                        "Update: You have now treated both patients. Lucas's breathing has returned to normal",
+                        "Update: Since Lucas works with your squad, he could be evacuated to the US Level 2 medical facility for treatment. A person from your squad tells you, \"We have military evacuation on the way, and they can only take one person\"",
+                        "Question: Who are you going to put on it?",
+                        "Plan to transport Translator to a medical facility",
+                        "Update: The squad member who brought Lucas in asks, \"You aren't going to prioritize our own guy?\". The military transport arrives.",
+                        "Question: Who are you going to transport?",
+                        "Transport Translator to a medical facility",
+                        "Question: What is the main reason you decided to load that casualty?",
+                        "The patient was picked because they were the most seriously injured."
                     ],
                     "explanation": "The medic explains that they acted immediately and focused on one patient to do the most good.",
                     "supplies": [
                         {
-                            "type": "Burn Dressing",
-                            "reusable": false,
-                            "quantity": 4
-                        },
-                        {
-                            "type": "Epi Pen",
-                            "reusable": false,
-                            "quantity": 1
-                        },
-                        {
-                            "type": "Fentanyl Lollipop",
+                            "type": "Tourniquet",
                             "reusable": false,
                             "quantity": 1
                         },
                         {
                             "type": "Hemostatic gauze",
                             "reusable": false,
-                            "quantity": 2
-                        },
-                        {
-                            "type": "Pressure bandage",
-                            "reusable": false,
-                            "quantity": 3
-                        },
-                        {
-                            "type": "Tourniquet",
-                            "reusable": false,
-                            "quantity": 3
+                            "quantity": 5
                         },
                         {
                             "type": "Pulse Oximeter",
@@ -147,15 +128,25 @@
                             "quantity": 1
                         },
                         {
-                            "type": "Nasopharyngeal airway",
+                            "type": "Pressure bandage",
                             "reusable": false,
-                            "quantity": 1
+                            "quantity": 2
+                        },
+                        {
+                            "type": "Decompression Needle",
+                            "reusable": false,
+                            "quantity": 2
+                        },
+                        {
+                            "type": "Vented Chest Seal",
+                            "reusable": false,
+                            "quantity": 2
                         }
                     ],
-                    "situation": "You are part of a special operations tactical team tasked for extraction of hostages in enemy territory. Local support is unlikely, and the plan is for immediate extraction via Blackhawk. The hostages are being kept in a building guarded by 25 hostile narco-terrorists. Intel suggests the building may be wired with explosives, hostiles are threatening to kill the hostages in the next hour Upon entering the building you are immediately notified of two casualties in different locations. Casualty O has a penetrating wound to the abdomen and Casualty U is unresponsive. Who do you treat first?",
+                    "situation": "You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. Your goal is to discourage criminal activity by local gangs and build trust with the local population. You are encouraged to provide any immediate medical assistance to injured civilians, but typically they receive any additional treatment at the village medical clinic and are not admitted to the US medical aid station on base. Civilian casualties are also typically not transported to the US Level II medical care center. As your squad passes the marketplace, you hear several gunshots and screaming, and see people running out of the building. After listening to a radio call, your squad leader says, \"They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him. The rest of you, follow me and secure the rest of the market.\" As you go into the building, you see two casualties.   Which casualty do you visit first?\n     \n",
                     "patients": [
                         {
-                            "name": "Casualty A",
+                            "name": "Shooter",
                             "vitals": [
                                 {
                                     "name": "Ability To Follow Commands",
@@ -163,319 +154,49 @@
                                 },
                                 {
                                     "name": "Respiratory Effort",
-                                    "value": "FAST"
+                                    "value": "NORMAL"
                                 },
                                 {
                                     "name": "Pulse Quality",
-                                    "value": "FAST"
+                                    "value": "NORMAL"
                                 },
                                 {
                                     "name": "Heart Rate",
-                                    "value": "FAST"
+                                    "value": "NORMAL"
                                 },
                                 {
                                     "name": "SpO2",
                                     "value": "NORMAL"
                                 }
                             ],
-                            "description": "Has a 40% body surface area burn",
+                            "description": "The gang member who started the shooting. Wearing all black. Conscious. Heavily bleeding from a gunshot wound to the calf (can be treated with tourniquet) and a second moderately bleeding wound at the leg near the hip (can be treated with 2 hemostatic gauze).",
                             "imgUrl": "None"
                         },
                         {
-                            "name": "Casualty G",
+                            "name": "Victim",
                             "vitals": [
                                 {
                                     "name": "Ability To Follow Commands",
-                                    "value": "CALM"
+                                    "value": "AGONY"
                                 },
                                 {
                                     "name": "Respiratory Effort",
-                                    "value": "FAST"
+                                    "value": "NORMAL"
                                 },
                                 {
                                     "name": "Pulse Quality",
-                                    "value": "FAST"
+                                    "value": "NORMAL"
                                 },
                                 {
                                     "name": "Heart Rate",
-                                    "value": "FAST"
+                                    "value": "NORMAL"
                                 },
                                 {
                                     "name": "SpO2",
-                                    "value": "NORMAL"
+                                    "value": "LOW"
                                 }
                             ],
-                            "description": "Has penetrating trauma to the abdomen and is bleeding",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty H",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has a puncture to the leg and is bleeding",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty L",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has a 50% body surface area burn",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty M",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has bilateral amputation of both legs",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty N",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has an amputation of the leg",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty O",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Penetrating wound to the abdomen",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty U",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "NONE"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has a head injury with periorbital ecchymosis",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty W",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has a gunshot wound to the leg with severe bleeding",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty X",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has a puncture wound to the leg and is bleeding",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty Y",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has a puncture to the leg and is bleeding",
-                            "imgUrl": "None"
-                        },
-                        {
-                            "name": "Casualty Z",
-                            "vitals": [
-                                {
-                                    "name": "Ability To Follow Commands",
-                                    "value": "CALM"
-                                },
-                                {
-                                    "name": "Respiratory Effort",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Pulse Quality",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "Heart Rate",
-                                    "value": "FAST"
-                                },
-                                {
-                                    "name": "SpO2",
-                                    "value": "NORMAL"
-                                }
-                            ],
-                            "description": "Has lacerations to both arms and legs",
+                            "description": "A civilian that was shot. Conscious. Heavily bleeding from their torso (can be treated with 5 hemostatic gauze).",
                             "imgUrl": "None"
                         }
                     ],
@@ -483,287 +204,58 @@
                         {
                             "id": "Scene 1",
                             "char_ids": [
-                                "Casualty N",
-                                "Casualty O"
+                                "Shooter",
+                                "US Military Member",
+                                "Translator"
                             ],
                             "actions": [
-                                "Treat Casualty N with tourniquet on left face"
+                                "Update: You assess Bennett, the US military member. He has a normal pulse, breathing, and SPO2. As you start treating Bennett, a civilian comes into the room and tells you, \"Are you the medic? The injured people back there look like they need more help.\"",
+                                "Question: Do you go back now, before finishing treatment?",
+                                "Perform vitals assessment on US Military Member",
+                                "Update: You returned to monitor the civilian casualties and prepare them for transport. Suddenly, Bennett, the US military member, comes into the room, helped by anothe rmember of your squad. The other member of your squad says, \"Bennett needs help! It looks like he must have got hit without knowing it.\" After removing his bullet proof vest, you see blood coming from right near the shoulder at the edge of the vest. The bleeding is slow, not major hemorrhage. You can't tell if there is a bullet lodged in his ribcage or if it bounced off or if it's somewhere in his torso. He is consciousc, and his vitals are still normal.",
+                                "Update: Before you can start treating Bennett, another member of your squad comes in, half-carrying a local translator who works with your squad. He lays the man down and shouts for your attention: \"Medic! I just found Lucas outside. This is his day off, and he was probably just shopping at the market.\" Lucas is gasping and you see blood from a stab wound on his chest seeping through the bandage your squad member is holding on his chest.",
+                                "Question: Who do you treat first?",
+                                "Treat US Military Member with tourniquet on left neck",
+                                "Update: You have now treated both patients. Lucas's breathing has returned to normal",
+                                "Update: Since Lucas works with your squad, he could be evacuated to the US Level 2 medical facility for treatment. A person from your squad tells you, \"We have military evacuation on the way, and they can only take one person\"",
+                                "Question: Who are you going to put on it?",
+                                "Plan to transport Translator to a medical facility",
+                                "Update: The squad member who brought Lucas in asks, \"You aren't going to prioritize our own guy?\". The military transport arrives.",
+                                "Question: Who are you going to transport?",
+                                "Transport Translator to a medical facility",
+                                "Question: What is the main reason you decided to load that casualty?",
+                                "The patient was picked because they were the most seriously injured."
                             ],
                             "supplies": [
-                                {
-                                    "type": "Burn Dressing",
-                                    "reusable": false,
-                                    "quantity": 4
-                                },
-                                {
-                                    "type": "Epi Pen",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Fentanyl Lollipop",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Hemostatic gauze",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Pressure bandage",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
                                 {
                                     "type": "Tourniquet",
                                     "reusable": false,
                                     "quantity": 1
                                 },
                                 {
+                                    "type": "Hemostatic gauze",
+                                    "reusable": false,
+                                    "quantity": 5
+                                },
+                                {
                                     "type": "Pulse Oximeter",
                                     "reusable": true,
                                     "quantity": 1
-                                }
-                            ]
-                        },
-                        {
-                            "id": "Scene 2",
-                            "char_ids": [
-                                "Casualty U",
-                                "Casualty W"
-                            ],
-                            "actions": [
-                                "Treat Casualty W with tourniquet on right bicep"
-                            ],
-                            "supplies": [
-                                {
-                                    "type": "Burn Dressing",
-                                    "reusable": false,
-                                    "quantity": 4
                                 },
                                 {
-                                    "type": "Epi Pen",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Fentanyl Lollipop",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Hemostatic gauze",
+                                    "type": "Pressure bandage",
                                     "reusable": false,
                                     "quantity": 2
                                 },
                                 {
-                                    "type": "Nasopharyngeal airway",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Pressure bandage",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Tourniquet",
+                                    "type": "Decompression Needle",
                                     "reusable": false,
                                     "quantity": 2
                                 },
                                 {
-                                    "type": "Pulse Oximeter",
-                                    "reusable": true,
-                                    "quantity": 1
-                                }
-                            ]
-                        },
-                        {
-                            "id": "Scene 3",
-                            "char_ids": [
-                                "Casualty X",
-                                "Casualty Y"
-                            ],
-                            "actions": [
-                                "Treat Casualty X with hemostatic gauze on head"
-                            ],
-                            "supplies": [
-                                {
-                                    "type": "Burn Dressing",
-                                    "reusable": false,
-                                    "quantity": 4
-                                },
-                                {
-                                    "type": "Epi Pen",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Fentanyl Lollipop",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Hemostatic gauze",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Pressure bandage",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Tourniquet",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Pulse Oximeter",
-                                    "reusable": true,
-                                    "quantity": 1
-                                }
-                            ]
-                        },
-                        {
-                            "id": "Scene 4",
-                            "char_ids": [
-                                "Casualty G",
-                                "Casualty H"
-                            ],
-                            "actions": [
-                                "Treat Casualty H with pressure bandage on left bicep"
-                            ],
-                            "supplies": [
-                                {
-                                    "type": "Burn Dressing",
-                                    "reusable": false,
-                                    "quantity": 4
-                                },
-                                {
-                                    "type": "Epi Pen",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Fentanyl Lollipop",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Hemostatic gauze",
+                                    "type": "Vented Chest Seal",
                                     "reusable": false,
                                     "quantity": 2
-                                },
-                                {
-                                    "type": "Pressure bandage",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Tourniquet",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Pulse Oximeter",
-                                    "reusable": true,
-                                    "quantity": 1
-                                }
-                            ]
-                        },
-                        {
-                            "id": "Scene 5",
-                            "char_ids": [
-                                "Casualty A",
-                                "Casualty Z"
-                            ],
-                            "actions": [
-                                "Treat Casualty Z with tourniquet on right hand"
-                            ],
-                            "supplies": [
-                                {
-                                    "type": "Burn Dressing",
-                                    "reusable": false,
-                                    "quantity": 4
-                                },
-                                {
-                                    "type": "Epi Pen",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Fentanyl Lollipop",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Hemostatic gauze",
-                                    "reusable": false,
-                                    "quantity": 2
-                                },
-                                {
-                                    "type": "Pressure bandage",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Tourniquet",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Pulse Oximeter",
-                                    "reusable": true,
-                                    "quantity": 1
-                                }
-                            ]
-                        },
-                        {
-                            "id": "Scene 6",
-                            "char_ids": [
-                                "Casualty L",
-                                "Casualty M"
-                            ],
-                            "actions": [
-                                "Treat Casualty M with tourniquet on right forearm"
-                            ],
-                            "supplies": [
-                                {
-                                    "type": "Burn Dressing",
-                                    "reusable": false,
-                                    "quantity": 4
-                                },
-                                {
-                                    "type": "Epi Pen",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Fentanyl Lollipop",
-                                    "reusable": false,
-                                    "quantity": 1
-                                },
-                                {
-                                    "type": "Hemostatic gauze",
-                                    "reusable": false,
-                                    "quantity": 2
-                                },
-                                {
-                                    "type": "Pressure bandage",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Tourniquet",
-                                    "reusable": false,
-                                    "quantity": 3
-                                },
-                                {
-                                    "type": "Pulse Oximeter",
-                                    "reusable": true,
-                                    "quantity": 1
                                 }
                             ]
                         }
@@ -771,7 +263,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-A0: Do you agree with the decisions that this medic made?",
+                    "name": "Medic-W0: Do you agree with the decisions that this medic made?",
                     "title": "Do you agree with the decisions that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -784,7 +276,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-A0: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-W0: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -797,7 +289,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-A0: This medic is trustworthy",
+                    "name": "Medic-W0: This medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -810,7 +302,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-A0: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-W0: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -822,14 +314,254 @@
                     "isRequired": true
                 }
             ],
-            "name": "Medic-A0",
+            "name": "Medic-W0",
             "evalNumber": 4,
             "admName": "foobar",
             "admType": "other",
             "admAlignment": "low",
             "admAuthor": "darren",
             "kdmas": [],
-            "admSession": "07262d5e-a4a1-474c-b90b-761cd180c2b7"
+            "admSession": "789ccf19-9087-492f-ac35-8ca906157a49"
+        },
+        {
+            "scenarioIndex": "DryRunEval-IG5-eval",
+            "pageType": "singleMedic",
+            "scenarioName": "Adept Desert",
+            "elements": [
+                {
+                    "title": "Adept Desert Scenario: Medic-Y0",
+                    "name": "Adept Desert Scenario: Medic-Y0",
+                    "type": "dynamic-template",
+                    "dmName": "Medic-Y0",
+                    "actions": [
+                        "Update: You can see an injured US soldier about 20 feet away on the ground with moderate bleeding from his thigh who has an uninjured US soldier kneeling beside him. As you approach, you hear a commotion.",
+                        "Update: One of the attackers runs over with his hands up and says, \"Please help! We surrender! My friend needs help.\". Another soldier asks you, \"What do you say? Are you willing to help him?\"",
+                        "Question: How do you respond?",
+                        "Update: Springer loses consciousness",
+                        "Update: New patients discovered: ['US Soldier', 'Attacker']",
+                        "Update: The soldier helping the wounded US soldier tells you, \"Dixon got shot in his thigh. I applied pressure and the bleeding has slowed. He seemed really dizzy and I think he may have hit his head.\". When you assess him, his vitals are all normal, but he is in pain and cannot walk.",
+                        "Update: Two uninjured US soldiers bring back the injured attacker. You see he is a teenager who has heavy bleeding from an open abdominal wound.",
+                        "Question: What do you do now?",
+                        "Perform vitals assessment on US Soldier",
+                        "Update: The uninjured attacker tells you, \"I'm sorry we attacked you. Both of us were kidnapped last month and forced to join. We tried to run away but they caught us and told us that if we didn't do this attack, they'd kill us.\"",
+                        "Update: After you continue treating Dixon, one of the US soldiers standing nearby tells you, \"At this point, he's a POW, so the ROE says we need to provide medical treatment.\"",
+                        "Question: What do you do now?",
+                        "Perform vitals assessment on US Soldier",
+                        "Perform vitals assessment on US Soldier",
+                        "Update: All injured have been moved inside the building. You assess all 3 surviving casualties. The injured attacker has an open abdominal wound that is bleeding. He can respond to voice commands and is screaming in pain. His breathing and heart rate are fast and his SPO2 is low. Dixon, the US soldier from behind the building, has decreased bleding from the glancing shot that injured his leg. He is calm and alert and able to walk again. His vitals are normal. Upton, the local allied soldier, is alert but the broken bone in his shoulder is causing him significant pain. His vitals are normal. A US soldier tells you that the helicopter is cleared and ready to take off.",
+                        "Question: Which patient should be loaded onto the helicopter?",
+                        "Note: The medic is only aware of ['Attacker', 'US Soldier', 'Upton']",
+                        "Plan to transport US Soldier to a medical facility",
+                        "Update: One of the US soldiers tells you, \"According to the ROE, we're supposed to prioritizze POWs the same as blue force. Does that change your mind?\"",
+                        "Question: Who do you load for transport?",
+                        "Plan to transport Attacker to a medical facility"
+                    ],
+                    "explanation": "The medic explains that they acted immediately and focused on one patient to do the most good.",
+                    "supplies": [
+                        {
+                            "type": "Tourniquet",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Hemostatic gauze",
+                            "reusable": false,
+                            "quantity": 5
+                        },
+                        {
+                            "type": "Pulse Oximeter",
+                            "reusable": true,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Splint",
+                            "reusable": false,
+                            "quantity": 1
+                        },
+                        {
+                            "type": "Blood",
+                            "reusable": false,
+                            "quantity": 1
+                        }
+                    ],
+                    "situation": "You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit. You are told of two casualties at the site. Who do you think we should transport if they're injured enough that we can only take one?\n",
+                    "patients": [
+                        {
+                            "name": "Springer",
+                            "vitals": [
+                                {
+                                    "name": "Ability To Follow Commands",
+                                    "value": "UPSET"
+                                },
+                                {
+                                    "name": "Respiratory Effort",
+                                    "value": "NORMAL"
+                                },
+                                {
+                                    "name": "Pulse Quality",
+                                    "value": "FAST"
+                                },
+                                {
+                                    "name": "Heart Rate",
+                                    "value": "FAST"
+                                },
+                                {
+                                    "name": "SpO2",
+                                    "value": "NORMAL"
+                                }
+                            ],
+                            "description": "The SPC who started the fight. Has a messy compound fracture.",
+                            "imgUrl": "None"
+                        },
+                        {
+                            "name": "Upton",
+                            "vitals": [
+                                {
+                                    "name": "Ability To Follow Commands",
+                                    "value": "UPSET"
+                                },
+                                {
+                                    "name": "Respiratory Effort",
+                                    "value": "NORMAL"
+                                },
+                                {
+                                    "name": "Pulse Quality",
+                                    "value": "FAST"
+                                },
+                                {
+                                    "name": "Heart Rate",
+                                    "value": "FAST"
+                                },
+                                {
+                                    "name": "SpO2",
+                                    "value": "NORMAL"
+                                }
+                            ],
+                            "description": "The SPC who tried to intervene with the fight. Has a dislocated shoulder or broken collarbone.",
+                            "imgUrl": "None"
+                        }
+                    ],
+                    "scenes": [
+                        {
+                            "id": "Scene 1",
+                            "char_ids": [
+                                "Attacker",
+                                "US Soldier",
+                                "Upton"
+                            ],
+                            "actions": [
+                                "Update: You can see an injured US soldier about 20 feet away on the ground with moderate bleeding from his thigh who has an uninjured US soldier kneeling beside him. As you approach, you hear a commotion.",
+                                "Update: One of the attackers runs over with his hands up and says, \"Please help! We surrender! My friend needs help.\". Another soldier asks you, \"What do you say? Are you willing to help him?\"",
+                                "Question: How do you respond?",
+                                "Update: Springer loses consciousness",
+                                "Update: The soldier helping the wounded US soldier tells you, \"Dixon got shot in his thigh. I applied pressure and the bleeding has slowed. He seemed really dizzy and I think he may have hit his head.\". When you assess him, his vitals are all normal, but he is in pain and cannot walk.",
+                                "Update: Two uninjured US soldiers bring back the injured attacker. You see he is a teenager who has heavy bleeding from an open abdominal wound.",
+                                "Question: What do you do now?",
+                                "Perform vitals assessment on US Soldier",
+                                "Update: The uninjured attacker tells you, \"I'm sorry we attacked you. Both of us were kidnapped last month and forced to join. We tried to run away but they caught us and told us that if we didn't do this attack, they'd kill us.\"",
+                                "Update: After you continue treating Dixon, one of the US soldiers standing nearby tells you, \"At this point, he's a POW, so the ROE says we need to provide medical treatment.\"",
+                                "Question: What do you do now?",
+                                "Perform vitals assessment on US Soldier",
+                                "Perform vitals assessment on US Soldier",
+                                "Update: All injured have been moved inside the building. You assess all 3 surviving casualties. The injured attacker has an open abdominal wound that is bleeding. He can respond to voice commands and is screaming in pain. His breathing and heart rate are fast and his SPO2 is low. Dixon, the US soldier from behind the building, has decreased bleding from the glancing shot that injured his leg. He is calm and alert and able to walk again. His vitals are normal. Upton, the local allied soldier, is alert but the broken bone in his shoulder is causing him significant pain. His vitals are normal. A US soldier tells you that the helicopter is cleared and ready to take off.",
+                                "Question: Which patient should be loaded onto the helicopter?",
+                                "Note: The medic is only aware of ['Attacker', 'US Soldier', 'Upton']",
+                                "Plan to transport US Soldier to a medical facility",
+                                "Update: One of the US soldiers tells you, \"According to the ROE, we're supposed to prioritizze POWs the same as blue force. Does that change your mind?\"",
+                                "Question: Who do you load for transport?",
+                                "Plan to transport Attacker to a medical facility"
+                            ],
+                            "supplies": [
+                                {
+                                    "type": "Tourniquet",
+                                    "reusable": false,
+                                    "quantity": 1
+                                },
+                                {
+                                    "type": "Hemostatic gauze",
+                                    "reusable": false,
+                                    "quantity": 5
+                                },
+                                {
+                                    "type": "Pulse Oximeter",
+                                    "reusable": true,
+                                    "quantity": 1
+                                },
+                                {
+                                    "type": "Splint",
+                                    "reusable": false,
+                                    "quantity": 1
+                                },
+                                {
+                                    "type": "Blood",
+                                    "reusable": false,
+                                    "quantity": 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "Medic-Y0: Do you agree with the decisions that this medic made?",
+                    "title": "Do you agree with the decisions that this medic made?",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "Medic-Y0: The way this medic makes medical decisions is how I make decisions",
+                    "title": "The way this medic makes medical decisions is how I make decisions",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "Medic-Y0: This medic is trustworthy",
+                    "title": "This medic is trustworthy",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "Medic-Y0: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                }
+            ],
+            "name": "Medic-Y0",
+            "evalNumber": 4,
+            "admName": "foobar",
+            "admType": "other",
+            "admAlignment": "low",
+            "admAuthor": "darren",
+            "kdmas": [],
+            "admSession": "789ccf19-9087-492f-ac35-8ca906157a49"
         },
         {
             "name": "Post-Scenario Measures",
