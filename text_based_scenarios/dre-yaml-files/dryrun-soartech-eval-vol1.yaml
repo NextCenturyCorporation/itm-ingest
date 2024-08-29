@@ -1400,11 +1400,11 @@ scenes:
       unstructured: Has a head injury with periorbital ecchymosis
       visited: true
       vitals:
-        ambulatory: true
-        avpu: ALERT
+        ambulatory: false
+        avpu: UNRESPONSIVE
         breathing: NONE
         heart_rate: FAST
-        mental_status: AGONY
+        mental_status: UNRESPONSIVE
         spo2: NORMAL
     environment:
       decision_environment:
@@ -1729,11 +1729,11 @@ scenes:
       unstructured: Has a head injury with periorbital ecchymosis
       visited: true
       vitals:
-        ambulatory: true
-        avpu: ALERT
+        ambulatory: false
+        avpu: UNRESPONSIVE
         breathing: NONE
         heart_rate: FAST
-        mental_status: AGONY
+        mental_status: UNRESPONSIVE
         spo2: NORMAL
     - demographics:
         age: 33

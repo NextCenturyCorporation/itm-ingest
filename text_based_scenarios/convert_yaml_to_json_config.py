@@ -4,13 +4,32 @@ from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
 
+v_gauze = 'Response 3-B.2-A-gauze-v'
+s_gauze = 'Response 3-B.2-B-gauze-s'
+special_case_probe = {
+    'DryRunEval-MJ2-eval': {
+        'Scene 2A': {
+            '5 Babson / 0 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, v_gauze],
+            '4 Babson / 1 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, s_gauze],
+            '3 Babson / 2 Alderson': [v_gauze, v_gauze, v_gauze, s_gauze, s_gauze],
+            'Do not treat either patient with gauze, look for new patients': 'Response 3-B.2-C'
+        }
+    }
+}
+
 always_visible_characters = {
     'DryRunEval-MJ5-eval': {
         'Scene 3': ['us_soldier'],
-        'Probe 8': ['us_soldier']
+        'Probe 8': ['us_soldier'],
+        'Probe 9-C.1': ['us_soldier']
     },
     'DryRunEval-MJ4-eval': {
         'Scene 2': ['US soldier']
+    },
+    'DryRunEval-MJ2-eval': {
+        'Scene 3': ['Victim'],
+        'Probe 4-B.1': ['Victim'],
+        'Probe 4-B.1-B.1': ['Victim']
     }
 }
 
@@ -49,7 +68,7 @@ def get_scene_text(scene, is_first_scene, starting_context):
     
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario):
+def partition_doc(scenario, filename):
     scenario_id = scenario['id']
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
@@ -121,11 +140,22 @@ def partition_doc(scenario):
 
         scene_characters = get_scene_characters(scene)
 
-        blocked_vitals = [
-            action['character_id']
-            for action in scene['action_mapping']
-            if action['action_type'] == 'CHECK_ALL_VITALS'
-        ]
+        # Soartech always wants vitals visible
+        if 'soartech' in filename.lower():
+            blocked_vitals = [] 
+            for char in scene_characters:
+                if 'vitals' in char and 'mental_status' in char['vitals']:
+                    del char['vitals']['mental_status']
+        else:
+            blocked_vitals = [
+                action['character_id']
+                for action in scene['action_mapping']
+                if action['action_type'] == 'CHECK_ALL_VITALS'
+            ]
+
+            # edge case adept
+            if scene.get('vitals_blocked', False):
+                blocked_vitals = [char['id'] for char in scene_characters]
 
         events = scene.get('state', {}).get('events', []) if not is_first_scene else initial_events
 
@@ -179,15 +209,23 @@ def partition_doc(scenario):
         # Create the main question
         choices = []
         question_mapping = {}
+        # 'what action do you intend to take' if all actions are intent
+        all_intent_actions = all(action.get('intent_action', False) for action in regular_actions)
         for action in regular_actions:
             choices.append({
                 "value": action['unstructured'],
                 "text": action['unstructured']
             })
-            question_mapping[action['unstructured']] = {
-                "probe_id": action['probe_id'],
-                "choice": action.get('choice', '')
-            }
+            if scenario_id in special_case_probe and scene['id'] in special_case_probe[scenario_id]:
+                question_mapping[action['unstructured']] = {
+                    "probe_id": action['probe_id'],
+                    "choice": special_case_probe[scenario_id][scene['id']][action['unstructured']]
+                }
+            else:
+                question_mapping[action['unstructured']] = {
+                    "probe_id": action['probe_id'],
+                    "choice": action.get('choice', '')
+                }
             if 'next_scene' in action:
                 question_mapping[action['unstructured']]['next_scene'] = action['next_scene']
                 next_scene = action['next_scene']
@@ -200,7 +238,7 @@ def partition_doc(scenario):
             'type': 'radiogroup',
             'choices': choices,
             'isRequired': True,
-            'title': 'What action do you take?',
+            'title': 'What action do you intend to take?' if all_intent_actions else 'What action do you take?',
             'name': 'probe ' + str(page['name']),
             'probe_id': regular_actions[0]['probe_id'] if regular_actions else '',
             'question_mapping': question_mapping
@@ -319,7 +357,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario)
+                    doc = partition_doc(scenario, filename)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
