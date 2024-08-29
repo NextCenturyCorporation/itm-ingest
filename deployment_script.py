@@ -1,12 +1,10 @@
 from pymongo import MongoClient
 from decouple import config
-import os
-from text_based_scenarios.add_patient_pictures import main as add_pictures
-from text_based_scenarios.convert_yaml_to_json_config import main as generate_textbased_configs
+from text_based_scenarios._0_1_9_ingest_order_log import main as ingest_order_log
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.8"
+db_version = "0.1.9"
 
 
 def check_version(mongoDB):
@@ -34,8 +32,7 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
 
-        generate_textbased_configs()
-        add_pictures()
+        ingest_order_log(mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
