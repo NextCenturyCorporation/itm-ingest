@@ -1,13 +1,13 @@
 from pymongo import MongoClient
 from decouple import config
 import os
-from text_based_scenarios.add_patient_pictures import main as add_pictures
-from text_based_scenarios.convert_yaml_to_json_config import main as generate_textbased_configs
+from scripts._0_1_9_add_evalIDs_to_data import load_data
+
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
-# Change this version if running a new deploy script
-db_version = "0.1.8"
 
+# Change this version if running a new deploy script
+db_version = "0.1.9"
 
 def check_version(mongoDB):
     collection = mongoDB[VERSION_COLLECTION]
@@ -16,7 +16,6 @@ def check_version(mongoDB):
         return True 
     # return true if it is a newer db version
     return db_version > version_obj['version']
-
 
 def update_db_version(mongoDB):
     collection = mongoDB[VERSION_COLLECTION]
@@ -27,18 +26,16 @@ def update_db_version(mongoDB):
         version_obj['version'] = db_version
         collection.replace_one({"_id": version_obj["_id"]}, version_obj)
 
-
 def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
-    if(check_version(mongoDB)):
-        print("New db version, execute scripts")
+    load_data(mongoDB)
+    # if(check_version(mongoDB)):
+    #     print("New db version, execute scripts")
 
-        generate_textbased_configs()
-        add_pictures()
-        update_db_version(mongoDB)
-    else:
-        print("Script does not need to run on prod, already updated.")
+    #     load_data(mongoDB)
+    # else:
+    #     print("Script does not need to run on prod, already updated.")
 
 
 if __name__ == "__main__":
