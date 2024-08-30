@@ -297,6 +297,17 @@ def get_string_from_action(action, next_action=None, yaml_data=None):
             if 'treatment' not in params:
                 if 'character' not in params:
                     printable = "Treat a patient"
+                    choice_id = next_action['parameters']['choice']
+                    char = 'a patient'
+                    for scene in yaml_data['scenes']:
+                        if 'action_mapping' in scene:
+                            for a in scene['action_mapping']:
+                                if a['choice'] == choice_id:
+                                    char = character_conversion[a['character_id']]
+                                    break
+                            if char != 'a patient':
+                                break
+                    printable = f"Treat {char}"
                 else:
                     printable = f"Treat {character_conversion[params['character']]}"
             else:
@@ -545,7 +556,10 @@ def set_medic_from_adm(document, template, mongo_collection, db):
                             break
             # get action string from object
             if (action['command'] == 'Take Action' or action['command'] == 'Intend Action') and (get_all_actions or ((not get_all_actions) and next_action.get('command', None) == 'Respond to TA1 Probe' and ((next_action.get('parameters', {}).get('probe_id') in env_map[doc_id]['probe_ids']) or (next_action.get('parameters', {}).get('choice') in env_map[doc_id]['probe_ids'])))):
-                printable = get_string_from_action(action, next_action, get_yaml_data(doc_id))
+                if 'characters' in env_map[doc_id] and 'character' in action['parameters'] and character_conversion[action['parameters']['character']] not in env_map[doc_id]['characters']:
+                    printable = 'Do not take any action'
+                else:
+                    printable = get_string_from_action(action, next_action, get_yaml_data(doc_id))
                 if printable == -1:
                     if (not get_all_actions) and (next_action.get('parameters', {}).get('probe_id') in env_map[doc_id]['probe_ids']):
                         printable = "Choose not to treat either patient"
