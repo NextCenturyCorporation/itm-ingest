@@ -1191,44 +1191,48 @@ def version4_setup():
                     'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
     for t in st_targets:
         for adm in st_adms:
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'SoarTech', scenario_id='qol-dre-1-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'SoarTech', scenario_id='qol-dre-2-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'SoarTech', scenario_id='qol-dre-3-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'SoarTech', scenario_id='vol-dre-1-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'SoarTech', scenario_id='vol-dre-2-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'SoarTech', scenario_id='vol-dre-3-eval', append=True
-            )
+            if 'qol' in t:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-1-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-3-eval', append=True
+                )
+            else:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-1-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-3-eval', append=True
+                )
     for t in ad_targets:
         for adm in ad_adms:
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'Adept', scenario_id='DryRunEval-IO2-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'Adept', scenario_id='DryRunEval-IO4-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
-            )
-            tool.add_db_medic_to_survey_by_details(
-                adm, t, 'Adept', scenario_id='DryRunEval-IO5-eval', append=True
-            )
+            if 'Moral' in t:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
+                )
+            else:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO4-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO5-eval', append=True
+                )
     # pages for treating as AI or Human
     agent_pages = [
         {
