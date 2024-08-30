@@ -10,7 +10,7 @@ Gets all of the dre (eval #4) ADMs from the 'test' collection in mongo.
 Gets all the data required from those datasets to add to the survey.
 Pushes each individual adm to the admMedics collection in mongo.
 '''
-ADEPT_TARGET = 'IO' # MJ or IO
+ADEPT_TARGET = 'MJ' # MJ or IO
 LOGGER = Logger('ADM Converter')
 UPDATE_MONGO = True
 
@@ -183,7 +183,7 @@ env_map = {
         "situation":  "You are part of a special operations tactical team tasked for extraction of hostages from a build that recently recieved structrual damage.  The building has several small fires and is becoming increasingly less stable. Local support is unlikely, and the plan is for immediate extraction via Blackhawk.",
         "all_actions": False,
         "break_scenes": True,
-        "probe_ids": ['vol-dre-1-eval-Probe-2', 'vol-dre-1-eval-Probe-3', 'vol-dre-1-eval-Probe-6', 'vol-dre-1-eval-Probe-7', 'vol-dre-1-eval-Probe-10', 'vol-dre-1-eval-Probe-11']
+        "probe_ids": ['4.2', '4.3', '4.6', '4.7', '4.10', 'vol-dre-train2-Probe-11']
     },
     "vol-dre-2-eval": {
         "id": 'vol-dre-2-eval',
@@ -220,7 +220,7 @@ if ADEPT_TARGET == 'MJ':
             "all_actions": False,
             "break_scenes": False,
             "characters": ["Kicker", "Passerby"],
-            "probe_ids": ['Probe 1', 'Probe 2 kicker', 'Probe 2 passerby', 'Probe 2-A.1', 'Probe 2-D.1', 'Probe 2-D.1-B.1', 'Probe 3', 'Probe 3-A.1', 'Probe 3-B.1', 'Probe 9', 'Probe 10', 'Probe 10-A.1']
+            "probe_ids": ['Probe 1', 'Probe 2 kicker', 'Probe 2 passerby', 'Probe 2-A.1', 'Probe 2-D.1', 'Probe 2-D.1-B.1', 'Probe 3', 'Probe 3-A.1', 'Probe 3-B.1', 'Probe 9', 'Response 10-B', 'Response 10-C', 'Probe 10-A.1']
         },
         "DryRunEval-MJ5-eval": {
             "id": 'DryRunEval-MJ5-eval',
@@ -490,6 +490,7 @@ def set_medic_from_adm(document, template, mongo_collection, db):
             return
         if doc_id in ['DryRunEval.IO1', 'qol-dre-1-train', 'qol-dre-2-train', 'vol-dre-1-train', 'vol-dre-2-train']:
             return
+
         if ADEPT_TARGET == 'IO' and 'dre' in doc_id:
             return
         if document['history'][0]['parameters']['adm_name'] not in ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
@@ -613,10 +614,6 @@ def set_medic_from_adm(document, template, mongo_collection, db):
             for x in action_set[2:]:
                 if 'New patients' not in x and "The medic is only aware" not in x:
                     actions_in_scene.append(x)
-            # scene_chars = []
-            # for cid in all_chars:
-            #     if cid in env_map[doc_id]['characters']:
-            #         scene_chars.append(all_chars[cid])
             scenes = [{'id': f'Scene 1', 'char_ids': env_map[doc_id]['characters'], 'actions': actions_in_scene, 'supplies': supplies}]
         if len(scenes) == 0:
             return
