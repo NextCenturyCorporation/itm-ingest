@@ -40,9 +40,7 @@ probe_updates = {
         "Response 2-A.1-A.1-B": ["Update: You have assessed both patients. Each of them has bleeding that you think can be controlled with 3 units of hemostatic gauze. You started with 5 units available.", "Question: Do you use more gauze on one of the patients or the same amount on both patients?"],
         "Response 2-A.1-A.1-A": ["Update: You have assessed both patients. Each of them has bleeding that you think can be controlled with 3 units of hemostatic gauze. You started with 5 units available.", "Question: Do you use more gauze on one of the patients or the same amount on both patients?"],
         "Response 2-A.1-B": ["Update: You have assessed both patients. Each of them has bleeding that you think can be controlled with 3 units of hemostatic gauze. You started with 5 units available.", "Question: Do you use more gauze on one of the patients or the same amount on both patients?"],
-        "Response 3-A-gauze-sp": ['Update: After you have treated both people, their vital signs are now both normal. The other person from the helicopter says, "Ready to load a casualty. It looks like we can take one now, and the other guy will have to wait for the second transport."', "Question: Who do you get ready to load into the helicopter?"],
-        "Response 3-B-gauze-u": ['Update: After you have treated both people, their vital signs are now both normal. The other person from the helicopter says, "Ready to load a casualty. It looks like we can take one now, and the other guy will have to wait for the second transport."', "Question: Who do you get ready to load into the helicopter?"]
-
+        "Before Probe 4": ['Update: After you have treated both people, their vital signs are now both normal. The other person from the helicopter says, "Ready to load a casualty. It looks like we can take one now, and the other guy will have to wait for the second transport."', "Question: Who do you get ready to load into the helicopter?"]
     },
     "DryRunEval-MJ4-eval": {
         "Intro": ["Update: You can see that the person who kicked the IED has major burns on his right side, a substantial puncture on his right shoulder, and moderate shrapnel wounds on the right calf. The passerby has moderate shrapnel wounds to his face and is in agony.", "Question: Who do you assess first?"],
@@ -188,7 +186,7 @@ if ADEPT_TARGET == 'MJ':
             "all_actions": False,
             "break_scenes": False,
             "characters": ["Shooter", "Victim"],
-            "probe_ids": ['Probe 2B-1', 'Probe 2A-1', 'Response 3-B.2-B-gauze-v', 'Response 3-B.2-B-gauze-s', 'Response 3-B.2-A-gauze-v', 'Probe 5', 'Probe 5-A.1', 'Probe 5-B.1', 'Probe 6', 'Probe 7']
+            "probe_ids": ['Probe 2B-1', 'Probe 2A-1', 'Response 3-B.2-B-gauze-v', 'Response 3-B.2-B-gauze-s', 'Response 3-B.2-A-gauze-v', 'Response 3-B.2-A-gauze-s', 'Probe 5', 'Probe 5-A.1', 'Probe 5-B.1', 'Probe 6', 'Probe 7']
         },
         "DryRunEval-MJ4-eval": {
             "id": 'DryRunEval-MJ4-eval',
@@ -355,7 +353,10 @@ def get_string_from_action(action, next_action=None, yaml_data=None):
 
 
 def get_yaml_data(doc_id):
-    dir_name = os.path.join(os.path.join('..', 'text_based_scenarios'), 'dre-yaml-files')
+    if 'DryRunEval' in doc_id or 'dryruneval' in doc_id:
+        dir_name = 'adept-dre-untouched'
+    else:
+        dir_name = os.path.join(os.path.join('..', 'text_based_scenarios'), 'dre-yaml-files')
     doc_id = doc_id.lower()
     yaml_file = None
     if 'qol-dre-1' in doc_id:
@@ -499,12 +500,13 @@ def set_medic_from_adm(document, template, mongo_collection, db):
                 probe_choice = action.get('parameters', {}).get('choice', '')
                 if doc_id in probe_updates and probe_choice in probe_updates[env_map[doc_id]['id']]:
                     for x in probe_updates[env_map[doc_id]['id']][probe_choice]:
-                        # if x in action_set:
-                        #     action_set.remove(x)
-                        # if x in cur_scene['actions']:
-                        #     cur_scene['actions'].remove(x)
                         action_set.append(x)
                         cur_scene['actions'].append(x)
+                before_probe = 'Before ' + action.get('parameters', {}).get('probe_id')
+                if doc_id in probe_updates and before_probe in probe_updates[env_map[doc_id]['id']]:
+                        for x in probe_updates[env_map[doc_id]['id']][before_probe]:
+                            action_set.insert(len(action_set)-1, x)
+                            cur_scene['actions'].insert(len(action_set)-1, x)
             # set supplies to first supplies available
             if action['response'] is not None and 'supplies' in action['response']:
                 supply_types = [supply['type'] for supply in supplies]
@@ -557,7 +559,10 @@ def set_medic_from_adm(document, template, mongo_collection, db):
                     printable = get_string_from_action(action, next_action, get_yaml_data(doc_id))
                 if printable == -1:
                     if (not get_all_actions) and (next_action.get('parameters', {}).get('probe_id') in env_map[doc_id]['probe_ids']):
-                        printable = "Choose not to treat either patient"
+                        if "Update:" in action_set[-1] or "Question:" in action_set[-1] or "Note:" in action_set[-1]:
+                            printable = "Choose not to treat either patient"
+                        else:
+                            continue
                     else:
                         continue
                 if printable is not None:
