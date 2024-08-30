@@ -507,18 +507,32 @@ class DelegationTool:
             "TAD baseline",
             "TAD severity-baseline",
             "TAD misaligned",
-            "foobar"
+            'ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 
+            'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
+            'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 
+            'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
+            'TAD-baseline', 
+            'TAD-aligned'
         ]:
             LOGGER.log(
                 LogLevel.WARN,
-                "ADM name must be one of ['kitware-single-kdma-adm-aligned-no-negatives', 'kitware-single-kdma-adm-baseline', 'kitware-hybrid-kaleido-aligned', 'TAD aligned', 'TAD baseline', 'TAD severity-baseline', 'TAD misaligned']. Cannot add medic",
+                "ADM name must be one of ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'TAD', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c', 'ALIGN-ADM-Random__9e0997cb-70cb-4f5d-a085-10f359636517', 'ALIGN-ADM-HybridRegression__065fac00-4446-4e9c-895f-83691abc7f49', 'TAD-baseline', 'TAD-aligned', 'kitware-single-kdma-adm-aligned-no-negatives', 'kitware-single-kdma-adm-baseline', 'kitware-hybrid-kaleido-aligned', 'TAD aligned', 'TAD baseline', 'TAD severity-baseline', 'TAD misaligned']. Cannot add medic",
             )
             return
-        adm_alignment = adm_alignment.lower()
-        if adm_alignment not in ["high", "low"]:
+        adm_alignment = adm_alignment
+        if adm_alignment not in ['high', 'low', 'vol-human-8022671-SplitHighMulti', 'qol-human-2932740-HighExtreme', 'vol-human-1774519-SplitHighMulti', 'qol-human-6349649-SplitHighMulti', 
+               'vol-human-6403274-SpitEvenBinary', 'qol-human-3447902-SplitHighMulti', 'vol-human-7040555-SplitEvenBinary', 'qol-human-7040555-SplitHighMulti', 
+               'vol-human-2637411-SplitEvenMulti', 'qol-human-3043871-SplitHighBinary', 'vol-human-2932740-SplitEvenMulti', 'qol-human-6403274-SplitHighBinary', 
+               'vol-human-8478698-SplitLowMulti', 'qol-human-1774519-SplitEvenBinary', 'vol-human-3043871-SplitLowMulti', 'qol-human-9157688-SplitEvenBinary', 
+               'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
+               'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
+               'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary', 
+               'ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
+               'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
+               'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']:
             LOGGER.log(
                 LogLevel.WARN,
-                "ADM Alignment must be either 'high' or 'low'. Cannot add medic.",
+                f"ADM Alignment is invalid: {adm_alignment}. Cannot add medic.",
             )
             return
         if scenario_writer not in ["Adept", "SoarTech"]:
@@ -1163,26 +1177,58 @@ def version4_setup():
     # add comparison options to survey
     tool.survey["validSingleSets"] = []
     tool.survey["validOmniSets"] = []
-
-    # tool.add_db_medic_to_survey_by_details(
-    #                 "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
-    #             )
-    tool.add_db_medic_to_survey_by_details(
-                "foobar", "low", 'Adept', scenario_id='DryRunEval-IG2-eval', append=True
-            )
-    # tool.add_db_medic_to_survey_by_details(
-    #                 "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
-    #             )
-    # tool.add_db_medic_to_survey_by_details(
-    #             "foobar", "low", 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
-    #         )
-    tool.add_db_medic_to_survey_by_details(
-            "foobar", "low", 'Adept', scenario_id='DryRunEval-IG5-eval', append=True
-        )
-    # tool.add_db_medic_to_survey_by_details(
-    #             "foobar", "low", 'SoarTech', scenario_id='qol-dre-1-eval', append=True
-    #         )
-
+    adms = ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
+            'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
+            'TAD-baseline', 'TAD-aligned']
+    targets = ['vol-human-8022671-SplitHighMulti', 'qol-human-2932740-HighExtreme', 'vol-human-1774519-SplitHighMulti', 'qol-human-6349649-SplitHighMulti', 
+               'vol-human-6403274-SpitEvenBinary', 'qol-human-3447902-SplitHighMulti', 'vol-human-7040555-SplitEvenBinary', 'qol-human-7040555-SplitHighMulti', 
+               'vol-human-2637411-SplitEvenMulti', 'qol-human-3043871-SplitHighBinary', 'vol-human-2932740-SplitEvenMulti', 'qol-human-6403274-SplitHighBinary', 
+               'vol-human-8478698-SplitLowMulti', 'qol-human-1774519-SplitEvenBinary', 'vol-human-3043871-SplitLowMulti', 'qol-human-9157688-SplitEvenBinary', 
+               'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
+               'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
+               'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary', 
+               'ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
+               'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
+               'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
+    for t in targets:
+        for adm in adms:
+            tool.add_db_medic_to_survey_by_details(
+                            adm, t, 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
+                        )
+            tool.add_db_medic_to_survey_by_details(
+                        adm, t, 'Adept', scenario_id='DryRunEval-IO2-eval', append=True
+                    )
+            tool.add_db_medic_to_survey_by_details(
+                            adm, t, 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
+                        )
+            tool.add_db_medic_to_survey_by_details(
+                        adm, t, 'Adept', scenario_id='DryRunEval-IO4-eval', append=True
+                    )
+            tool.add_db_medic_to_survey_by_details(
+                        adm, t, 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
+                    )
+            tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO5-eval', append=True
+                )
+            tool.add_db_medic_to_survey_by_details(
+                        adm, t, 'SoarTech', scenario_id='qol-dre-1-eval', append=True
+                    )
+            tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-2-eval', append=True
+                )
+            tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-3-eval', append=True
+                )
+            tool.add_db_medic_to_survey_by_details(
+                adm, t, 'SoarTech', scenario_id='vol-dre-1-eval', append=True
+                )
+            tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-2-eval', append=True
+                )
+            tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-3-eval', append=True
+                )
+    
     # pages for treating as AI or Human
     agent_pages = [
         {
