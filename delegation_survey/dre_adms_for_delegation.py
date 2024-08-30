@@ -495,7 +495,7 @@ def set_medic_from_adm(document, template, mongo_collection, db):
             return
         if document['history'][0]['parameters']['adm_name'] not in ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
                                                                     'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
-                                                                    'TAD-baseline', 'TAD-aligned']:
+                                                                    'TAD-baseline', 'TAD-aligned']: 
             return
         if doc_id in probe_updates and 'Intro' in probe_updates[env_map[doc_id]['id']]:
             for x in probe_updates[env_map[doc_id]['id']]['Intro']:
@@ -561,7 +561,10 @@ def set_medic_from_adm(document, template, mongo_collection, db):
             if (action['command'] == 'Take Action' or action['command'] == 'Intend Action') and (get_all_actions or ((not get_all_actions) and next_action.get('command', None) == 'Respond to TA1 Probe' and ((next_action.get('parameters', {}).get('probe_id') in env_map[doc_id]['probe_ids']) or (next_action.get('parameters', {}).get('choice') in env_map[doc_id]['probe_ids'])))):
                 printable = get_string_from_action(action, next_action, get_yaml_data(doc_id))
                 if printable == -1:
-                    continue
+                    if (not get_all_actions) and (next_action.get('parameters', {}).get('probe_id') in env_map[doc_id]['probe_ids']):
+                        printable = "Choose not to treat either patient"
+                    else:
+                        continue
                 if printable is not None:
                     # since this is ADM, leave in duplicates!
                     action_set.append(printable)
