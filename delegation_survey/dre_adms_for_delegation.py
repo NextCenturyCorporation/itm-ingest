@@ -10,7 +10,6 @@ Gets all of the dre (eval #4) ADMs from the 'test' collection in mongo.
 Gets all the data required from those datasets to add to the survey.
 Pushes each individual adm to the admMedics collection in mongo.
 '''
-ADEPT_TARGET = 'IO' # MJ or IO
 LOGGER = Logger('ADM Converter')
 UPDATE_MONGO = True
 
@@ -127,7 +126,7 @@ probe_updates = {
 }
 
 
-env_map = {
+ST_ENV_MAP = {
     "qol-dre-1-eval": {
         "id": 'qol-dre-1-eval',
         "name": "SoarTech QOL 1",
@@ -177,8 +176,7 @@ env_map = {
         "probe_ids": ['vol-dre-3-eval-Probe-2', 'vol-dre-3-eval-Probe-3', 'vol-dre-3-eval-Probe-6', 'vol-dre-3-eval-Probe-7', 'vol-dre-3-eval-Probe-10', 'vol-dre-3-eval-Probe-11']
     }
 }
-if ADEPT_TARGET == 'MJ':
-    env_map.update({ 
+MJ_ENV_MAP = { 
         "DryRunEval-MJ2-eval": {
             "id": 'DryRunEval-MJ2-eval',
             "name": "Adept Urban",
@@ -206,9 +204,8 @@ if ADEPT_TARGET == 'MJ':
             "characters": ["Springer", "Upton"],
             "probe_ids": ['Probe 1', 'Probe 1-A.1', 'Probe 1-B.1', 'Probe 2', 'Response 2-A.1-B', 'Response 2-B.1-B', 'Response 2-B.1-B-gauze-u', 'Response 2-A.1-B-gauze-sp', 'Probe 2-A.1-A.1', 'Probe 2-B.1-A.1', 'Probe 2-A.1-B.1-A.1', 'Probe 2-B.1-B.1-A.1', 'Probe 3', 'Probe 4']
         }
-    })
-else:     
-    env_map.update({
+    }
+IO_ENV_MAP = {
         "DryRunEval-MJ2-eval": {
             "id": 'DryRunEval-IO2-eval',
             "name": "Adept Urban",
@@ -236,7 +233,7 @@ else:
             "characters": ["Upton", "Attacker", "US Soldier"],
             "probe_ids": ['Probe 7', 'Probe 8', 'Probe 8-A.1', 'Probe 8-A.1-A.1', 'Probe 9', 'Probe 9-A.1', 'Probe 9-B.1', 'Probe 9-C.1']
         }
-    })
+    }
 
 character_conversion = {
     "casualty_o": "Casualty O",
@@ -456,7 +453,7 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index, db):
     return patients
 
 
-def set_medic_from_adm(document, template, mongo_collection, db):
+def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         global names, loop_ind, names_used
         '''
         Takes in a full adm document and returns the json in the same form as template
@@ -480,8 +477,6 @@ def set_medic_from_adm(document, template, mongo_collection, db):
         if doc_id in ['DryRunEval.IO1', 'qol-dre-1-train', 'qol-dre-2-train', 'vol-dre-1-train', 'vol-dre-2-train']:
             return
 
-        if ADEPT_TARGET == 'IO' and 'dre' in doc_id:
-            return
 
         if document['history'][0]['parameters']['adm_name'] not in ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
                                                                     'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
@@ -665,9 +660,24 @@ def main():
     adms = db['test'].find({'evaluation.evalNumber': "4"})
     added = 0
     for document in adms:
-        medic_data = set_medic_from_adm(document, template, medic_mongo_collection, db)
-        if medic_data is not None:
-            added += 1
+        try:
+            if document['history'][0]['command'] == 'Start Scenario':
+                doc_id = document['history'][0]['response']['id']
+            else:
+                doc_id = document['history'][1]['response']['id']
+        except:
+            continue
+        adept_envs = [MJ_ENV_MAP, IO_ENV_MAP]
+        st_envs = [ST_ENV_MAP]
+        envs = []
+        if 'dre' in doc_id:
+            envs = st_envs
+        else:
+            envs = adept_envs
+        for env_map in envs:
+            medic_data = set_medic_from_adm(document, template, medic_mongo_collection, db, env_map)
+            if medic_data is not None:
+                added += 1
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Successfully added/updated {added} adm medics")
 
 if __name__ == '__main__':
