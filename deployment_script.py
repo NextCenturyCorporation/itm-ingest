@@ -4,7 +4,7 @@ from text_based_scenarios._0_1_9_participant_log import main as ingest_participa
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.9"
+db_version = "0.1.7"
 
 
 def check_version(mongoDB):
@@ -31,8 +31,8 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
-
-        ingest_participant_log(mongoDB)
+        load_ta1_yaml_files("adept-evals/eval4",  mongoDB)
+        load_ta1_yaml_files("soartech-evals/eval4",  mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
