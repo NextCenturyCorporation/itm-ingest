@@ -121,6 +121,21 @@ class DelegationTool:
         if "survey" in self.survey:
             self.survey = self.survey["survey"]
 
+    def add_page_by_json(self, page, index=None):
+        if index is None:
+            self.survey["pages"].append(page)
+            self.changes_summary.append(
+                f"Appended new page '{page['name']}' to survey"
+            )
+        else:
+            self.survey["pages"].insert(index, page)
+            self.changes_summary.append(
+                f"Added new page '{page['name']}' to survey at index {index}"
+            )
+        LOGGER.log(
+            LogLevel.INFO, f"Successfully added new page with name '{page['name']}'"
+        )
+
     def add_page(
         self, page_name, scenario_name="", page_type="", scenario_index=None, index=None
     ):
@@ -1160,16 +1175,105 @@ def version4_setup():
     tool.clear_survey_version()
 
     # add starting pages to survey
-    tool.import_page_from_json(
-        os.path.join("survey-configs", "surveyConfig2x.json"),
-        "Participant ID Page",
-        None,
-    )
-    tool.import_page_from_json(
-        os.path.join("survey-configs", "surveyConfig2x.json"),
-        "Survey Introduction",
-        None,
-    )
+    # tool.import_page_from_json(
+    #     os.path.join("survey-configs", "surveyConfig2x.json"),
+    #     "Participant ID Page",
+    #     None,
+    # )
+    exp_page_1 = {
+            "name": "Participant ID Page",
+            "elements": [
+                {
+                    "type": "text",
+                    "name": "Participant ID",
+                    "title": "Enter Participant ID:",
+                    "isRequired": True
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Experience Level",
+                    "title": "How much experience did you have with VR Gaming before today?",
+                    "isRequired": True,
+                    "choices": [
+                        "0 - None at all",
+                        "1 - I have used it, but not often",
+                        "2 - I use it occasionally",
+                        "3 - I use it often",
+                        "4 - I use it all the time"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Comfort Level",
+                    "title": "After completing the VR experience, my current physical state is...",
+                    "isRequired": True,
+                    "choices": [
+                        "Very uncomfortable",
+                        "Slightly uncomfortable",
+                        "Neutral",
+                        "Comfortable",
+                        "Very comfortable"
+                    ]
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Discomfort",
+                    "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
+                    "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
+                }
+            ]
+        }
+    tool.add_page_by_json(exp_page_1)
+
+    exp_page_2 = {
+            "name": "Participant ID Page",
+            "elements": [
+                {
+                    "type": "radiogroup",
+                    "name": "Text Scenarios Completed",
+                    "title": "Please verify that the following Text Scenarios have been completed:",
+                    "isRequired": True,
+                    "choices": [
+                        "Yes",
+                        "No",
+                    ],
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Text Scenario Mismatch",
+                    "visibleIf": "{Text Scenarios Completed} anyof ['No']",
+                    "title": "Please explain why this participant has not completed these text scenarios. Or, if they have, please ensure you entered the same participant ID."
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Scenarios Completed",
+                    "title": "Please verify that the following VR Scenarios have been completed:",
+                    "isRequired": True,
+                    "choices": [
+                        "Yes",
+                        "No",
+                    ],
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About VR Scenario Mismatch",
+                    "visibleIf": "{VR Scenarios Completed} anyof ['No']",
+                    "title": "Please explain why this participant has not completed these VR scenarios. Or, if they have, please ensure you entered the same participant ID."
+                }
+            ]
+    }
+    tool.add_page_by_json(exp_page_2)
+    intro_page = {
+            "name": "Survey Introduction",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "Survey21 Introduction",
+                    "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how three different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+                }
+            ]
+        }
+    tool.add_page_by_json(intro_page)
     tool.import_page_from_json(
         os.path.join("survey-configs", "surveyConfig2x.json"), "Note page", None
     )
