@@ -31,8 +31,7 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
-        load_ta1_yaml_files("adept-evals/eval4",  mongoDB)
-        load_ta1_yaml_files("soartech-evals/eval4",  mongoDB)
+        ingest_participant_log(mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
