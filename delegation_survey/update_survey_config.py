@@ -1188,7 +1188,26 @@ def version4_setup():
                     "name": "Participant ID",
                     "title": "Enter Participant ID:",
                     "isRequired": True
-                },
+                }
+            ]
+        }
+    tool.add_page_by_json(exp_page_1)
+    
+    warning_page = {
+        "name": "PID Warning",
+        "elements": [
+            {
+                "type": "expression",
+                "name": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing.",
+                "title": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing."
+            }
+        ]
+    }
+    tool.add_page_by_json(warning_page)
+
+    exp_page_2 = {
+            "name": "Participant ID Page",
+            "elements": [
                 {
                     "type": "radiogroup",
                     "name": "VR Experience Level",
@@ -1218,16 +1237,8 @@ def version4_setup():
                 {
                     "type": "comment",
                     "name": "Additonal Information About Discomfort",
-                    "visibleIf": "{VR Scenarios Completed} anyof ['I have completed the VR desert environment ', 'I have completed the VR urban environment', 'I have completed the VR submarine environment ', 'I have completed the VR  jungle environment']",
                     "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
-                }
-            ]
-        }
-    tool.add_page_by_json(exp_page_1)
-
-    exp_page_2 = {
-            "name": "Participant ID Page",
-            "elements": [
+                },
                 {
                     "type": "radiogroup",
                     "name": "Text Scenarios Completed",
