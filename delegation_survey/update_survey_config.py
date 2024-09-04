@@ -121,6 +121,21 @@ class DelegationTool:
         if "survey" in self.survey:
             self.survey = self.survey["survey"]
 
+    def add_page_by_json(self, page, index=None):
+        if index is None:
+            self.survey["pages"].append(page)
+            self.changes_summary.append(
+                f"Appended new page '{page['name']}' to survey"
+            )
+        else:
+            self.survey["pages"].insert(index, page)
+            self.changes_summary.append(
+                f"Added new page '{page['name']}' to survey at index {index}"
+            )
+        LOGGER.log(
+            LogLevel.INFO, f"Successfully added new page with name '{page['name']}'"
+        )
+
     def add_page(
         self, page_name, scenario_name="", page_type="", scenario_index=None, index=None
     ):
@@ -493,7 +508,7 @@ class DelegationTool:
             )
 
     def add_db_medic_to_survey_by_details(
-        self, adm_name, adm_alignment, scenario_writer, environment, append=False
+        self, adm_name, adm_alignment, scenario_writer, environment=None, scenario_id=None, append=False
     ):
         """
         Finds a document from the adm medic colleciton in mongo that matches the parameters given.
@@ -507,17 +522,32 @@ class DelegationTool:
             "TAD baseline",
             "TAD severity-baseline",
             "TAD misaligned",
+            'ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 
+            'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
+            'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 
+            'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
+            'TAD-baseline', 
+            'TAD-aligned'
         ]:
             LOGGER.log(
                 LogLevel.WARN,
-                "ADM name must be one of ['kitware-single-kdma-adm-aligned-no-negatives', 'kitware-single-kdma-adm-baseline', 'kitware-hybrid-kaleido-aligned', 'TAD aligned', 'TAD baseline', 'TAD severity-baseline', 'TAD misaligned']. Cannot add medic",
+                "ADM name must be one of ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'TAD', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c', 'ALIGN-ADM-Random__9e0997cb-70cb-4f5d-a085-10f359636517', 'ALIGN-ADM-HybridRegression__065fac00-4446-4e9c-895f-83691abc7f49', 'TAD-baseline', 'TAD-aligned', 'kitware-single-kdma-adm-aligned-no-negatives', 'kitware-single-kdma-adm-baseline', 'kitware-hybrid-kaleido-aligned', 'TAD aligned', 'TAD baseline', 'TAD severity-baseline', 'TAD misaligned']. Cannot add medic",
             )
             return
-        adm_alignment = adm_alignment.lower()
-        if adm_alignment not in ["high", "low"]:
+        adm_alignment = adm_alignment
+        if adm_alignment not in ['high', 'low', 'vol-human-8022671-SplitHighMulti', 'qol-human-2932740-HighExtreme', 'vol-human-1774519-SplitHighMulti', 'qol-human-6349649-SplitHighMulti', 
+               'vol-human-6403274-SpitEvenBinary', 'qol-human-3447902-SplitHighMulti', 'vol-human-7040555-SplitEvenBinary', 'qol-human-7040555-SplitHighMulti', 
+               'vol-human-2637411-SplitEvenMulti', 'qol-human-3043871-SplitHighBinary', 'vol-human-2932740-SplitEvenMulti', 'qol-human-6403274-SplitHighBinary', 
+               'vol-human-8478698-SplitLowMulti', 'qol-human-1774519-SplitEvenBinary', 'vol-human-3043871-SplitLowMulti', 'qol-human-9157688-SplitEvenBinary', 
+               'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
+               'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
+               'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary', 
+               'ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
+               'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
+               'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']:
             LOGGER.log(
                 LogLevel.WARN,
-                "ADM Alignment must be either 'high' or 'low'. Cannot add medic.",
+                f"ADM Alignment is invalid: {adm_alignment}. Cannot add medic.",
             )
             return
         if scenario_writer not in ["Adept", "SoarTech"]:
@@ -526,20 +556,30 @@ class DelegationTool:
                 "Scenario writer must be either 'Adept' or 'SoarTech'. Cannot add medic.",
             )
             return
-        environment = environment[0].upper() + environment[1:].lower()
-        if environment not in ["Desert", "Jungle", "Urban", "Submarine"]:
-            LOGGER.log(
-                LogLevel.WARN,
-                "Environment must be one of ['Desert', 'Jungle', 'Urban', 'Submarine']. Cannot add medic.",
+        found_docs = []
+        if environment is not None:
+            environment = environment[0].upper() + environment[1:].lower()
+            if environment not in ["Desert", "Jungle", "Urban", "Submarine"]:
+                LOGGER.log(
+                    LogLevel.WARN,
+                    "Environment must be one of ['Desert', 'Jungle', 'Urban', 'Submarine']. Cannot add medic.",
+                )
+                return
+            found_docs = self.medics_mongo_collection.find(
+                {
+                    "admName": adm_name,
+                    "admAlignment": adm_alignment,
+                    "scenarioName": scenario_writer + " " + environment,
+                }
             )
-            return
-        found_docs = self.medics_mongo_collection.find(
-            {
-                "admName": adm_name,
-                "admAlignment": adm_alignment,
-                "scenarioName": scenario_writer + " " + environment,
-            }
-        )
+        elif scenario_id is not None:
+                found_docs = self.medics_mongo_collection.find(
+                {
+                    "admName": adm_name,
+                    "admAlignment": adm_alignment,
+                    "scenarioIndex": scenario_id,
+                }
+            )
         found_medic = False
         for doc in found_docs:
             found_medic = True
@@ -1031,11 +1071,11 @@ def version3_setup():
         for env in envs:
             # create individual medic pages for parallax
             name1 = tool.add_db_medic_to_survey_by_details(
-                "TAD aligned", "high", writer, env, True
+                "TAD aligned", "high", writer, environment=env, append=True
             )
             tad_aligned.append(name1)
             name2 = tool.add_db_medic_to_survey_by_details(
-                "TAD aligned", "low", writer, env, True
+                "TAD aligned", "low", writer, environment=env, append=True
             )
             tad_baseline.append(name2)
             # create comparison pages
@@ -1045,11 +1085,11 @@ def version3_setup():
 
             # create individual medic pages for kitware
             name3 = tool.add_db_medic_to_survey_by_details(
-                "kitware-hybrid-kaleido-aligned", "high", writer, env, True
+                "kitware-hybrid-kaleido-aligned", "high", writer, environment=env, append=True
             )
             kit_aligned.append(name3)
             name4 = tool.add_db_medic_to_survey_by_details(
-                "kitware-hybrid-kaleido-aligned", "low", writer, env, True
+                "kitware-hybrid-kaleido-aligned", "low", writer, environment=env, append=True
             )
             kit_baseline.append(name4)
             # create comparison pages
@@ -1125,6 +1165,226 @@ def version3_setup():
     tool.export_survey_json(os.path.join("survey-configs", "surveyConfig3x.json"))
 
 
+def version4_setup():
+    """
+    Creates survey version 4.0.
+
+    Note that survey version 4.0 uses images from the text scenarios so that we are not storing duplicate information
+    """
+    tool = DelegationTool(4.0)
+    tool.clear_survey_version()
+
+    # add starting pages to survey
+    # tool.import_page_from_json(
+    #     os.path.join("survey-configs", "surveyConfig2x.json"),
+    #     "Participant ID Page",
+    #     None,
+    # )
+    exp_page_1 = {
+            "name": "Participant ID Page",
+            "elements": [
+                {
+                    "type": "text",
+                    "name": "Participant ID",
+                    "title": "Enter Participant ID:",
+                    "isRequired": True
+                }
+            ]
+        }
+    tool.add_page_by_json(exp_page_1)
+    
+    warning_page = {
+        "name": "PID Warning",
+        "elements": [
+            {
+                "type": "expression",
+                "name": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing.",
+                "title": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing."
+            }
+        ]
+    }
+    tool.add_page_by_json(warning_page)
+
+    exp_page_2 = {
+            "name": "Participant ID Page",
+            "elements": [
+                {
+                    "type": "radiogroup",
+                    "name": "VR Experience Level",
+                    "title": "How much experience did you have with VR Gaming before today?",
+                    "isRequired": True,
+                    "choices": [
+                        "0 - None at all",
+                        "1 - I have used it, but not often",
+                        "2 - I use it occasionally",
+                        "3 - I use it often",
+                        "4 - I use it all the time"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Comfort Level",
+                    "title": "After completing the VR experience, my current physical state is...",
+                    "isRequired": True,
+                    "choices": [
+                        "Very uncomfortable",
+                        "Slightly uncomfortable",
+                        "Neutral",
+                        "Comfortable",
+                        "Very comfortable"
+                    ]
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Discomfort",
+                    "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "Text Scenarios Completed",
+                    "title": "Please verify that the following Text Scenarios have been completed:",
+                    "isRequired": True,
+                    "choices": [
+                        "Yes",
+                        "No",
+                    ],
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Text Scenario Mismatch",
+                    "visibleIf": "{Text Scenarios Completed} anyof ['No']",
+                    "title": "Please explain why this participant has not completed these text scenarios. Or, if they have, please ensure you entered the same participant ID."
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Scenarios Completed",
+                    "title": "Please verify that the following VR Scenarios have been completed:",
+                    "isRequired": True,
+                    "choices": [
+                        "Yes",
+                        "No",
+                    ],
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About VR Scenario Mismatch",
+                    "visibleIf": "{VR Scenarios Completed} anyof ['No']",
+                    "title": "Please explain why this participant has not completed these VR scenarios. Or, if they have, please ensure you entered the same participant ID."
+                }
+            ]
+    }
+    tool.add_page_by_json(exp_page_2)
+    intro_page = {
+            "name": "Survey Introduction",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "Survey21 Introduction",
+                    "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how three different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+                }
+            ]
+        }
+    tool.add_page_by_json(intro_page)
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2x.json"), "Note page", None
+    )
+
+    # add comparison options to survey
+    tool.survey["validSingleSets"] = []
+    tool.survey["validOmniSets"] = []
+    st_adms = ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 'TAD-baseline', 'TAD-aligned']
+    ad_adms = ['ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c', 'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2', 'TAD-baseline', 'TAD-aligned']
+    st_targets = ['vol-human-8022671-SplitHighMulti', 'qol-human-2932740-HighExtreme', 'vol-human-1774519-SplitHighMulti', 'qol-human-6349649-SplitHighMulti', 
+                    'vol-human-6403274-SpitEvenBinary', 'qol-human-3447902-SplitHighMulti', 'vol-human-7040555-SplitEvenBinary', 'qol-human-7040555-SplitHighMulti', 
+                    'vol-human-2637411-SplitEvenMulti', 'qol-human-3043871-SplitHighBinary', 'vol-human-2932740-SplitEvenMulti', 'qol-human-6403274-SplitHighBinary', 
+                    'vol-human-8478698-SplitLowMulti', 'qol-human-1774519-SplitEvenBinary', 'vol-human-3043871-SplitLowMulti', 'qol-human-9157688-SplitEvenBinary', 
+                    'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
+                    'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
+                    'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary']
+    ad_targets = ['ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
+                    'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
+                    'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
+    for t in st_targets:
+        for adm in st_adms:
+            if 'qol' in t:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-1-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-dre-3-eval', append=True
+                )
+            else:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-1-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-dre-3-eval', append=True
+                )
+    for t in ad_targets:
+        for adm in ad_adms:
+            if 'Moral' in t:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
+                )
+            else:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO4-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO5-eval', append=True
+                )
+    # pages for treating as AI or Human
+    agent_pages = [
+        {
+            "name": "Treat as Human",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are human medics.",
+                    "title": "Please evaluate these triage decision makers as if they are human medics."
+                }
+            ]
+        },
+        {
+            "name": "Treat as AI",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic.",
+                    "title": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic."
+                }
+            ]
+        }
+    ]
+    tool.survey['agentPages'] = agent_pages
+
+    # add final page
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2.1.json"),
+        "Post-Scenario Measures",
+        None,
+    )
+
+    # save changes
+    tool.push_changes()
+    tool.export_survey_json(os.path.join("survey-configs", "surveyConfig4x.json"))
+
+
 if __name__ == "__main__":
     LOGGER.log(LogLevel.CRITICAL_INFO, "Welcome to the Delegation Survey Tool")
     LOGGER.log(
@@ -1134,12 +1394,14 @@ if __name__ == "__main__":
     resp = input("")
     if resp == "":
         resp = input(
-            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Setup survey version 3.0\n"
+            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Setup survey version 3.0\n\t3. Setup survey version 4.0\n"
         )
         if resp == "1":
             one_time_db_initialization()
         elif resp == "2":
             version3_setup()
+        elif resp == "3":
+            version4_setup()
         else:
             LOGGER.log(LogLevel.WARN, "Option not recognized. Exiting...")
         exit(0)
@@ -1193,7 +1455,7 @@ if __name__ == "__main__":
                         "Enter the environment (Desert, Submarine, Jungle, or Urban): "
                     )
                     tool.add_db_medic_to_survey_by_details(
-                        adm_name, alignment, scenario_writer, env
+                        adm_name, alignment, scenario_writer, environment=env
                     )
                 else:
                     tool.add_db_medic_to_survey_by_name(name)

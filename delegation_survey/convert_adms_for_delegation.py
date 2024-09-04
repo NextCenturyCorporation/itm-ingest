@@ -355,6 +355,7 @@ def set_medic_from_adm(document, template, mongo_collection, db):
                     found_with_name = True
                     break
         page_data['name'] = name
+        page_data['evalNumber'] = 3
         page_data['admName'] = meta['adm_name']
         # CHECK THIS !!!
         page_data['admType'] = 'baseline' if meta['adm_name'] in ['kitware-single-kdma-adm-baseline', 'TAD baseline'] else 'aligned' if meta['adm_name'] in ['TAD aligned', 'kitware-single-kdma-adm-aligned-no-negatives'] else 'other'
