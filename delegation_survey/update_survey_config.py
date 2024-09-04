@@ -593,10 +593,16 @@ class DelegationTool:
                 )
             return doc["name"]
         if not found_medic:
-            LOGGER.log(
-                LogLevel.WARN,
-                f"Could not find medic to add to survey. Please check that all details match. adm_name: {adm_name}, adm_alignment: {adm_alignment}, scenario_writer: {scenario_writer}, environment: {environment}",
-            )
+            if (scenario_id is None):
+                LOGGER.log(
+                    LogLevel.WARN,
+                    f"Could not find medic to add to survey. Please check that all details match. adm_name: {adm_name}, adm_alignment: {adm_alignment}, scenario_writer: {scenario_writer}, environment: {environment}",
+                )
+            else:
+                LOGGER.log(
+                    LogLevel.WARN,
+                    f"Could not find medic to add to survey. Please check that all details match. Scenario: {scenario_id}, ADM Alignment: {adm_alignment}, ADM Name: {adm_name}",
+                )
             return None
 
     def insert_new_medic(self, doc):
@@ -1192,7 +1198,7 @@ def version4_setup():
             ]
         }
     tool.add_page_by_json(exp_page_1)
-    
+
     warning_page = {
         "name": "PID Warning",
         "elements": [
