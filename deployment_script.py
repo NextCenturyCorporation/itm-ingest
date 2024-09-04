@@ -29,13 +29,12 @@ def update_db_version(mongoDB):
 def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
-    load_data(mongoDB)
-    # if(check_version(mongoDB)):
-    #     print("New db version, execute scripts")
+    if(check_version(mongoDB)):
+        print("New db version, execute scripts")
 
-    #     load_data(mongoDB)
-    # else:
-    #     print("Script does not need to run on prod, already updated.")
+        load_data(mongoDB)
+    else:
+        print("Script does not need to run on prod, already updated.")
 
 
 if __name__ == "__main__":
