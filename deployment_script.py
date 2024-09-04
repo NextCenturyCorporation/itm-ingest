@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from decouple import config
-from text_based_scenarios._0_1_9_participant_log import main as ingest_participant_log
+from text_based_scenarios._0_1_10_participant_log import main as ingest_participant_log
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
