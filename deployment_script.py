@@ -4,7 +4,7 @@ from text_based_scenarios._0_1_9_participant_log import main as ingest_participa
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 # Change this version if running a new deploy script
-db_version = "0.1.9"
+db_version = "0.1.10"
 
 
 def check_version(mongoDB):
