@@ -425,30 +425,10 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index, db):
 
         patients.append({
             "name": character_conversion[patient['id']],
-            "vitals": [
-                {
-                    "name": "Ability To Follow Commands",
-                    "value": patient['vitals']['mental_status'] if patient['vitals'].get('mental_status', None) is not None else 'Unknown'
-                },
-                {
-                    "name": "Respiratory Effort",
-                    "value": patient['vitals']['breathing'] if patient['vitals'].get('breathing', None) is not None else 'Unknown'
-                },
-                {
-                    "name": "Pulse Quality",
-                    "value": patient['vitals']['heart_rate'] if patient['vitals'].get('heart_rate', None) is not None else 'Unknown'
-                },
-                {
-                    "name": "Heart Rate",
-                    "value": patient['vitals']['heart_rate'] if patient['vitals'].get('heart_rate', None) is not None else 'Unknown'
-                },
-                {
-                    "name": "SpO2",
-                    "value": patient['vitals']['spo2'] if patient['vitals'].get('spo2', None) is not None else 'Unknown'
-                }
-            ],
+            "vitals": patient.get('vitals', {}),
             "description": patient['unstructured'].replace('\n', ''),
             "imgUrl": str(img),
+            "injuries": patient.get('injuries', []),
             "age": patient.get('demographics', {}).get('age', None),
             "sex": patient.get('demographics', {}).get('sex', None)
         })
@@ -469,6 +449,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         doc_id = None
         kdmas = []
         supplies = [] 
+        first_supplies = []
         try:
             if document['history'][0]['command'] == 'Start Scenario':
                 doc_id = document['history'][0]['response']['id']
@@ -482,7 +463,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
 
         if document['history'][0]['parameters']['adm_name'] not in ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
                                                                     'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
-                                                                    'TAD-baseline', 'TAD-severity-baseline', 'TAD-aligned']: 
+                                                                    'TAD-severity-baseline', 'TAD-aligned']: 
             return
         if doc_id in probe_updates and 'Intro' in probe_updates[env_map[doc_id]['id']]:
             for x in probe_updates[env_map[doc_id]['id']]['Intro']:
@@ -507,13 +488,16 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                             cur_scene['actions'].insert(len(action_set)-1, x)
             # set supplies to first supplies available
             if action['response'] is not None and 'supplies' in action['response']:
+                if len(supplies) > 0 and len(cur_scene['supplies']) == 0:
+                    cur_scene['supplies'] = supplies # we want the supplies before the action, not after
                 supplies = action['response']['supplies']
                 non_zero_supplies = []
                 for x in supplies:
                     if x['quantity'] > 0:
                         non_zero_supplies.append(x)
-                supplies = non_zero_supplies
-                cur_scene['supplies'] = supplies
+                supplies = non_zero_supplies     
+                if len(first_supplies) == 0:
+                    first_supplies = supplies           
             # look for scene changes when characters shift
             if (len(cur_chars) == 0 and 'characters' in action['response']) or action['command'] == 'Change scene':
                 tmp_chars = []
@@ -528,7 +512,8 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                         for x in action['response']['supplies']:
                             if x['quantity'] > 0:
                                 non_zero_supplies.append(x)
-                        cur_scene['supplies'] = non_zero_supplies
+                        if len(cur_scene['supplies']) == 0:
+                            cur_scene['supplies'] = non_zero_supplies
                     cur_chars = tmp_chars
                     if (len(cur_chars) > 0):
                         cur_scene['char_ids'].extend(cur_chars)
@@ -634,7 +619,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         medic_data['name'] = medic_data['title']
         medic_data['actions'] = action_set[2:action_set.index('SCENE CHANGE') if 'SCENE CHANGE' in action_set else len(action_set)]
         medic_data['scenes'] = scenes
-        medic_data['supplies'] = supplies
+        medic_data['supplies'] = first_supplies
         medic_data['situation'] =  env_map[doc_id]['situation']
         formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db)
         medic_data['patients'] = formatted_patients
