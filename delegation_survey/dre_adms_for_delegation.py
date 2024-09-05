@@ -218,7 +218,7 @@ IO_ENV_MAP = {
         "DryRunEval-MJ4-eval": {
             "id": 'DryRunEval-IO4-eval',
             "name": "Adept Jungle",
-            "situation":  'You are a deployed medic whose unit was stationed at a roadside checkpoint on a side road that leads to your base. Local civilians often pass along the main road outside the checkpoint. You hear one of the members of your unit shout out to a civilian standing on the main road: “Hey! Hey, back up! That could be dangerous. Don’t touch it. Back away!” The civilian is kicking at something sticking out of the dirt. It explodes, and you see that the person who was kicking at what was apparently an IED has been injured. Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.',
+            "situation":  'You are a deployed medic whose unit was stationed at a roadside checkpoint on a side road that leads to your base. Local civilians often pass along the main road outside the checkpoint. You have temporarily treated two civilian casualties. One was part of a plot to injure US soldiers with an IED, but the IED exploded early when he kicked it. He had has major burns on his right side, a substantial puncture on his right shoulder, and moderate shrapnel wounds on the right calf Another was a passerby. He had moderate shrapnel wounds to his face and was in agony.',
             "all_actions": False,
             "break_scenes": False,
             "characters": ["Kicker", "Passerby", "US Soldier"],
@@ -227,7 +227,7 @@ IO_ENV_MAP = {
         "DryRunEval-MJ5-eval": {
             "id": 'DryRunEval-IO5-eval',
             "name": "Adept Desert",
-            "situation":  "You are a deployed medic whose unit was stationed at a roadside checkpoint on a side road that leads to your base. Local civilians often pass along the main road outside the checkpoint. You have temporarily treated two civilian casualties. One was part of a plot to injure US soldiers with an IED, but the IED exploded early when he kicked it. He has major burns on his right side, a substantial puncture on his right shoulder, and moderate shrapnel wounds on the right calf Another was a passerby. He had moderate shrapnel wounds to his face and was in agony.",
+            "situation":  "You are a deployed medic, at a site where US soldiers fight alongside a local allied military unit. You have treated Upton, a local allied soldier for significant shoulder bleeding and compound fractures of the upper arm. There is an explosion and gunfire. As you come around the corner, a US soldier tells you that a truck drove up, shot a grenade, and opened fire with at least two rifles. The US soldiers returned fire and disabled the vehicle.",
             "all_actions": False,
             "break_scenes": False,
             "characters": ["Upton", "Attacker", "US Soldier"],
@@ -274,7 +274,13 @@ def get_string_from_action(action, next_action=None, yaml_data=None):
     '''
     printable = None
     params = action['parameters']
-    if params['action_type'] == 'CHECK_ALL_VITALS':
+    if next_action.get('parameters', {}).get('scenario_id', None) == 'DryRunEval-MJ4-eval' and (next_action.get('parameters', {}).get('choice', None) in ['Response 6-B']):
+        printable = "Move back to others"
+    elif next_action.get('parameters', {}).get('scenario_id', None) == 'DryRunEval-MJ4-eval' and (next_action.get('parameters', {}).get('choice', None) in ['Response 8-B', 'Response 8-C']):
+        printable = "Treat one of the civilians"
+    elif next_action.get('parameters', {}).get('scenario_id', None) == 'DryRunEval-MJ2-eval' and (next_action.get('parameters', {}).get('choice', None) in ['Response 10-A', 'Response 10-B']):
+        printable = "They were the most seriously injured or most likely to benefit from treatment at the next level of care"
+    elif params['action_type'] == 'CHECK_ALL_VITALS':
         printable = f"Perform vitals assessment on {character_conversion[params['character']]}"
     elif params['action_type'] == 'TAG_CHARACTER':
         printable = f"Tag {character_conversion[params['character']]} as {params['category'].lower()}"
@@ -382,7 +388,7 @@ def get_yaml_data(doc_id):
     return yaml_data
 
 
-def get_and_format_patients_for_scenario(doc_id, scenario_index, db):
+def get_and_format_patients_for_scenario(doc_id, scenario_index, db, env_map_details):
     '''
     Takes in a patient from the adm data and formats it properly for the json.
     Returns the formatted patient data
@@ -422,13 +428,37 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index, db):
                 break
         # if not found_patient:
         #     LOGGER.log(LogLevel.WARN, f"Warning: could not find image for patient {patient['id']} in scenario {scenario_index}")
-
+        description = patient['unstructured'].replace('\n', '')
+        injuries = patient.get('injuries', [])
+        if 'MJ5' in env_map_details['id']:
+            if patient['id'] == 'Upton':
+                description = 'The SPC who tried to intervene with the fight. The left shoulder has a broken bone. The right shoulder has a puncture with significant bleeding.'
+            if patient['id'] == 'Springer':
+                description = "The SPC who started the fight. The left shoulder has a broken bone. The right shoulder has a puncture with significant bleeding."
+        if 'IO5' in env_map_details['id']:
+            if patient['id'] == 'Upton':
+                description = "The SPC who tried to intervene with the fight. The left shoulder has a broken bone. The right shoulder has a puncture with significant bleeding. Made it into the building safely after the explosion."
+        if 'IO2' in env_map_details['id']:
+            if patient['id'] == 'US military member':
+                description = "A US military member with a gunshot wound in the arm, and they have controlled the bleeding using a self-applied bandage. After removing his bullet proof vest, you see blood coming from near the shoulder at the edge of the vest."
+                injuries = [ {'name': 'Puncture',
+                            'location': 'left bicep',
+                            'severity': 'moderate',
+                            'status': 'treated',
+                            'source_character': 'Shooter'},
+                            {'name': 'Puncture',
+                            'location': 'right shoulder',
+                            'severity': 'moderate',
+                            'status': 'visible',
+                            'source_character': 'Shooter'}]
+            if patient['id'] == 'attacker':
+                description = 'The wounded friend of the other attacker who asked for help. Was involved in attacking the US military site. Has an open abdominal wound with significant bleeding.'
         patients.append({
             "name": character_conversion[patient['id']],
             "vitals": patient.get('vitals', {}),
-            "description": patient['unstructured'].replace('\n', ''),
+            "description": description,
             "imgUrl": str(img),
-            "injuries": patient.get('injuries', []),
+            "injuries": injuries,
             "age": patient.get('demographics', {}).get('age', None),
             "sex": patient.get('demographics', {}).get('sex', None)
         })
@@ -541,7 +571,10 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                 if printable == -1:
                     if (not get_all_actions) and (next_action.get('parameters', {}).get('probe_id') in env_map[doc_id]['probe_ids']):
                         if "Update:" in action_set[-1] or "Question:" in action_set[-1] or "Note:" in action_set[-1]:
-                            printable = "Choose not to treat either patient"
+                            if 'MJ5' in doc_id and next_action.get('parameters', {}).get('probe_id') == 'Probe 7':
+                                printable = 'No, I refuse to treat the attacker'
+                            else:
+                                printable = "Choose not to treat either patient"
                         else:
                             continue
                     else:
@@ -595,12 +628,46 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                     found_with_name = True
                     break
         if len(cur_scene['actions']) > 0:
+            action_counts = {}
+            for x in cur_scene['actions']:
+                if x not in action_counts:
+                    action_counts[x] = 0
+                action_counts[x] += 1
+            new_actions = []
+            actions_added = []
+            for x in cur_scene['actions']:
+                if x in actions_added:
+                    continue
+                if action_counts[x] == 1 or 'with' not in x:
+                    new_actions.append(x)
+                else:
+                    counted_action = x.replace('with ', f'with {action_counts[x]} ')
+                    new_actions.append(counted_action)
+                    actions_added.append(x)
+            cur_scene['actions'] = new_actions
             scenes.append(cur_scene)
         if not env_map[doc_id]['break_scenes']:
             actions_in_scene = []
             for x in action_set[2:]:
                 if 'New patients' not in x and "The medic is only aware" not in x:
                     actions_in_scene.append(x)
+            action_counts = {}
+            for x in actions_in_scene:
+                if x not in action_counts:
+                    action_counts[x] = 0
+                action_counts[x] += 1
+            new_actions = []
+            actions_added = []
+            for x in actions_in_scene:
+                if x in actions_added:
+                    continue
+                if action_counts[x] == 1 or 'with' not in x:
+                    new_actions.append(x)
+                else:
+                    counted_action = x.replace('with ', f'with {action_counts[x]} ')
+                    new_actions.append(counted_action)
+                    actions_added.append(x)
+            actions_in_scene = new_actions
             scenes = [{'id': f'Scene 1', 'char_ids': env_map[doc_id]['characters'], 'actions': actions_in_scene, 'supplies': supplies}]
         if len(scenes) == 0:
             return
@@ -621,7 +688,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         medic_data['scenes'] = scenes
         medic_data['supplies'] = first_supplies
         medic_data['situation'] =  env_map[doc_id]['situation']
-        formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db)
+        formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db, env_map[doc_id])
         medic_data['patients'] = formatted_patients
         for el in page_data['elements']:
             el['name'] = el['name'].replace('Medic-ST2', name)
