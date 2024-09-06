@@ -73,7 +73,7 @@ def partition_doc(scenario, filename):
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
     starting_mission = scenario['state'].get('mission', {})
-    starting_supplies = scenario['state']['supplies']
+    current_supplies = scenario['state']['supplies']
     initial_characters = scenario['state'].get('characters', [])
     initial_events = scenario['state'].get('events', [])
 
@@ -119,6 +119,8 @@ def partition_doc(scenario, filename):
         return [char for char in all_characters if char['id'] in visible_characters]
 
     def create_page(scene, is_first_scene, transition_info=None):
+        nonlocal current_supplies
+
         page = {
             'name': scene['id'],
             'scenario_id': scenario_id,
@@ -128,7 +130,8 @@ def partition_doc(scenario, filename):
 
         unstructured = get_scene_text(scene, is_first_scene, starting_context)
         processed_unstructured = process_unstructured_text(unstructured)
-        current_supplies = scene.get('state', {}).get('supplies', starting_supplies)
+        if 'supplies' in scene.get('state', {}):
+            current_supplies = scene['state']['supplies']
         
         if transition_info:
             # characters introduced in transition scenes
