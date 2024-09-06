@@ -523,11 +523,8 @@ class DelegationTool:
             "TAD baseline",
             "TAD severity-baseline",
             "TAD misaligned",
-            'ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 
-            'ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c',
-            'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 
-            'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2',
-            'TAD-baseline', 
+            'ALIGN-ADM-OutlinesBaseline', 
+            'ALIGN-ADM-ComparativeRegression-ICL-Template', 
             'TAD-severity-baseline',
             'TAD-aligned'
         ]:
@@ -1182,12 +1179,6 @@ def version4_setup():
     tool = DelegationTool(4.0)
     tool.clear_survey_version()
 
-    # add starting pages to survey
-    # tool.import_page_from_json(
-    #     os.path.join("survey-configs", "surveyConfig2x.json"),
-    #     "Participant ID Page",
-    #     None,
-    # )
     exp_page_1 = {
             "name": "Participant ID Page",
             "elements": [
@@ -1300,8 +1291,7 @@ def version4_setup():
     # add comparison options to survey
     tool.survey["validSingleSets"] = []
     tool.survey["validOmniSets"] = []
-    st_adms = ['ALIGN-ADM-OutlinesBaseline__486af8ca-fd13-4b16-acc3-fbaa1ac5b69b', 'ALIGN-ADM-ComparativeRegression+ICL+Template__462987bd-77f8-47a3-8efe-22e388b5f858', 'TAD-severity-baseline', 'TAD-aligned']
-    ad_adms = ['ALIGN-ADM-OutlinesBaseline__458d3d8a-d716-4944-bcc4-d20ec0a9d98c', 'ALIGN-ADM-ComparativeRegression+ICL+Template__3f624e78-4e27-4be2-bec0-6736a34152c2', 'TAD-severity-baseline', 'TAD-aligned']
+    adms = ['ALIGN-ADM-OutlinesBaseline', 'ALIGN-ADM-ComparativeRegression-ICL-Template', 'TAD-severity-baseline', 'TAD-aligned']
     st_targets = ['vol-human-8022671-SplitHighMulti', 'qol-human-2932740-HighExtreme', 'vol-human-1774519-SplitHighMulti', 'qol-human-6349649-SplitHighMulti', 
                     'vol-human-6403274-SplitEvenBinary', 'qol-human-3447902-SplitHighMulti', 'vol-human-7040555-SplitEvenBinary', 'qol-human-7040555-SplitHighMulti', 
                     'vol-human-2637411-SplitEvenMulti', 'qol-human-3043871-SplitHighBinary', 'vol-human-2932740-SplitEvenMulti', 'qol-human-6403274-SplitHighBinary', 
@@ -1313,7 +1303,7 @@ def version4_setup():
                     'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
                     'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
     for t in st_targets:
-        for adm in st_adms:
+        for adm in adms:
             if 'qol' in t:
                 tool.add_db_medic_to_survey_by_details(
                     adm, t, 'SoarTech', scenario_id='qol-dre-1-eval', append=True
@@ -1335,7 +1325,7 @@ def version4_setup():
                     adm, t, 'SoarTech', scenario_id='vol-dre-3-eval', append=True
                 )
     for t in ad_targets:
-        for adm in ad_adms:
+        for adm in adms:
             if 'Moral' in t:
                 tool.add_db_medic_to_survey_by_details(
                     adm, t, 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
