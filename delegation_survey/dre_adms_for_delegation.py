@@ -488,6 +488,8 @@ def get_and_format_patients_for_scenario(doc_id, scenario_index, db, env_map_det
         if 'IO5' in env_map_details['id']:
             if patient['id'] == 'Upton':
                 description = "The SPC who tried to intervene with the fight. The left shoulder has a broken bone. The right shoulder has a puncture with significant bleeding. Made it into the building safely after the explosion."
+                injuries = [{'name': 'Broken Bone', 'location': 'left shoulder', 'severity': 'major', 'status': 'visible'},
+                            {'name': 'Puncture', 'location': 'right shoulder', 'severity': 'substantial', 'status': 'visible', 'treatments_required': 3}]
             if patient['id'] == 'attacker':
                 description = 'The wounded friend of the other attacker who asked for help. Was involved in attacking the US military site. Has an open abdominal wound with significant bleeding.'
         if 'IO2' in env_map_details['id']:
