@@ -5,7 +5,7 @@ VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
 # Change this version if running a new deploy script
-db_version = "0.1.11"
+db_version = "0.2.0"
 
 
 def check_version(mongoDB):
