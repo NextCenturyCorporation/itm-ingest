@@ -12,7 +12,7 @@ The delegation survey python tool adds the delegation survey questions to the da
 and can modify, add, order, and delete questions from the survey config.
 """
 LOGGER = Logger("Delegation Tool")
-
+QUIET_SAVE = True
 
 class SurveyElement:
     def __init__(
@@ -297,14 +297,15 @@ class DelegationTool:
         if len(self.changes_summary) == 0:
             LOGGER.log(LogLevel.CRITICAL_INFO, "No changes have been made.")
             return
-        LOGGER.log(LogLevel.CRITICAL_INFO, "Below are the changes you've made so far:")
-        # Check to make sure user wants to update; show list of changes
-        for x in self.changes_summary:
-            print("\t" + x)
-            if len(self.changes_summary) < 5:
-                time.sleep(0.25)
-            else:
-                time.sleep(0.02)
+        if not QUIET_SAVE:
+            LOGGER.log(LogLevel.CRITICAL_INFO, "Below are the changes you've made so far:")
+            # Check to make sure user wants to update; show list of changes
+            for x in self.changes_summary:
+                print("\t" + x)
+                if len(self.changes_summary) < 5:
+                    time.sleep(0.25)
+                else:
+                    time.sleep(0.02)
         LOGGER.log(LogLevel.WARN, "Push all to database? (y/n) ")
         resp = input("")
         if resp.strip() in ["y", "Y"]:
