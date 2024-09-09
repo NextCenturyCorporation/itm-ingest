@@ -525,11 +525,14 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         kdmas = []
         supplies = [] 
         first_supplies = []
+        mission = None 
         try:
             if document['history'][0]['command'] == 'Start Scenario':
                 doc_id = document['history'][0]['response']['id']
+                mission = document['history'][0]['response']['state']['mission']
             else:
                 doc_id = document['history'][1]['response']['id']
+                mission = document['history'][0]['response']['state']['mission']
         except:
             return
         if doc_id in ['DryRunEval.IO1', 'qol-dre-1-train', 'qol-dre-2-train', 'vol-dre-1-train', 'vol-dre-2-train']:
@@ -785,6 +788,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         medic_data['scenes'] = scenes
         medic_data['supplies'] = first_supplies
         medic_data['situation'] =  env_map[doc_id]['situation']
+        medic_data['mission'] = mission
         formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db, env_map[doc_id])
         medic_data['patients'] = formatted_patients
         for el in page_data['elements']:
