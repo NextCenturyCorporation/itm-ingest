@@ -793,7 +793,8 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         medic_data['patients'] = formatted_patients
         
         if 'ST' not in medic_data['name']:
-            remove_location_and_supply(medic_data)
+            for scene in medic_data['scenes']:
+                remove_location_and_supply(scene)
 
         for el in page_data['elements']:
             el['name'] = el['name'].replace('Medic-ST2', name)
@@ -807,14 +808,10 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
             del page_data['_id']
         return page_data
 
-def remove_location_and_supply(medic_data):
-    print(medic_data['name'])
-    for i in range(len(medic_data['actions']) - 1):
-        if 'Question:' in medic_data['actions'][i]:
-            print('hit')
-            print(medic_data['actions'][i+1])
-            medic_data['actions'][i+1] = medic_data['actions'][i+1].split('with')[0].strip()
-            print(medic_data['actions'][i+1])
+def remove_location_and_supply(scene):
+    for i in range(len(scene['actions']) - 1):
+        if 'Question:' in scene['actions'][i]:
+            scene['actions'][i+1] = scene['actions'][i+1].split('with')[0].strip()
 
 def main():
     f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
