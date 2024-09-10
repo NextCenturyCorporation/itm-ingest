@@ -809,13 +809,12 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
 
 def remove_location_and_supply(medic_data):
     print(medic_data['name'])
-    actions = medic_data['actions']
-    for i in range(len(actions) - 1):
-        if 'Question:' in actions[i]:
+    for i in range(len(medic_data['actions']) - 1):
+        if 'Question:' in medic_data['actions'][i]:
             print('hit')
-            print(actions[i+1])
-            actions[i+1] = actions[i+1].split('with')[0].strip()
-            print(actions[i+1])
+            print(medic_data['actions'][i+1])
+            medic_data['actions'][i+1] = medic_data['actions'][i+1].split('with')[0].strip()
+            print(medic_data['actions'][i+1])
 
 def main():
     f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
