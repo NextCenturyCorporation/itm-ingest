@@ -529,10 +529,10 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         try:
             if document['history'][0]['command'] == 'Start Scenario':
                 doc_id = document['history'][0]['response']['id']
-                mission = document['history'][0]['response']['state']['mission']
+                mission = document['history'][0]['response'].get('state', {}).get('mission')
             else:
                 doc_id = document['history'][1]['response']['id']
-                mission = document['history'][0]['response']['state']['mission']
+                mission = document['history'][1]['response'].get('state', {}).get('mission')
         except:
             return
         if doc_id in ['DryRunEval.IO1', 'qol-dre-1-train', 'qol-dre-2-train', 'vol-dre-1-train', 'vol-dre-2-train']:
