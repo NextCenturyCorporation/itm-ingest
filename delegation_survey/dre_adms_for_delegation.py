@@ -810,6 +810,11 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
 
 def remove_location_and_supply(scene):
     for i in range(len(scene['actions']) - 1):
+        if 'Question: How much gauze do you plan to use on the shooter?' in scene['actions'][i]:
+            scene['actions'][i+1] = scene['actions'][i+1].split('on')[0].strip()
+            if 'Update' not in scene['actions'][i+2]:
+                scene['actions'][i+2] = scene['actions'][i+2].split('on')[0].strip()
+            continue
         if 'Question:' in scene['actions'][i]:
             scene['actions'][i+1] = scene['actions'][i+1].split('with')[0].strip()
 
