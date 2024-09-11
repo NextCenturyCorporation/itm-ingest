@@ -791,6 +791,11 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         medic_data['mission'] = mission
         formatted_patients = get_and_format_patients_for_scenario(doc_id, env_map[doc_id]['id'], db, env_map[doc_id])
         medic_data['patients'] = formatted_patients
+        
+        if 'ST' not in medic_data['name']:
+            for scene in medic_data['scenes']:
+                remove_location_and_supply(scene)
+
         for el in page_data['elements']:
             el['name'] = el['name'].replace('Medic-ST2', name)
             el['title'] = el['title'].replace('Medic_ST2', name)
@@ -802,6 +807,18 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         if '_id' in page_data:
             del page_data['_id']
         return page_data
+
+def remove_location_and_supply(scene):
+    for i in range(len(scene['actions']) - 1):
+        if 'Question: How much gauze do you plan to use on the shooter?' in scene['actions'][i]:
+            scene['actions'][i+1] = scene['actions'][i+1].split('on')[0].strip()
+            scene['actions'][i+1] = scene['actions'][i+1].replace('with hemostatic', 'with 1 hemostatic')
+            if 'Update' not in scene['actions'][i+2]:
+                scene['actions'][i+2] = scene['actions'][i+2].split('on')[0].strip()
+                scene['actions'][i+2] = scene['actions'][i+2].replace('with hemostatic', 'with 1 hemostatic')
+            continue
+        if 'Question:' in scene['actions'][i]:
+            scene['actions'][i+1] = scene['actions'][i+1].split('with')[0].strip()
 
 def main():
     f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
