@@ -1,0 +1,194 @@
+{
+    "pages": [
+        {
+            "name": "Post-Scenario Measures",
+            "elements": [
+                {
+                    "type": "comment",
+                    "name": "What was the biggest influence on your delegation decision between different medics?",
+                    "title": "What was the biggest influence on your delegation decision between different medics?",
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
+                    "title": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I was easily able to imagine myself as the medic in these scenarios",
+                    "title": "I was easily able to imagine myself as the medic in these scenarios",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
+                    "title": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
+                    "title": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I am a computer gaming enthusiast",
+                    "title": "I am a computer gaming enthusiast",
+                    "choices": [
+                        "No",
+                        "Not sure",
+                        "Yes"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I consider myself a seasoned first responder",
+                    "title": "I consider myself a seasoned first responder",
+                    "choices": [
+                        "No",
+                        "Not sure",
+                        "Yes"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I have completed disaster response training such as those offered by the American Red Cross, FEMA, or the Community Emergency Response Team (CERT)",
+                    "title": "I have completed disaster response training such as those offered by the American Red Cross, FEMA, or the Community Emergency Response Team (CERT)",
+                    "choices": [
+                        "No",
+                        "Not sure",
+                        "Yes"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I have completed disaster response training provided by the United States Military",
+                    "title": "I have completed disaster response training provided by the United States Military",
+                    "choices": [
+                        "No",
+                        "Not sure",
+                        "Yes"
+                    ],
+                    "isRequired": true
+                },
+                {
+                    "type": "checkbox",
+                    "name": "What is your current role (choose all that apply):",
+                    "title": "What is your current role (choose all that apply):",
+                    "isRequired": true,
+                    "choices": [
+                        "M-3 medical student",
+                        "M-4 medical student",
+                        "EM resident",
+                        "EM/IM resident",
+                        "EM faculty",
+                        "Emergency medical technician",
+                        "Paramedic",
+                        "Military Background"
+                    ],
+                    "showOtherItem": true,
+                    "otherText": "Other (specify)"
+                },
+                {
+                    "type": "comment",
+                    "name": "Branch and Status",
+                    "visible": false,
+                    "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
+                    "title": "Please provide the branch of the military, as well as current status (active/retired/reserves) ",
+                    "isRequired": true
+                },
+                {
+                    "type": "comment",
+                    "name": "Military Medical Training",
+                    "visible": false,
+                    "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
+                    "title": "Please list any military medical training you have received:",
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Years experience in military medical role",
+                    "visible": false,
+                    "visibleIf": "{What is your current role (choose all that apply):} allof ['Military Background']",
+                    "title": "How many years of experience do you have serving in a medical role in the military?",
+                    "isRequired": true,
+                    "min": 0,
+                    "inputType": "number"
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I feel that people are generally reliable",
+                    "title": "I feel that people are generally reliable",
+                    "isRequired": true,
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "I usually trust people until they give me a reason not to trust them",
+                    "title": "I usually trust people until they give me a reason not to trust them",
+                    "isRequired": true,
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "Trusting another person is not difficult for me",
+                    "title": "Trusting another person is not difficult for me",
+                    "isRequired": true,
+                    "choices": [
+                        "Strongly disagree",
+                        "Disagree",
+                        "Neither agree nor disagree",
+                        "Agree",
+                        "Strongly agree"
+                    ]
+                }
+            ]
+        }
+    ]
+}
