@@ -53,11 +53,11 @@
                     "name": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
                     "title": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
                     "choices": [
-                        "Strongly disagree",
-                        "Disagree",
-                        "Neither agree nor disagree",
-                        "Agree",
-                        "Strongly agree"
+                        "Way too much",
+                        "Too much",
+                        "Just right",
+                        "Too Little",
+                        "Way too little"
                     ],
                     "isRequired": true
                 },
