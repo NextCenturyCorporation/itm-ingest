@@ -782,8 +782,8 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         page_data['admSession'] = meta['session_id']
         medic_data = page_data['elements'][0]
         medic_data['dmName'] = name
-        medic_data['title'] = env_map[doc_id]['name'].replace('SoarTech', 'ST') + ' Scenario: ' + name
-        medic_data['name'] = medic_data['title']
+        medic_data['name'] = env_map[doc_id]['name'].replace('SoarTech', 'ST') + ' Scenario: ' + name
+        medic_data['title'] = " "
         medic_data['actions'] = action_set[2:action_set.index('SCENE CHANGE') if 'SCENE CHANGE' in action_set else len(action_set)]
         medic_data['scenes'] = scenes
         medic_data['supplies'] = first_supplies
