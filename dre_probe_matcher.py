@@ -6,7 +6,7 @@ import requests
 from decouple import config 
 
 SEND_TO_MONGO = True
-RUN_ALIGNMENT = False
+RUN_ALIGNMENT = True
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -95,7 +95,7 @@ class ProbeMatcher:
         self.adept_sid = adept_sid
         self.soartech_sid = soartech_sid
         # get environment from json to choose correct adept/soartech yamls
-        self.json_file = open(json_path, 'r')
+        self.json_file = open(json_path, 'r', encoding='utf-8')
         self.json_data = json.load(self.json_file)
         if (self.json_data['configData']['teleportPointOverride'] == 'Tutorial'):
             self.logger.log(LogLevel.CRITICAL_INFO, "Tutorial level, not processing data")
@@ -132,19 +132,19 @@ class ProbeMatcher:
         except:
             pass
         if 'adept' not in self.environment:
-            self.output_soartech = open(os.path.join('output', env.split('.yaml')[0] + f'_soartech_{pid}.json'), 'w')
+            self.output_soartech = open(os.path.join('output', env.split('.yaml')[0] + f'_soartech_{pid}.json'), 'w', encoding='utf-8')
         else:
-            self.output_adept = open(os.path.join('output', env.split('.yaml')[0] + f'_adept_{pid}.json'), 'w')
+            self.output_adept = open(os.path.join('output', env.split('.yaml')[0] + f'_adept_{pid}.json'), 'w', encoding='utf-8')
         # get soartech/adept yaml data
         if 'qol' in env or 'vol' in env:
-            self.soartech_file = open(os.path.join(os.path.join("soartech-evals", "eval4"), env), 'r')
+            self.soartech_file = open(os.path.join(os.path.join("soartech-evals", "eval4"), env), 'r', encoding='utf-8')
             
             try:
                 self.soartech_yaml = yaml.load(self.soartech_file, Loader=yaml.CLoader)
             except Exception as e:
                 self.logger.log(LogLevel.ERROR, "Error while loading in soartech yaml file. Please ensure the file is a valid yaml format and try again.\n\n" + str(e) + "\n")
         else:
-            self.adept_file = open(os.path.join(os.path.join("adept-evals", "eval4"), env), 'r')
+            self.adept_file = open(os.path.join(os.path.join("adept-evals", "eval4"), env), 'r', encoding='utf-8')
             try:
                 self.adept_yaml = yaml.load(self.adept_file, Loader=yaml.CLoader)
             except Exception as e:
@@ -637,8 +637,6 @@ if __name__ == '__main__':
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
                     try:
-                        # adept_sid = requests.post(f'{config("ADEPT_URL")}api/v1/new_session').text
-                        # soartech_sid = requests.post(f'{config("ST_URL")}api/v1/new_session?user_id=default_use').json()
                         adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
                         soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
                         matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
