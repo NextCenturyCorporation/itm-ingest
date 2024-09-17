@@ -792,21 +792,25 @@ def one_time_db_initialization():
     Adds survey configs 1 and 2 to the database along with the test config (survey config #2 with no requirements).
     It also adds patient ids to images for adm medic translation
     """
-    tool = DelegationTool(1.0)
-    tool.import_full_survey(os.path.join("survey-configs", "surveyConfig1x.json"))
-    tool.push_changes()
+    # tool = DelegationTool(1.0)
+    # tool.import_full_survey(os.path.join("survey-configs", "surveyConfig1x.json"))
+    # tool.push_changes()
 
-    tool = DelegationTool(2.0)
-    tool.import_full_survey(os.path.join("survey-configs", "surveyConfig2x.json"))
-    tool.push_changes()
+    # tool = DelegationTool(2.0)
+    # tool.import_full_survey(os.path.join("survey-configs", "surveyConfig2x.json"))
+    # tool.push_changes()
 
-    tool = DelegationTool(2.1)
-    tool.import_full_survey(os.path.join("survey-configs", "surveyConfig2.1.json"))
-    tool.push_changes()
+    # tool = DelegationTool(2.1)
+    # tool.import_full_survey(os.path.join("survey-configs", "surveyConfig2.1.json"))
+    # tool.push_changes()
 
-    tool = DelegationTool(0.0)
-    tool.import_full_survey(os.path.join("survey-configs", "test_config.json"))
-    tool.push_changes()
+    # tool = DelegationTool(0.0)
+    # tool.import_full_survey(os.path.join("survey-configs", "test_config.json"))
+    # tool.push_changes()
+
+    tool = DelegationTool(4.0)
+    tool.import_full_survey(os.path.join("survey-configs", "surveyConfig4x.json"))
+    tool.push_changes()    
 
     # adding images doesn't need a version
     img_dir = os.path.join("patient_images", "metrics_eval")
