@@ -283,7 +283,7 @@ class ProbeMatcher:
                                             self.soartech_sid,
                                             self.soartech_yaml['id'])
             except:
-                pass
+                self.logger.log(LogLevel.WARN, "Session Alignment Get Request failed")
         match_data = {'alignment': st_align, 'data': match_data}
         if SEND_TO_MONGO:
             mid = self.participantId + '_st_' + self.environment.split('.yaml')[0]
@@ -344,7 +344,7 @@ class ProbeMatcher:
         repeating_gauze = False
         stored_next_id = None
         # Adept has branching, which makes things a little more difficult
-        first_scene_id = self.adept_yaml['first_scene']
+        first_scene_id = self.adept_yaml.get('first_scene', self.adept_yaml['scenes'][0]['id'])
         cur_scene = self.get_scene_by_id(adept_scenes, first_scene_id)
         while True:
             actions = {} # {"Treatment": {"v": probe, "x": probe}, "Vitals": {"v": probe, "x": probe}, "Intent": {"v": probe, "x": probe}, etc}
@@ -581,7 +581,7 @@ class ProbeMatcher:
                                             self.adept_sid,
                                             self.adept_yaml['id'])
             except:
-                pass
+                self.logger.log(LogLevel.WARN, "Session Alignment Get Request failed")
         match_data = {'alignment': ad_align, 'data': match_data}
         if SEND_TO_MONGO:
             mid = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
