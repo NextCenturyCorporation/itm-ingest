@@ -31,7 +31,7 @@ def main():
     if(check_version(mongoDB)):
         print("New db version(" + db_version + "), execute scripts")
         reduce_images_delegationMedia(mongoDB)
-        # update_db_version(mongoDB)
+        update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
 
