@@ -808,11 +808,6 @@ def one_time_db_initialization():
     tool.import_full_survey(os.path.join("survey-configs", "test_config.json"))
     tool.push_changes()
 
-    # need this to create the correct number of records for survey4 images for add_img_to_db
-    tool = DelegationTool(4.0)
-    tool.import_full_survey(os.path.join("survey-configs", "surveyConfig4x.json"))
-    tool.push_changes()    
-
     # adding images doesn't need a version
     img_dir = os.path.join("patient_images", "metrics_eval")
     tool.add_img_to_db(
