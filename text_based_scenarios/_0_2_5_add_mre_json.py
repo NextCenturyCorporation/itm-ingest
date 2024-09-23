@@ -16,6 +16,7 @@ def add_mre_json(mongo_db):
             data = json.load(f)
         
         data['eval'] = 'mre-eval'
+        data['scenario_id'] = data['title']
         # Insert the data into the collection
         result = text_based_config.insert_one(data)
         print(f"Inserted document: {file}")
