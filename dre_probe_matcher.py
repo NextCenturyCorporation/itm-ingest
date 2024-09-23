@@ -6,7 +6,7 @@ import requests
 from decouple import config 
 
 SEND_TO_MONGO = True
-RUN_ALIGNMENT = False
+RUN_ALIGNMENT = True
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -734,10 +734,10 @@ if __name__ == '__main__':
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
                     try:
-                        # adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
-                        # soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
-                        # matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
-                        matcher = ProbeMatcher(os.path.join(parent, f), None, None)
+                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
+                        soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
+                        matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
+                        # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
                         if matcher.environment != '':
                             matcher.match_probes()
                     except Exception as e:
