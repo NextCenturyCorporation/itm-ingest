@@ -1,11 +1,11 @@
 from pymongo import MongoClient
 from decouple import config
-from scripts._0_2_4_reduce_images_delegationMedia import reduce_images_delegationMedia
+from scripts._0_2_5_AppendProbeRes_to_SurveyScore import append_probe_response_to_survey_score
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
 # Change this version if running a new deploy script
-db_version = "0.2.4"
+db_version = "0.2.5"
 
 
 def check_version(mongoDB):
@@ -30,8 +30,8 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version(" + db_version + "), execute scripts")
-        reduce_images_delegationMedia(mongoDB)
-        update_db_version(mongoDB)
+        append_probe_response_to_survey_score(mongoDB)
+        # update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
 
