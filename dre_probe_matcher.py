@@ -6,7 +6,7 @@ import requests
 from decouple import config 
 
 SEND_TO_MONGO = True
-RUN_ALIGNMENT = True
+RUN_ALIGNMENT = False
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -65,6 +65,84 @@ JUSTIFY_MAPPING = {
 
 
 VITALS_ACTIONS = ["SpO2", "Breathing", "Pulse"]
+
+# scene: id-3; probe: vol-dre-2-eval-Probe-4, choice-0: G, choice-1: H
+# scene: id-7; probe: vol-dre-2-eval-Probe-8, choice-0: P, choice-1: V
+# scene: id-11; probe: vol-dre-2-eval-Probe-12, choice-0: U, choice-1: W
+
+# scene: id-3; probe: 4.4, choice-0: U, choice-1: W
+# scene: id-7; probe: 4.8, choice-0: G, choice-1: H
+
+DRAGGING_MAP = {
+    "00bb614f-4e6c-482e-b143-f2e984a9cdc9_20249205": {
+        "id-3": "choice-1", # W 
+        "id-7": "choice-0" # G
+    },
+    "927f6c89-963f-40aa-b29e-9d30028c7ca3_20249203": {
+        "id-3": "choice-0", # G
+        "id-7": "choice-0", # P
+        "id-11": "choice-0" # U
+    },
+    "c2bebdcb-e247-4e06-b4e7-229cf1dbec4e_20249204": {
+        "id-3": "choice-1", # W
+        "id-7": "choice-0" # G
+    },
+    "bae30dd5-1145-4cb9-97ee-5e79863dbc38_20249201": {
+        "id-3": "choice-1", # W
+        "id-7": "choice-0" # G
+    },
+    "6a90c3a6-f15b-4ee8-9604-8c351e83cfd6_20249201": {
+        "id-3": "choice-1", # H
+        "id-7": "choice-0", # P
+        "id-11": "choice-1" # W
+    },
+    "8395ef5b-b514-4fd2-b2e2-020a6ea10ad0_20249213": {
+        "id-3": "choice-1", # H
+        "id-7": "choice-0", # P 
+        "id-11": "choice-0" # U
+    },
+    "e202018f-f6d7-40d0-809c-61ca80227db0_20249204": {
+        "id-3": "choice-0", # G
+        "id-7": "choice-1", # V
+        "id-11": "choice-0" # U
+    },
+    "a51b409a-5f29-49e4-a7b8-6f5532159560_20249207": {
+        "id-3": "choice-1", # H
+        "id-7": "choice-0", # P 
+        "id-11": "choice-0" # U
+    },
+    "2ab032e5-9cb3-47d4-9864-7dd1ea6d33b4_20249202": {
+        "id-3": "choice-1", # W
+        "id-7": "choice-1" # H
+    },
+    "f49de803-6665-4bc2-a3e9-981a647b63ff_20249206": {
+        "id-3": "choice-0", # G
+        "id-7": "choice-1", # V
+        "id-11": "choice-1" # W
+    },
+    "9beec8c4-475d-4f20-8e5e-e2ba6165632f_20249207": {
+        "id-3": "choice-1", # W
+        "id-7": "choice-0" # G
+    },
+    "34b24007-8e2c-4c2f-ad0e-238a646dc9be_20249206": {
+        "id-3": "choice-0", # U
+        "id-7": "choice-0" # G
+    },
+    "d7f584e4-0586-4dd3-aa16-3799bb1e88c9_20249202": {
+        "id-3": "choice-0", # G
+        "id-7": "choice-0", # P
+        "id-11": "choice-1" # W
+    },
+    "a5479d6f-213b-4ef4-bfcb-b166acf51542_20249203": {
+        "id-3": "choice-1", # W
+        "id-7": "choice-0" # G
+    },
+    "2fbde6b6-5f25-4657-8db1-4f9bf5f85822_20249205": {
+        "id-3": "choice-1", # H
+        "id-7": "choice-0", # P
+        "id-11": "choice-1" # W
+    }
+}
 
 
 mongo_collection_matches = None
@@ -263,6 +341,25 @@ class ProbeMatcher:
                     "probe": matched,
                     "user_action": action_taken
                 })
+            else:
+                # get manual mappings based on file name and scene
+                file_name = self.json_data['sessionId'] + '_' + self.participantId
+                mapping = DRAGGING_MAP.get(file_name, {}).get(scene['id'], None)
+                if mapping is not None:
+                    for x in scene['action_mapping']:
+                        if x['choice'] == mapping:
+                            matched = x
+                            break
+                    if matched is not None:
+                        found += 1
+                        match_data.append({
+                            "scene_id": scene['id'],
+                            "probe_id": matched['probe_id'],
+                            "found_match": True,
+                            "probe": matched,
+                            "user_action": "Manually Found"
+                        })
+
         print(f"Found {found} out of {total} probes")
         st_align = {}
         if RUN_ALIGNMENT:
@@ -637,9 +734,10 @@ if __name__ == '__main__':
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
                     try:
-                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
-                        soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
-                        matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
+                        # adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
+                        # soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
+                        # matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
+                        matcher = ProbeMatcher(os.path.join(parent, f), None, None)
                         if matcher.environment != '':
                             matcher.match_probes()
                     except Exception as e:
