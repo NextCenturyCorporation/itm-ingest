@@ -1,4 +1,4 @@
-import yaml, argparse, json, os
+import yaml, argparse, json, os, copy
 from logger import LogLevel, Logger
 from pymongo import MongoClient
 from datetime import datetime
@@ -193,12 +193,6 @@ class ProbeMatcher:
             self.logger.log(LogLevel.WARN, "Environment not defined. Unable to process data")
             return
         self.environment = env
-        if SEND_TO_MONGO:
-            try:
-                mongo_collection_raw.insert_one({'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
-            except:
-                # not overwriting document in mongo
-                pass
         
         if pid in ENVIRONMENTS_BY_PID:
             ENVIRONMENTS_BY_PID[pid].append(self.environment)
@@ -281,6 +275,8 @@ class ProbeMatcher:
         match_data = []
         total = 0
         found = 0
+        updated_json = copy.deepcopy(self.json_data) # so we can update with missing probes
+        actions_added = 0
         # ST has no branching, so we can just go straight through the scenes
         for scene in soartech_scenes:
             actions = {} # {"Treatment": {"v": probe, "x": probe}, "Vitals": {"v": probe, "x": probe}, "Intent": {"v": probe, "x": probe}, etc}
@@ -352,13 +348,20 @@ class ProbeMatcher:
                             break
                     if matched is not None:
                         found += 1
+                        fake_action = {
+                            "actionType": "DragPatient",
+                            "casualty": matched['character_id'],
+                            "note": "Manually Found"
+                        }
                         match_data.append({
                             "scene_id": scene['id'],
                             "probe_id": matched['probe_id'],
                             "found_match": True,
                             "probe": matched,
-                            "user_action": "Manually Found"
+                            "user_action": fake_action
                         })
+                        updated_json['actionList'].insert(last_action_ind_used+actions_added+2, fake_action)
+                        actions_added += 1
 
         print(f"Found {found} out of {total} probes")
         st_align = {}
@@ -388,33 +391,11 @@ class ProbeMatcher:
                 mongo_collection_matches.insert_one({'scenario_id': self.soartech_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'st', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
             except:
                 mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.soartech_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'st', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
+            try:
+                mongo_collection_raw.insert_one({'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
+            except:
+                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
         json.dump(match_data, self.output_soartech, indent=4)  
-        # QOL:
-        # go to: O vs. U (intent to treat)
-        # go to: O vs. N (treat)
-        # go to: U vs. W (treat)
-        # then drag U vs. W? (move to safety)
-        # go to: G vs. Y (intent to treat)
-        # go to: X vs. Y (treat)
-        # go to: G vs. H; (treat)
-        # then drag G vs. H? (move to safety)
-        # Z vs. L? (intent to treat)
-        # Z vs. A? (treat)
-        # L vs. M; (treat)
-        # pain meds L vs. M? (supply limit)
-        # VOL:
-        # go to: Y vs. G (intent to treat)
-        # go to: Y vs. X (treat)
-        # go to: G vs. H (treat)
-        # then drag G vs. H? (move to safety)
-        # go to: C vs. P (intent to treat)
-        # go to: C vs. B (treat)
-        # go to: P vs. V; (treat)
-        # then drag P vs. V? (move to safety)
-        # O vs. U? (intent to treat)
-        # O vs. N? (treat)
-        # U vs. W; (treat)
-        # then drag U vs. W? (move to safety)
                 
 
     def get_scene_by_id(self, scenes, scene_id):
@@ -686,6 +667,10 @@ class ProbeMatcher:
                 mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
             except:
                 mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
+            try:
+                mongo_collection_raw.insert_one({'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
+            except:
+                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
         json.dump(match_data, self.output_adept, indent=4)  
 
 
