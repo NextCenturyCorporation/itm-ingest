@@ -12,7 +12,7 @@ def add_mre_json(mongo_db):
     
     for file in json_files:
         file_path = os.path.join(json_folder, file)
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
         data['eval'] = 'mre-eval'
