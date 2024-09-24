@@ -1,11 +1,11 @@
 from pymongo import MongoClient
 from decouple import config
-from scripts._0_2_5_AppendProbeRes_to_SurveyScore import append_probe_response_to_survey_score
+from scripts._0_2_6_AppendProbeRes_to_SurveyScore import append_probe_response_to_survey_score
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
 # Change this version if running a new deploy script
-db_version = "0.2.5"
+db_version = "0.2.6"
 
 
 def check_version(mongoDB):
