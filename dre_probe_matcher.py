@@ -141,6 +141,15 @@ DRAGGING_MAP = {
         "id-3": "choice-1", # H
         "id-7": "choice-0", # P
         "id-11": "choice-1" # W
+    },
+    "095b00b1-74ca-4455-a4e1-d608578aa446_202409101": {
+        "id-3": "choice-1", # H
+        "id-7": "choice-0", # P
+        "id-11": "choice-1" # W
+    },
+    "d7dbc70b-2cfe-4038-a235-446316e0f9ee_202409102": {
+        "id-3": "choice-0", # U
+        "id-7": "choice-0" # G
     }
 }
 
@@ -476,7 +485,7 @@ class ProbeMatcher:
                                                                  or ('treat the attacker' in action_taken['question'] and cur_scene['id'] == 'Scene 3' and self.adept_yaml['id'] == 'DryRunEval-MJ5-eval')):
                     answer = None
                     if self.adept_yaml['id'] == 'DryRunEval-MJ5-eval' and 'Attacker' in action_taken['answerChoices']:
-                        c_map = {"Attacker": "attacker", "US Soldier (Dixon)": "us_soldier", "Local Soldier (Upton)": "Upton"}
+                        c_map = {"Attacker": "attacker", "US Soldier (Dixon)": "us_soldier", "Local Soldier (Upton)": "Upton", "Dixon and Upton (US and Local Soldier)": "Upton"}
                         answer = c_map[action_taken['answer']]
                     else:
                         answer = action_taken['answer'].split('(')[0].split(' -')[0].strip()
@@ -496,11 +505,16 @@ class ProbeMatcher:
                         found_match = True
                         matched = cur_scene['action_mapping'][0] if 'Treat' in action_taken['answer'] else cur_scene['action_mapping'][1]
                         break   
-                    # special mapping for move/stay urban question
+                    # special mapping for move/stay urban questions
                     elif "Treat Soldier" in action_taken['answerChoices'] and 'Go Back to Shooter/Victim' in action_taken['answerChoices'] and cur_scene['id'] == 'Probe 4-B.1' and self.adept_yaml['id'] == 'DryRunEval-MJ2-eval':
                         last_action_ind_used += ind
                         found_match = True
                         matched = cur_scene['action_mapping'][2] if 'Treat' in action_taken['answer'] else cur_scene['action_mapping'][0]
+                        break   
+                    elif "Assess Soldier" in action_taken['answerChoices'] and 'Go Back to Shooter/Victim' in action_taken['answerChoices'] and cur_scene['id'] == 'Scene 3' and self.adept_yaml['id'] == 'DryRunEval-MJ2-eval':
+                        last_action_ind_used += ind
+                        found_match = True
+                        matched = cur_scene['action_mapping'][2] if 'Assess' in action_taken['answer'] else cur_scene['action_mapping'][0]
                         break   
                     elif 'Justify' in actions and looking_for_justify:
                         if action_taken['question'] in JUSTIFY_MAPPING:
@@ -543,11 +557,11 @@ class ProbeMatcher:
                                 matched = char_actions[0]
                             else:
                                 default = None
-                                treatment_mapping = {"IV - Blood": "Blood", "Hemostatic Gauze": "Hemostatic gauze", "Splint": "Splint"}
+                                treatment_mapping = {"IV - Blood": "Blood", "Hemostatic Gauze": "Hemostatic gauze"}
                                 for x in char_actions:
-                                    if x.get('parameters', {}).get('treatment', None) is None:
+                                    if x.get('parameters', {}).get('treatment', None) is None or x.get('action_id') == "treat_kicker_but_dont_give_blood":
                                         default = x
-                                    elif x.get('parameters', {}).get('treatment', None) == treatment_mapping[action_taken['treatment']]:
+                                    elif x.get('parameters', {}).get('treatment', None) == treatment_mapping.get(action_taken['treatment'], action_taken['treatment']):
                                         matched = x
                                         break
                                 if matched is None:
@@ -578,6 +592,8 @@ class ProbeMatcher:
                     total += 1
                     cur_scene = self.get_scene_by_id(adept_scenes, 'Probe 4-B.1-B.1')
                     matched = cur_scene['action_mapping'][2]
+                    if matched.get('choice') == "Response 9-C.1-A":
+                        matched['unstructured'] = "Move Upton and US soldier to evac."
                     match_data.append({
                         "scene_id": 'Probe 4-B.1-B.1',
                         "probe_id": matched['probe_id'],
