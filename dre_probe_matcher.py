@@ -312,19 +312,26 @@ class ProbeMatcher:
                         action_taken['answer'] = 'U' + action_taken['answer'][1:]
                     answer = ('casualty_' + action_taken['answer'][0]).lower()
                     if answer in actions['Intend']:
-                        last_action_ind_used += ind
+                        last_action_ind_used += ind + 1
                         found_match = True
                         matched = actions['Intend'][answer]
                         break
                 elif action_taken['actionType'] in VITALS_ACTIONS and 'Vitals' in actions:
                     if action_taken['casualty'] in actions['Vitals']:
-                        last_action_ind_used += ind
+                        last_action_ind_used += ind + 1
                         found_match = True
                         matched = actions['Vitals'][action_taken['casualty']]
                         break
                 elif action_taken['actionType'] in actions:
-                    if action_taken['casualty'] in actions[action_taken['actionType']]:
-                        last_action_ind_used += ind
+                    if scene['id'] == 'id-11' and 'qol' in self.environment:
+                        # need to specifically check for lollipop treatment
+                        if action_taken['casualty'] in actions[action_taken['actionType']] and action_taken['treatment'] == 'Fentanyl Lollipop':
+                            last_action_ind_used += ind + 1
+                            found_match = True
+                            matched = actions[action_taken['actionType']][action_taken['casualty']]
+                            break
+                    elif action_taken['casualty'] in actions[action_taken['actionType']]:
+                        last_action_ind_used += ind + 1
                         found_match = True
                         matched = actions[action_taken['actionType']][action_taken['casualty']]
                         break
