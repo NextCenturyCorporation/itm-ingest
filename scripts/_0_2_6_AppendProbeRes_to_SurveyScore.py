@@ -218,7 +218,18 @@ def append_probe_response_to_survey_score(mongoDB):
                                                 if action_mapping_fix == "Assess the attacker.":
                                                     action_mapping_fix = "Perform vitals assessment on Attacker"
 
-                                                    
+                                                if action_mapping_fix == "Intend to treat the attacker.":
+                                                    action_mapping_fix = "Yes, I am willing to treat the attacker"
+                                                if action_mapping_fix == "Continue treating the wounded US soldier.":
+                                                    action_mapping_fix = "Treat US Soldier with "
+                                                if action_mapping_fix == "Treat the attacker.":
+                                                    action_mapping_fix = "Treat Attacker "
+                                                if action_mapping_fix == "Continue assessing the wounded US soldier.":
+                                                    action_mapping_fix = "Perform vitals assessment on US Soldier"
+                                                # if action_mapping_fix == "":
+                                                #     action_mapping_fix = ""
+
+
 
                                                 #IO4
                                                 if action_mapping_fix == "Treat the passerby.":
