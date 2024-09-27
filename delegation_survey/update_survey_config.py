@@ -1205,7 +1205,7 @@ def version4_setup():
     tool.add_page_by_json(warning_page)
 
     exp_page_2 = {
-            "name": "Participant ID Page",
+            "name": "VR Page",
             "elements": [
                 {
                     "type": "radiogroup",
@@ -1373,7 +1373,7 @@ def version4_setup():
 
     # add final page
     tool.import_page_from_json(
-        os.path.join("survey-configs", "surveyConfig2.1.json"),
+        os.path.join("survey-configs", "postScenario.json"),
         "Post-Scenario Measures",
         None,
     )

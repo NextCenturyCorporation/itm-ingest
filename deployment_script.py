@@ -1,11 +1,11 @@
 from pymongo import MongoClient
 from decouple import config
-from scripts._0_2_2_add_text_kdmas import get_text_scenario_kdmas
+from scripts._0_2_6_add_text_kdmas import get_text_scenario_kdmas
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
 # Change this version if running a new deploy script
-db_version = "0.2.2"
+db_version = "0.2.6"
 
 
 def check_version(mongoDB):
@@ -14,7 +14,6 @@ def check_version(mongoDB):
     if version_obj is None:
         return True 
     # return true if it is a newer db version
-    print(version_obj['version'])
     return db_version > version_obj['version']
 
 def update_db_version(mongoDB):
