@@ -1,11 +1,12 @@
 from pymongo import MongoClient
 from decouple import config
 from scripts._0_2_6_add_text_kdmas import get_text_scenario_kdmas
+from scripts._0_2_7_add_survey_version import add_survey_version_collection
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
 # Change this version if running a new deploy script
-db_version = "0.2.6"
+db_version = "0.2.7"
 
 
 def check_version(mongoDB):
@@ -31,6 +32,7 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
         get_text_scenario_kdmas(mongoDB)
+        add_survey_version_collection(mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
