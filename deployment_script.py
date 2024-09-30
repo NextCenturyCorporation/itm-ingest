@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from decouple import config
+from scripts._0_2_6_add_text_kdmas import get_text_scenario_kdmas
 from scripts._0_2_7_add_survey_version import add_survey_version_collection
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
@@ -30,6 +31,7 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
+        get_text_scenario_kdmas(mongoDB)
         add_survey_version_collection(mongoDB)
         update_db_version(mongoDB)
     else:
