@@ -5,8 +5,9 @@ from datetime import datetime
 import requests
 from decouple import config 
 
-SEND_TO_MONGO = True
-RUN_ALIGNMENT = True
+SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
+RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
+RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -213,9 +214,15 @@ class ProbeMatcher:
         except:
             pass
         if 'adept' not in self.environment:
-            self.output_soartech = open(os.path.join('output', env.split('.yaml')[0] + f'_soartech_{pid}.json'), 'w', encoding='utf-8')
+            filename = os.path.join('output', env.split('.yaml')[0] + f'_soartech_{pid}.json')
+            if not self.should_file_run(filename): 
+                return
+            self.output_soartech = open(filename, 'w', encoding='utf-8')
         else:
-            self.output_adept = open(os.path.join('output', env.split('.yaml')[0] + f'_adept_{pid}.json'), 'w', encoding='utf-8')
+            filename = os.path.join('output', env.split('.yaml')[0] + f'_adept_{pid}.json')
+            if not self.should_file_run(filename): 
+                return
+            self.output_adept = open(filename, 'w', encoding='utf-8')
         # get soartech/adept yaml data
         if 'qol' in env or 'vol' in env:
             self.soartech_file = open(os.path.join(os.path.join("soartech-evals", "eval4"), env), 'r', encoding='utf-8')
@@ -249,6 +256,28 @@ class ProbeMatcher:
         if (self.output_adept):
             self.output_adept.close()
 
+
+    def should_file_run(self, filename):
+        '''
+        If RUN_ALL is False, looks to see if the input file already has a matching output file. If it does and:
+            1. We are not running alignment OR
+            2. We are running alignment and alignment has already been calculated for this file
+        then return False in order to skip the analysis of this file.
+        '''
+        run_this_file = True
+        if not RUN_ALL and os.path.exists(filename):
+            if not RUN_ALIGNMENT:
+                run_this_file = False
+            if RUN_ALIGNMENT:
+                f = open(filename, 'r', encoding='utf-8')
+                data = json.load(f)
+                if len(list(data.get('alignment', {}).keys())) > 1:
+                    run_this_file = False
+        if not run_this_file:
+            self.logger.log(LogLevel.CRITICAL_INFO, "File has already been analyzed, skipping analysis...")
+            self.environment = ''
+        return run_this_file
+            
 
     def clean_json(self):
         '''
@@ -708,6 +737,7 @@ class ProbeMatcher:
                     },
                     "session_id": sid
                 })
+
 
     def get_session_alignment(self, align_url):
         '''
