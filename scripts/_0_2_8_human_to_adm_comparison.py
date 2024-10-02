@@ -74,7 +74,8 @@ def compare_probes(mongoDB):
                             'adm_scenario': page_scenario,
                             'adm_session_id': adm_session,
                             'adm_author': survey['results'][page]['admAuthor'],
-                            'adm_alignment_target': survey['results'][page]['admTarget']
+                            'adm_alignment_target': survey['results'][page]['admTarget'],
+                            'evalNumber': 4
                         }
                         send_document_to_mongo(comparison_collection, document)
                         
@@ -109,7 +110,8 @@ def compare_probes(mongoDB):
                             'adm_scenario': page_scenario,
                             'adm_session_id': found_mini_adm["session_id"],
                             'adm_author': survey['results'][page]['admAuthor'],
-                            'adm_alignment_target': survey['results'][page]['admTarget']
+                            'adm_alignment_target': survey['results'][page]['admTarget'],
+                            'evalNumber': 4
                         }
                         send_document_to_mongo(comparison_collection, document)
 
@@ -131,7 +133,7 @@ def mini_adm_run(collection, probes, target, adm_name):
         })
         scenario = x['scenario_id']
     alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
-    doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name}
+    doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': 4}
     collection.insert_one(doc)
     return doc
 
