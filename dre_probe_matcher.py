@@ -259,9 +259,10 @@ class ProbeMatcher:
 
     def should_file_run(self, filename):
         '''
-        Looks to see if the input file already has a matching output file. If it does and:
-        1. We are not running alignment OR
-        2. We are running alignment and alignment has already been calculated for this file
+        If RUN_ALL is False, looks to see if the input file already has a matching output file. If it does and:
+            1. We are not running alignment OR
+            2. We are running alignment and alignment has already been calculated for this file
+        then return False in order to skip the analysis of this file.
         '''
         run_this_file = True
         if not RUN_ALL and os.path.exists(filename):
