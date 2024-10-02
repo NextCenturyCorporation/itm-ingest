@@ -348,7 +348,7 @@ class ProbeMatcher:
                     # fix for typo in vol scenarios - should be O vs U, but in some versions is O vs N
                     if action_taken['answer'] in ['N (35; TBI, forehead scrape)', 'N (36; TBI, forehead scrape)', 'N (37; TBI, face shrapnel)']:
                         action_taken['answer'] = 'U' + action_taken['answer'][1:]
-                    answer = ('casualty_' + action_taken['answer'][0]).lower()
+                    answer = ('casualty_' + action_taken['answer'][0].strip()).lower()
                     if answer in actions['Intend']:
                         last_action_ind_used += ind + 1
                         found_match = True
