@@ -115,7 +115,7 @@ def compare_probes(mongoDB):
                         }
                         send_document_to_mongo(comparison_collection, document)
 
-    print("Human to ADM comparison values added to text scenarios.")
+    print("Human to ADM comparison values added to database.")
 
 
 def mini_adm_run(collection, probes, target, adm_name):

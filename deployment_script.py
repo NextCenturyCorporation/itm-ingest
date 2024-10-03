@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from decouple import config
 from scripts._0_2_8_human_to_adm_comparison import compare_probes
+from scripts._0_2_9_percent_matching_probes import find_matching_probe_percentage
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
@@ -9,12 +10,13 @@ db_version = "0.2.8"
 
 
 def check_version(mongoDB):
-    collection = mongoDB[VERSION_COLLECTION]
-    version_obj = collection.find_one()
-    if version_obj is None:
-        return True 
-    # return true if it is a newer db version
-    return db_version > version_obj['version']
+    return True
+    # collection = mongoDB[VERSION_COLLECTION]
+    # version_obj = collection.find_one()
+    # if version_obj is None:
+    #     return True 
+    # # return true if it is a newer db version
+    # return db_version > version_obj['version']
 
 def update_db_version(mongoDB):
     collection = mongoDB[VERSION_COLLECTION]
@@ -30,7 +32,8 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
-        compare_probes(mongoDB)
+        # compare_probes(mongoDB)
+        find_matching_probe_percentage(mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
