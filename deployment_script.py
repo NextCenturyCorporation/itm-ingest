@@ -6,17 +6,16 @@ VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
 # Change this version if running a new deploy script
-db_version = "0.2.8"
+db_version = "0.2.9"
 
 
 def check_version(mongoDB):
-    return True
-    # collection = mongoDB[VERSION_COLLECTION]
-    # version_obj = collection.find_one()
-    # if version_obj is None:
-    #     return True 
-    # # return true if it is a newer db version
-    # return db_version > version_obj['version']
+    collection = mongoDB[VERSION_COLLECTION]
+    version_obj = collection.find_one()
+    if version_obj is None:
+        return True 
+    # return true if it is a newer db version
+    return db_version > version_obj['version']
 
 def update_db_version(mongoDB):
     collection = mongoDB[VERSION_COLLECTION]
@@ -32,7 +31,7 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
-        # compare_probes(mongoDB)
+        compare_probes(mongoDB)
         find_matching_probe_percentage(mongoDB)
         update_db_version(mongoDB)
     else:
