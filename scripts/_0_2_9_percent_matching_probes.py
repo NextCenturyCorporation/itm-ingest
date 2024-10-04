@@ -1,6 +1,5 @@
 def find_matching_probe_percentage(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
-    delegation_collection = mongoDB['surveyResults']
     match_collection = mongoDB['admVsTextProbeMatches']
     adm_collection = mongoDB["test"]
 
@@ -26,7 +25,7 @@ def find_matching_probe_percentage(mongoDB):
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
             tad_most_adm = find_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_most_adm is not None:
-                perc = calculate_matches(entry, tad_most_adm)
+                perc = calculate_matches(entry, tad_most_adm, attribute)
                 document = {
                     'pid': pid,
                     'adm_type': 'most aligned',
@@ -42,7 +41,7 @@ def find_matching_probe_percentage(mongoDB):
             ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
             kit_most_adm = find_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_most_adm is not None:
-                perc = calculate_matches(entry, kit_most_adm)
+                perc = calculate_matches(entry, kit_most_adm, attribute)
                 document = {
                     'pid': pid,
                     'adm_type': 'most aligned',
@@ -61,7 +60,7 @@ def find_matching_probe_percentage(mongoDB):
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
             tad_least_adm = find_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_least_adm is not None:
-                perc = calculate_matches(entry, tad_least_adm)
+                perc = calculate_matches(entry, tad_least_adm, attribute)
                 document = {
                     'pid': pid,
                     'adm_type': 'least aligned',
@@ -76,7 +75,7 @@ def find_matching_probe_percentage(mongoDB):
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
             kit_least_adm = find_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_least_adm is not None:
-                perc = calculate_matches(entry, kit_least_adm)
+                perc = calculate_matches(entry, kit_least_adm, attribute)
                 document = {
                     'pid': pid,
                     'adm_type': 'least aligned',
@@ -92,11 +91,25 @@ def find_matching_probe_percentage(mongoDB):
     print("Text vs ADM probe match percentage values added to database.")
 
 
-def calculate_matches(text, adm):
+def calculate_matches(text, adm, attribute):
     '''
     Look through probes of text scenario and adm to count how many
     responses match.
     '''
+    MJ_PROBES = {
+        "MJ2": ["Probe 2", "Probe 2A-1", "Probe 2B-1", "Probe 3-B.2", "Probe 5", "Probe 5-A.1", "Probe 5-B.1", "Probe 6", "Probe 7"],
+        "MJ4": ["Probe 1", "Probe 2 kicker", "Probe 2 passerby", "Probe 2-A.1", "Probe 2-D.1", "Probe 2-D.1-B.1", "Probe 3", "Probe 3-A.1", "Probe 3-B.1", "Response 7-B", "Response 7-C", "Response 8-B", "Response 8-C", "Probe 9", "Response 10-B", "Response 10-C", "Probe 10-A.1", "Probe 10-A.1-B.1", "Probe 10-B.1", "Probe 10-C.1"],
+        "MJ5": ["Probe 1", "Probe 1-A.1", "Probe 1-B.1", "Probe 2", "Probe 2-A.1-A.1", "Probe 2-A.1-B.1-A.1", "Probe 2-B.1-A.1", "Probe 2-B.1-B.1-A.1", "Probe 4", "Probe 8-A.1"]
+    }
+    IO_PROBES = {
+        "MJ2": ["Probe 4", "Probe 4-B.1", "Probe 4-B.1-B.1", "Probe 8", "Probe 9", "Probe 9-A.1", "Probe 10", "Probe 9-B.1"],
+        "MJ4": ["Probe 6", "Probe 7", "Probe 8", "Probe 10"],
+        "MJ5": ["Probe 7", "Probe 8", "Probe 8-A.1", "Probe 8-A.1-A.1", "Probe 9", "Probe 9-A.1", "Probe 9-B.1", "Probe 9-C.1"]
+    }
+    scenario_id = text.get('scenario_id')
+    ALLOWED_PROBES = MJ_PROBES if attribute == 'Moral judgement' else IO_PROBES if attribute == 'Ingroup Bias' else None
+    if ALLOWED_PROBES is not None:
+        ALLOWED_PROBES = ALLOWED_PROBES['MJ2' if 'MJ2' in scenario_id else 'MJ4' if 'MJ4' in scenario_id else 'MJ5']
     adm_probes = []
     for x in adm['history']:
         if x['command'] == 'Respond to TA1 Probe':
@@ -115,9 +128,10 @@ def calculate_matches(text, adm):
     for p1 in text_probes:
         for p2 in adm_probes:
             if p1['probe_id'] == p2['probe_id']:
-                total += 1
-                if p1['choice'] == p2['choice']:
-                    matches += 1
+                if ALLOWED_PROBES is None or (p1['probe_id'] in ALLOWED_PROBES or (p1['choice'] in ALLOWED_PROBES and p2['choice'] in ALLOWED_PROBES)):
+                    total += 1
+                    if p1['choice'] == p2['choice']:
+                        matches += 1
 
     return matches / max(1, total)
     
