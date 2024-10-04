@@ -171,7 +171,12 @@ DRAGGING_MAP = {
     "d7dbc70b-2cfe-4038-a235-446316e0f9ee_202409102": {
         "id-3": "choice-0", # U
         "id-7": "choice-0" # G
-    }
+    },
+    "3eeeb003-c17d-4f3d-8f23-b16a8ac3d4fe_202409112": {
+        "id-3": "choice-0", # G
+        "id-7": "choice-1", # V
+        "id-11": "choice-0" # U
+    },
 }
 
 ENV_MAP = {
