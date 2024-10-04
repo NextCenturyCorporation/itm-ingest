@@ -14,38 +14,80 @@ def find_matching_probe_percentage(mongoDB):
             # ignore test scenarios from adept
             continue
         pid = entry.get('participantID')
-        survey = list(delegation_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid}))
-        if len(survey) == 0:
-            print(f"No survey found for {pid}")
-            continue
-        survey = survey[-1] # get last survey entry for this pid
-        for page in survey['results']:
-            if 'Medic' in page and ' vs ' not in page:
-                page_scenario = survey['results'][page]['scenarioIndex']
-                alignment = survey['results'][page]['admAlignment']
-                # we only want most and least aligned targets
-                if alignment not in ['aligned', 'misaligned']:
-                    continue
-                # only match like sceenarios to find the high/low target
-                if ('qol' in scenario_id and 'qol' in page_scenario) or ('vol' in scenario_id and 'vol' in page_scenario) or ('DryRunEval' in scenario_id and 'DryRunEval' in page_scenario):
-                    # find the adm at the text-scenario scenario at the aligned or misaligned target
-                    adm = find_adm(adm_collection, page, scenario_id.replace('IO', 'MJ'), survey)
-                    if adm is None:
-                        continue
-                    adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
-                    perc = calculate_matches(entry, adm)
-                    document = {
-                        'pid': pid,
-                        'adm_type': survey['results'][page]['admAlignment'],
-                        'score': perc,
-                        'text_scenario': scenario_id,
-                        'adm_author': survey['results'][page]['admAuthor'],
-                        'adm_alignment_target': adm_target,
-                        'adm_alignment': alignment,
-                        'evalNumber': 4
-                    }
-                    send_document_to_mongo(match_collection, document)
+        for target in entry['mostLeastAligned']:
+            attribute = target['target']
+            most = target['response'][0]
+            least = target['response'][len(target['response'])-1]
+            # find the adm at the text-scenario scenario at the aligned or misaligned target
+            edited_target = most.get('target', list(most.keys())[0])
+            if 'Ingroup' in attribute or 'Moral' in attribute:
+                edited_target = edited_target[:-1] + '.' + edited_target[-1]
+            
+            ### GET TAD ALIGNED AT MOST ALIGNED TARGET
+            tad_most_adm = find_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            if tad_most_adm is not None:
+                perc = calculate_matches(entry, tad_most_adm)
+                document = {
+                    'pid': pid,
+                    'adm_type': 'most aligned',
+                    'score': perc,
+                    'text_scenario': scenario_id,
+                    'adm_author': 'TAD',
+                    'attribute': attribute,
+                    'adm_alignment_target': most.get('target', list(most.keys())[0]),
+                    'evalNumber': 4
+                }
+                send_document_to_mongo(match_collection, document)
+            
+            ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
+            kit_most_adm = find_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            if kit_most_adm is not None:
+                perc = calculate_matches(entry, kit_most_adm)
+                document = {
+                    'pid': pid,
+                    'adm_type': 'most aligned',
+                    'score': perc,
+                    'text_scenario': scenario_id,
+                    'adm_author': 'kitware',
+                    'attribute': attribute,
+                    'adm_alignment_target': most.get('target', list(most.keys())[0]),
+                    'evalNumber': 4
+                }
+                send_document_to_mongo(match_collection, document)
 
+            edited_target = least.get('target', list(least.keys())[0])
+            if 'Ingroup' in attribute or 'Moral' in attribute:
+                edited_target = edited_target[:-1] + '.' + edited_target[-1]
+            ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
+            tad_least_adm = find_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            if tad_least_adm is not None:
+                perc = calculate_matches(entry, tad_least_adm)
+                document = {
+                    'pid': pid,
+                    'adm_type': 'least aligned',
+                    'score': perc,
+                    'text_scenario': scenario_id,
+                    'adm_author': 'TAD',
+                    'attribute': attribute,
+                    'adm_alignment_target': least.get('target', list(least.keys())[0]),
+                    'evalNumber': 4
+                }
+                send_document_to_mongo(match_collection, document)
+            ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
+            kit_least_adm = find_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            if kit_least_adm is not None:
+                perc = calculate_matches(entry, kit_least_adm)
+                document = {
+                    'pid': pid,
+                    'adm_type': 'least aligned',
+                    'score': perc,
+                    'text_scenario': scenario_id,
+                    'adm_author': 'kitware',
+                    'attribute': attribute,
+                    'adm_alignment_target': least.get('target', list(least.keys())[0]),
+                    'evalNumber': 4
+                }
+                send_document_to_mongo(match_collection, document)
 
     print("Text vs ADM probe match percentage values added to database.")
 
@@ -80,15 +122,15 @@ def calculate_matches(text, adm):
     return matches / max(1, total)
     
 
-def find_adm(adm_collection, page, scenario, survey):
-    adms = adm_collection.find({'evalNumber': 4, 'history.0.response.id': scenario, 'history.0.parameters.adm_name': survey['results'][page]['admName']})
+def find_adm(adm_collection, scenario, target, adm_name):
+    adms = adm_collection.find({'evalNumber': 4,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
     adm = None
     for x in adms:
-        if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
+        if x['history'][len(x['history'])-1]['parameters']['target_id'] == target:
             adm = x
             break
     if adm is None:
-        print(f"No matching adm found for scenario {scenario} with adm {survey['results'][page]['admName']} at target {survey['results'][page]['admTarget']}")
+        print(f"No matching adm found for scenario {scenario} with adm {adm_name} at target {target}")
         return None
     return adm
 
@@ -96,7 +138,7 @@ def find_adm(adm_collection, page, scenario, survey):
 def send_document_to_mongo(match_collection, document):
     # do not send duplicate documents, make sure if one already exists, we just replace it
     found_docs = match_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'], 
-                                                'adm_author': document['adm_author'], 'adm_alignment_target': document['adm_alignment_target'], 'adm_alignment': document['adm_alignment']})
+                                                'adm_author': document['adm_author'], 'adm_alignment_target': document['adm_alignment_target'], 'attribute': document['attribute']})
     doc_found = False
     obj_id = ''
     for doc in found_docs:
