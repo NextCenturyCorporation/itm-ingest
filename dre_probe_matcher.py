@@ -6,7 +6,7 @@ import requests
 from decouple import config 
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
+RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 EVAL_NUM = 4
@@ -826,7 +826,10 @@ class ProbeMatcher:
         comparison = self.get_text_vr_comparison(vr_sid)
         if comparison is not None:
             if 'score' not in comparison:
-                self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
+                if 'adept' in self.environment:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
+                else:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
                 return
             json_data['alignment']['vr_vs_text'] = comparison['score']
             writable = open(filename, 'w', encoding='utf-8')
@@ -856,8 +859,12 @@ class ProbeMatcher:
             # send all probes to ST server for VR vs text
             query_param = f"session_1={vr_sid}&session_2={text_sid}"
             for probe_id in ST_PROBES['all'][vr_scenario]:
+                if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][vr_scenario][10], ST_PROBES['all'][vr_scenario][11]]:
+                    continue
                 query_param += f"&session1_probes={probe_id}"
             for probe_id in ST_PROBES['all'][text_scenario]:
+                if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][text_scenario][10], ST_PROBES['all'][text_scenario][11]]:
+                    continue
                 query_param += f"&session2_probes={probe_id}"
             res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
             return res
