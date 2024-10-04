@@ -310,7 +310,7 @@ class ProbeMatcher:
             if RUN_ALIGNMENT:
                 f = open(filename, 'r', encoding='utf-8')
                 data = json.load(f)
-                if len(list(data.get('alignment', {}).keys())) > 1:
+                if len(list(data.get('alignment', {}).keys())) > 1 and 'sid' in data.get('alignment', {}):
                     run_this_file = False
         if not run_this_file:
             self.logger.log(LogLevel.CRITICAL_INFO, "File has already been analyzed, skipping analysis...")
@@ -806,10 +806,13 @@ class ProbeMatcher:
             f = self.output_adept
         else:
             return
-        json_data = json.load(f)
+        filename = f.name
+        f.close()
+        readable = open(filename, 'r', encoding='utf-8')
+        json_data = json.load(readable)
+        readable.close()
         # do not recalculate score if it's already done!
         if json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL:
-            f.close()
             return
         vr_sid = json_data.get('alignment', {}).get('sid')
         if vr_sid is None:
@@ -821,8 +824,7 @@ class ProbeMatcher:
                 self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
                 return
             json_data['alignment']['vr_vs_text'] = comparison['score']
-            f.close()
-            writable = open(f.name, 'w', encoding='utf-8')
+            writable = open(filename, 'w', encoding='utf-8')
             json.dump(json_data, writable, indent=4)
             writable.close()
             if SEND_TO_MONGO:

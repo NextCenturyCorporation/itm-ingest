@@ -10,12 +10,13 @@ db_version = "0.2.7"
 
 
 def check_version(mongoDB):
-    collection = mongoDB[VERSION_COLLECTION]
-    version_obj = collection.find_one()
-    if version_obj is None:
-        return True 
-    # return true if it is a newer db version
-    return db_version > version_obj['version']
+    return True
+    # collection = mongoDB[VERSION_COLLECTION]
+    # version_obj = collection.find_one()
+    # if version_obj is None:
+    #     return True 
+    # # return true if it is a newer db version
+    # return db_version > version_obj['version']
 
 def update_db_version(mongoDB):
     collection = mongoDB[VERSION_COLLECTION]
