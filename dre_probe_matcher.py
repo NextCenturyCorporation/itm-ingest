@@ -23,7 +23,8 @@ SCENE_MAP = {
     "vol-dre-3-eval Narrative": "dryrun-soartech-eval-vol3.yaml",
     "DryRunEval-MJ2-eval Narrative": "dryrun-adept-eval-MJ2.yaml",
     "DryRunEval-MJ4-eval Narrative": "dryrun-adept-eval-MJ4.yaml",
-    "DryRunEval-MJ5-eval Narrative": "dryrun-adept-eval-MJ5.yaml"
+    "DryRunEval-MJ5-eval Narrative": "dryrun-adept-eval-MJ5.yaml",
+    "Desert Open World Narrative": "Desert Open World Narrative"
 }
 
 ACTION_TRANSLATION = {
@@ -213,7 +214,9 @@ class ProbeMatcher:
             os.mkdir('output')
         except:
             pass
-        if 'adept' not in self.environment:
+        if 'Open World' in self.environment:
+            pass
+        elif 'adept' not in self.environment:
             filename = os.path.join('output', env.split('.yaml')[0] + f'_soartech_{pid}.json')
             if not self.should_file_run(filename): 
                 return
@@ -224,9 +227,10 @@ class ProbeMatcher:
                 return
             self.output_adept = open(filename, 'w', encoding='utf-8')
         # get soartech/adept yaml data
-        if 'qol' in env or 'vol' in env:
+        if 'Open World' in env:
+            pass
+        elif 'qol' in env or 'vol' in env:
             self.soartech_file = open(os.path.join(os.path.join("soartech-evals", "eval4"), env), 'r', encoding='utf-8')
-            
             try:
                 self.soartech_yaml = yaml.load(self.soartech_file, Loader=yaml.CLoader)
             except Exception as e:
@@ -303,9 +307,19 @@ class ProbeMatcher:
             self.match_qol_vol_probes()
         elif 'adept' in self.environment:
             self.match_adept_probes()
+        elif 'Open World' in self.environment:
+            self.analyze_openworld()
         else:
             self.logger.log(LogLevel.WARN, f"No function available to probe match for environment {self.environment}")
     
+
+    def analyze_openworld(self):
+        if SEND_TO_MONGO:
+            try:
+                mongo_collection_raw.insert_one({'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment.replace(' ', '-')})
+            except:
+                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment.replace(' ', '-')}, {'$set': {'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId}})
+
 
     def match_qol_vol_probes(self):
         soartech_scenes = self.soartech_yaml['scenes']
@@ -436,9 +450,9 @@ class ProbeMatcher:
             except:
                 mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.soartech_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'st', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
             try:
-                mongo_collection_raw.insert_one({'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
+                mongo_collection_raw.insert_one({'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
             except:
-                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
+                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
         json.dump(match_data, self.output_soartech, indent=4)  
                 
 
@@ -716,9 +730,9 @@ class ProbeMatcher:
             except:
                 mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
             try:
-                mongo_collection_raw.insert_one({'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
+                mongo_collection_raw.insert_one({'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
             except:
-                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
+                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
         json.dump(match_data, self.output_adept, indent=4)  
 
 
