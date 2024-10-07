@@ -818,6 +818,13 @@ class ProbeMatcher:
         readable.close()
         # do not recalculate score if it's already done!
         if json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL:
+            if SEND_TO_MONGO:
+                # make sure mongo gets vr_vs_text if it doesn't have it
+                mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
+                try:
+                    mongo_collection_matches.update_one({'_id': mid}, {'$set': { 'data.alignment.vr_vs_text': json_data.get('alignment').get('vr_vs_text')}})
+                except:
+                    self.logger.log(LogLevel.WARN, f"No mongo document found with id {mid}! Cannot update document with comparison scores.")
             return
         vr_sid = json_data.get('alignment', {}).get('sid')
         if vr_sid is None:
