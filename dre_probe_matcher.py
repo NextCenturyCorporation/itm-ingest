@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from datetime import datetime
 import requests
 from decouple import config 
+import utils.db_utils as db_utils
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
@@ -192,6 +193,9 @@ ENV_MAP = {
 mongo_collection_matches = None
 mongo_collection_raw = None
 text_scenario_collection = None
+delegation_collection = None
+medic_collection = None
+adm_collection = None
 ENVIRONMENTS_BY_PID = {}
 
 
@@ -816,38 +820,45 @@ class ProbeMatcher:
         readable = open(filename, 'r', encoding='utf-8')
         json_data = json.load(readable)
         readable.close()
-        # do not recalculate score if it's already done!
-        if json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL:
-            if SEND_TO_MONGO:
-                # make sure mongo gets vr_vs_text if it doesn't have it
-                mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
-                try:
-                    mongo_collection_matches.update_one({'_id': mid}, {'$set': { 'data.alignment.vr_vs_text': json_data.get('alignment').get('vr_vs_text')}})
-                except:
-                    self.logger.log(LogLevel.WARN, f"No mongo document found with id {mid}! Cannot update document with comparison scores.")
-            return
         vr_sid = json_data.get('alignment', {}).get('sid')
         if vr_sid is None:
             self.logger.log(LogLevel.WARN, "Error getting session id. Maybe alignment hasn't run for file?")
             return
-        comparison = self.get_text_vr_comparison(vr_sid)
-        if comparison is not None:
-            if 'score' not in comparison:
-                if 'adept' in self.environment:
-                    self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
-                else:
-                    self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
-                return
-            json_data['alignment']['vr_vs_text'] = comparison['score']
-            writable = open(filename, 'w', encoding='utf-8')
-            json.dump(json_data, writable, indent=4)
-            writable.close()
-            if SEND_TO_MONGO:
-                mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
-                try:
-                    mongo_collection_matches.update_one({'_id': mid}, {'$set': { 'data.alignment': json_data.get('alignment')}})
-                except:
-                    self.logger.log(LogLevel.WARN, f"No mongo document found with id {mid}! Cannot update document with comparison scores.")
+        # do not recalculate score if it's already done!
+        if not (json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL):
+            comparison = self.get_text_vr_comparison(vr_sid)
+            if comparison is not None:
+                if 'score' not in comparison:
+                    if 'adept' in self.environment:
+                        self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
+                    else:
+                        self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
+                    return
+                json_data['alignment']['vr_vs_text'] = comparison['score']
+                writable = open(filename, 'w', encoding='utf-8')
+                json.dump(json_data, writable, indent=4)
+                writable.close()
+
+        if not (json_data.get('alignment').get('adms_vs_text', None) is not None and not RUN_ALL):
+            comparison = self.get_adm_vr_comparisons(vr_sid)
+            if comparison is not None:
+                pass
+                # if 'score' not in comparison:
+                #     if 'adept' in self.environment:
+                #         self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
+                #     else:
+                #         self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
+                #     return
+                # json_data['alignment']['vr_vs_text'] = comparison['score']
+                # writable = open(filename, 'w', encoding='utf-8')
+                # json.dump(json_data, writable, indent=4)
+                # writable.close()
+        if SEND_TO_MONGO:
+            mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
+            try:
+                mongo_collection_matches.update_one({'_id': mid}, {'$set': { 'data.alignment': json_data.get('alignment')}})
+            except:
+                self.logger.log(LogLevel.WARN, f"No mongo document found with id {mid}! Cannot update document with comparison scores.")
 
 
     def get_text_vr_comparison(self, vr_sid):
@@ -887,6 +898,65 @@ class ProbeMatcher:
             return res
 
 
+    def get_adm_vr_comparisons(self, vr_sid):
+        # get the survey
+        survey = delegation_collection.find_one({"results.Participant ID Page.questions.Participant ID.response": self.participantId})
+        # get all adms shown in delegation that match the attribute
+        for page in survey['results']:
+            if 'Medic' in page and ' vs ' not in page:
+                page_scenario = survey['results'][page]['scenarioIndex']
+                if ('qol' in self.environment and 'qol' in page_scenario) or ('vol' in self.environment and 'vol' in page_scenario):
+                    # find the adm session id that matches the medic shown in the delegation survey
+                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey)
+                    if adm is None:
+                        continue
+                    adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
+                    # create ST query param
+                    query_param = f"session_1={vr_sid}&session_2={adm_session}"
+                    for probe_id in ST_PROBES['delegation'][vr_sid]:
+                        query_param += f"&session1_probes={probe_id}"
+                    for probe_id in ST_PROBES['delegation'][page_scenario]:
+                        query_param += f"&session2_probes={probe_id}"
+                    # get comparison score
+                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                elif ('DryRunEval' in self.environment and 'DryRunEval' in page_scenario):
+                    pass
+
+        # if 'qol' in self.environment or 'vol' in self.environment:
+        #     vr_scenario = ENV_MAP[self.environment]
+        #     # VR session vs ADM (ST)
+            
+        #     # VR session vs text scenario (ST)
+        #     text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
+        #     if text_response is None:
+        #         self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} {vr_scenario.split('-')[0]} scenario")
+        #         return None
+        #     text_sid = text_response['serverSessionId']
+        #     text_scenario = text_response['scenario_id']
+            
+        #     # send all probes to ST server for VR vs text
+        #     query_param = f"session_1={vr_sid}&session_2={text_sid}"
+        #     for probe_id in ST_PROBES['all'][vr_scenario]:
+        #         if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][vr_scenario][10], ST_PROBES['all'][vr_scenario][11]]:
+        #             continue
+        #         query_param += f"&session1_probes={probe_id}"
+        #     for probe_id in ST_PROBES['all'][text_scenario]:
+        #         if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][text_scenario][10], ST_PROBES['all'][text_scenario][11]]:
+        #             continue
+        #         query_param += f"&session2_probes={probe_id}"
+        #     res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+        #     return res
+        # elif 'adept' in self.environment:
+        #     # get text session id
+        #     text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval"]}})
+        #     if text_response is None:
+        #         self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} adept scenario")
+        #         return None
+        #     text_sid = text_response['combinedSessionId']
+        #     # send text and vr session ids to Adept server
+        #     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}').json()
+        #     return res
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i PATH')
 
@@ -903,6 +973,9 @@ if __name__ == '__main__':
         mongo_collection_matches = db['humanSimulator']
         mongo_collection_raw = db['humanSimulatorRaw']
         text_scenario_collection = db['userScenarioResults']
+        delegation_collection = db['surveyResults']
+        medic_collection = db['admMedics']
+        adm_collection = db["test"]
 
     # go through the input directory and find all sub directories
     sub_dirs = [name for name in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, name))]
