@@ -69,7 +69,7 @@ def get_text_scenario_kdmas(mongoDB):
             send_probes(f'{ADEPT_URL}/api/v1/response', probes, new_id, scenario_id)
             kdmas = requests.get(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={new_id}').json()
             print("Created text session with probes in Adept for: " + str(new_id))
-            print(str(kdmas))
+            # print(str(kdmas))
 
         updates = {'kdmas': kdmas}
         if new_id is not None:

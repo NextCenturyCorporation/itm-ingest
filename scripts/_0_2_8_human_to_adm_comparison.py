@@ -88,6 +88,9 @@ def compare_probes(mongoDB):
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
                     found_mini_adm = del_adm_runs_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName']})
+                    print(adm_target)
+                    print(page_scenario.replace('IO', 'MJ'))
+                    print(survey['results'][page]['admName'])
                     if found_mini_adm is None:
                         # get new adm session
                         probe_ids = AD_PROBES[page_scenario] # this is where IO/MJ comes into play - choosing the probes
