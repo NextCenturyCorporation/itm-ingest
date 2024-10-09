@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from decouple import config
-from scripts._0_3_0_run_group_targets import run_group_targets
+from scripts._0_2_9_run_group_targets import run_group_targets
+from scripts._0_3_0_percent_matching_probes import find_matching_probe_percentage
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
 
@@ -31,6 +32,7 @@ def main():
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
         run_group_targets(mongoDB)
+        find_matching_probe_percentage(mongoDB)
         update_db_version(mongoDB)
     else:
         print("Script does not need to run on prod, already updated.")
