@@ -11,7 +11,7 @@ MONGO_URL = config('MONGO_URL')
 
 #DEV
 ADEPT_URL="http://localhost:8081/"
-ST_URL="http://localhost:8084/"
+# ST_URL="http://localhost:8084/"
 
 
 # PROD TA1 inside AWS
@@ -36,7 +36,6 @@ def get_text_scenario_kdmas(mongoDB):
     del_adm_runs_collection.drop()
 
     adm_collection = mongoDB["test"]
-   
     medic_collection = mongoDB['admMedics']
 
     sessions_by_pid = {}
@@ -85,6 +84,7 @@ def get_text_scenario_kdmas(mongoDB):
     text_scenario_to_update.rewind()
     for entry in text_scenario_to_update:            
         scenario_id = entry.get('scenario_id')
+    
         if 'MJ1' in scenario_id or 'IO1' in scenario_id:
             # ignore test scenarios from adept
             continue
@@ -100,7 +100,6 @@ def get_text_scenario_kdmas(mongoDB):
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 if 'DryRunEval' in scenario_id and 'DryRunEval' in page_scenario:
-
                     adm = find_adm(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
@@ -116,8 +115,7 @@ def get_text_scenario_kdmas(mongoDB):
                                     probe_responses.append(x['parameters'])
                         found_mini_adm = mini_adm_run(del_adm_runs_collection, probe_responses, adm_target, survey['results'][page]['admName'])
 
-
-        print("ADM Session Added: " + str(session_id)) 
+                        print("ADM Session Added for : " + str(found_mini_adm["session_id"])) 
 #######################################            
 
 def send_probes(probe_url, probes, sid, scenario):
@@ -153,6 +151,7 @@ def mini_adm_run(collection, probes, target, adm_name):
     alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': 4}
     collection.insert_one(doc)
+
     return doc
 
 def find_adm(medic_collection, adm_collection, page, page_scenario, survey):
