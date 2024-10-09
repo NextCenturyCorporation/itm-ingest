@@ -1,15 +1,16 @@
-import yaml, argparse, json, os, copy
+import yaml, argparse, json, os, copy, csv
 from logger import LogLevel, Logger
 from pymongo import MongoClient
 from datetime import datetime
 import requests
 from decouple import config 
 import utils.db_utils as db_utils
+from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
-RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -84,6 +85,15 @@ ST_PROBES = {
         "vol-dre-2-eval": ['vol-dre-2-eval-Probe-1', 'vol-dre-2-eval-Probe-2', 'vol-dre-2-eval-Probe-3', 'vol-dre-2-eval-Probe-4', 'vol-dre-2-eval-Probe-5', 'vol-dre-2-eval-Probe-6', 'vol-dre-2-eval-Probe-7', 'vol-dre-2-eval-Probe-8', 'vol-dre-2-eval-Probe-9', 'vol-dre-2-eval-Probe-10', 'vol-dre-2-eval-Probe-11', 'vol-dre-2-eval-Probe-12'],
         "vol-dre-3-eval": ['vol-dre-3-eval-Probe-1', 'vol-dre-3-eval-Probe-2', 'vol-dre-3-eval-Probe-3', 'vol-dre-3-eval-Probe-4', 'vol-dre-3-eval-Probe-5', 'vol-dre-3-eval-Probe-6', 'vol-dre-3-eval-Probe-7', 'vol-dre-3-eval-Probe-8', 'vol-dre-3-eval-Probe-9', 'vol-dre-3-eval-Probe-10', 'vol-dre-3-eval-Probe-11', 'vol-dre-3-eval-Probe-12']
     }
+}
+
+AD_DEL_PROBES = {
+    "DryRunEval-IO2-eval": ['Probe 4', 'Probe 8', 'Probe 9', 'Probe 9-B.1', 'Probe 9-A.1', 'Probe 10'],
+    "DryRunEval-MJ2-eval": ['Probe 2B-1', 'Probe 2A-1', 'Response 3-B.2-B-gauze-v', 'Response 3-B.2-B-gauze-s', 'Response 3-B.2-A-gauze-v', 'Response 3-B.2-A-gauze-s', 'Probe 5', 'Probe 5-A.1', 'Probe 5-B.1', 'Probe 6', 'Probe 7'],
+    "DryRunEval-IO4-eval": ['Probe 6', 'Probe 7', 'Probe 8', 'Probe 10'],
+    "DryRunEval-MJ4-eval": ['Probe 1', 'Probe 2 kicker', 'Probe 2 passerby', 'Probe 2-A.1', 'Probe 2-D.1', 'Probe 2-D.1-B.1', 'Probe 3', 'Probe 3-A.1', 'Probe 3-B.1', 'Probe 9', 'Response 10-B', 'Response 10-C', 'Probe 10-A.1'],
+    "DryRunEval-IO5-eval": ['Probe 7', 'Probe 8', 'Probe 8-A.1', 'Probe 8-A.1-A.1', 'Probe 9', 'Probe 9-A.1', 'Probe 9-B.1', 'Probe 9-C.1'],
+    "DryRunEval-MJ5-eval": ['Probe 1', 'Probe 1-A.1', 'Probe 1-B.1', 'Probe 2', 'Response 2-A.1-B', 'Response 2-B.1-B', 'Response 2-B.1-B-gauze-u', 'Response 2-A.1-B-gauze-sp', 'Probe 2-A.1-A.1', 'Probe 2-B.1-A.1', 'Probe 2-A.1-B.1-A.1', 'Probe 2-B.1-B.1-A.1', 'Probe 3', 'Probe 4']
 }
 
 VITALS_ACTIONS = ["SpO2", "Breathing", "Pulse"]
@@ -187,6 +197,9 @@ ENV_MAP = {
     "dryrun-soartech-eval-vol1.yaml": "vol-dre-1-eval",
     "dryrun-soartech-eval-vol2.yaml": "vol-dre-2-eval",
     "dryrun-soartech-eval-vol3.yaml": "vol-dre-3-eval",
+    "dryrun-adept-eval-MJ2.yaml": "DryRunEval-MJ2-eval",
+    "dryrun-adept-eval-MJ4.yaml": "DryRunEval-MJ4-eval",
+    "dryrun-adept-eval-MJ5.yaml": "DryRunEval-MJ5-eval"
 }
 
 
@@ -196,6 +209,7 @@ text_scenario_collection = None
 delegation_collection = None
 medic_collection = None
 adm_collection = None
+mini_adms_collection = None
 ENVIRONMENTS_BY_PID = {}
 
 
@@ -357,6 +371,107 @@ class ProbeMatcher:
     
 
     def analyze_openworld(self):
+        results = {
+            'pid': self.participantId,
+            'assess_patient': 0,
+            'assess_total': 0,
+            'treat_patient': 0,
+            'treat_total': 0,
+            'triage_time': 0,
+            'triage_time_patient': 0,
+            'engage_patient': 0,
+            'tag_acc': 0,
+            'tag_expectant': 0
+        }
+        ow_csv = open(self.json_file.name.replace('.json', '.csv'), 'r', encoding='utf-8')
+        reader = csv.reader(ow_csv)
+        header = next(reader)
+        data = []
+        for line in reader:
+            data.append(line)
+
+        def timestamp_to_milliseconds(timestamp):
+            return datetime.fromisoformat(str(dateparser.parse(timestamp))).timestamp()
+        
+        def find_patients_engaged():
+            '''
+            returns the number of patients engaged and the number of patients treated during the scenario.
+            also counts the number of times each patient was engaged
+            '''
+            engagement_order = []
+            treated = []
+            for x in data:
+                if x[0] in ['TOOL_APPLIED', 'TAG_APPLIED']:
+                    engagement_order.append(x[header.index('PatientID')].split(' Root')[0])
+                    if x[0] == 'TOOL_APPLIED':
+                        treated.append(x[header.index('PatientID')].split(' Root')[0])
+                elif x[0] in ['SP_O2_TAKEN', 'BREATHING_CHECKED', 'PULSE_TAKEN']:
+                    engagement_order.append(x[header.index('PatientID')].split(' Root')[0])
+            simple_order = []
+            for x in engagement_order:
+                if len(simple_order) > 0 and x == simple_order[-1]:
+                    continue
+                simple_order.append(x)
+            print(simple_order)
+            return {'engaged': len(list(set(engagement_order))), 'treated': len(list(set(treated)))}
+
+        engaged_counts = find_patients_engaged()
+        patients_engaged = engaged_counts['engaged']
+        patients_treated = engaged_counts['treated']
+
+        def count_assessment_actions():
+            '''returns the total count of assessment actions during the scenario'''
+            assessment_actions = ['SP_O2_TAKEN', 'BREATHING_CHECKED', 'PULSE_TAKEN']
+            count = 0
+            last_done = {}
+            for x in data:
+                # only count actions that are more than 5 seconds apart from the last of the same type of action
+                if x[0] in assessment_actions and (x[0] not in last_done or (timestamp_to_milliseconds(x[2]) - last_done[x[0]]) > 5000):
+                    last_done[x[0]] = timestamp_to_milliseconds(x[2])
+                    count += 1
+            return count
+        
+        results['assess_total'] = count_assessment_actions()
+        results['assess_patient'] = results['assess_total'] / max(1, patients_engaged)
+
+        def count_treatment_actions():
+            '''returns the total count of treatment actions during the scenario'''
+            count = 0
+            for x in data:
+                if x[0] == 'TOOL_APPLIED' and 'Pulse_Oximeter' not in x:
+                    count += 1
+            return count
+        
+        results['treat_total'] = count_treatment_actions()
+        results['treat_patient'] = results['treat_total'] / max(1, patients_treated)
+
+        def get_triage_time():
+            '''gets the time from start to finish (in seconds) to complete the scenario'''
+            if len(data) > 0:
+                start = float(data[0][1])
+                end = float(data[len(data)-2][1])
+                return ((end-start))/1000
+            
+        results['triage_time'] = get_triage_time()
+
+
+
+
+        print(results)
+        return results
+
+#     'Triage_time_patient', 'Engage_patient', 'Tag_ACC', 'Tag_Expectant',
+#     'Patient1_time', 'Patient1_order', 'Patient1_evac', 'Patient1_assess', 'Patient1_treat', 'Patient1_tag',
+#     'Patient2_time', 'Patient2_order', 'Patient2_evac', 'Patient2_assess', 'Patient2_treat', 'Patient2_tag',
+#     'Patient3_time', 'Patient3_order', 'Patient3_evac', 'Patient3_assess', 'Patient3_treat', 'Patient3_tag',
+#     'Patient4_time', 'Patient4_order', 'Patient4_evac', 'Patient4_assess', 'Patient4_treat', 'Patient4_tag',
+#     'Patient5_time', 'Patient5_order', 'Patient5_evac', 'Patient5_assess', 'Patient5_treat', 'Patient5_tag',
+#     'Patient6_time', 'Patient6_order', 'Patient6_evac', 'Patient6_assess', 'Patient6_treat', 'Patient6_tag',
+#     'Patient7_time', 'Patient7_order', 'Patient7_evac', 'Patient7_assess', 'Patient7_treat', 'Patient7_tag',
+#     'Patient8_time', 'Patient8_order', 'Patient8_evac', 'Patient8_assess', 'Patient8_treat', 'Patient8_tag'
+# ]
+
+
         if SEND_TO_MONGO:
             try:
                 mongo_collection_raw.insert_one({'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment.replace(' ', '-')})
@@ -795,6 +910,7 @@ class ProbeMatcher:
                     "session_id": sid
                 })
 
+
     def get_session_alignment(self, align_url):
         '''
         Returns the session alignment
@@ -830,29 +946,24 @@ class ProbeMatcher:
             if comparison is not None:
                 if 'score' not in comparison:
                     if 'adept' in self.environment:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
+                        self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
                     else:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
+                        self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
                     return
                 json_data['alignment']['vr_vs_text'] = comparison['score']
                 writable = open(filename, 'w', encoding='utf-8')
                 json.dump(json_data, writable, indent=4)
                 writable.close()
 
-        if not (json_data.get('alignment').get('adms_vs_text', None) is not None and not RUN_ALL):
+        if not (json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], None) is not None and len(json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], [])) != 0 and not RUN_ALL):
             comparison = self.get_adm_vr_comparisons(vr_sid)
             if comparison is not None:
-                pass
-                # if 'score' not in comparison:
-                #     if 'adept' in self.environment:
-                #         self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
-                #     else:
-                #         self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
-                #     return
-                # json_data['alignment']['vr_vs_text'] = comparison['score']
-                # writable = open(filename, 'w', encoding='utf-8')
-                # json.dump(json_data, writable, indent=4)
-                # writable.close()
+                if 'adms_vs_text' not in json_data['alignment']:
+                    json_data['alignment']['adms_vs_text'] = {}
+                json_data['alignment']['adms_vs_text'][ENV_MAP[self.environment]] = comparison
+                writable = open(filename, 'w', encoding='utf-8')
+                json.dump(json_data, writable, indent=4)
+                writable.close()
         if SEND_TO_MONGO:
             mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
             try:
@@ -901,6 +1012,8 @@ class ProbeMatcher:
     def get_adm_vr_comparisons(self, vr_sid):
         # get the survey
         survey = delegation_collection.find_one({"results.Participant ID Page.questions.Participant ID.response": self.participantId})
+        results = []
+        vr_scenario = ENV_MAP[self.environment]
         # get all adms shown in delegation that match the attribute
         for page in survey['results']:
             if 'Medic' in page and ' vs ' not in page:
@@ -913,49 +1026,53 @@ class ProbeMatcher:
                     adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
                     # create ST query param
                     query_param = f"session_1={vr_sid}&session_2={adm_session}"
-                    for probe_id in ST_PROBES['delegation'][vr_sid]:
+                    for probe_id in ST_PROBES['delegation'][vr_scenario]:
                         query_param += f"&session1_probes={probe_id}"
                     for probe_id in ST_PROBES['delegation'][page_scenario]:
                         query_param += f"&session2_probes={probe_id}"
                     # get comparison score
                     res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-                elif ('DryRunEval' in self.environment and 'DryRunEval' in page_scenario):
-                    pass
-
-        # if 'qol' in self.environment or 'vol' in self.environment:
-        #     vr_scenario = ENV_MAP[self.environment]
-        #     # VR session vs ADM (ST)
-            
-        #     # VR session vs text scenario (ST)
-        #     text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
-        #     if text_response is None:
-        #         self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} {vr_scenario.split('-')[0]} scenario")
-        #         return None
-        #     text_sid = text_response['serverSessionId']
-        #     text_scenario = text_response['scenario_id']
-            
-        #     # send all probes to ST server for VR vs text
-        #     query_param = f"session_1={vr_sid}&session_2={text_sid}"
-        #     for probe_id in ST_PROBES['all'][vr_scenario]:
-        #         if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][vr_scenario][10], ST_PROBES['all'][vr_scenario][11]]:
-        #             continue
-        #         query_param += f"&session1_probes={probe_id}"
-        #     for probe_id in ST_PROBES['all'][text_scenario]:
-        #         if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][text_scenario][10], ST_PROBES['all'][text_scenario][11]]:
-        #             continue
-        #         query_param += f"&session2_probes={probe_id}"
-        #     res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-        #     return res
-        # elif 'adept' in self.environment:
-        #     # get text session id
-        #     text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval"]}})
-        #     if text_response is None:
-        #         self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} adept scenario")
-        #         return None
-        #     text_sid = text_response['combinedSessionId']
-        #     # send text and vr session ids to Adept server
-        #     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}').json()
-        #     return res
+                    if 'score' not in res:
+                        self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                    else:
+                        results.append({
+                            "score": res['score'],
+                            "adm_author": survey['results'][page]['admAuthor'],
+                            "adm_alignment": survey['results'][page]['admAlignment'],
+                            'adm_name': survey['results'][page]['admName'],
+                            'adm_target': survey['results'][page]['admTarget'],
+                            'adm_scenario': page_scenario,
+                            'sim_scenario': vr_scenario
+                        })
+                elif ('adept' in self.environment and 'DryRunEval' in page_scenario):
+                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
+                    if adm is None:
+                        continue
+                    adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
+                    found_mini_adm = mini_adms_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName']})
+                    if found_mini_adm is None:
+                        # get new adm session that contains only the probes seen in the delegation survey
+                        probe_ids = AD_DEL_PROBES[page_scenario] # this is where IO/MJ comes into play - choosing the probes
+                        probe_responses = []
+                        for x in adm['history']:
+                            if x['command'] == 'Respond to TA1 Probe':
+                                if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
+                                    probe_responses.append(x['parameters'])
+                        found_mini_adm = db_utils.mini_adm_run(mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={found_mini_adm["session_id"]}').json()
+                    if 'score' not in res:
+                        self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
+                    else:
+                        results.append({
+                            "score": res['score'],
+                            "adm_author": survey['results'][page]['admAuthor'],
+                            "adm_alignment": survey['results'][page]['admAlignment'],
+                            'adm_name': survey['results'][page]['admName'],
+                            'adm_target': survey['results'][page]['admTarget'],
+                            'adm_scenario': page_scenario,
+                            'sim_scenario': vr_scenario
+                        })
+        return results
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i PATH')
@@ -976,6 +1093,7 @@ if __name__ == '__main__':
         delegation_collection = db['surveyResults']
         medic_collection = db['admMedics']
         adm_collection = db["test"]
+        mini_adms_collection = db['delegationADMRuns']
 
     # go through the input directory and find all sub directories
     sub_dirs = [name for name in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, name))]
