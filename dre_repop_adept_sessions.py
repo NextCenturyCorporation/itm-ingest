@@ -10,13 +10,13 @@ MONGO_URL = config('MONGO_URL')
 # ST_URL = "https://darpaitm.caci.com/soartech/" 
 
 #DEV
-# ADEPT_URL="http://localhost:8081/"
-# ST_URL="http://localhost:8084/"
+ADEPT_URL="http://localhost:8081/"
+ST_URL="http://localhost:8084/"
 
 
 # PROD TA1 inside AWS
-ADEPT_URL="http://10.216.38.101:8080/"
-ST_URL="http://10.216.38.125:8084"
+# ADEPT_URL="http://10.216.38.101:8080/"
+# ST_URL="http://10.216.38.125:8084"
 
 AD_PROBES = {
     "DryRunEval-IO2-eval": ['Probe 4', 'Probe 8', 'Probe 9', 'Probe 9-B.1', 'Probe 9-A.1', 'Probe 10'],
@@ -33,10 +33,10 @@ def get_text_scenario_kdmas(mongoDB):
 
     delegation_collection = mongoDB['surveyResults']
     del_adm_runs_collection = mongoDB['delegationADMRuns']
+    del_adm_runs_collection.drop()
 
     adm_collection = mongoDB["test"]
-
-    
+   
     medic_collection = mongoDB['admMedics']
 
     sessions_by_pid = {}
