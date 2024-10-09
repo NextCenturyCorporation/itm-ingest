@@ -15,7 +15,7 @@ MONGO_URL = config('MONGO_URL')
 
 
 # PROD TA1 inside AWS
-ADEPT_URL="http://10.216.38.70:8080/"
+ADEPT_URL="http://10.216.38.101:8080/"
 ST_URL="http://10.216.38.125:8084"
 
 AD_PROBES = {
