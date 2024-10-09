@@ -59,6 +59,7 @@ def find_matching_probe_percentage(mongoDB):
             edited_target = least.get('target', list(least.keys())[0])
             if 'Ingroup' in attribute or 'Moral' in attribute:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
+            
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
             tad_least_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_least_adm is not None:
@@ -74,6 +75,7 @@ def find_matching_probe_percentage(mongoDB):
                     'evalNumber': 4
                 }
                 send_document_to_mongo(match_collection, document)
+            
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
             kit_least_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_least_adm is not None:
@@ -86,6 +88,39 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'kitware',
                     'attribute': attribute,
                     'adm_alignment_target': least.get('target', list(least.keys())[0]),
+                    'evalNumber': 4
+                }
+                send_document_to_mongo(match_collection, document)
+
+
+        for target in entry.get('group_targets', []):
+            attribute = 'QualityOfLife' if 'qol' in target else 'PerceivedQuantityOfLivesSaved' if 'vol' in target else 'Ingroup Bias' if 'Ingroup' in target else 'Moral judgement'
+            tad_aligned = find_adm(adm_collection, scenario_id, target, 'TAD-aligned')
+            if tad_aligned is not None:
+                perc = calculate_matches(entry, tad_aligned, attribute)
+                document = {
+                    'pid': pid,
+                    'adm_type': 'group target',
+                    'score': perc,
+                    'text_scenario': scenario_id,
+                    'adm_author': 'TAD',
+                    'attribute': attribute,
+                    'adm_alignment_target': target,
+                    'evalNumber': 4
+                }
+                send_document_to_mongo(match_collection, document)
+
+            kit_aligned = find_adm(adm_collection, scenario_id, target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            if kit_aligned is not None:
+                perc = calculate_matches(entry, kit_aligned, attribute)
+                document = {
+                    'pid': pid,
+                    'adm_type': 'group target',
+                    'score': perc,
+                    'text_scenario': scenario_id,
+                    'adm_author': 'kitware',
+                    'attribute': attribute,
+                    'adm_alignment_target': target,
                     'evalNumber': 4
                 }
                 send_document_to_mongo(match_collection, document)
