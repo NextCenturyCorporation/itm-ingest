@@ -7,8 +7,8 @@ from decouple import config
 import utils.db_utils as db_utils
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
-RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
+RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
