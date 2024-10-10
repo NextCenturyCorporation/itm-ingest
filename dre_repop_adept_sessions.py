@@ -71,12 +71,17 @@ def get_text_scenario_kdmas(mongoDB):
     for adm in adms_to_update:            
         # get new adm session
         probe_responses = []
+        skip_adm = False
         for x in adm['history']:
             if x['command'] == 'Respond to TA1 Probe':
-                probe_responses.append(x['parameters'])
-        adept_sid = update_adm_run(adm_collection, adm, probe_responses)
-
-        print("ADM Session Added for : " + adept_sid)
+                if not any(substring in x['parameters']['scenario_id'] for substring in ["vol", "qol"]):
+                    probe_responses.append(x['parameters'])
+                else:
+                    skip_adm = True
+                    break
+        if not skip_adm:
+            adept_sid = update_adm_run(adm_collection, adm, probe_responses)
+            print("ADM Session Added for : " + adept_sid)
 
 
 #######################################            
@@ -87,7 +92,7 @@ def send_probes(probe_url, probes, sid, scenario):
     '''
     for x in probes:
         if 'probe' in x and 'choice' in x['probe']:
-            requests.post(probe_url, json={
+            resp = requests.post(probe_url, json={
                 "response": {
                     "choice": x['probe']['choice'],
                     "justification": "justification",
@@ -96,6 +101,8 @@ def send_probes(probe_url, probes, sid, scenario):
                 },
                 "session_id": sid
             })
+        
+    
 
 
 def update_adm_run(collection, adm, probes):
