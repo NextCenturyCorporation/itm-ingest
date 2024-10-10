@@ -16,15 +16,16 @@ def get_text_scenario_kdmas(mongoDB):
         data_id = entry.get('_id')
         pid = entry.get('participantID')
         kdmas = requests.get(f'{ST_URL if "qol" in scenario_id or "vol" in scenario_id else ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
-        
+
         # ADEPT's server lost our first week's worth of data, so we have to re-send probes
         new_id = None
-        if 'DryRun' in scenario_id and 'value' not in kdmas:
+        if 'DryRun' in scenario_id and (len(kdmas) == 0 or 'value' not in kdmas[1]):
+            print('could not find session id. Recreating session')
             if pid in sessions_by_pid:
                 new_id = sessions_by_pid[pid]['sid']
                 sessions_by_pid[pid]['_ids'].append(data_id)
             else:
-                adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
+                adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', '').strip()
                 sessions_by_pid[pid] = {'sid': adept_sid, '_ids': [data_id]}
                 new_id = adept_sid
             # collect probes
