@@ -49,12 +49,16 @@ def update_adept_text_adm_sessions(mongoDB):
             for k in entry:
                 if isinstance(entry[k], dict) and 'questions' in entry[k]:
                     if 'probe ' + k in entry[k]['questions'] and 'response' in entry[k]['questions']['probe ' + k] and 'question_mapping' in entry[k]['questions']['probe ' + k]:
-                        response = entry[k]['questions']['probe ' + k]['response']
+                        response = entry[k]['questions']['probe ' + k]['response'].replace('.', '')
                         mapping = entry[k]['questions']['probe ' + k]['question_mapping']
                         if response in mapping:
                             probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
+                        else:
+                            print('could not find response in mapping!', response, list(mapping.keys()))
+            print("TXT PROBES: " + str(probes))
             send_probes(f'{ADEPT_URL}/api/v1/response', probes, new_id, scenario_id)
             print("Created text session with probes in Adept for: " + str(new_id))
+            print("-----")
 
         updates = {}
         if new_id is not None:
@@ -79,7 +83,9 @@ def update_adept_text_adm_sessions(mongoDB):
                     break
         if not skip_adm:
             adept_sid = update_adm_run(adm_collection, adm, probe_responses)
+            print("ADM PROBES: " + str(probe_responses))
             print("ADM Session Added for : " + adept_sid)
+            print("-----")
 
 def send_probes(probe_url, probes, sid, scenario):
     '''
