@@ -32,10 +32,12 @@ def get_text_scenario_kdmas(mongoDB):
             for k in entry:
                 if isinstance(entry[k], dict) and 'questions' in entry[k]:
                     if 'probe ' + k in entry[k]['questions'] and 'response' in entry[k]['questions']['probe ' + k] and 'question_mapping' in entry[k]['questions']['probe ' + k]:
-                        response = entry[k]['questions']['probe ' + k]['response']
+                        response = entry[k]['questions']['probe ' + k]['response'].replace('.', '')
                         mapping = entry[k]['questions']['probe ' + k]['question_mapping']
                         if response in mapping:
                             probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
+                        else:
+                            print('could not find response in mapping!', response, list(mapping.keys()))
             send_probes(f'{ADEPT_URL}/api/v1/response', probes, new_id, scenario_id)
             # after probes are sent, get kdmas
             kdmas = requests.get(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={new_id}').json()
