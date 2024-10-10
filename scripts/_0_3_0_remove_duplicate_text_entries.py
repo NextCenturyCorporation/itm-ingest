@@ -53,4 +53,7 @@ def remove_duplicate_text_entries(mongo_db):
     ewfsdfsd_delete_result = text_collection.delete_many({"participantID": "ewfsdfsd"})
     total_deleted += ewfsdfsd_delete_result.deleted_count
 
+    delete_202409116_result = text_collection.delete_many({"participantID": "202409116"})
+    total_deleted += delete_202409116_result.deleted_count
+
     print(f"Duplicate removal complete. Total documents deleted: {total_deleted}")
