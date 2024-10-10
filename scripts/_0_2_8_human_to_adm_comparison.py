@@ -25,6 +25,7 @@ def compare_probes(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
     delegation_collection = mongoDB['surveyResults']
     comparison_collection = mongoDB['humanToADMComparison']
+    comparison_collection.drop()
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["test"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
