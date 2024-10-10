@@ -6,11 +6,11 @@ from decouple import config
 MONGO_URL = config('MONGO_URL')
 
 # PROD TA1 outside AWS
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
+# ADEPT_URL = "https://darpaitm.caci.com/adept/"
 # ST_URL = "https://darpaitm.caci.com/soartech/" 
 
 #DEV
-# ADEPT_URL="http://localhost:8081/"
+ADEPT_URL="http://localhost:8081/"
 # ST_URL="http://localhost:8084/"
 
 
@@ -19,13 +19,13 @@ ADEPT_URL = "https://darpaitm.caci.com/adept/"
 # ST_URL="http://10.216.38.125:8084"
 
 
-def get_text_scenario_kdmas(mongoDB):
+def update_adept_text_adm_sessions(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
     text_scenario_to_update = text_scenario_collection.find({"evalNumber": 4})
-
     adm_collection = mongoDB["test"]
     adms_to_update = adm_collection.find({"evalNumber": 4})
 
+    # Add text sessions to Adept Server
     sessions_by_pid = {}
     for entry in text_scenario_to_update:
         scenario_id = entry.get('scenario_id')
@@ -65,9 +65,7 @@ def get_text_scenario_kdmas(mongoDB):
                 text_scenario_collection.update_one({'_id': data_id}, {'$set': updates})        
 
 
-#######################################
-            
-    
+    # Add ADM sessions to Adept Server
     for adm in adms_to_update:            
         # get new adm session
         probe_responses = []
@@ -82,9 +80,6 @@ def get_text_scenario_kdmas(mongoDB):
         if not skip_adm:
             adept_sid = update_adm_run(adm_collection, adm, probe_responses)
             print("ADM Session Added for : " + adept_sid)
-
-
-#######################################            
 
 def send_probes(probe_url, probes, sid, scenario):
     '''
@@ -128,8 +123,7 @@ def update_adm_run(collection, adm, probes):
 def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
-
-    get_text_scenario_kdmas(mongoDB)
+    update_adept_text_adm_sessions(mongoDB)
 
 
 if __name__ == "__main__":
