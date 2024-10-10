@@ -10,6 +10,7 @@ SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
 RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RECALCULATE_COMPARISON = True
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -838,7 +839,7 @@ class ProbeMatcher:
             self.logger.log(LogLevel.WARN, "Error getting session id. Maybe alignment hasn't run for file?")
             return
         # do not recalculate score if it's already done!
-        if not (json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL):
+        if RECALCULATE_COMPARISON or not (json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL):
             comparison = self.get_text_vr_comparison(vr_sid)
             if comparison is not None:
                 if 'score' not in comparison:
@@ -852,12 +853,10 @@ class ProbeMatcher:
                 json.dump(json_data, writable, indent=4)
                 writable.close()
 
-        if not (json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], None) is not None and len(json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], [])) != 0 and not RUN_ALL):
+        if RECALCULATE_COMPARISON or not (json_data.get('alignment').get('adms_vs_text', {}) is not None and len(json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], [])) != 0 and not RUN_ALL):
             comparison = self.get_adm_vr_comparisons(vr_sid)
             if comparison is not None:
-                if 'adms_vs_text' not in json_data['alignment']:
-                    json_data['alignment']['adms_vs_text'] = {}
-                json_data['alignment']['adms_vs_text'][ENV_MAP[self.environment]] = comparison
+                json_data['alignment']['adms_vs_text'] = comparison
                 writable = open(filename, 'w', encoding='utf-8')
                 json.dump(json_data, writable, indent=4)
                 writable.close()
