@@ -6,11 +6,11 @@ from decouple import config
 MONGO_URL = config('MONGO_URL')
 
 # PROD TA1 outside AWS
-# ADEPT_URL = "https://darpaitm.caci.com/adept/"
+ADEPT_URL = "https://darpaitm.caci.com/adept/"
 # ST_URL = "https://darpaitm.caci.com/soartech/" 
 
 #DEV
-ADEPT_URL="http://localhost:8081/"
+# ADEPT_URL="http://localhost:8081/"
 # ST_URL="http://localhost:8084/"
 
 
@@ -82,7 +82,6 @@ def get_text_scenario_kdmas(mongoDB):
         if not skip_adm:
             adept_sid = update_adm_run(adm_collection, adm, probe_responses)
             print("ADM Session Added for : " + adept_sid)
- 
 
 
 #######################################            
@@ -109,7 +108,6 @@ def send_probes(probe_url, probes, sid, scenario):
 def update_adm_run(collection, adm, probes):
     adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', "").strip()
     # send probes to server 
-
     for x in probes:
         requests.post(f'{ADEPT_URL}/api/v1/response', json={
             "response": {
