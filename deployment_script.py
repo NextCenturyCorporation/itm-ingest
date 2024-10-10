@@ -32,8 +32,8 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
-        compare_probes(mongoDB)
-        find_matching_probe_percentage(mongoDB)
+        #compare_probes(mongoDB)
+        #find_matching_probe_percentage(mongoDB)
         remove_duplicate_text_entries(mongoDB)
         update_db_version(mongoDB)
     else:

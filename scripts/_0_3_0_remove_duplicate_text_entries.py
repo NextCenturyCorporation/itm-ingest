@@ -27,15 +27,27 @@ def remove_duplicate_text_entries(mongo_db):
             grouped_results[participant_id] = []
         grouped_results[participant_id].append(result)
     
+    total_deleted = 0
     for participant_id, participant_results in grouped_results.items():
         ids_to_keep = remove_duplicates(participant_id, participant_results)
         
-        # Remove all documents for this participant that are not in ids_to_keep
         delete_query = {
             "participantID": participant_id,
             "evalNumber": 4,
             "_id": {"$nin": ids_to_keep}
         }
-        text_collection.delete_many(delete_query)
+        delete_result = text_collection.delete_many(delete_query)
+        total_deleted += delete_result.deleted_count
 
-    print("Duplicate removal complete.")
+    suzy_delete_result = text_collection.delete_many({"participantID": "suzy"})
+    total_deleted += suzy_delete_result.deleted_count
+
+    specific_delete_query = {
+        "participantID": "202409115",
+        "evalNumber": {"$ne": 4}
+    }
+
+    specific_delete_result = text_collection.delete_many(specific_delete_query)
+    total_deleted += specific_delete_result.deleted_count
+
+    print(f"Duplicate removal complete. Total documents deleted: {total_deleted}")
