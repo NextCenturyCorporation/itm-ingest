@@ -130,7 +130,6 @@ def update_adm_run(collection, adm, probes):
 def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
-    print("New db version, execute scripts")
 
     get_text_scenario_kdmas(mongoDB)
 
