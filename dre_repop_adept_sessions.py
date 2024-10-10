@@ -71,13 +71,18 @@ def get_text_scenario_kdmas(mongoDB):
     for adm in adms_to_update:            
         # get new adm session
         probe_responses = []
+        skip_adm = False
         for x in adm['history']:
             if x['command'] == 'Respond to TA1 Probe':
                 if not any(substring in x['parameters']['scenario_id'] for substring in ["vol", "qol"]):
                     probe_responses.append(x['parameters'])
-        adept_sid = update_adm_run(adm_collection, adm, probe_responses)
-
-        print("ADM Session Added for : " + adept_sid)
+                else:
+                    skip_adm = True
+                    break
+        if not skip_adm:
+            adept_sid = update_adm_run(adm_collection, adm, probe_responses)
+            print("ADM Session Added for : " + adept_sid)
+ 
 
 
 #######################################            
