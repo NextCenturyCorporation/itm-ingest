@@ -7,7 +7,7 @@ from decouple import config
 import utils.db_utils as db_utils
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
+RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = True
@@ -247,7 +247,11 @@ class ProbeMatcher:
             return
 
         str_time = self.json_data['actionList'][0]['timestamp']
-        self.timestamp = datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()*1000
+        try:
+            self.timestamp = datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()*1000
+        except:
+            self.logger.log(LogLevel.WARN, f"Could not convert {str_time} to timestamp. Please check that your json file is a valid format. Continuing anyways...")
+            self.timestamp = None
 
         pid = self.json_data['participantId']
         pid = pid if pid != '' else self.json_data['sessionId']
