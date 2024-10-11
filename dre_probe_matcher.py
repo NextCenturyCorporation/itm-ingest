@@ -8,6 +8,7 @@ from decouple import config
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -65,6 +66,24 @@ JUSTIFY_MAPPING = {
     }
 }
 
+ST_PROBES = {
+    "delegation": {
+        "qol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'qol-dre-train2-Probe-11'],
+        "qol-dre-2-eval": ['qol-dre-2-eval-Probe-2', 'qol-dre-2-eval-Probe-3', 'qol-dre-2-eval-Probe-6', 'qol-dre-2-eval-Probe-7', 'qol-dre-2-eval-Probe-10', 'qol-dre-2-eval-Probe-11'],
+        "qol-dre-3-eval": ['qol-dre-3-eval-Probe-2', 'qol-dre-3-eval-Probe-3', 'qol-dre-3-eval-Probe-6', 'qol-dre-3-eval-Probe-7', 'qol-dre-3-eval-Probe-10', 'qol-dre-3-eval-Probe-11'],
+        "vol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'vol-dre-train2-Probe-11'],
+        "vol-dre-2-eval": ['vol-dre-2-eval-Probe-2', 'vol-dre-2-eval-Probe-3', 'vol-dre-2-eval-Probe-6', 'vol-dre-2-eval-Probe-7', 'vol-dre-2-eval-Probe-10', 'vol-dre-2-eval-Probe-11'],
+        "vol-dre-3-eval": ['vol-dre-3-eval-Probe-2', 'vol-dre-3-eval-Probe-3', 'vol-dre-3-eval-Probe-6', 'vol-dre-3-eval-Probe-7', 'vol-dre-3-eval-Probe-10', 'vol-dre-3-eval-Probe-11']
+    },
+    "all": {
+        "qol-dre-1-eval": ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', 'qol-dre-train2-Probe-11', '12'],
+        "qol-dre-2-eval": ['qol-dre-2-eval-Probe-1', 'qol-dre-2-eval-Probe-2', 'qol-dre-2-eval-Probe-3', 'qol-dre-2-eval-Probe-4', 'qol-dre-2-eval-Probe-5', 'qol-dre-2-eval-Probe-6', 'qol-dre-2-eval-Probe-7', 'qol-dre-2-eval-Probe-8', 'qol-dre-2-eval-Probe-9', 'qol-dre-2-eval-Probe-10', 'qol-dre-2-eval-Probe-11', 'qol-dre-2-eval-Probe-12'],
+        "qol-dre-3-eval": ['qol-dre-3-eval-Probe-1', 'qol-dre-3-eval-Probe-2', 'qol-dre-3-eval-Probe-3', 'qol-dre-3-eval-Probe-4', 'qol-dre-3-eval-Probe-5', 'qol-dre-3-eval-Probe-6', 'qol-dre-3-eval-Probe-7', 'qol-dre-3-eval-Probe-8', 'qol-dre-3-eval-Probe-9', 'qol-dre-3-eval-Probe-10', 'qol-dre-3-eval-Probe-11', 'qol-dre-3-eval-Probe-12'],
+        "vol-dre-1-eval": ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', 'vol-dre-train2-Probe-11', 'vol-dre-train2-Probe-12'],
+        "vol-dre-2-eval": ['vol-dre-2-eval-Probe-1', 'vol-dre-2-eval-Probe-2', 'vol-dre-2-eval-Probe-3', 'vol-dre-2-eval-Probe-4', 'vol-dre-2-eval-Probe-5', 'vol-dre-2-eval-Probe-6', 'vol-dre-2-eval-Probe-7', 'vol-dre-2-eval-Probe-8', 'vol-dre-2-eval-Probe-9', 'vol-dre-2-eval-Probe-10', 'vol-dre-2-eval-Probe-11', 'vol-dre-2-eval-Probe-12'],
+        "vol-dre-3-eval": ['vol-dre-3-eval-Probe-1', 'vol-dre-3-eval-Probe-2', 'vol-dre-3-eval-Probe-3', 'vol-dre-3-eval-Probe-4', 'vol-dre-3-eval-Probe-5', 'vol-dre-3-eval-Probe-6', 'vol-dre-3-eval-Probe-7', 'vol-dre-3-eval-Probe-8', 'vol-dre-3-eval-Probe-9', 'vol-dre-3-eval-Probe-10', 'vol-dre-3-eval-Probe-11', 'vol-dre-3-eval-Probe-12']
+    }
+}
 
 VITALS_ACTIONS = ["SpO2", "Breathing", "Pulse"]
 
@@ -160,9 +179,19 @@ DRAGGING_MAP = {
     },
 }
 
+ENV_MAP = {
+    "dryrun-soartech-eval-qol1.yaml": "qol-dre-1-eval",
+    "dryrun-soartech-eval-qol2.yaml": "qol-dre-2-eval",
+    "dryrun-soartech-eval-qol3.yaml": "qol-dre-3-eval",
+    "dryrun-soartech-eval-vol1.yaml": "vol-dre-1-eval",
+    "dryrun-soartech-eval-vol2.yaml": "vol-dre-2-eval",
+    "dryrun-soartech-eval-vol3.yaml": "vol-dre-3-eval",
+}
+
 
 mongo_collection_matches = None
 mongo_collection_raw = None
+text_scenario_collection = None
 ENVIRONMENTS_BY_PID = {}
 
 
@@ -180,6 +209,7 @@ class ProbeMatcher:
     environment = ''
     csv_file = None
     timestamp = None
+    analyze = True
 
 
     def __init__(self, json_path, adept_sid, soartech_sid):
@@ -199,7 +229,11 @@ class ProbeMatcher:
             return
 
         str_time = self.json_data['actionList'][0]['timestamp']
-        self.timestamp = datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()*1000
+        try:
+            self.timestamp = datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()*1000
+        except:
+            self.logger.log(LogLevel.WARN, f"Could not convert {str_time} to timestamp. Please check that your json file is a valid format. Continuing anyways...")
+            self.timestamp = None
 
         pid = self.json_data['participantId']
         pid = pid if pid != '' else self.json_data['sessionId']
@@ -209,6 +243,7 @@ class ProbeMatcher:
             self.logger.log(LogLevel.WARN, "Environment not defined. Unable to process data")
             return
         self.environment = env
+        print(self.environment)
         
         if pid in ENVIRONMENTS_BY_PID:
             ENVIRONMENTS_BY_PID[pid].append(self.environment)
@@ -223,12 +258,16 @@ class ProbeMatcher:
             pass
         elif 'adept' not in self.environment:
             filename = os.path.join('output', env.split('.yaml')[0] + f'_soartech_{pid}.json')
-            if not self.should_file_run(filename): 
+            if not self.should_file_run(filename):
+                if RUN_COMPARISON:
+                    self.output_soartech = open(filename, 'r', encoding='utf-8')
                 return
             self.output_soartech = open(filename, 'w', encoding='utf-8')
         else:
             filename = os.path.join('output', env.split('.yaml')[0] + f'_adept_{pid}.json')
             if not self.should_file_run(filename): 
+                if RUN_COMPARISON:
+                    self.output_adept = open(filename, 'r', encoding='utf-8')
                 return
             self.output_adept = open(filename, 'w', encoding='utf-8')
         # get soartech/adept yaml data
@@ -280,11 +319,11 @@ class ProbeMatcher:
             if RUN_ALIGNMENT:
                 f = open(filename, 'r', encoding='utf-8')
                 data = json.load(f)
-                if len(list(data.get('alignment', {}).keys())) > 1:
+                if len(list(data.get('alignment', {}).keys())) > 1 and 'sid' in data.get('alignment', {}):
                     run_this_file = False
         if not run_this_file:
             self.logger.log(LogLevel.CRITICAL_INFO, "File has already been analyzed, skipping analysis...")
-            self.environment = ''
+            self.analyze = False
         return run_this_file
             
 
@@ -307,7 +346,6 @@ class ProbeMatcher:
 
     
     def match_probes(self):
-        print(self.environment)
         if 'qol' in self.environment or 'vol' in self.environment:
             self.match_qol_vol_probes()
         elif 'adept' in self.environment:
@@ -757,12 +795,100 @@ class ProbeMatcher:
                     "session_id": sid
                 })
 
-
     def get_session_alignment(self, align_url):
         '''
         Returns the session alignment
         '''
         return requests.get(align_url).json()
+    
+
+    def run_comparison(self):
+        '''
+        Runs VR vs Text alignment comparison and VR vs ADM alignment comparison for 
+        the current sim scenario. Adds the result to the output jsons and to mongo
+        '''
+        json_data = None
+        f = None
+        if 'qol' in self.environment or 'vol' in self.environment:
+            f = self.output_soartech
+        elif 'adept' in self.environment:
+            f = self.output_adept
+        else:
+            return
+        filename = f.name
+        f.close()
+        readable = open(filename, 'r', encoding='utf-8')
+        json_data = json.load(readable)
+        readable.close()
+        # do not recalculate score if it's already done!
+        if json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL:
+            if SEND_TO_MONGO:
+                # make sure mongo gets vr_vs_text if it doesn't have it
+                mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
+                try:
+                    mongo_collection_matches.update_one({'_id': mid}, {'$set': { 'data.alignment.vr_vs_text': json_data.get('alignment').get('vr_vs_text')}})
+                except:
+                    self.logger.log(LogLevel.WARN, f"No mongo document found with id {mid}! Cannot update document with comparison scores.")
+            return
+        vr_sid = json_data.get('alignment', {}).get('sid')
+        if vr_sid is None:
+            self.logger.log(LogLevel.WARN, "Error getting session id. Maybe alignment hasn't run for file?")
+            return
+        comparison = self.get_text_vr_comparison(vr_sid)
+        if comparison is not None:
+            if 'score' not in comparison:
+                if 'adept' in self.environment:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score. You may have to rerun alignment to get a new adept session id.")
+                else:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score. Perhaps not all probes have been completed in the sim?")
+                return
+            json_data['alignment']['vr_vs_text'] = comparison['score']
+            writable = open(filename, 'w', encoding='utf-8')
+            json.dump(json_data, writable, indent=4)
+            writable.close()
+            if SEND_TO_MONGO:
+                mid = self.participantId + ('_st_' if 'qol' in self.environment or 'vol' in self.environment else '_ad_')  + self.environment.split('.yaml')[0]
+                try:
+                    mongo_collection_matches.update_one({'_id': mid}, {'$set': { 'data.alignment': json_data.get('alignment')}})
+                except:
+                    self.logger.log(LogLevel.WARN, f"No mongo document found with id {mid}! Cannot update document with comparison scores.")
+
+
+    def get_text_vr_comparison(self, vr_sid):
+        if 'qol' in self.environment or 'vol' in self.environment:
+            vr_scenario = ENV_MAP[self.environment]
+            # VR session vs ADM (ST)
+            
+            # VR session vs text scenario (ST)
+            text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
+            if text_response is None:
+                self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} {vr_scenario.split('-')[0]} scenario")
+                return None
+            text_sid = text_response['serverSessionId']
+            text_scenario = text_response['scenario_id']
+            
+            # send all probes to ST server for VR vs text
+            query_param = f"session_1={vr_sid}&session_2={text_sid}"
+            for probe_id in ST_PROBES['all'][vr_scenario]:
+                if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][vr_scenario][10], ST_PROBES['all'][vr_scenario][11]]:
+                    continue
+                query_param += f"&session1_probes={probe_id}"
+            for probe_id in ST_PROBES['all'][text_scenario]:
+                if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][text_scenario][10], ST_PROBES['all'][text_scenario][11]]:
+                    continue
+                query_param += f"&session2_probes={probe_id}"
+            res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+            return res
+        elif 'adept' in self.environment:
+            # get text session id
+            text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval"]}})
+            if text_response is None:
+                self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} adept scenario")
+                return None
+            text_sid = text_response['combinedSessionId']
+            # send text and vr session ids to Adept server
+            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}').json()
+            return res
 
 
 if __name__ == '__main__':
@@ -780,6 +906,7 @@ if __name__ == '__main__':
         # create new collection for simulation runs
         mongo_collection_matches = db['humanSimulator']
         mongo_collection_raw = db['humanSimulatorRaw']
+        text_scenario_collection = db['userScenarioResults']
 
     # go through the input directory and find all sub directories
     sub_dirs = [name for name in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, name))]
@@ -796,8 +923,11 @@ if __name__ == '__main__':
                         soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
                         matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
                         # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
-                        if matcher.environment != '':
+                        if matcher.environment != '' and matcher.analyze:
                             matcher.match_probes()
+                        if matcher.environment != '' and RUN_COMPARISON:
+                            matcher.run_comparison()
+                        matcher.__del__()
                     except Exception as e:
                         print(e)
                 elif '.html' in f or '.jpg' in f:
