@@ -7,8 +7,8 @@ from decouple import config
 import utils.db_utils as db_utils
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
-RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
+RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = True
 EVAL_NUM = 4
@@ -842,13 +842,7 @@ class ProbeMatcher:
         if RECALCULATE_COMPARISON or not (json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL):
             comparison = self.get_text_vr_comparison(vr_sid)
             if comparison is not None:
-                if 'score' not in comparison:
-                    if 'adept' in self.environment:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
-                    else:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
-                    return
-                json_data['alignment']['vr_vs_text'] = comparison['score']
+                json_data['alignment']['vr_vs_text'] = comparison
                 writable = open(filename, 'w', encoding='utf-8')
                 json.dump(json_data, writable, indent=4)
                 writable.close()
@@ -869,10 +863,10 @@ class ProbeMatcher:
 
 
     def get_text_vr_comparison(self, vr_sid):
+        res = None
         if 'qol' in self.environment or 'vol' in self.environment:
             vr_scenario = ENV_MAP[self.environment]
-            # VR session vs ADM (ST)
-            
+
             # VR session vs text scenario (ST)
             text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
             if text_response is None:
@@ -892,7 +886,10 @@ class ProbeMatcher:
                     continue
                 query_param += f"&session2_probes={probe_id}"
             res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-            return res
+            if res is None or 'score' not in res:
+                self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                return
+            res = res['score']
         elif 'adept' in self.environment:
             # get text session id
             text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval"]}})
@@ -901,8 +898,20 @@ class ProbeMatcher:
                 return None
             text_sid = text_response['combinedSessionId']
             # send text and vr session ids to Adept server
-            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}').json()
-            return res
+            res_mj = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Moral judgement').json()
+            res_io = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Ingroup Bias').json()
+            res = {'MJ': None, 'IO': None}
+            if res_mj is not None:
+                if 'score' not in res_mj:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score (adept, MJ). You may have to rerun alignment to get a new adept session id.")
+                else:
+                    res['MJ'] = res_mj['score']
+            if res_io is not None:
+                if 'score' not in res_io:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score (adept, IO). You may have to rerun alignment to get a new adept session id.")
+                else:
+                    res['IO'] = res_io['score']
+        return res
 
 
     def get_adm_vr_comparisons(self, vr_sid):
@@ -969,6 +978,7 @@ class ProbeMatcher:
                             'sim_scenario': vr_scenario
                         })
         return results
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i PATH')
