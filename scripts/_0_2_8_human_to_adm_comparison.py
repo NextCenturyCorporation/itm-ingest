@@ -25,6 +25,7 @@ def compare_probes(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
     delegation_collection = mongoDB['surveyResults']
     comparison_collection = mongoDB['humanToADMComparison']
+    comparison_collection.drop()
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["test"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
@@ -45,13 +46,14 @@ def compare_probes(mongoDB):
             print(f"No survey found for {pid}")
             continue
         survey = survey[-1] # get last survey entry for this pid
+        # get human to adm comparisons from delegation survey adms
         for page in survey['results']:
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 # handle ST scenario, only compare QOL vs QOL and VOL vs VOL
                 if ('qol' in scenario_id and 'qol' in page_scenario) or ('vol' in scenario_id and 'vol' in page_scenario):
                     # find the adm session id that matches the medic shown in the delegation survey
-                    adm = find_adm(medic_collection, adm_collection, page, page_scenario, survey)
+                    adm = find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
                         continue
                     adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
@@ -80,10 +82,10 @@ def compare_probes(mongoDB):
                         send_document_to_mongo(comparison_collection, document)
                         
                     else:
-                        print('Error:', res)
+                        print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
 
                 elif ('DryRunEval' in scenario_id and 'DryRunEval' in page_scenario):
-                    adm = find_adm(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
+                    adm = find_adm_from_medic(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
@@ -114,6 +116,152 @@ def compare_probes(mongoDB):
                             'evalNumber': 4
                         }
                         send_document_to_mongo(comparison_collection, document)
+                    else:
+                        print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
+
+
+        # get human to adm comparisons from most/least aligned based on text scenario results
+        for target in entry['mostLeastAligned']:
+            attribute = target['target']
+            most = target['response'][0]
+            least = target['response'][len(target['response'])-1]
+            session_id = session_id.replace('"', '').strip()
+            # find the adm at the text-scenario scenario at the aligned or misaligned target
+            edited_target = most.get('target', list(most.keys())[0])
+            if 'Ingroup' in attribute or 'Moral' in attribute:
+                edited_target = edited_target[:-1] + '.' + edited_target[-1]
+            
+            ### GET TAD ALIGNED AT MOST ALIGNED TARGET
+            tad_most_adm = find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            if tad_most_adm is not None:
+                # get comparison score
+                adm_session_id = tad_most_adm['history'][-1]['parameters']['session_id']
+                res = None
+                if 'Ingroup' in attribute or 'Moral' in attribute:
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                else:
+                    # create ST query param
+                    query_param = f"session_1={session_id}&session_2={adm_session_id}"
+                    for probe_id in ST_PROBES[scenario_id]:
+                        query_param += f"&session1_probes={probe_id}"
+                        query_param += f"&session2_probes={probe_id}"
+                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                if res is not None and 'score' in res:
+                    document = {
+                        'pid': pid,
+                        'adm_type': 'most aligned',
+                        'score': res['score'],
+                        'text_scenario': scenario_id,
+                        'adm_author': 'TAD',
+                        'attribute': attribute,
+                        'text_session_id': session_id.replace('"', "").strip(),
+                        'adm_session_id': adm_session_id,
+                        'adm_alignment_target': most.get('target', list(most.keys())[0]),
+                        'evalNumber': 4
+                    }
+                    send_document_to_mongo(comparison_collection, document)
+                else:
+                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                
+            
+            ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
+            kit_most_adm = find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            if kit_most_adm is not None:
+                adm_session_id = kit_most_adm['history'][-1]['parameters']['session_id']
+                res = None
+                if 'Ingroup' in attribute or 'Moral' in attribute:
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                else:
+                    # create ST query param
+                    query_param = f"session_1={session_id}&session_2={adm_session_id}"
+                    for probe_id in ST_PROBES[scenario_id]:
+                        query_param += f"&session1_probes={probe_id}"
+                        query_param += f"&session2_probes={probe_id}"
+                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                if res is not None and 'score' in res:
+                    document = {
+                        'pid': pid,
+                        'adm_type': 'most aligned',
+                        'score': res['score'],
+                        'text_scenario': scenario_id,
+                        'adm_author': 'kitware',
+                        'attribute': attribute,
+                        'text_session_id': session_id.replace('"', "").strip(),
+                        'adm_session_id': adm_session_id,
+                        'adm_alignment_target': most.get('target', list(most.keys())[0]),
+                        'evalNumber': 4
+                    }
+                    send_document_to_mongo(comparison_collection, document)
+                else:
+                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                
+
+            edited_target = least.get('target', list(least.keys())[0])
+            if 'Ingroup' in attribute or 'Moral' in attribute:
+                edited_target = edited_target[:-1] + '.' + edited_target[-1]
+            
+            ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
+            tad_least_adm = find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            if tad_least_adm is not None:
+                adm_session_id = tad_least_adm['history'][-1]['parameters']['session_id']
+                res = None
+                if 'Ingroup' in attribute or 'Moral' in attribute:
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                else:
+                    # create ST query param
+                    query_param = f"session_1={session_id}&session_2={adm_session_id}"
+                    for probe_id in ST_PROBES[scenario_id]:
+                        query_param += f"&session1_probes={probe_id}"
+                        query_param += f"&session2_probes={probe_id}"
+                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                if res is not None and 'score' in res:
+                    document = {
+                        'pid': pid,
+                        'adm_type': 'least aligned',
+                        'score': res['score'],
+                        'text_scenario': scenario_id,
+                        'adm_author': 'TAD',
+                        'attribute': attribute,
+                        'text_session_id': session_id.replace('"', "").strip(),
+                        'adm_session_id': adm_session_id,
+                        'adm_alignment_target': least.get('target', list(least.keys())[0]),
+                        'evalNumber': 4
+                    }
+                    send_document_to_mongo(comparison_collection, document)
+                else:
+                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+
+            ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
+            kit_least_adm = find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            if kit_least_adm is not None:
+                adm_session_id = kit_least_adm['history'][-1]['parameters']['session_id']
+                res = None
+                if 'Ingroup' in attribute or 'Moral' in attribute:
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                else:
+                    # create ST query param
+                    query_param = f"session_1={session_id}&session_2={adm_session_id}"
+                    for probe_id in ST_PROBES[scenario_id]:
+                        query_param += f"&session1_probes={probe_id}"
+                        query_param += f"&session2_probes={probe_id}"
+                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                if res is not None and 'score' in res:
+                    document = {
+                        'pid': pid,
+                        'adm_type': 'least aligned',
+                        'score': res['score'],
+                        'text_scenario': scenario_id,
+                        'adm_author': 'kitware',
+                        'attribute': attribute,
+                        'text_session_id': session_id.replace('"', "").strip(),
+                        'adm_session_id': adm_session_id,
+                        'adm_alignment_target': least.get('target', list(least.keys())[0]),
+                        'evalNumber': 4
+                    }
+                    send_document_to_mongo(comparison_collection, document)
+                else:
+                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                
 
     print("Human to ADM comparison values added to database.")
 
@@ -138,7 +286,7 @@ def mini_adm_run(collection, probes, target, adm_name):
     return doc
 
 
-def find_adm(medic_collection, adm_collection, page, page_scenario, survey):
+def find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey):
     adm_session = medic_collection.find_one({'evalNumber': 4, 'name': page})['admSession']
     adms = adm_collection.find({'evalNumber': 4, 'history.0.parameters.session_id': adm_session, 'history.0.response.id': page_scenario, 'history.0.parameters.adm_name': survey['results'][page]['admName']})
     adm = None
@@ -152,9 +300,26 @@ def find_adm(medic_collection, adm_collection, page, page_scenario, survey):
     return adm
 
 
+def find_most_least_adm(adm_collection, scenario, target, adm_name):
+    adms = adm_collection.find({'evalNumber': 4,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
+    adm = None
+    for x in adms:
+        if x['history'][len(x['history'])-1]['parameters']['target_id'] == target:
+            adm = x
+            break
+    if adm is None:
+        print(f"No matching adm found for scenario {scenario} with adm {adm_name} at target {target}")
+        return None
+    return adm
+
+
 def send_document_to_mongo(comparison_collection, document):
     # do not send duplicate documents, make sure if one already exists, we just replace it
-    found_docs = comparison_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'], 'adm_scenario': document['adm_scenario'],
+    if 'adm_scenario' in document:
+        found_docs = comparison_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'], 'adm_scenario': document['adm_scenario'],
+                                                'text_session_id': document['text_session_id'], 'adm_session_id': document['adm_session_id'], 'adm_author': document['adm_author'], 'adm_alignment_target': document['adm_alignment_target']})
+    else:
+        found_docs = comparison_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'],
                                                 'text_session_id': document['text_session_id'], 'adm_session_id': document['adm_session_id'], 'adm_author': document['adm_author'], 'adm_alignment_target': document['adm_alignment_target']})
     doc_found = False
     obj_id = ''
