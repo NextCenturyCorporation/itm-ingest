@@ -1,7 +1,9 @@
 from pymongo import MongoClient
 from decouple import config
+from scripts._0_2_6_add_text_kdmas import get_text_scenario_kdmas
 from scripts._0_2_8_human_to_adm_comparison import compare_probes
-from scripts._0_2_9_percent_matching_probes import find_matching_probe_percentage
+from scripts._0_2_9_run_group_targets import run_group_targets
+from scripts._0_3_0_percent_matching_probes import find_matching_probe_percentage
 from scripts._0_3_1_remove_duplicate_text_entries import remove_duplicate_text_entries
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
@@ -32,7 +34,9 @@ def main():
     mongoDB = client['dashboard']
     if(check_version(mongoDB)):
         print("New db version, execute scripts")
+        get_text_scenario_kdmas(mongoDB)
         compare_probes(mongoDB)
+        run_group_targets(mongoDB)
         find_matching_probe_percentage(mongoDB)
         remove_duplicate_text_entries(mongoDB)
         update_db_version(mongoDB)
