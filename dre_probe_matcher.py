@@ -8,9 +8,11 @@ import utils.db_utils as db_utils
 from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
+RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
-RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RECALCULATE_COMPARISON = True
+RERUN_ADEPT_SESSIONS = True # rerun adept sessions only to get new session ids
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -247,7 +249,11 @@ class ProbeMatcher:
             return
 
         str_time = self.json_data['actionList'][0]['timestamp']
-        self.timestamp = datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()*1000
+        try:
+            self.timestamp = datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()*1000
+        except:
+            self.logger.log(LogLevel.WARN, f"Could not convert {str_time} to timestamp. Please check that your json file is a valid format. Continuing anyways...")
+            self.timestamp = None
 
         pid = self.json_data['participantId']
         pid = pid if pid != '' else self.json_data['sessionId']
@@ -328,6 +334,8 @@ class ProbeMatcher:
         '''
         run_this_file = True
         if not RUN_ALL and os.path.exists(filename):
+            if RERUN_ADEPT_SESSIONS and 'adept' in self.environment:
+                return run_this_file
             if not RUN_ALIGNMENT:
                 run_this_file = False
             if RUN_ALIGNMENT:
@@ -592,10 +600,71 @@ class ProbeMatcher:
                         'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
                         'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary']
                 self.send_probes(f'{ST_URL}/api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
+                # send fake probes for 3 entries that are missing data. These probes will not be used to calculate alignment!
+                if self.participantId == '202409111' and 'vol' in self.environment:
+                    self.send_probes(f'{ST_URL}/api/v1/response', 
+                        [
+                            { 
+                                "scene_id": 'id-10', 
+                                "probe_id": 'vol-dre-train2-Probe-11', 
+                                "found_match": False, 
+                                "probe": {'probe_id': 'vol-dre-train2-Probe-11', 'choice': 'choice-1'}, 
+                                "user_action": None
+                            }, 
+                            { 
+                                "scene_id": 'id-11',
+                                "probe_id": 'vol-dre-train2-Probe-12', 
+                                "found_match": False, 
+                                "probe": {'probe_id': 'vol-dre-train2-Probe-12', 'choice': 'choice-1'}, 
+                                "user_action": None
+                            }
+                        ], self.soartech_sid, self.soartech_yaml['id'])
+                if self.participantId == '202409112' and 'qol' in self.environment:
+                    self.send_probes(f'{ST_URL}/api/v1/response', 
+                        [
+                            { 
+                                "scene_id": 'id-11',
+                                "probe_id": '12', 
+                                "found_match": False, 
+                                "probe": {'probe_id': '12', 'choice': 'choice-1'}, 
+                                "user_action": None
+                            }
+                        ], self.soartech_sid, self.soartech_yaml['id'])                
+                if self.participantId == '202409112' and 'vol' in self.environment:
+                    self.send_probes(f'{ST_URL}/api/v1/response', 
+                        [
+                            { 
+                                "scene_id": 'id-6',
+                                "probe_id": '4.7', 
+                                "found_match": False, 
+                                "probe": {'probe_id': '4.7', 'choice': 'choice-0'}, 
+                                "user_action": None
+                            }
+                        ], self.soartech_sid, self.soartech_yaml['id'])  
                 for target in targets:
                     if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
                         continue
-                    st_align[target] = self.get_session_alignment(f'{ST_URL}/api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
+                    # do not include fake probes (see above) in alignment calculation
+                    if self.participantId == '202409111' and 'vol' in self.environment:
+                        # don't include 11 and 12
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}&session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6&session1_probes=4.7&session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&session2_probes=4.5&session2_probes=4.6&session2_probes=4.7&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10')
+                    elif self.participantId == '202409112' and 'qol' in self.environment:
+                        # don't include 12
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}\
+                                                                      &session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6&\
+                                                                      session1_probes=4.7&session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session1_probes=qol-dre-train2-Probe-11&\
+                                                                      session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&session2_probes=4.5&session2_probes=4.6&\
+                                                                      session2_probes=4.7&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10&session2_probes=qol-dre-train2-Probe-11')
+                    elif self.participantId == '202409112' and 'vol' in self.environment:
+                        # don't include 4.7
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}\
+                                                                      &session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6\
+                                                                      &session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session1_probes=vol-dre-train2-Probe-11&\
+                                                                      session1_probes=vol-dre-train2-Probe-12&session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&\
+                                                                      session2_probes=4.5&session2_probes=4.6&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10&\
+                                                                      session2_probes=vol-dre-train2-Probe-11&session2_probes=vol-dre-train2-Probe-12')
+                    else:
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}/api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
                 st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}/api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
                 st_align['sid'] = self.soartech_sid
             except:
@@ -941,26 +1010,19 @@ class ProbeMatcher:
             self.logger.log(LogLevel.WARN, "Error getting session id. Maybe alignment hasn't run for file?")
             return
         # do not recalculate score if it's already done!
-        if not (json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL):
+        if RECALCULATE_COMPARISON or not (json_data.get('alignment').get('vr_vs_text', None) is not None and not RUN_ALL):
             comparison = self.get_text_vr_comparison(vr_sid)
             if comparison is not None:
-                if 'score' not in comparison:
-                    if 'adept' in self.environment:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
-                    else:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
-                    return
-                json_data['alignment']['vr_vs_text'] = comparison['score']
+                json_data['alignment']['vr_vs_text'] = comparison
                 writable = open(filename, 'w', encoding='utf-8')
                 json.dump(json_data, writable, indent=4)
                 writable.close()
 
-        if not (json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], None) is not None and len(json_data.get('alignment').get('adms_vs_text', {}).get(ENV_MAP[self.environment], [])) != 0 and not RUN_ALL):
+        adms_vs_text = json_data.get('alignment').get('adms_vs_text', [])
+        if RECALCULATE_COMPARISON or not (adms_vs_text is not None and len(adms_vs_text) > 0 and not RUN_ALL):
             comparison = self.get_adm_vr_comparisons(vr_sid)
             if comparison is not None:
-                if 'adms_vs_text' not in json_data['alignment']:
-                    json_data['alignment']['adms_vs_text'] = {}
-                json_data['alignment']['adms_vs_text'][ENV_MAP[self.environment]] = comparison
+                json_data['alignment']['adms_vs_text'] = comparison
                 writable = open(filename, 'w', encoding='utf-8')
                 json.dump(json_data, writable, indent=4)
                 writable.close()
@@ -973,10 +1035,10 @@ class ProbeMatcher:
 
 
     def get_text_vr_comparison(self, vr_sid):
+        res = None
         if 'qol' in self.environment or 'vol' in self.environment:
             vr_scenario = ENV_MAP[self.environment]
-            # VR session vs ADM (ST)
-            
+
             # VR session vs text scenario (ST)
             text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
             if text_response is None:
@@ -990,13 +1052,24 @@ class ProbeMatcher:
             for probe_id in ST_PROBES['all'][vr_scenario]:
                 if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][vr_scenario][10], ST_PROBES['all'][vr_scenario][11]]:
                     continue
+                if 'qol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][vr_scenario][11]]:
+                    continue
+                if 'vol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][vr_scenario][6]]:
+                    continue
                 query_param += f"&session1_probes={probe_id}"
             for probe_id in ST_PROBES['all'][text_scenario]:
                 if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][text_scenario][10], ST_PROBES['all'][text_scenario][11]]:
                     continue
+                if 'qol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][text_scenario][11]]:
+                    continue
+                if 'vol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][text_scenario][6]]:
+                    continue
                 query_param += f"&session2_probes={probe_id}"
             res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-            return res
+            if res is None or 'score' not in res:
+                self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                return
+            res = res['score']
         elif 'adept' in self.environment:
             # get text session id
             text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval"]}})
@@ -1005,8 +1078,20 @@ class ProbeMatcher:
                 return None
             text_sid = text_response['combinedSessionId']
             # send text and vr session ids to Adept server
-            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}').json()
-            return res
+            res_mj = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Moral%20judgement').json()
+            res_io = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Ingroup%20Bias').json()
+            res = {'MJ': None, 'IO': None}
+            if res_mj is not None:
+                if 'score' not in res_mj:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score (adept, MJ). You may have to rerun alignment to get a new adept session id.")
+                else:
+                    res['MJ'] = res_mj['score']
+            if res_io is not None:
+                if 'score' not in res_io:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score (adept, IO). You may have to rerun alignment to get a new adept session id.")
+                else:
+                    res['IO'] = res_io['score']
+        return res
 
 
     def get_adm_vr_comparisons(self, vr_sid):
@@ -1027,8 +1112,20 @@ class ProbeMatcher:
                     # create ST query param
                     query_param = f"session_1={vr_sid}&session_2={adm_session}"
                     for probe_id in ST_PROBES['delegation'][vr_scenario]:
+                        if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][vr_scenario][10], ST_PROBES['all'][vr_scenario][11]]:
+                            continue
+                        if 'qol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][vr_scenario][11]]:
+                            continue
+                        if 'vol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][vr_scenario][6]]:
+                            continue
                         query_param += f"&session1_probes={probe_id}"
                     for probe_id in ST_PROBES['delegation'][page_scenario]:
+                        if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][page_scenario][10], ST_PROBES['all'][page_scenario][11]]:
+                            continue
+                        if 'qol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][page_scenario][11]]:
+                            continue
+                        if 'vol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][page_scenario][6]]:
+                            continue
                         query_param += f"&session2_probes={probe_id}"
                     # get comparison score
                     res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
@@ -1106,7 +1203,7 @@ if __name__ == '__main__':
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
                     try:
-                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
+                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', '').strip()
                         soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
                         matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
                         # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
