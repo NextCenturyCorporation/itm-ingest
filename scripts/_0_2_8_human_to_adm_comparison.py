@@ -30,6 +30,14 @@ def compare_probes(mongoDB):
     adm_collection = mongoDB["test"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
 
+
+    # gettting wrong sessions pulled unless:
+    # db.humanToADMComparison.deleteMany()
+    # db.humanToADMComparison.deleteMany({"text_scenario" : {$regex : "DryRunEval"}});
+    del_adm_runs_collection.drop()
+    comparison_collection.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}})
+
+
     data_to_use = text_scenario_collection.find(
         {"evalNumber": 4}
     )
