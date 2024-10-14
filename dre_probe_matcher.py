@@ -10,7 +10,8 @@ SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
-RECALCULATE_COMPARISON = False
+RECALCULATE_COMPARISON = True
+RERUN_ADEPT_SESSIONS = True # rerun adept sessions only to get new session ids
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -332,6 +333,8 @@ class ProbeMatcher:
         '''
         run_this_file = True
         if not RUN_ALL and os.path.exists(filename):
+            if RERUN_ADEPT_SESSIONS and 'adept' in self.environment:
+                return run_this_file
             if not RUN_ALIGNMENT:
                 run_this_file = False
             if RUN_ALIGNMENT:
@@ -1099,7 +1102,7 @@ if __name__ == '__main__':
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
                     try:
-                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text
+                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', '').strip()
                         soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
                         matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
                         # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
