@@ -1,7 +1,7 @@
 import requests
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL="http://10.216.38.101:8080/"
+ST_URL="http://10.216.38.125:8084/"
 
 def get_text_scenario_kdmas(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']

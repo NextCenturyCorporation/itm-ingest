@@ -7,13 +7,14 @@ from decouple import config
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
-RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
+RECALCULATE_COMPARISON = True
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/" # config("ADEPT_URL")
-ST_URL = "https://darpaitm.caci.com/soartech/" # config("ST_URL")
+ADEPT_URL="http://10.216.38.101:8080/"
+ST_URL="http://10.216.38.125:8084"
 
 SCENE_MAP = {
     "qol-dre-1-eval Narrative": "dryrun-soartech-eval-qol1.yaml",
@@ -877,7 +878,7 @@ class ProbeMatcher:
                 if 'vol' in self.environment and self.participantId == '202409111' and probe_id in [ST_PROBES['all'][text_scenario][10], ST_PROBES['all'][text_scenario][11]]:
                     continue
                 query_param += f"&session2_probes={probe_id}"
-            res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+            res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
             return res
         elif 'adept' in self.environment:
             # get text session id

@@ -1,7 +1,7 @@
 import requests
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL="http://10.216.38.101:8080/"
+ST_URL="http://10.216.38.125:8084/"
 
 ST_PROBES = {
     "qol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'qol-dre-train2-Probe-11'],
@@ -280,7 +280,7 @@ def mini_adm_run(collection, probes, target, adm_name):
             "session_id": adept_sid
         })
         scenario = x['scenario_id']
-    alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
+    alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': 4}
     collection.insert_one(doc)
     return doc

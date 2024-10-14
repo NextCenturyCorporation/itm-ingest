@@ -1,7 +1,7 @@
 import requests
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL="http://10.216.38.101:8080/"
+ST_URL="http://10.216.38.125:8084/"
 
 GROUP_TARGETS = {
     '20249204': ['ADEPT-DryRun-Ingroup Bias-Group-Low', 'ADEPT-DryRun-Moral judgement-Group-Low', 'qol-group-target-dre-2', 'vol-group-target-dre-2'],
@@ -40,6 +40,7 @@ def run_group_targets(mongoDB):
     for entry in data_to_update:
         scenario_id = entry.get('scenario_id')
         session_id = entry.get('combinedSessionId', entry.get('serverSessionId'))
+        print("sessionid: " + session_id)
         data_id = entry.get('_id')
         pid = entry.get('participantID')
         group_targets = {}
@@ -47,12 +48,13 @@ def run_group_targets(mongoDB):
         if 'qol' in scenario_id or 'vol' in scenario_id:
             for x in GROUP_TARGETS.get(pid, []):
                 if ('qol' in x and 'qol' in scenario_id) or ('vol' in x and 'vol' in scenario_id):
-                    alignment = requests.get(f'{ST_URL}/api/v1/alignment/session?session_id={session_id}&target_id={x}').json().get('score')
+                    alignment = requests.get(f'{ST_URL}api/v1/alignment/session?session_id={session_id}&target_id={x}').json().get('score')
+                    print(str(alignment))
                     group_targets[x] = alignment
         else:   
             for x in GROUP_TARGETS.get(pid, []):
                 if 'ADEPT' in x:     
-                    alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={session_id}&target_id={x}&population=false').json()
+                    alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={session_id}&target_id={x}&population=false').json()
                     if (alignment.get('status', 400) == 500):
                         # ADEPT's server loses our data sometimes, so we might have to re-send probes
                         if pid in sessions_by_pid:

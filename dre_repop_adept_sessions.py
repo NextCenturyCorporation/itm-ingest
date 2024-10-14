@@ -10,13 +10,13 @@ MONGO_URL = config('MONGO_URL')
 # ST_URL = "https://darpaitm.caci.com/soartech/" 
 
 #DEV
-ADEPT_URL="http://localhost:8081/"
+# ADEPT_URL="http://localhost:8081/"
 # ST_URL="http://localhost:8084/"
 
 
 # PROD TA1 inside AWS
-# ADEPT_URL="http://10.216.38.101:8080/"
-# ST_URL="http://10.216.38.125:8084"
+ADEPT_URL="http://10.216.38.101:8080/"
+ST_URL="http://10.216.38.125:8084"
 
 
 def update_adept_text_adm_sessions(mongoDB):
