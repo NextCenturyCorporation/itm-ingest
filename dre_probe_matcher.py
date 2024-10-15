@@ -8,11 +8,11 @@ import utils.db_utils as db_utils
 from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
+RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
 RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
-RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
-RECALCULATE_COMPARISON = True
-RERUN_ADEPT_SESSIONS = True # rerun adept sessions only to get new session ids
+RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RECALCULATE_COMPARISON = False
+RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
