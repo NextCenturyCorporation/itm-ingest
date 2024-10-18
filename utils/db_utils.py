@@ -1,6 +1,8 @@
 import requests
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+from decouple import config
+
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 
 def mini_adm_run(collection, probes, target, adm_name):

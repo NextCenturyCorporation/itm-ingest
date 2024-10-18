@@ -4,19 +4,8 @@ from pymongo import MongoClient
 from decouple import config
 
 MONGO_URL = config('MONGO_URL')
-
-# PROD TA1 outside AWS
-# ADEPT_URL = "https://darpaitm.caci.com/adept/"
-# ST_URL = "https://darpaitm.caci.com/soartech/" 
-
-#DEV
-ADEPT_URL="http://localhost:8081/"
-# ST_URL="http://localhost:8084/"
-
-
-# PROD TA1 inside AWS
-# ADEPT_URL="http://10.216.38.101:8080/"
-# ST_URL="http://10.216.38.125:8084"
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 
 def update_adept_text_adm_sessions(mongoDB):

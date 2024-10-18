@@ -1,8 +1,9 @@
 import requests
 import utils.db_utils as db_utils
+from decouple import config
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 ST_PROBES = {
     "qol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'qol-dre-train2-Probe-11'],
@@ -65,7 +66,7 @@ def compare_probes(mongoDB):
                     for probe_id in ST_PROBES[page_scenario]:
                         query_param += f"&session2_probes={probe_id}"
                     # get comparison score
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
                     # send document to mongo
                     if res is not None and 'score' in res:
                         document = {
@@ -101,7 +102,7 @@ def compare_probes(mongoDB):
                                     probe_responses.append(x['parameters'])
                         found_mini_adm = db_utils.mini_adm_run(del_adm_runs_collection, probe_responses, adm_target, survey['results'][page]['admName'])
                     # get comparison score
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={found_mini_adm["session_id"]}').json()
+                    res = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={found_mini_adm["session_id"]}').json()
                     # send document to mongo
                     if res is not None and 'score' in res:
                         document = {
@@ -139,14 +140,14 @@ def compare_probes(mongoDB):
                 adm_session_id = tad_most_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    res = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
                     for probe_id in ST_PROBES[scenario_id]:
                         query_param += f"&session1_probes={probe_id}"
                         query_param += f"&session2_probes={probe_id}"
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
                 if res is not None and 'score' in res:
                     document = {
                         'pid': pid,
@@ -171,14 +172,14 @@ def compare_probes(mongoDB):
                 adm_session_id = kit_most_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    res = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
                     for probe_id in ST_PROBES[scenario_id]:
                         query_param += f"&session1_probes={probe_id}"
                         query_param += f"&session2_probes={probe_id}"
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
                 if res is not None and 'score' in res:
                     document = {
                         'pid': pid,
@@ -207,14 +208,14 @@ def compare_probes(mongoDB):
                 adm_session_id = tad_least_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    res = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
                     for probe_id in ST_PROBES[scenario_id]:
                         query_param += f"&session1_probes={probe_id}"
                         query_param += f"&session2_probes={probe_id}"
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
                 if res is not None and 'score' in res:
                     document = {
                         'pid': pid,
@@ -238,14 +239,14 @@ def compare_probes(mongoDB):
                 adm_session_id = kit_least_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    res = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
                     for probe_id in ST_PROBES[scenario_id]:
                         query_param += f"&session1_probes={probe_id}"
                         query_param += f"&session2_probes={probe_id}"
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
                 if res is not None and 'score' in res:
                     document = {
                         'pid': pid,

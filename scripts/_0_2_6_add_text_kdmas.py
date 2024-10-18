@@ -1,7 +1,8 @@
 import requests
+from decouple import config
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 def get_text_scenario_kdmas(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
@@ -13,7 +14,7 @@ def get_text_scenario_kdmas(mongoDB):
         scenario_id = entry.get('scenario_id')
         session_id = entry.get('combinedSessionId', entry.get('serverSessionId'))
         data_id = entry.get('_id')
-        kdmas = requests.get(f'{ST_URL if "qol" in scenario_id or "vol" in scenario_id else ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
+        kdmas = requests.get(f'{ST_URL if "qol" in scenario_id or "vol" in scenario_id else ADEPT_URL}/api/v1/computed_kdma_profile?session_id={session_id}').json()
 
 
         # create object to add/update in database

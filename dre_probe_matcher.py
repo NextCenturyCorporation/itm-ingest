@@ -8,15 +8,15 @@ import utils.db_utils as db_utils
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
-RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = True
 RERUN_ADEPT_SESSIONS = True # rerun adept sessions only to get new session ids
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/" # config("ADEPT_URL")
-ST_URL = "https://darpaitm.caci.com/soartech/" # config("ST_URL")
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 SCENE_MAP = {
     "qol-dre-1-eval Narrative": "dryrun-soartech-eval-qol1.yaml",
@@ -545,17 +545,17 @@ class ProbeMatcher:
                     # do not include fake probes (see above) in alignment calculation
                     if self.participantId == '202409111' and 'vol' in self.environment:
                         # don't include 11 and 12
-                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}&session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6&session1_probes=4.7&session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&session2_probes=4.5&session2_probes=4.6&session2_probes=4.7&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10')
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}/api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}&session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6&session1_probes=4.7&session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&session2_probes=4.5&session2_probes=4.6&session2_probes=4.7&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10')
                     elif self.participantId == '202409112' and 'qol' in self.environment:
                         # don't include 12
-                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}\
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}/api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}\
                                                                       &session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6&\
                                                                       session1_probes=4.7&session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session1_probes=qol-dre-train2-Probe-11&\
                                                                       session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&session2_probes=4.5&session2_probes=4.6&\
                                                                       session2_probes=4.7&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10&session2_probes=qol-dre-train2-Probe-11')
                     elif self.participantId == '202409112' and 'vol' in self.environment:
                         # don't include 4.7
-                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}\
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}/api/v1/alignment/session/subset?session_1={self.soartech_sid}&session_2={target}\
                                                                       &session1_probes=4.1&session1_probes=4.2&session1_probes=4.3&session1_probes=4.4&session1_probes=4.5&session1_probes=4.6\
                                                                       &session1_probes=4.8&session1_probes=4.9&session1_probes=4.10&session1_probes=vol-dre-train2-Probe-11&\
                                                                       session1_probes=vol-dre-train2-Probe-12&session2_probes=4.1&session2_probes=4.2&session2_probes=4.3&session2_probes=4.4&\
@@ -963,7 +963,7 @@ class ProbeMatcher:
                 if 'vol' in self.environment and self.participantId == '202409112' and probe_id in [ST_PROBES['all'][text_scenario][6]]:
                     continue
                 query_param += f"&session2_probes={probe_id}"
-            res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+            res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
             if res is None or 'score' not in res:
                 self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
                 return
@@ -976,8 +976,8 @@ class ProbeMatcher:
                 return None
             text_sid = text_response['combinedSessionId']
             # send text and vr session ids to Adept server
-            res_mj = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Moral%20judgement').json()
-            res_io = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Ingroup%20Bias').json()
+            res_mj = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Moral%20judgement').json()
+            res_io = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Ingroup%20Bias').json()
             res = {'MJ': None, 'IO': None}
             if res_mj is not None:
                 if 'score' not in res_mj:
@@ -1026,7 +1026,7 @@ class ProbeMatcher:
                             continue
                         query_param += f"&session2_probes={probe_id}"
                     # get comparison score
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    res = requests.get(f'{ST_URL}/api/v1/alignment/session/subset?{query_param}').json()
                     if 'score' not in res:
                         self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
                     else:
@@ -1054,7 +1054,7 @@ class ProbeMatcher:
                                 if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
                                     probe_responses.append(x['parameters'])
                         found_mini_adm = db_utils.mini_adm_run(mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={found_mini_adm["session_id"]}').json()
+                    res = requests.get(f'{ADEPT_URL}/api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={found_mini_adm["session_id"]}').json()
                     if 'score' not in res:
                         self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
                     else:

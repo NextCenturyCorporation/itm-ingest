@@ -33,18 +33,18 @@ def update_db_version(mongoDB):
 def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
-    if(check_version(mongoDB)):
-        print("New db version, execute scripts")
-        get_text_scenario_kdmas(mongoDB)
-        get_text_scenario_kdmas(mongoDB)
-        compare_probes(mongoDB)
-        run_group_targets(mongoDB)
-        run_group_targets(mongoDB)
-        find_matching_probe_percentage(mongoDB)
-        remove_duplicate_text_entries(mongoDB)
-        update_db_version(mongoDB)
-    else:
-        print("Script does not need to run on prod, already updated.")
+    # if(check_version(mongoDB)):
+    print("New db version, execute scripts")
+    get_text_scenario_kdmas(mongoDB)
+    get_text_scenario_kdmas(mongoDB)
+    compare_probes(mongoDB)
+    run_group_targets(mongoDB)
+    run_group_targets(mongoDB)
+    find_matching_probe_percentage(mongoDB)
+    remove_duplicate_text_entries(mongoDB)
+    update_db_version(mongoDB)
+    # else:
+    #     print("Script does not need to run on prod, already updated.")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 import requests
+from decouple import config
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 GROUP_TARGETS = {
     '20249204': ['ADEPT-DryRun-Ingroup Bias-Group-Low', 'ADEPT-DryRun-Moral judgement-Group-Low', 'qol-group-target-dre-2', 'vol-group-target-dre-2'],
