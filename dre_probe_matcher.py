@@ -1,17 +1,18 @@
-import yaml, argparse, json, os, copy
+import yaml, argparse, json, os, copy, csv
 from logger import LogLevel, Logger
 from pymongo import MongoClient
 from datetime import datetime
 import requests
 from decouple import config 
 import utils.db_utils as db_utils
+from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
-RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
-RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
-RECALCULATE_COMPARISON = True
-RERUN_ADEPT_SESSIONS = True # rerun adept sessions only to get new session ids
+RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
+RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RECALCULATE_COMPARISON = False
+RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
@@ -378,12 +379,233 @@ class ProbeMatcher:
     
 
     def analyze_openworld(self):
+        results = {
+            'pid': self.participantId,
+            'assess_patient': 0,
+            'assess_total': 0,
+            'treat_patient': 0,
+            'treat_total': 0,
+            'triage_time': 0,
+            'triage_time_patient': 0,
+            'engage_patient': 0,
+            'tag_acc': 0,
+            'tag_expectant': False
+        }
+
+        ow_csv = open(self.json_file.name.replace('.json', '.csv'), 'r', encoding='utf-8')
+        reader = csv.reader(ow_csv)
+        header = next(reader)
+        data = []
+        for line in reader:
+            data.append(line)
+
+        def timestamp_to_milliseconds(timestamp):
+            return datetime.fromisoformat(str(dateparser.parse(timestamp))).timestamp()
+        
+        def find_patients_engaged():
+            '''
+            returns the number of patients engaged and the number of patients treated during the scenario.
+            also counts the number of times each patient was engaged
+            '''
+            engagement_order = []
+            treated = []
+            for x in data:
+                if x[0] in ['TOOL_APPLIED', 'TAG_APPLIED', 'SP_O2_TAKEN', 'BREATHING_CHECKED', 'PULSE_TAKEN']:
+                    engagement_order.append(x[header.index('PatientID')].split(' Root')[0])
+                    if x[0] == 'TOOL_APPLIED':
+                        treated.append(x[header.index('PatientID')].split(' Root')[0])
+            # remove in-order duplicates from list
+            simple_order = []
+            for x in engagement_order:
+                if len(simple_order) > 0 and x == simple_order[-1]:
+                    continue
+                simple_order.append(x)
+            return {'engaged': len(list(set(engagement_order))), 'treated': len(list(set(treated))), 'order': simple_order}
+
+        engaged_counts = find_patients_engaged()
+        patients_engaged = engaged_counts['engaged']
+        patients_treated = engaged_counts['treated']
+        patient_order_engaged = engaged_counts['order']
+        engagement_times = list({item: patient_order_engaged.count(item) for item in set(patient_order_engaged)}.values())
+        results['engage_patient'] = sum(engagement_times) / max(1, len(engagement_times))
+        
+
+        def count_assessment_actions():
+            '''returns the total count of assessment actions during the scenario'''
+            assessment_actions = ['SP_O2_TAKEN', 'BREATHING_CHECKED', 'PULSE_TAKEN']
+            count = 0
+            last_done = {}
+            per_patient = {}
+            for x in data:
+                # only count actions that are more than 5 seconds apart from the last of the same type of action
+                if x[0] in assessment_actions and (x[0] not in last_done or (timestamp_to_milliseconds(x[2]) - last_done[x[0]]) > 5000):
+                    last_done[x[0]] = timestamp_to_milliseconds(x[2])
+                    count += 1
+                    patient = x[header.index('PatientID')].split(' Root')[0]
+                    if patient not in per_patient:
+                        per_patient[patient] = 0
+                    per_patient[patient] += 1
+            return {'count': count, 'per_patient': per_patient}
+        
+        assessments = count_assessment_actions()
+        results['assess_total'] = assessments['count']
+        results['assess_patient'] = results['assess_total'] / max(1, patients_engaged)
+
+        def count_treatment_actions():
+            '''returns the total count of treatment actions during the scenario'''
+            count = 0
+            per_patient = {}
+            for x in data:
+                if x[0] == 'TOOL_APPLIED' and 'Pulse Oximeter' not in x:
+                    count += 1
+                    patient = x[header.index('PatientID')].split(' Root')[0]
+                    if patient not in per_patient:
+                        per_patient[patient] = 0
+                    per_patient[patient] += 1
+            return {'count': count, 'per_patient': per_patient}
+        
+        treatments = count_treatment_actions()
+        results['treat_total'] = treatments['count']
+        results['treat_patient'] = results['treat_total'] / max(1, patients_treated)
+
+        def get_triage_time():
+            '''gets the time from start to finish (in seconds) to complete the scenario'''
+            if len(data) > 0:
+                start = float(data[0][1])
+                end = float(data[len(data)-2][1])
+                return ((end-start))/1000
+            
+        results['triage_time'] = get_triage_time()
+
+        def get_tags():
+            tags = {
+                'US Soldier 1': 'red',
+                'Civilian 1': 'red',
+                'Attacker 1': 'red',
+                'US Soldier 2': 'red',
+                'US Soldier 3': 'gray',
+                'Attacker 2': 'yellow_orange',
+                'US Soldier 4': 'yellow_orange',
+                'Civilian 2': 'red'
+            }
+
+            # by default gets the last tag applied to each patient
+            tags_applied = {}
+            for x in data:
+                if x[0] == 'TAG_APPLIED':
+                    tags_applied[x[header.index('PatientID')].split(' Root')[0]] = x[header.index('TagType')]
+            correct = 0
+            count = 0
+            for x in tags_applied:
+                if tags[x] == tags_applied[x]:
+                    correct += 1
+                count += 1
+            return {'correct': correct, 'count': count, 'tags': tags_applied}
+        
+        
+        tag_counts = get_tags()
+        results['tag_acc'] = tag_counts['correct'] / tag_counts['count']
+
+        results['tag_expectant'] = 'Yes' if tag_counts['tags'].get('US Soldier 3') == 'gray' else 'No'
+
+
+        def find_time_per_patient():
+            '''
+            Looks through each participant's interaction with each patient
+            to see how much time total the engagement took
+            '''
+            interactions = {}
+            cur_p = None
+            start_time = 0
+            last_time = 0
+            for x in data:
+                # find every interaction with the patient
+                p = None
+                t = float(x[1])
+                if x[0] in ['TOOL_APPLIED', 'TAG_APPLIED', 'SP_O2_TAKEN', 'BREATHING_CHECKED', 'PULSE_TAKEN']:
+                    p = x[header.index('PatientID')].split(' Root')[0]
+                if p is None or 'Level Core' in p or 'Simulation' in p or 'Player' in p:
+                    continue
+                if p not in interactions:
+                    interactions[p] = []
+                # iniitalize cur_p
+                if cur_p is None:
+                    cur_p = p
+                    start_time = last_time if last_time != 0 else t
+                # new patient interaction!
+                if cur_p != p:
+                    # save start/end interaction times for previous patient
+                    if start_time != last_time:
+                        interactions[cur_p].append((start_time, last_time))
+                    elif len(interactions[cur_p]) == 0:
+                        interactions[cur_p].append((start_time, t))
+                    # set start time for new patient
+                    start_time = t
+                    last_time = t
+                    cur_p = p
+                else:
+                    last_time = t
+            # save the last interaction set!
+            interactions[cur_p].append((start_time, last_time))
+
+            total_time = 0
+            for p in interactions:
+                patient_time = 0
+                for x in interactions[p]:
+                    patient_time += x[1] - x[0]
+                total_time += patient_time
+                interactions[p] = patient_time/1000
+
+            return {'interactions': interactions, 'total': total_time/1000}
+
+        triage_times = find_time_per_patient()
+        results['triage_time_patient'] = triage_times['total'] / max(1, patients_engaged)
+
+        def get_evaced_patients():
+            answers = []
+            answer_map = {
+                "US Military Female Thigh Amputation": 'US Soldier 1',
+                "US Military Female Calf Shrapnel": 'US Soldier 4',
+                "US Military Male Stomach Puncture": 'US Soldier 2',
+                "US Military Male Neck Puncture": 'US Soldier 3',
+                "Civilian Child Thigh Amputation": 'Civilian 1',
+                "Civilian Adult Calf Shrapnel": 'Civilian 2',
+                "Attacker Teen Wrist Amputation": 'Attacker 1',
+                "Attacker Adult Shoulder Puncture": 'Attacker 2'
+            }
+            for x in self.json_data['actionList']:
+                if x['actionType'] == 'Question':
+                    answers.append(answer_map[x['answer']])
+            return answers
+        
+        evaced = get_evaced_patients()
+
+        patients_in_order = ['US Soldier 1', 'Civilian 1', 'Attacker 1', 'US Soldier 2', 'US Soldier 3', 'Attacker 2', 'US Soldier 4', 'Civilian 2']
+        for i in range(len(patients_in_order)):
+            name = f'Patient {i+1}'
+            sim_name = patients_in_order[i]
+            triage_time = triage_times['interactions'].get(sim_name, 0)
+            results[f'{name}_time'] = triage_time
+            try:
+                results[f'{name}_order'] = patient_order_engaged.index(sim_name) + 1
+            except:
+                results[f'{name}_order'] = 'N/A'
+            results[f'{name}_evac'] = 'Yes' if sim_name in evaced else 'No'
+            results[f'{name}_assess'] = assessments['per_patient'].get(sim_name, 0)
+            results[f'{name}_treat'] = treatments['per_patient'].get(sim_name, 0)
+            results[f'{name}_tag'] = tag_counts['tags'].get(sim_name, 'N/A')
+
         if SEND_TO_MONGO:
+            mid = self.participantId + '_dre_open_world'
             try:
                 mongo_collection_raw.insert_one({'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment.replace(' ', '-')})
             except:
                 mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment.replace(' ', '-')}, {'$set': {'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId}})
-
+            try:
+                mongo_collection_matches.insert_one({'scenario_id': 'eval_open_world', 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': results, 'openWorld': True, 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
+            except:
+                mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': 'eval_open_world', 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': results, 'openWorld': True, 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
+    
 
     def match_qol_vol_probes(self):
         soartech_scenes = self.soartech_yaml['scenes']
@@ -1068,7 +1290,6 @@ class ProbeMatcher:
                             'sim_scenario': vr_scenario
                         })
         return results
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i PATH')
