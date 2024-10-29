@@ -581,13 +581,17 @@ class ProbeMatcher:
         evaced = get_evaced_patients()
 
         patients_in_order = ['US Soldier 1', 'Civilian 1', 'Attacker 1', 'US Soldier 2', 'US Soldier 3', 'Attacker 2', 'US Soldier 4', 'Civilian 2']
+        clean_patient_order_engaged = []
+        for x in patient_order_engaged:
+            if x not in clean_patient_order_engaged:
+                clean_patient_order_engaged.append(x)
         for i in range(len(patients_in_order)):
             name = f'Patient {i+1}'
             sim_name = patients_in_order[i]
             triage_time = triage_times['interactions'].get(sim_name, 0)
             results[f'{name}_time'] = triage_time
             try:
-                results[f'{name}_order'] = patient_order_engaged.index(sim_name) + 1
+                results[f'{name}_order'] = clean_patient_order_engaged.index(sim_name) + 1
             except:
                 results[f'{name}_order'] = 'N/A'
             results[f'{name}_evac'] = 'Yes' if sim_name in evaced else 'No'
