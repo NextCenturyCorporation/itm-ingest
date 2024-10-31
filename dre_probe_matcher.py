@@ -212,6 +212,7 @@ delegation_collection = None
 medic_collection = None
 adm_collection = None
 mini_adms_collection = None
+participant_log_collection = None
 ENVIRONMENTS_BY_PID = {}
 
 
@@ -230,6 +231,7 @@ class ProbeMatcher:
     csv_file = None
     timestamp = None
     analyze = True
+    pid_in_log = False
 
 
     def __init__(self, json_path, adept_sid, soartech_sid):
@@ -258,6 +260,7 @@ class ProbeMatcher:
         pid = self.json_data['participantId']
         pid = pid if pid != '' else self.json_data['sessionId']
         self.participantId = pid
+        self.pid_in_log = participant_log_collection.count_documents({"ParticipantID": int(pid)}) > 0
         env = SCENE_MAP.get(self.json_data["configData"]["narrative"]["narrativeDescription"], '')
         if env == '':
             self.logger.log(LogLevel.WARN, "Environment not defined. Unable to process data")
@@ -609,7 +612,10 @@ class ProbeMatcher:
                 mongo_collection_matches.insert_one({'scenario_id': 'eval_open_world', 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': results, 'openWorld': True, 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid})
             except:
                 mongo_collection_matches.update_one({'_id': mid}, {'$set': {'scenario_id': 'eval_open_world', 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': results, 'openWorld': True, 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mid}})
-    
+            if self.pid_in_log:
+                num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
+                participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']}, 
+                                                      {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
 
     def match_qol_vol_probes(self):
         soartech_scenes = self.soartech_yaml['scenes']
@@ -804,6 +810,11 @@ class ProbeMatcher:
                 mongo_collection_raw.insert_one({'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
             except:
                 mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': updated_json, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
+            if self.pid_in_log:
+                num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
+                participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']}, 
+                                                      {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
+        
         json.dump(match_data, self.output_soartech, indent=4)  
                 
 
@@ -1084,6 +1095,10 @@ class ProbeMatcher:
                 mongo_collection_raw.insert_one({'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
             except:
                 mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
+            if self.pid_in_log:
+                num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
+                participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']}, 
+                                                      {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
         json.dump(match_data, self.output_adept, indent=4)  
 
 
@@ -1315,6 +1330,7 @@ if __name__ == '__main__':
         medic_collection = db['admMedics']
         adm_collection = db["test"]
         mini_adms_collection = db['delegationADMRuns']
+        participant_log_collection = db['participantLog']
 
     # go through the input directory and find all sub directories
     sub_dirs = [name for name in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, name))]
