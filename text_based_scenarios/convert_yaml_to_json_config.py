@@ -334,9 +334,33 @@ def partition_doc(scenario, filename):
     return doc
 
 def upload_config(docs, textbased_mongo_collection):
-    textbased_mongo_collection.delete_many({})
-    if docs:
-        textbased_mongo_collection.insert_many(docs)
+    if not docs:
+        print("No new documents to upload.")
+        return
+    
+    # Check for existing documents and only add new ones
+    existing_scenario_ids = set(doc['scenario_id'] for doc in textbased_mongo_collection.find({}, {'scenario_id': 1}))
+    
+    new_docs = []
+    updated_docs = []
+    for doc in docs:
+        if doc['scenario_id'] in existing_scenario_ids:
+            # Update existing document
+            textbased_mongo_collection.replace_one(
+                {'scenario_id': doc['scenario_id']}, 
+                doc
+            )
+            updated_docs.append(doc['scenario_id'])
+        else:
+            # Add new document
+            new_docs.append(doc)
+    
+    if new_docs:
+        textbased_mongo_collection.insert_many(new_docs)
+    
+    print(f"Added {len(new_docs)} new scenarios")
+    if updated_docs:
+        print(f"Updated {len(updated_docs)} existing scenarios: {', '.join(updated_docs)}")
 
 def main():
     client = MongoClient(config('MONGO_URL'))
@@ -346,10 +370,11 @@ def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
+    phase1_folder = os.path.join(current_dir, 'phase1-yaml-files')
 
     all_docs = []
 
-    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre')]:
+    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre'), (phase1_folder, 'phase1')]:
         if not os.path.exists(folder):
             print(f"Warning: {folder} does not exist.")
             continue
@@ -368,7 +393,6 @@ def main():
                     print(f"Error processing {filename}: {str(e)}")
         
     upload_config(all_docs, textbased_mongo_collection)
-    print(f"Uploaded {len(all_docs)} scenarios, replacing the existing collection.")
 
 if __name__ == '__main__':
     main()
