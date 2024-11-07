@@ -1,7 +1,8 @@
 import requests
+from decouple import config 
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL = config("ADEPT_DRE_URL")
+ST_URL = config("ST_DRE_URL")
 
 def get_text_scenario_kdmas(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']

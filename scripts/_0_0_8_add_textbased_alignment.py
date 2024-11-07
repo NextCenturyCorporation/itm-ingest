@@ -128,7 +128,7 @@ def get_alignment_data(url_base, session_id, target_id):
     return response.json() if response.status_code == 200 else None
 
 def get_adept_alignment(scenario_results, scenario_id):
-    url = f"{ADEPT_URL}/api/v1/new_session"
+    url = f"{ADEPT_URL}api/v1/new_session"
     start_session = requests.post(url)
     if start_session.status_code == 200:
         session_id = start_session.json()
@@ -142,7 +142,7 @@ def get_adept_alignment(scenario_results, scenario_id):
         scenario_results['serverSessionId'] = session_id
 
 def get_soartech_alignment(scenario_results, scenario_id):
-    url = f"{ST_URL}/api/v1/new_session?user_id=default_user"
+    url = f"{ST_URL}api/v1/new_session?user_id=default_user"
     start_session = requests.post(url)
     if start_session.status_code == 201:
         session_id = start_session.json()

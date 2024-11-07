@@ -16,8 +16,8 @@ RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
 EVAL_NUM = 4
 EVAL_NAME = 'Dry Run Evaluation'
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/" # config("ADEPT_URL")
-ST_URL = "https://darpaitm.caci.com/soartech/" # config("ST_URL")
+ADEPT_URL = config("ADEPT_DRE_URL")
+ST_URL = config("ST_DRE_URL")
 
 SCENE_MAP = {
     "qol-dre-1-eval Narrative": "dryrun-soartech-eval-qol1.yaml",
@@ -729,10 +729,10 @@ class ProbeMatcher:
                         'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
                         'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
                         'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary']
-                self.send_probes(f'{ST_URL}/api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
+                self.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
                 # send fake probes for 3 entries that are missing data. These probes will not be used to calculate alignment!
                 if self.participantId == '202409111' and 'vol' in self.environment:
-                    self.send_probes(f'{ST_URL}/api/v1/response', 
+                    self.send_probes(f'{ST_URL}api/v1/response', 
                         [
                             { 
                                 "scene_id": 'id-10', 
@@ -750,7 +750,7 @@ class ProbeMatcher:
                             }
                         ], self.soartech_sid, self.soartech_yaml['id'])
                 if self.participantId == '202409112' and 'qol' in self.environment:
-                    self.send_probes(f'{ST_URL}/api/v1/response', 
+                    self.send_probes(f'{ST_URL}api/v1/response', 
                         [
                             { 
                                 "scene_id": 'id-11',
@@ -761,7 +761,7 @@ class ProbeMatcher:
                             }
                         ], self.soartech_sid, self.soartech_yaml['id'])                
                 if self.participantId == '202409112' and 'vol' in self.environment:
-                    self.send_probes(f'{ST_URL}/api/v1/response', 
+                    self.send_probes(f'{ST_URL}api/v1/response', 
                         [
                             { 
                                 "scene_id": 'id-6',
@@ -794,8 +794,8 @@ class ProbeMatcher:
                                                                       session2_probes=4.5&session2_probes=4.6&session2_probes=4.8&session2_probes=4.9&session2_probes=4.10&\
                                                                       session2_probes=vol-dre-train2-Probe-11&session2_probes=vol-dre-train2-Probe-12')
                     else:
-                        st_align[target] = self.get_session_alignment(f'{ST_URL}/api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
-                st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}/api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
+                st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
                 st_align['sid'] = self.soartech_sid
             except:
                 self.logger.log(LogLevel.WARN, "Session Alignment Get Request failed")
@@ -1077,10 +1077,10 @@ class ProbeMatcher:
                 targets = ['ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
                         'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
                         'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
-                self.send_probes(f'{ADEPT_URL}/api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
+                self.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
                 for target in targets:
-                    ad_align[target] = self.get_session_alignment(f'{ADEPT_URL}/api/v1/alignment/session?session_id={self.adept_sid}&target_id={target}&population=false')
-                ad_align['kdmas'] = self.get_session_alignment(f'{ADEPT_URL}/api/v1/computed_kdma_profile?session_id={self.adept_sid}')
+                    ad_align[target] = self.get_session_alignment(f'{ADEPT_URL}api/v1/alignment/session?session_id={self.adept_sid}&target_id={target}&population=false')
+                ad_align['kdmas'] = self.get_session_alignment(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.adept_sid}')
                 ad_align['sid'] = self.adept_sid
             except:
                 self.logger.log(LogLevel.WARN, "Session Alignment Get Request failed")
@@ -1343,8 +1343,8 @@ if __name__ == '__main__':
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
                     try:
-                        adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', '').strip()
-                        soartech_sid = requests.post(f'{ST_URL}/api/v1/new_session?user_id=default_use').json()
+                        adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+                        soartech_sid = requests.post(f'{ST_URL}api/v1/new_session?user_id=default_use').json()
                         matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
                         # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
                         if matcher.environment != '' and matcher.analyze:

@@ -1,13 +1,15 @@
 import requests
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+from decouple import config 
+
+ADEPT_URL = config("ADEPT_DRE_URL")
+ST_URL = config("ST_DRE_URL")
 
 
 def mini_adm_run(collection, probes, target, adm_name):
-    adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', "").strip()
+    adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     scenario = None
     for x in probes:
-        requests.post(f'{ADEPT_URL}/api/v1/response', json={
+        requests.post(f'{ADEPT_URL}api/v1/response', json={
             "response": {
                 "choice": x['choice'],
                 "justification": x["justification"],
@@ -17,7 +19,7 @@ def mini_adm_run(collection, probes, target, adm_name):
             "session_id": adept_sid
         })
         scenario = x['scenario_id']
-    alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
+    alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': 4}
     collection.insert_one(doc)
     return doc

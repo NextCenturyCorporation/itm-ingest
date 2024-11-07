@@ -1,8 +1,9 @@
 import requests
 import utils.db_utils as db_utils
+from decouple import config 
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL = config("ADEPT_DRE_URL")
+ST_URL = config("ST_DRE_URL")
 
 ST_PROBES = {
     "qol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'qol-dre-train2-Probe-11'],

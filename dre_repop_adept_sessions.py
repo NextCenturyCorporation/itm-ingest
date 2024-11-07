@@ -1,23 +1,15 @@
 import requests
-
 from pymongo import MongoClient
 from decouple import config
+from scripts._0_2_6_add_text_kdmas import get_text_scenario_kdmas
+from scripts._0_2_8_human_to_adm_comparison import compare_probes
+from scripts._0_2_9_run_group_targets import run_group_targets
+from scripts._0_3_0_percent_matching_probes import find_matching_probe_percentage
 
+VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
-
-# PROD TA1 outside AWS
-# ADEPT_URL = "https://darpaitm.caci.com/adept/"
-# ST_URL = "https://darpaitm.caci.com/soartech/" 
-
-#DEV
-ADEPT_URL="http://localhost:8081/"
-# ST_URL="http://localhost:8084/"
-
-
-# PROD TA1 inside AWS
-# ADEPT_URL="http://10.216.38.101:8080/"
-# ST_URL="http://10.216.38.125:8084"
-
+ADEPT_URL = config("ADEPT_DRE_URL")
+ST_URL = config("ST_DRE_URL")
 
 def update_adept_text_adm_sessions(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
@@ -41,7 +33,7 @@ def update_adept_text_adm_sessions(mongoDB):
                 new_id = sessions_by_pid[pid]['sid']
                 sessions_by_pid[pid]['_ids'].append(data_id)
             else:
-                adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', '').strip()
+                adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
                 sessions_by_pid[pid] = {'sid': adept_sid, '_ids': [data_id]}
                 new_id = adept_sid
             # collect probes
@@ -56,7 +48,7 @@ def update_adept_text_adm_sessions(mongoDB):
                         else:
                             print('could not find response in mapping!', response, list(mapping.keys()))
             print("TXT PROBES: " + str(probes))
-            send_probes(f'{ADEPT_URL}/api/v1/response', probes, new_id, scenario_id)
+            send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
             print("Created text session with probes in Adept for: " + str(new_id))
             print("-----")
 
@@ -67,7 +59,6 @@ def update_adept_text_adm_sessions(mongoDB):
             # if new_id exists, we need to update the session id for all adept that this participant completed (we never know when it will be the last one)
             for data_id in sessions_by_pid[pid]['_ids']:
                 text_scenario_collection.update_one({'_id': data_id}, {'$set': updates})        
-
 
     # Add ADM sessions to Adept Server
     for adm in adms_to_update:            
@@ -103,14 +94,11 @@ def send_probes(probe_url, probes, sid, scenario):
                 "session_id": sid
             })
         
-    
-
-
 def update_adm_run(collection, adm, probes):
-    adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', "").strip()
+    adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     # send probes to server 
     for x in probes:
-        requests.post(f'{ADEPT_URL}/api/v1/response', json={
+        requests.post(f'{ADEPT_URL}api/v1/response', json={
             "response": {
                 "choice": x['choice'],
                 "justification": x["justification"],
@@ -124,13 +112,38 @@ def update_adm_run(collection, adm, probes):
 
     return adept_sid
 
-
-
 def main():
+    """ 
+    Repopulates DRE ADEPT Sessions.
+    
+    ADEPT doesn't persist DRE session information.
+    
+    This needs to run whenever the ADEPT server is restarted.
+    """    
+
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
+
+    print("Repopulating ADEPT Text/ADM Sessions")
     update_adept_text_adm_sessions(mongoDB)
 
+    print("Clean intermediate collections")
+    delegationADMRuns_cur = mongoDB['delegationADMRuns']
+    delegationADMRuns_cur.drop()
+    humanToADMComparison_cur = mongoDB['humanToADMComparison']
+    humanToADMComparison_cur.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}})
+
+    print("Rerunning `get_text_scenario_kdmas`")
+    get_text_scenario_kdmas(mongoDB)
+
+    print("Rerunning `compare_probes`")
+    compare_probes(mongoDB)
+
+    print("Rerunning `run_group_targets`")
+    run_group_targets(mongoDB)
+
+    print("Rerunning `find_matching_probe_percentage`")
+    find_matching_probe_percentage(mongoDB)    
 
 if __name__ == "__main__":
     main()
