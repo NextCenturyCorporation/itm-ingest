@@ -5,6 +5,8 @@ from scripts._0_2_6_add_text_kdmas import get_text_scenario_kdmas
 from scripts._0_2_8_human_to_adm_comparison import compare_probes
 from scripts._0_2_9_run_group_targets import run_group_targets
 from scripts._0_3_0_percent_matching_probes import find_matching_probe_percentage
+from scripts._0_3_2_update_participant_log import fix_participant_id
+
 
 VERSION_COLLECTION = "itm_version"
 MONGO_URL = config('MONGO_URL')
@@ -124,26 +126,29 @@ def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
 
-    print("Repopulating ADEPT Text/ADM Sessions")
-    update_adept_text_adm_sessions(mongoDB)
+    # print("Repopulating ADEPT Text/ADM Sessions")
+    # update_adept_text_adm_sessions(mongoDB)
 
-    print("Clean intermediate collections")
-    delegationADMRuns_cur = mongoDB['delegationADMRuns']
-    delegationADMRuns_cur.drop()
-    humanToADMComparison_cur = mongoDB['humanToADMComparison']
-    humanToADMComparison_cur.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}})
+    # print("Clean intermediate collections")
+    # delegationADMRuns_cur = mongoDB['delegationADMRuns']
+    # delegationADMRuns_cur.drop()
+    # humanToADMComparison_cur = mongoDB['humanToADMComparison']
+    # humanToADMComparison_cur.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}})
 
-    print("Rerunning `get_text_scenario_kdmas`")
-    get_text_scenario_kdmas(mongoDB)
+    # print("Rerunning `get_text_scenario_kdmas`")
+    # get_text_scenario_kdmas(mongoDB)
 
-    print("Rerunning `compare_probes`")
-    compare_probes(mongoDB)
+    # print("Rerunning `compare_probes`")
+    # compare_probes(mongoDB)
 
-    print("Rerunning `run_group_targets`")
-    run_group_targets(mongoDB)
+    # print("Rerunning `run_group_targets`")
+    # run_group_targets(mongoDB)
 
-    print("Rerunning `find_matching_probe_percentage`")
-    find_matching_probe_percentage(mongoDB)    
+    # print("Rerunning `find_matching_probe_percentage`")
+    # find_matching_probe_percentage(mongoDB)
+
+    print("Rerunning `fix_participant_id`")
+    fix_participant_id(mongoDB)        
 
 if __name__ == "__main__":
     main()
