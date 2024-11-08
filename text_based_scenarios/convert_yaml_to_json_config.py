@@ -53,23 +53,28 @@ def add_surveyjs_configs(doc):
     doc['showProgressBar'] = 'top'
     return doc
 
+def get_scenario_id(scenario, filename, eval_type):
+    if eval_type == 'phase1' and 'adept' in filename.lower():
+        return os.path.splitext(filename)[0]
+    return scenario['id']
+
 def process_unstructured_text(text):
     parts = text.split('<text_scenario_line_break>')
     return parts[1].strip() if len(parts) > 1 else text.strip()
 
 def get_scene_text(scene, is_first_scene, starting_context):
-    if is_first_scene:
-        return starting_context
-    
     if 'probe_config' in scene:
         probe_config = scene['probe_config']
         if isinstance(probe_config, list) and probe_config and 'description' in probe_config[0]:
             return probe_config[0]['description']
     
+    if is_first_scene:
+        return starting_context
+        
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario, filename):
-    scenario_id = scenario['id']
+def partition_doc(scenario, filename, eval_type):
+    scenario_id = get_scenario_id(scenario, filename, eval_type)
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
     starting_mission = scenario['state'].get('mission', {})
@@ -82,6 +87,12 @@ def partition_doc(scenario, filename):
         'name': scenario['name'],
         'pages': []
     }
+
+    filename_lower = filename.lower()
+    if 'adept' in filename_lower:
+        doc['author'] = 'adept'
+    else:
+        doc['author'] = 'soartech'
 
     for i, scene in enumerate(scenes):
         if 'id' not in scene:
@@ -385,7 +396,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario, filename)
+                    doc = partition_doc(scenario, filename, eval_type)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
