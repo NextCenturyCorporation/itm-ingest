@@ -180,7 +180,7 @@ scenes:
         The civilian was kicking at something sticking out of the dirt.
         It exploded, and you saw that the person who was kicking at what was apparently an IED has been injured.
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
-        
+        <text_scenario_line_break>
         You have assessed the kicker.  Do you assess the passerby or start treating the kicker?
     end_scene_allowed: false
     persist_characters: true
@@ -228,7 +228,7 @@ scenes:
         The civilian was kicking at something sticking out of the dirt.
         It exploded, and you saw that the person who was kicking at what was apparently an IED has been injured.
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
-        
+        <text_scenario_line_break>
         You have assessed the passerby.  Do you assess the kicker or start treating the passerby?
     end_scene_allowed: false
     persist_characters: true
@@ -277,7 +277,7 @@ scenes:
         It exploded, and you saw that the person who was kicking at what was apparently an IED has been injured.
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
         You have assessed the kicker.
-        
+        <text_scenario_line_break>
         As you begin treating the kicker, you get interrupted by a member of your unit.
       events:
         - unstructured: A member of your unit says, "Don't you want to assess them both before you treat anyone? The guy you're treating should have stopped when we shouted at him then no one would have gotten hurt, but that other guy was just passing by." 
@@ -336,7 +336,7 @@ scenes:
         It exploded, and you saw that the person who was kicking at what was apparently an IED has been injured.
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
         You have assessed the passerby.
-        
+        <text_scenario_line_break>
         As you begin treating the passerby, you get interrupted by a member of your unit.
       events:
         - unstructured: A member of your unit says, "Don't you want to assess them both before you treat anyone? The other guy looks like he has a serious injury." 
@@ -394,7 +394,7 @@ scenes:
         It exploded, and you saw that the person who was kicking at what was apparently an IED has been injured.
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
         You have assessed the passerby and began treating him. Another member of your unit indicated the other patient has serious injuries.
-        
+        <text_scenario_line_break>
         As you continue treating the passerby, you once again get interrupted by a member of your unit.
       events:
         - unstructured: A member of your unit says, "This other casualty has massive bleeding and shrapnel and burn injuries. You better take a look."
@@ -451,7 +451,7 @@ scenes:
         The civilian was kicking at something sticking out of the dirt.
         It exploded, and you saw that the person who was kicking at what was apparently an IED has been injured.
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
-
+        <text_scenario_line_break>
         After you have assessed and treated the casualties, you are interrupted again by a radio call and another piece of information from a member of your unit.
         Which patient do you prepare to help load up into the transport?
       events:
@@ -640,7 +640,7 @@ scenes:
         Another civilian who had heard the shouting and paused to look back at the scene is further away, but also injured.
         You learned that the kicker intentionally set off the IED and is considered hostile. A civilian medical transport is nearing.
         You have at least partially attended to the civilians.
-
+        <text_scenario_line_break>
         Before you are able to take your last action, you are interrupted by the sound of gunfire. A member of your unit screams and falls. Go to them.
       threat_state:
         unstructured: You hear the sound of gunfire, and a member of your unit screams and falls.
@@ -704,7 +704,7 @@ scenes:
         You learned that the kicker intentionally set off the IED and is considered hostile. A civilian medical transport is nearing.
         You visited the civilians.
         There was the sound of gunfire. A member of your unit screamed and fell. You moved to him.
-
+        <text_scenario_line_break>
         You assess the wounded US soldier and find that he has a gunshot wound in the arm, which is bleeding but not massively.
         Do you treat him now or have others move him while you go back to the wounded civilians?
       threat_state:
@@ -769,7 +769,7 @@ scenes:
         You learned that the kicker intentionally set off the IED and is considered hostile. A civilian medical transport is nearing.
         You visited the civilians.
         There was the sound of gunfire. A member of your unit screamed and fell. You moved to him. Finally you may have given some care to the US soldier or returned to the civilians.
-        
+        <text_scenario_line_break>
         Your commanding officer says "Move everyone to cover now. You can worry about treating them once everyone is back in a secure area."
         Back at the casualty collection point, there are three casualties who have not been fully treated.
         Who do you assess first?
@@ -916,7 +916,7 @@ scenes:
         There was the sound of gunfire. A member of your unit had screamed and fell. You moved to him. Finally you may have given some care to the US soldier or returned to the civilians.
         Your commanding officer said "Move everyone to cover now. You can worry about treating them once everyone is back in a secure area."
         Back at the casualty collection point, there are three casualties who have not been fully treated.
-
+        <text_scenario_line_break>
         Who do you treat first?
       supplies: # Resetting supplies because we are now at casualty collection point
         - {type: Tourniquet, reusable: false, quantity: 1}
@@ -997,7 +997,7 @@ scenes:
         There was the sound of gunfire. A member of your unit had screamed and fell. You moved to him. Finally you may have given some care to the US soldier or returned to the civilians.
         Your commanding officer said "Move everyone to cover now. You can worry about treating them once everyone is back in a secure area."
         Back at the casualty collection point, there are three casualties who have not been fully treated.
-
+        <text_scenario_line_break>
         While applying a treatment to one of the patients, you are interrupted by a squad member shouting.
         The kicker who triggered the IED has slumped over and is gasping.
         You have a unit of whole blood, which you could use now to try to stabilize this casualty.
@@ -1110,7 +1110,7 @@ scenes:
         Your commanding officer said "Move everyone to cover now. You can worry about treating them once everyone is back in a secure area."
         Back at the casualty collection point, there are three casualties who have not been fully treated.
         While applying a treatment to one of the patients, you werw interrupted by a squad member shouting. The kicker who triggered the IED has slumped over and is gasping.
-        
+        <text_scenario_line_break>
         You hear a commotion as the passerby faints.
         One of your squad members tells you that he is an insulin dependent diabetic.
         You also get a radio message saying that a new transport is coming that can take military or civilian casualties.
@@ -1233,7 +1233,7 @@ scenes:
         Back at the casualty collection point, there are three casualties who have not been fully treated.
         While applying a treatment to one of the patients, you were interrupted by a squad member shouting. The kicker who triggered the IED has slumped over and is gasping.
         You heard a commotion as the passerby fainted. One of your squad members told you that he is an insulin dependent diabetic. You also got a radio message saying that a new transport is coming that can take military or civilian casualties.
-        
+        <text_scenario_line_break>
         You have chosen to transport the US soldier.
         You get a radio from the helicopter saying you can take one additional person.
         Who else do you want to put in with the US soldier?
@@ -1312,7 +1312,7 @@ scenes:
         Back at the casualty collection point, there are three casualties who have not been fully treated.
         While applying a treatment to one of the patients, you were interrupted by a squad member shouting. The kicker who triggered the IED has slumped over and is gasping.
         You heard a commotion as the passerby fainted. One of your squad members told you that he is an insulin dependent diabetic. You also got a radio message saying that a new transport is coming that can take military or civilian casualties.  The transport can take upto two patients.
-        
+        <text_scenario_line_break>
         You have chosen to transport the US soldier and the kicker.
         A fellow squad member questions your most recent decision.
         Do you stick with your choice to add the kicker to the transport?
@@ -1379,7 +1379,7 @@ scenes:
         Back at the casualty collection point, there are three casualties who have not been fully treated.
         While applying a treatment to one of the patients, you were interrupted by a squad member shouting. The kicker who triggered the IED has slumped over and is gasping.
         You heard a commotion as the passerby fainted. One of your squad members told you that he is an insulin dependent diabetic. You also got a radio message saying that a new transport is coming that can take military or civilian casualties.
-        
+        <text_scenario_line_break>
         You have chosen to transport the passerby.
         You get another message from command.
         Do you want to switch and put the kicker on the helicopter instead?
@@ -1461,7 +1461,7 @@ scenes:
         Back at the casualty collection point, there are three casualties who have not been fully treated.
         While applying a treatment to one of the patients, you were interrupted by a squad member shouting. The kicker who triggered the IED has slumped over and is gasping.
         You heard a commotion as the passerby fainted. One of your squad members told you that he is an insulin dependent diabetic. You also got a radio message saying that a new transport is coming that can take military or civilian casualties.
-        
+        <text_scenario_line_break>
         You have chosen to transport the kicker.
         You get another message from command.
         Are you sure you want to put the kicker on the helicopter?
