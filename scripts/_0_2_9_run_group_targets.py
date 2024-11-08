@@ -1,7 +1,8 @@
 import requests
+from decouple import config 
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/"
-ST_URL = "https://darpaitm.caci.com/soartech/" 
+ADEPT_URL = config("ADEPT_DRE_URL")
+ST_URL = config("ST_DRE_URL")
 
 GROUP_TARGETS = {
     '20249204': ['ADEPT-DryRun-Ingroup Bias-Group-Low', 'ADEPT-DryRun-Moral judgement-Group-Low', 'qol-group-target-dre-2', 'vol-group-target-dre-2'],
@@ -47,19 +48,19 @@ def run_group_targets(mongoDB):
         if 'qol' in scenario_id or 'vol' in scenario_id:
             for x in GROUP_TARGETS.get(pid, []):
                 if ('qol' in x and 'qol' in scenario_id) or ('vol' in x and 'vol' in scenario_id):
-                    alignment = requests.get(f'{ST_URL}/api/v1/alignment/session?session_id={session_id}&target_id={x}').json().get('score')
+                    alignment = requests.get(f'{ST_URL}api/v1/alignment/session?session_id={session_id}&target_id={x}').json().get('score')
                     group_targets[x] = alignment
         else:   
             for x in GROUP_TARGETS.get(pid, []):
                 if 'ADEPT' in x:     
-                    alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={session_id}&target_id={x}&population=false').json()
+                    alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={session_id}&target_id={x}&population=false').json()
                     if (alignment.get('status', 400) == 500):
                         # ADEPT's server loses our data sometimes, so we might have to re-send probes
                         if pid in sessions_by_pid:
                             new_id = sessions_by_pid[pid]['sid']
                             sessions_by_pid[pid]['_ids'].append(data_id)
                         else:
-                            adept_sid = requests.post(f'{ADEPT_URL}/api/v1/new_session').text.replace('"', '').strip()
+                            adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
                             sessions_by_pid[pid] = {'sid': adept_sid, '_ids': [data_id]}
                             new_id = adept_sid
                         # collect probes
@@ -73,9 +74,9 @@ def run_group_targets(mongoDB):
                                         probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
                                     else:
                                         print('could not find response in mapping!', response, list(mapping.keys()))
-                        send_probes(f'{ADEPT_URL}/api/v1/response', probes, new_id, scenario_id)
+                        send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
                         # after probes are sent, get kdmas
-                        alignment = requests.get(f'{ADEPT_URL}/api/v1/alignment/session?session_id={new_id}&target_id={x}&population=false').json()
+                        alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={new_id}&target_id={x}&population=false').json()
                     group_targets[x] = alignment.get('score')
 
         # create object to add/update in database
