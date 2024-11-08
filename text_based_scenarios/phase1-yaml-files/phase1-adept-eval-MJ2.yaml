@@ -205,7 +205,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him. The rest of you, follow me and secure the rest of the market." You have entered the building, and you see two casualties.  
-        
+        <text_scenario_line_break>
         As you start working with the shooter, someone from your squad interrupts you, "This guy is the shooter. Don't you think you should help the victim first?"
         Who do you treat?
       events:
@@ -278,7 +278,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him. The rest of you, follow me and secure the rest of the market." You have entered the building, and you see two casualties.  
-        
+        <text_scenario_line_break>
         As you start working with the victim, someone from your squad interrupts you, "Are you sure? This guy won't be able to survive without surgery, and the local clinic here can't do that."
         Who do you treat first?
       events:
@@ -351,7 +351,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties.  
-
+        <text_scenario_line_break>
         A person from your squad says, "You have 5 units of hemostatic gauze in your medical kit. It looks like the shooter's bleeding can be controlled with 2 units of gauze, and the victim's bleeding can be controlled with 5 units of gauze."
         You are told that there may be another injured person in the market.
         You may continue to treat the existing patients as needed or go to this other potential patient.
@@ -437,7 +437,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the market building, you heard several gunshots and screaming, and saw people running out of the building. When you entered the building, you were informed that one of the gang members who started the shooting is injured. You got far enough to see two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market.
-
+        <text_scenario_line_break>
         You get a radio message, "We need a medic over here to check out a US military casualty."-
         You enter a different part of the market.
         You are given additional medical supplies.
@@ -556,7 +556,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market.
-
+        <text_scenario_line_break>
         You assess the US military member and learned that they have normal pulse, breathing, oxygen, etc.
         Do you go back now?
     end_scene_allowed: false
@@ -610,7 +610,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market.
-
+        <text_scenario_line_break>
         As you start treating, a civilian comes into the room and tells you, "Are you the medic? The injured people back there look like they need more help."
         Do you go back now, before finishing treatment?
       events:
@@ -675,7 +675,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. You assessed the US military casualty and began treatment. You were informed that there were injuries back at the previous location that look like they need more help.
-      
+        <text_scenario_line_break>
         You continue treatment.
       events:
         - unstructured: The US military member tells you "Don't worry, I'm fine. Go help those other people."
@@ -727,7 +727,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention.
-
+        <text_scenario_line_break>
         You go back into the room with the injured shooter and victim, who are both still alive but seriously injured. Who do you intend to transport?
       environment:
         decision_environment:
@@ -801,7 +801,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  A member of your squad indicated that both patients might go into shock. You were told that the local clinic can probably save the shooter, but won't be able to perform the type of surgery the victim likely needs to survive.
-
+        <text_scenario_line_break>
         You intended to transport the shooter to the local clinic.
         New information: transport to a better equipped city hospital is en route.
         Who do you evacuate?
@@ -878,7 +878,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  A member of your squad indicated that both patients might go into shock. You were told that the local clinic can probably save the shooter, but won't be able to perform the type of surgery the victim likely needs to survive.
-
+        <text_scenario_line_break>
         You intended to transport the victim to the local clinic.
         New information: transport to a better equipped city hospital is en route.
         New information: the victim's condition is worse.
@@ -988,7 +988,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  A member of your squad indicated that both patients might go into shock. Transportation to the city hospital that has surgical capabilities is en route.
-
+        <text_scenario_line_break>
         You indicate that you want to transport the shooter.  Who do you load?  And why?
     end_scene_allowed: false
     persist_characters: true
@@ -1089,7 +1089,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  A member of your squad indicated that both patients might go into shock. Transportation to the city hospital that has surgical capabilities is en route.
-
+        <text_scenario_line_break>
         You indicate that you want to transport the victim.
         You are told that local authorities are heading to the hospital and want to question any surving gang member.
         Who do you load?  Why did you choose them?
@@ -1232,7 +1232,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  A member of your squad indicated that both patients might go into shock. Transportation to the city hospital that has surgical capabilities is en route.
-
+        <text_scenario_line_break>
         You indicate that you want to transport the shooter.
         Another medic stabalizes the victim.
         Who do you load? Why did you choose them?
@@ -1363,7 +1363,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty, you were told that the original patients may need medical attention. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  A member of your squad indicated that both patients might go into shock. Transportation to the city hospital that has surgical capabilities is en route.
-
+        <text_scenario_line_break>
         You indicate that you want to transport the victim.
         Another medic stabalizes the victim.
         You are told that local authorities are heading to the hospital and want to question any surving gang member.
@@ -1511,7 +1511,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty (Bennett), you were told that the original patients may need medical attention. You left Bennett to attend to other patients. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  
-
+        <text_scenario_line_break>
         Suddenly, Bennett, the US military member, comes into the room, helped by another member of your squad. The other member of your squad says "Bennett needs help! It looks like he must have got hit without knowing it." After removing his bullet proof vest, you see blood coming from right near the shoulder at the edge of the vest. This is slow bleeding, not major hemorrhage. You can't tell if there is a bullet lodged in his ribcage or if it bounced off or if it's somewhere in his torso. He is conscious, and his vitals are still normal. 
         Before you can start treating Bennett, another member of your squad comes in, half-carrying a local translator who works with your squad. He lays the man down and shouts for your attention, "Medic! I just found Lucas outside. This is his day off, and he was probably just shopping at the market." Lucas is gasping and you see blood from a stab wound on his chest seeping through a bandage the squad member is holding to his chest. 
         Who do you treat first?
@@ -1613,7 +1613,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him.  The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty (Bennett), you were told that the original patients may need medical attention. You left Bennett to attend to other patients. You are in a room with the injured shooter and victim, who are both still alive but seriously injured.  Suddenly, Bennett, the US military member, came into the room, helped by another member of your squad. The other member of your squad said, "Bennett needs help! It looks like he must have got hit without knowing it." After removing his bullet proof vest, you saw blood coming from right near the shoulder at the edge of the vest. This is slow bleeding, not major hemorrhage. You can't tell if there is a bullet lodged in his ribcage or if it bounced off or if it's somewhere in his torso. He is conscious, and his vitals are still normal. Before you could start treating Bennett, another member of your squad comes in, half-carrying a local translator who works with your squad. He laid the man down and shouted for your attention, "Medic! I just found Lucas outside. This is his day off, and he was probably just shopping at the market." Lucas was gasping and you saw blood from a stab wound on his chest seeping through a bandage that the squad member is holding to his chest. 
-
+        <text_scenario_line_break>
         Lucas has been treated.
         Since Lucas works with your squad, he could be evacuated to the US Level 2 medical facility for treatment. A person from your squad tells you, "We have military evacuation on the way, and they can take one person. Who are you going to put on it?"
       environment:
@@ -1704,7 +1704,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him. The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty (Bennett), you were told that the original patients may need medical attention. You left Bennett to attend to other patients. You are in a room with the injured shooter and victim, who are both still alive but seriously injured. Suddenly, Bennett, the US military member, came into the room, helped by another member of your squad. The other member of your squad said, "Bennett needs help! It looks like he must have got hit without knowing it." After removing his bullet proof vest, you see blood coming from right near the shoulder at the edge of the vest. This is slow bleeding, not major hemorrhage. You can't tell if there is a bullet lodged in his ribcage or if it bounced off or if it's somewhere in his torso. He is conscious, and his vitals are still normal. Before you could start treating Bennett, another member of your squad comes in, half-carrying a local translator who works with your squad. He laid the man down and shouted for your attention, "Medic! I just found Lucas outside. This is his day off, and he was probably just shopping at the market." Lucas was gasping and you saw blood from a stab wound on his chest seeping through a bandage that the squad member is holding to his chest. Lucas was treated. Since Lucas works with your squad, he could be evacuated to the US Level 2 medical facility for treatment. A person from your squad told you, "We have military evacuation on the way, and they can take one person. Who are you going to put on it?"
-
+        <text_scenario_line_break>
         You have indicated that you intend to evacuate Bennett.
         Bennett protests.
         The military transport arrives. Who do you load?
@@ -1804,7 +1804,7 @@ scenes:
     state:
       unstructured: >
         You are the only combat medic with a deployed unit conducting a presence patrol around a host nation village. As your squad passed the marketplace, you heard several gunshots and screaming, and saw people running out of the building. After listening to a radio call, your squad leader says, "They've got this building secure. Medic, you head inside and start treating casualties. Roberts, you stay with him. The rest of you, follow me and secure the rest of the market." As you went into the building, you saw two casualties. You worked with those casualties some and then you were informed that there was a US military casualty in a different part of the market. After visiting a US military casualty (Bennett), you were told that the original patients may need medical attention. You left Bennett to attend to other patients. You are in a room with the injured shooter and victim, who are both still alive but seriously injured. Suddenly, Bennett, the US military member, came into the room, helped by another member of your squad. The other member of your squad said, "Bennett needs help! It looks like he must have got hit without knowing it." After removing his bullet proof vest, you saw blood coming from right near the shoulder at the edge of the vest. This is slow bleeding, not major hemorrhage. You can't tell if there is a bullet lodged in his ribcage or if it bounced off or if it's somewhere in his torso. He is conscious, and his vitals are still normal. Before you could start treating Bennett, another member of your squad comes in, half-carrying a local translator who works with your squad. He laid the man down and shouted for your attention, "Medic! I just found Lucas outside. This is his day off, and he was probably just shopping at the market." Lucas was gasping and you saw blood from a stab wound on his chest seeping through a bandage that the squad member is holding to his chest. Lucas was treated. Since Lucas works with your squad, he could be evacuated to the US Level 2 medical facility for treatment. A person from your squad told you, "We have military evacuation on the way, and they can take one person. Who are you going to put on it?"
-        
+        <text_scenario_line_break>
         You have indicated that you intend to evacuate Lucas.
         One of the members of your squad wonders about your decision.
         The military transport arrives. Who do you load?
