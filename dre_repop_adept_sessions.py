@@ -126,26 +126,26 @@ def main():
     client = MongoClient(MONGO_URL)
     mongoDB = client['dashboard']
 
-    # print("Repopulating ADEPT Text/ADM Sessions")
-    # update_adept_text_adm_sessions(mongoDB)
+    print("Repopulating ADEPT Text/ADM Sessions")
+    update_adept_text_adm_sessions(mongoDB)
 
-    # print("Clean intermediate collections")
-    # delegationADMRuns_cur = mongoDB['delegationADMRuns']
-    # delegationADMRuns_cur.drop()
-    # humanToADMComparison_cur = mongoDB['humanToADMComparison']
-    # humanToADMComparison_cur.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}})
+    print("Clean intermediate collections")
+    delegationADMRuns_cur = mongoDB['delegationADMRuns']
+    delegationADMRuns_cur.drop()
+    humanToADMComparison_cur = mongoDB['humanToADMComparison']
+    humanToADMComparison_cur.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}})
 
-    # print("Rerunning `get_text_scenario_kdmas`")
-    # get_text_scenario_kdmas(mongoDB)
+    print("Rerunning `get_text_scenario_kdmas`")
+    get_text_scenario_kdmas(mongoDB)
 
-    # print("Rerunning `compare_probes`")
-    # compare_probes(mongoDB)
+    print("Rerunning `compare_probes`")
+    compare_probes(mongoDB)
 
-    # print("Rerunning `run_group_targets`")
-    # run_group_targets(mongoDB)
+    print("Rerunning `run_group_targets`")
+    run_group_targets(mongoDB)
 
-    # print("Rerunning `find_matching_probe_percentage`")
-    # find_matching_probe_percentage(mongoDB)
+    print("Rerunning `find_matching_probe_percentage`")
+    find_matching_probe_percentage(mongoDB)
 
     print("Rerunning `fix_participant_id`")
     fix_participant_id(mongoDB)        
