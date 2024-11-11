@@ -504,22 +504,11 @@ scenes:
     action_mapping:
       - action_id: go_back_to_Shooter
         action_type: MOVE_TO
-        unstructured: Go back to the more seriously injured patients.
+        unstructured: Go back to the previous patients.
         character_id: Shooter
         probe_id: Probe 4
         choice: Response 4-A
         next_scene: Scene 4
-        kdma_association:
-          Ingroup Bias: 0.4
-      - action_id: go_back_to_Victim
-        action_type: MOVE_TO
-        unstructured: Go back to the more seriously injured casualties.
-        character_id: Victim
-        probe_id: Probe 4
-        choice: Response 4-A
-        next_scene: Scene 4
-        kdma_association:
-          Ingroup Bias: 0.4
       - action_id: assess_US_military_member
         action_type: CHECK_ALL_VITALS
         unstructured: Assess the US military casualty.
@@ -527,8 +516,6 @@ scenes:
         probe_id: Probe 4
         choice: Response 4-B
         next_scene: Probe 4-B.1
-        kdma_association:
-          Ingroup Bias: 0.7
     restricted_actions:
       - APPLY_TREATMENT
       - CHECK_BLOOD_OXYGEN
