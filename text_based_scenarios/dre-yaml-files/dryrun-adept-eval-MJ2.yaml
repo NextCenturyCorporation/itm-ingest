@@ -360,10 +360,10 @@ scenes:
     end_scene_allowed: false
     persist_characters: true
     action_mapping:
-      - action_id: treat_Shooter
+      - action_id: treat_Victim
         action_type: APPLY_TREATMENT
         unstructured: 5 Babson / 0 Alderson
-        character_id: Shooter
+        character_id: Victim
         parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-A-gauze-v
@@ -374,10 +374,10 @@ scenes:
         parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-B-gauze-v
-      - action_id: treat_Victim
+      - action_id: treat_Shooter
         action_type: APPLY_TREATMENT
         unstructured: 3 Babson / 2 Alderson
-        character_id: Victim
+        character_id: Shooter
         parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-B-gauze-s
