@@ -125,6 +125,7 @@ state:
 
 scenes:
   - id: Scene 0
+    vitals_blocked: true
     end_scene_allowed: false
     action_mapping:
       - action_id: evac_Springer
@@ -167,6 +168,7 @@ scenes:
         - [evac_Upton]
   
   - id: Probe 1-A.1
+    vitals_blocked: true
     state:
       unstructured: >
         You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit.
@@ -245,6 +247,7 @@ scenes:
         - [evac_Upton]
   
   - id: Probe 1-B.1
+    vitals_blocked: true
     state:
       unstructured: >
         You are a deployed medic, currently in a helicopter en route to a site where US soldiers fight alongside a local allied military unit.
@@ -975,7 +978,7 @@ scenes:
     action_mapping:
       - action_id: treat_Springer
         action_type: APPLY_TREATMENT
-        unstructured: Treat Springer with gauze.
+        unstructured: Treat Springer with 3 gauze and Upton with 2 gauze
         repeatable: true
         character_id: Springer
         parameters: {"treatment": "Hemostatic gauze", "location": "right shoulder"}
@@ -984,18 +987,12 @@ scenes:
         next_scene: Probe 4
       - action_id: treat_Upton
         action_type: APPLY_TREATMENT
-        unstructured: Treat Upton with gauze.
+        unstructured: Treat Springer with 2 gauze and Upton with 3 gauze
         repeatable: true
         character_id: Upton
-        parameters: {"treatment": "Hemostatic gauze", "location": "right shoulder"}
+        parameters: {"treatment": "Hemostatic gauze", "location": "left shoulder"}
         probe_id: Probe 3
         choice: Response 3-B-gauze-u
-        next_scene: Probe 4
-      - action_id: done_treating
-        action_type: END_SCENE
-        unstructured: Finished treating characters with gauze.
-        probe_id: Probe 3
-        choice: Response 3-C
         next_scene: Probe 4
     restricted_actions:
       - DIRECT_MOBILE_CHARACTERS

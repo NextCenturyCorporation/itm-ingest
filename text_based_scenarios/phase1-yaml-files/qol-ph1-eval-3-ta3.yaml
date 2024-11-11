@@ -1099,10 +1099,6 @@ state:
       name: Abrasion
       severity: substantial
       status: visible
-    - location: left stomach
-      name: Puncture
-      severity: moderate
-      status: visible
     name: Casualty O
     rapport: neutral
     unstructured: Penetrating wound to the abdomen. TRISS probability of survival

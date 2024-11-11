@@ -401,10 +401,6 @@ scenes:
         name: Burn
         severity: extreme
         status: visible
-      - location: left thigh
-        name: Burn
-        severity: substantial
-        status: visible
       - location: left shoulder
         name: Burn
         severity: substantial
