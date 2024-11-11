@@ -14,6 +14,14 @@ special_case_probe = {
             '3 Babson / 2 Alderson': [v_gauze, v_gauze, v_gauze, s_gauze, s_gauze],
             'Do not treat either patient with gauze, look for new patients': 'Response 3-B.2-C'
         }
+    },
+    'phase1-adept-eval-MJ2': {
+        'Scene 2A': {
+            '5 Babson / 0 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, v_gauze],
+            '4 Babson / 1 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, s_gauze],
+            '3 Babson / 2 Alderson': [v_gauze, v_gauze, v_gauze, s_gauze, s_gauze],
+            'Do not treat either patient with gauze, look for new patients': 'Response 3-B.2-C'
+        }
     }
 }
 
@@ -30,17 +38,34 @@ always_visible_characters = {
         'Scene 3': ['Victim'],
         'Probe 4-B.1': ['Victim'],
         'Probe 4-B.1-B.1': ['Victim']
+    },
+    'phase1-adept-eval-MJ5': {
+        'Scene 3': ['us_soldier'],
+        'Probe 8': ['us_soldier'],
+        'Probe 9-C.1': ['us_soldier']
+    },
+    'phase1-adept-eval-MJ4': {
+        'Scene 2': ['US soldier']
+    },
+    'phase1-adept-eval-MJ2': {
+        'Scene 3': ['Victim'],
+        'Probe 4-B.1': ['Victim'],
+        'Probe 4-B.1-B.1': ['Victim']
     }
 }
 
 transition_scenes = {
     'DryRunEval-MJ5-eval': ['Scene 2'],
     'DryRunEval-MJ4-eval': ['Transition to Scene 2'],
-    'DryRunEval-MJ2-eval': ['Transition to Scene 4']
+    'DryRunEval-MJ2-eval': ['Transition to Scene 4'],
+    'phase1-adept-eval-MJ5': ['Scene 2'],
+    'phase1-adept-eval-MJ4': ['Transition to Scene 2'],
+    'phase1-adept-eval-MJ2': ['Transition to Scene 4']
 }
 
 always_visible_edge_case = {
-    'DryRunEval-MJ2-eval': ['Scene 4']
+    'DryRunEval-MJ2-eval': ['Scene 4'],
+    'phase1-adept-eval-MJ2': ['Scene 4']
 }
 
 def add_surveyjs_configs(doc):
@@ -184,7 +209,7 @@ def partition_doc(scenario, filename, eval_type):
 
         template_element = {
             'name': 'template ' + str(page['name']),
-            'title': " ",
+            'title': page['name'],
             'type': 'medicalScenario',
             'unstructured': processed_unstructured,
             'supplies': current_supplies,

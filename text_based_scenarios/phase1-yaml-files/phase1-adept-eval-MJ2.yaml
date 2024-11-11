@@ -389,37 +389,30 @@ scenes:
     end_scene_allowed: false
     persist_characters: true
     action_mapping:
-      - action_id: treat_Shooter
-        action_type: APPLY_TREATMENT
-        unstructured: Apply gauze to the shooter.
-        repeatable: true
-        character_id: Shooter
-        parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
-        probe_id: Probe 3-B.2
-        choice: Response 3-B.2-A-gauze-s
-        kdma_association:
-          Moral judgement: 0.4  # this is just a stand-in, the actual KDMA depends on how many times this is performed
       - action_id: treat_Victim
         action_type: APPLY_TREATMENT
-        unstructured: Apply gauze to the victim.
-        repeatable: true
+        unstructured: 5 Babson / 0 Alderson
+        character_id: Victim
+        parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
+        probe_id: Probe 3-B.2
+        choice: Response 3-B.2-A-gauze-v
+      - action_id: treat_Victim
+        action_type: APPLY_TREATMENT
+        unstructured: 4 Babson / 1 Alderson
         character_id: Victim
         parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-B-gauze-v
-        kdma_association:
-          Moral judgement: 0.6  # this is just a stand-in, the actual KDMA depends on how many times this is performed
-      - action_id: go to US military member
-        action_type: MOVE_TO
-        unstructured: Done treating these existing patients for now.  Go to the US military member.
-        repeatable: false
-        character_id: US military member
+      - action_id: treat_Shooter
+        action_type: APPLY_TREATMENT
+        unstructured: 3 Babson / 2 Alderson
+        character_id: Shooter
+        parameters: {"treatment": "Hemostatic gauze", "location": "left side"}
         probe_id: Probe 3-B.2
-        choice: Response 3-B.2-C
+        choice: Response 3-B.2-B-gauze-s
       - action_id: search
         action_type: SEARCH
-        unstructured: Done treating these existing patients for now.  Go look for other patients.
-        repeatable: false
+        unstructured: Do not treat either patient with gauze, look for new patients
         probe_id: Probe 3-B.2
         choice: Response 3-B.2-C
     restricted_actions:
