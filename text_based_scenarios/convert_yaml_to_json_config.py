@@ -180,7 +180,7 @@ def partition_doc(scenario, filename, eval_type):
         scene_characters = get_scene_characters(scene)
 
         # Soartech always wants vitals visible
-        if 'soartech' in filename.lower():
+        if 'qol' in filename.lower() or 'vol' in filename.lower():
             blocked_vitals = [] 
             for char in scene_characters:
                 if 'vitals' in char and 'mental_status' in char['vitals']:
