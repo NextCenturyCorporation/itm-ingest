@@ -355,6 +355,7 @@ scenes:
         A person from your squad says, "You have 5 units of hemostatic gauze in your medical kit. It looks like the shooter's bleeding can be controlled with 2 units of gauze, and the victim's bleeding can be controlled with 5 units of gauze."
         You are told that there may be another injured person in the market.
         You may continue to treat the existing patients as needed or go to this other potential patient.
+        How do you allocate the 5 units of gauze you have available?
       events:
         - unstructured: A civilian bystander passes through the room and says, "I think there might be someone injured over in the other part of the market."
           type: inform
