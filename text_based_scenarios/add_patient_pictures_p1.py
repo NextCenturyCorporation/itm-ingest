@@ -21,7 +21,9 @@ def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     picture_folder = os.path.join(current_dir, "phase-1-st-screenshots")
 
-    documents_to_insert = []
+    processed_count = 0
+    updated_count = 0
+    inserted_count = 0
 
     for root, dirs, files in os.walk(picture_folder):
         for file in files:
@@ -29,7 +31,6 @@ def main():
             casualty_id = os.path.splitext(file)[0]
 
             folder_name = os.path.basename(root)
-
             scenario_id = folder_to_scenario_mappings.get(folder_name, "unknown")
 
             # convert to byte code
@@ -42,15 +43,27 @@ def main():
                 "scenarioId": scenario_id,
             }
 
-            documents_to_insert.append(document)
-            print(
-                f"Processed {file} with casualtyId: {casualty_id}, scenarioId: {scenario_id}"
+            result = textbased_images_collection.update_one(
+                {
+                    "casualtyId": casualty_id,
+                    "scenarioId": scenario_id
+                },
+                {"$set": document},
+                upsert=True
             )
 
-    if documents_to_insert:
-        result = textbased_images_collection.insert_many(documents_to_insert)
-    else:
-        print("No documents to insert.")
+            processed_count += 1
+            if result.matched_count > 0:
+                updated_count += 1
+                print(f"Updated document for casualtyId: {casualty_id}, scenarioId: {scenario_id}")
+            else:
+                inserted_count += 1
+                print(f"Inserted new document for casualtyId: {casualty_id}, scenarioId: {scenario_id}")
+
+    print(f"\nProcessing complete:")
+    print(f"Total files processed: {processed_count}")
+    print(f"Documents updated: {updated_count}")
+    print(f"Documents inserted: {inserted_count}")
 
 
 if __name__ == "__main__":
