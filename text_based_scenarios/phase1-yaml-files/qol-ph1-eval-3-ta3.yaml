@@ -107,21 +107,21 @@ scenes:
         status: visible
       - location: left calf
         name: Laceration
-        severity: substantial
+        severity: minor
         status: visible
       name: Casualty U
       rapport: neutral
       unstructured: Has a head injury with periorbital ecchymosis. TRISS probability
-        of survival estimate of 51% if treated immediately.
+        of survival estimate of 44% if treated immediately.
       visited: true
       vitals:
         ambulatory: false
         avpu: UNRESPONSIVE
-        breathing: NORMAL
+        breathing: NONE
         heart_rate: FAST
         mental_status: UNRESPONSIVE
         spo2: NORMAL
-        triss: 51
+        triss: 44
     - demographics:
         age: 34
         military_branch: US Marine Corps
@@ -134,7 +134,7 @@ scenes:
         skills: []
       id: casualty_w
       injuries:
-      - location: right thigh
+      - location: left bicep
         name: Puncture
         severity: extreme
         status: visible
@@ -148,8 +148,8 @@ scenes:
         status: visible
       name: Casualty W
       rapport: neutral
-      unstructured: Has a gunshot wound to the shoulder with severe bleeding. TRISS
-        probability of survival estimate of 58% if treated immediately.
+      unstructured: Has a gunshot wound to the arm with severe bleeding. TRISS probability
+        of survival estimate of 58% if treated immediately.
       visited: true
       vitals:
         ambulatory: true

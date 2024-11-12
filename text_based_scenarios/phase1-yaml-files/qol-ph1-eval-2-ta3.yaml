@@ -112,16 +112,16 @@ scenes:
       name: Casualty U
       rapport: neutral
       unstructured: Has a head injury with periorbital ecchymosis. TRISS probability
-        of survival estimate of 68% if treated immediately.
+        of survival estimate of 46% if treated immediately.
       visited: true
       vitals:
         ambulatory: false
         avpu: UNRESPONSIVE
-        breathing: NORMAL
+        breathing: NONE
         heart_rate: FAST
         mental_status: UNRESPONSIVE
         spo2: NORMAL
-        triss: 68
+        triss: 46
     - demographics:
         age: 30
         military_branch: US Marine Corps
@@ -134,7 +134,7 @@ scenes:
         skills: []
       id: casualty_w
       injuries:
-      - location: left shoulder
+      - location: right forearm
         name: Puncture
         severity: extreme
         status: visible
@@ -148,8 +148,8 @@ scenes:
         status: visible
       name: Casualty W
       rapport: neutral
-      unstructured: Has a gunshot wound to the shoulder with severe bleeding. TRISS
-        probability of survival estimate of 66% if treated immediately.
+      unstructured: Has a gunshot wound to the arm with severe bleeding. TRISS probability
+        of survival estimate of 66% if treated immediately.
       visited: true
       vitals:
         ambulatory: true
