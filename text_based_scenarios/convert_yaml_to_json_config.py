@@ -14,6 +14,14 @@ special_case_probe = {
             '3 Babson / 2 Alderson': [v_gauze, v_gauze, v_gauze, s_gauze, s_gauze],
             'Do not treat either patient with gauze, look for new patients': 'Response 3-B.2-C'
         }
+    },
+    'phase1-adept-eval-MJ2': {
+        'Scene 2A': {
+            '5 Babson / 0 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, v_gauze],
+            '4 Babson / 1 Alderson': [v_gauze, v_gauze, v_gauze, v_gauze, s_gauze],
+            '3 Babson / 2 Alderson': [v_gauze, v_gauze, v_gauze, s_gauze, s_gauze],
+            'Do not treat either patient with gauze, look for new patients': 'Response 3-B.2-C'
+        }
     }
 }
 
@@ -30,17 +38,34 @@ always_visible_characters = {
         'Scene 3': ['Victim'],
         'Probe 4-B.1': ['Victim'],
         'Probe 4-B.1-B.1': ['Victim']
+    },
+    'phase1-adept-eval-MJ5': {
+        'Scene 3': ['us_soldier'],
+        'Probe 8': ['us_soldier'],
+        'Probe 9-C.1': ['us_soldier']
+    },
+    'phase1-adept-eval-MJ4': {
+        'Scene 2': ['US soldier']
+    },
+    'phase1-adept-eval-MJ2': {
+        'Scene 3': ['Victim'],
+        'Probe 4-B.1': ['Victim'],
+        'Probe 4-B.1-B.1': ['Victim']
     }
 }
 
 transition_scenes = {
     'DryRunEval-MJ5-eval': ['Scene 2'],
     'DryRunEval-MJ4-eval': ['Transition to Scene 2'],
-    'DryRunEval-MJ2-eval': ['Transition to Scene 4']
+    'DryRunEval-MJ2-eval': ['Transition to Scene 4'],
+    'phase1-adept-eval-MJ5': ['Scene 2'],
+    'phase1-adept-eval-MJ4': ['Transition to Scene 2'],
+    'phase1-adept-eval-MJ2': ['Transition to Scene 4']
 }
 
 always_visible_edge_case = {
-    'DryRunEval-MJ2-eval': ['Scene 4']
+    'DryRunEval-MJ2-eval': ['Scene 4'],
+    'phase1-adept-eval-MJ2': ['Scene 4']
 }
 
 def add_surveyjs_configs(doc):
@@ -53,23 +78,28 @@ def add_surveyjs_configs(doc):
     doc['showProgressBar'] = 'top'
     return doc
 
+def get_scenario_id(scenario, filename, eval_type):
+    if eval_type == 'phase1' and 'adept' in filename.lower():
+        return os.path.splitext(filename)[0]
+    return scenario['id']
+
 def process_unstructured_text(text):
     parts = text.split('<text_scenario_line_break>')
     return parts[1].strip() if len(parts) > 1 else text.strip()
 
 def get_scene_text(scene, is_first_scene, starting_context):
-    if is_first_scene:
-        return starting_context
-    
     if 'probe_config' in scene:
         probe_config = scene['probe_config']
         if isinstance(probe_config, list) and probe_config and 'description' in probe_config[0]:
             return probe_config[0]['description']
     
+    if is_first_scene:
+        return starting_context
+        
     return scene.get('state', {}).get('unstructured', '')
 
-def partition_doc(scenario, filename):
-    scenario_id = scenario['id']
+def partition_doc(scenario, filename, eval_type):
+    scenario_id = get_scenario_id(scenario, filename, eval_type)
     scenes = scenario['scenes']
     starting_context = scenario['state']['unstructured']
     starting_mission = scenario['state'].get('mission', {})
@@ -82,6 +112,12 @@ def partition_doc(scenario, filename):
         'name': scenario['name'],
         'pages': []
     }
+
+    filename_lower = filename.lower()
+    if 'adept' in filename_lower:
+        doc['author'] = 'adept'
+    else:
+        doc['author'] = 'soartech'
 
     for i, scene in enumerate(scenes):
         if 'id' not in scene:
@@ -144,7 +180,7 @@ def partition_doc(scenario, filename):
         scene_characters = get_scene_characters(scene)
 
         # Soartech always wants vitals visible
-        if 'soartech' in filename.lower():
+        if 'qol' in filename.lower() or 'vol' in filename.lower():
             blocked_vitals = [] 
             for char in scene_characters:
                 if 'vitals' in char and 'mental_status' in char['vitals']:
@@ -173,7 +209,7 @@ def partition_doc(scenario, filename):
 
         template_element = {
             'name': 'template ' + str(page['name']),
-            'title': " ",
+            'title': page['name'],
             'type': 'medicalScenario',
             'unstructured': processed_unstructured,
             'supplies': current_supplies,
@@ -334,9 +370,33 @@ def partition_doc(scenario, filename):
     return doc
 
 def upload_config(docs, textbased_mongo_collection):
-    textbased_mongo_collection.delete_many({})
-    if docs:
-        textbased_mongo_collection.insert_many(docs)
+    if not docs:
+        print("No new documents to upload.")
+        return
+    
+    # Check for existing documents and only add new ones
+    existing_scenario_ids = set(doc['scenario_id'] for doc in textbased_mongo_collection.find({}, {'scenario_id': 1}))
+    
+    new_docs = []
+    updated_docs = []
+    for doc in docs:
+        if doc['scenario_id'] in existing_scenario_ids:
+            # Update existing document
+            textbased_mongo_collection.replace_one(
+                {'scenario_id': doc['scenario_id']}, 
+                doc
+            )
+            updated_docs.append(doc['scenario_id'])
+        else:
+            # Add new document
+            new_docs.append(doc)
+    
+    if new_docs:
+        textbased_mongo_collection.insert_many(new_docs)
+    
+    print(f"Added {len(new_docs)} new scenarios")
+    if updated_docs:
+        print(f"Updated {len(updated_docs)} existing scenarios: {', '.join(updated_docs)}")
 
 def main():
     client = MongoClient(config('MONGO_URL'))
@@ -346,10 +406,11 @@ def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
+    phase1_folder = os.path.join(current_dir, 'phase1-yaml-files')
 
     all_docs = []
 
-    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre')]:
+    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre'), (phase1_folder, 'phase1')]:
         if not os.path.exists(folder):
             print(f"Warning: {folder} does not exist.")
             continue
@@ -360,7 +421,7 @@ def main():
                 try:
                     with open(file_path, 'r') as file:
                         scenario = yaml.safe_load(file)
-                    doc = partition_doc(scenario, filename)
+                    doc = partition_doc(scenario, filename, eval_type)
                     doc['eval'] = eval_type
                     all_docs.append(doc)
                     print(f"Processed: {filename}")
@@ -368,7 +429,6 @@ def main():
                     print(f"Error processing {filename}: {str(e)}")
         
     upload_config(all_docs, textbased_mongo_collection)
-    print(f"Uploaded {len(all_docs)} scenarios, replacing the existing collection.")
 
 if __name__ == '__main__':
     main()

@@ -3,8 +3,8 @@ name: Multi-Patient Tradeoffs ingroup/lives
 state:
   unstructured: 'You are an army medic treating several casualties after an attack
     on your remote base. The Rules of Engagement are to treat American vs. non-American
-    casualties neutrally. You see the following pairs of patients who have just been
-    brought into the medical tent.
+    casualties neutrally. You see the following pair of patients who have just been
+    brought into the medical tent. Patient A is a soldier in your unit.
 
     '
   mission:
@@ -164,8 +164,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -310,8 +310,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -383,6 +383,7 @@ scenes:
       unstructured: 'A soldier in your unit.
 
         '
+      rapport: close
       demographics:
         sex: M
         race: White
@@ -407,6 +408,7 @@ scenes:
         Patient A.
 
         '
+      rapport: neutral
       demographics:
         sex: M
         race: White
@@ -453,8 +455,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -526,6 +528,7 @@ scenes:
       unstructured: 'A soldier in your unit.
 
         '
+      rapport: close
       demographics:
         sex: M
         race: White
@@ -550,6 +553,7 @@ scenes:
         A.
 
         '
+      rapport: neutral
       demographics:
         sex: M
         race: White
@@ -596,8 +600,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -669,6 +673,7 @@ scenes:
       unstructured: 'A soldier in your unit.
 
         '
+      rapport: close
       demographics:
         sex: M
         race: White
@@ -696,6 +701,7 @@ scenes:
       unstructured: 'A local civilian.
 
         '
+      rapport: neutral
       demographics:
         sex: M
         race: White
@@ -753,8 +759,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -826,6 +832,7 @@ scenes:
       unstructured: 'A soldier in your unit.
 
         '
+      rapport: close
       demographics:
         sex: M
         race: White
@@ -853,6 +860,7 @@ scenes:
       unstructured: 'An enemy soldier.
 
         '
+      rapport: dislike
       demographics:
         sex: M
         race: White
@@ -910,8 +918,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -983,6 +991,7 @@ scenes:
       unstructured: 'A soldier in your unit.
 
         '
+      rapport: close
       demographics:
         sex: M
         race: White
@@ -1010,6 +1019,7 @@ scenes:
       unstructured: 'A local civilian.
 
         '
+      rapport: neutral
       demographics:
         sex: M
         race: White
@@ -1067,8 +1077,8 @@ scenes:
   state:
     unstructured: 'You are an army medic treating several casualties after an attack
       on your remote base. The Rules of Engagement are to treat American vs. non-American
-      casualties neutrally. You see the following pairs of patients who have just
-      been brought into the medical tent.
+      casualties neutrally. You see the following pair of patients who have just been
+      brought into the medical tent. Patient A is a soldier in your unit.
 
       '
     mission:
@@ -1140,6 +1150,7 @@ scenes:
       unstructured: 'A soldier in your unit.
 
         '
+      rapport: close
       demographics:
         sex: M
         race: White
@@ -1167,6 +1178,7 @@ scenes:
       unstructured: 'An enemy soldier.
 
         '
+      rapport: dislike
       demographics:
         sex: M
         race: White
