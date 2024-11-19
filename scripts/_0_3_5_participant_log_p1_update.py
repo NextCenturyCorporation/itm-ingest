@@ -9,7 +9,7 @@ def participant_log_p1_update(mongo_db):
 
     example_civ = {
         'Type': 'Civ',
-        'ParticipantID': 202411101,
+        'ParticipantID': 202411401,
         'Text-1': 'AD-1',
         'Text-2': 'ST-1',
         'Sim-1': 'AD-2',
@@ -25,7 +25,7 @@ def participant_log_p1_update(mongo_db):
 
     example_mil = {
         'Type': 'Mil',
-        'ParticipantID': 2024011101,
+        'ParticipantID': 202411301,
         'Text-1': 'AD-1',
         'Text-2': 'ST-1',
         'Sim-1': 'AD-2',
