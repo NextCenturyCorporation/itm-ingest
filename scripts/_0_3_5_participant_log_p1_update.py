@@ -23,4 +23,4 @@ def participant_log_p1_update(mongo_db):
         'textEntryCount': 0 
     }
     
-    participant_log.insert_many([example_civ, example_mil])
+    participant_log.insert_many([example_civ])
