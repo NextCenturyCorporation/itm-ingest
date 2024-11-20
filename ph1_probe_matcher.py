@@ -209,13 +209,13 @@ class ProbeMatcher:
         if 'Open World' in env:
             pass
         elif 'qol' in env or 'vol' in env:
-            self.soartech_file = open(os.path.join(os.path.join("soartech-evals", "eval4"), env), 'r', encoding='utf-8')
+            self.soartech_file = open(os.path.join(os.path.join("phase1", "scenarios"), env), 'r', encoding='utf-8')
             try:
                 self.soartech_yaml = yaml.load(self.soartech_file, Loader=yaml.CLoader)
             except Exception as e:
                 self.logger.log(LogLevel.ERROR, "Error while loading in soartech yaml file. Please ensure the file is a valid yaml format and try again.\n\n" + str(e) + "\n")
         else:
-            self.adept_file = open(os.path.join(os.path.join("adept-evals", "eval4"), env), 'r', encoding='utf-8')
+            self.adept_file = open(os.path.join(os.path.join("phase1", "scenarios"), env), 'r', encoding='utf-8')
             try:
                 self.adept_yaml = yaml.load(self.adept_file, Loader=yaml.CLoader)
             except Exception as e:
@@ -536,7 +536,6 @@ class ProbeMatcher:
         total = 0
         found = 0
         updated_json = copy.deepcopy(self.json_data) # so we can update with missing probes
-        actions_added = 0
         # ST has no branching, so we can just go straight through the scenes
         for scene in soartech_scenes:
             actions = {} # {"Treatment": {"v": probe, "x": probe}, "Vitals": {"v": probe, "x": probe}, "Intent": {"v": probe, "x": probe}, etc}
