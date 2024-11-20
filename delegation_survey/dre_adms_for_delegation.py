@@ -533,7 +533,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         first_supplies = []
         mission = None 
         current_probe_id = None
-        last_action_index = -1
+        last_probe_index = 0
 
         try:
             if document['history'][0]['command'] == 'Start Scenario':
@@ -564,10 +564,16 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                 current_probe_id = action.get('parameters', {}).get('probe_id')
                 probe_choice = action.get('parameters', {}).get('choice', '')
 
-                if last_action_index >= 0:
-                    action_set[last_action_index]['probe_id'] = current_probe_id
-                    if len(cur_scene['actions']) > 0:
-                        cur_scene['actions'][-1]['probe_id'] = current_probe_id
+                
+                for i in range(last_probe_index + 1, len(action_set)):
+                    action_set[i]['probe_id'] = current_probe_id
+
+                if len(cur_scene['actions']) > 0:
+                    for i in range(len(cur_scene['actions'])):
+                        cur_scene['actions'][i]['probe_id'] = current_probe_id
+
+                last_probe_index = len(action_set) - 1
+                
     
                 if doc_id in probe_updates and probe_choice in probe_updates[env_map[doc_id]['id']]:
                     for x in probe_updates[env_map[doc_id]['id']][probe_choice]:
@@ -662,7 +668,6 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                     printable = ('<HIGHLIGHT>' if highlight_action else '') + printable
                     action_set.append({'text': printable, 'probe_id': current_probe_id})
                     cur_scene['actions'].append({'text': printable, 'probe_id': current_probe_id})
-                    last_action_index = len(action_set) - 1
             # fill out alignment targets and adm names from end data
             if action['command'] == 'Scenario ended':
                 action_set[0]['text'] = f"ADM - {action['parameters']['scenario_id']}"
