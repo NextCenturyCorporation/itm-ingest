@@ -606,13 +606,14 @@ class ProbeMatcher:
         st_align = {}
         if RUN_ALIGNMENT:
             try:
-                targets = ['vol-human-8022671-SplitHighMulti', 'qol-human-2932740-HighExtreme', 'vol-human-1774519-SplitHighMulti', 'qol-human-6349649-SplitHighMulti', 
-                        'vol-human-6403274-SplitEvenBinary', 'qol-human-3447902-SplitHighMulti', 'vol-human-7040555-SplitEvenBinary', 'qol-human-7040555-SplitHighMulti', 
-                        'vol-human-2637411-SplitEvenMulti', 'qol-human-3043871-SplitHighBinary', 'vol-human-2932740-SplitEvenMulti', 'qol-human-6403274-SplitHighBinary', 
-                        'vol-human-8478698-SplitLowMulti', 'qol-human-1774519-SplitEvenBinary', 'vol-human-3043871-SplitLowMulti', 'qol-human-9157688-SplitEvenBinary', 
-                        'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
-                        'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
-                        'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary']
+                targets = [
+                    'qol-human-8022671-SplitLowMulti-ph1', 'qol-human-6403274-SplitHighBinary-ph1', 'qol-human-3043871-SplitHighBinary-ph1', 
+                    'qol-human-5032922-SplitLowMulti-ph1', 'qol-human-0000001-SplitEvenMulti-ph1', 'qol-human-7040555-SplitHighMulti-ph1',
+                    'qol-synth-LowExtreme-ph1', 'qol-synth-HighExtreme-ph1', 'qol-synth-HighCluster-ph1', 'qol-synth-LowCluster-ph1', 
+                    'vol-human-8022671-SplitHighMulti-ph1', 'vol-human-1774519-SplitHighMulti-ph1', 'vol-human-6403274-SplitEvenBinary-ph1', 
+                    'vol-human-8478698-SplitLowMulti-ph1', 'vol-human-5032922-SplitLowMulti-ph1', 'vol-synth-LowExtreme-ph1', 'vol-synth-HighCluster-ph1',
+                    'vol-synth-LowCluster-ph1'
+                ]
                 self.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
                 for target in targets:
                     if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
