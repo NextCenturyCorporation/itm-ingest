@@ -8,8 +8,8 @@ import utils.db_utils as db_utils
 from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-RUN_ALIGNMENT = False # send data to servers to calculate alignment if true
-RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
+RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = False
 RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
@@ -17,8 +17,8 @@ EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
 
 
-ADEPT_URL = config("ADEPT_URL")
-ST_URL = config("ST_URL")
+ADEPT_URL = "https://darpaitm.caci.com/adept/" #config("ADEPT_URL")
+ST_URL = "https://darpaitm.caci.com/soartech/" #config("ST_URL")
 
 SCENE_MAP = {
     "qol-ph1-eval-2 Narrative": "phase1-soartech-eval-qol2.yaml",
@@ -898,10 +898,13 @@ class ProbeMatcher:
         if RUN_ALIGNMENT:
             try:
                 self.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
-                targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false')
-                print(targets)
+                mj_targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false&kdma_id=Moral%20judgement')
+                io_targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false&kdma_id=Ingroup%20Bias')
+                targets = mj_targets + io_targets
                 for target in targets:
-                    ad_align[target] = self.get_session_alignment(f'{ADEPT_URL}api/v1/alignment/session?session_id={self.adept_sid}&target_id={target}&population=false')
+                    k = list(target.keys())[0]
+                    v = target[k]
+                    ad_align[k] = v
                 ad_align['kdmas'] = self.get_session_alignment(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.adept_sid}')
                 ad_align['sid'] = self.adept_sid
             except:
