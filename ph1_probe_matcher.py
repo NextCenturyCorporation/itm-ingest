@@ -16,8 +16,6 @@ RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
 EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
 
-# TODO: change st probes for delegation
-# TODO: change adept urls
 
 ADEPT_URL = config("ADEPT_URL")
 ST_URL = config("ST_URL")
@@ -75,20 +73,20 @@ JUSTIFY_MAPPING = {
 
 ST_PROBES = {
     "delegation": {
-        "qol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'qol-dre-train2-Probe-11'],
-        "qol-dre-2-eval": ['qol-dre-2-eval-Probe-2', 'qol-dre-2-eval-Probe-3', 'qol-dre-2-eval-Probe-6', 'qol-dre-2-eval-Probe-7', 'qol-dre-2-eval-Probe-10', 'qol-dre-2-eval-Probe-11'],
-        "qol-dre-3-eval": ['qol-dre-3-eval-Probe-2', 'qol-dre-3-eval-Probe-3', 'qol-dre-3-eval-Probe-6', 'qol-dre-3-eval-Probe-7', 'qol-dre-3-eval-Probe-10', 'qol-dre-3-eval-Probe-11'],
-        "vol-dre-1-eval": ['4.2', '4.3', '4.6', '4.7', '4.10', 'vol-dre-train2-Probe-11'],
-        "vol-dre-2-eval": ['vol-dre-2-eval-Probe-2', 'vol-dre-2-eval-Probe-3', 'vol-dre-2-eval-Probe-6', 'vol-dre-2-eval-Probe-7', 'vol-dre-2-eval-Probe-10', 'vol-dre-2-eval-Probe-11'],
-        "vol-dre-3-eval": ['vol-dre-3-eval-Probe-2', 'vol-dre-3-eval-Probe-3', 'vol-dre-3-eval-Probe-6', 'vol-dre-3-eval-Probe-7', 'vol-dre-3-eval-Probe-10', 'vol-dre-3-eval-Probe-11']
+        "qol-dre-1-eval": ['qol-ph1-eval-2-Probe-1', 'qol-ph1-eval-2-Probe-2', 'qol-ph1-eval-2-Probe-3', 'qol-ph1-eval-2-Probe-4', 'qol-ph1-eval-2-Probe-5', 'qol-ph1-eval-2-Probe-6'],
+        "qol-dre-2-eval": ['qol-ph1-eval-3-Probe-1', 'qol-ph1-eval-3-Probe-2', 'qol-ph1-eval-3-Probe-3', 'qol-ph1-eval-3-Probe-4', 'qol-ph1-eval-3-Probe-5', 'qol-ph1-eval-3-Probe-6'],
+        "qol-dre-3-eval": ['qol-ph1-eval-4-Probe-1', 'qol-ph1-eval-4-Probe-2', 'qol-ph1-eval-4-Probe-3', 'qol-ph1-eval-4-Probe-4', 'qol-ph1-eval-4-Probe-5', 'qol-ph1-eval-4-Probe-6'],
+        "vol-dre-1-eval": ['vol-ph1-eval-2-Probe-1', 'vol-ph1-eval-2-Probe-2', 'vol-ph1-eval-2-Probe-3', 'vol-ph1-eval-2-Probe-4', 'vol-ph1-eval-2-Probe-5', 'vol-ph1-eval-2-Probe-6'],
+        "vol-dre-2-eval": ['vol-ph1-eval-3-Probe-1', 'vol-ph1-eval-3-Probe-2', 'vol-ph1-eval-3-Probe-3', 'vol-ph1-eval-3-Probe-4', 'vol-ph1-eval-3-Probe-5', 'vol-ph1-eval-3-Probe-6'],
+        "vol-dre-3-eval": ['vol-ph1-eval-4-Probe-1', 'vol-ph1-eval-4-Probe-2', 'vol-ph1-eval-4-Probe-3', 'vol-ph1-eval-4-Probe-4', 'vol-ph1-eval-4-Probe-5', 'vol-ph1-eval-4-Probe-6']
     },
     "all": {
-        "qol-dre-1-eval": ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', 'qol-dre-train2-Probe-11', '12'],
-        "qol-dre-2-eval": ['qol-dre-2-eval-Probe-1', 'qol-dre-2-eval-Probe-2', 'qol-dre-2-eval-Probe-3', 'qol-dre-2-eval-Probe-4', 'qol-dre-2-eval-Probe-5', 'qol-dre-2-eval-Probe-6', 'qol-dre-2-eval-Probe-7', 'qol-dre-2-eval-Probe-8', 'qol-dre-2-eval-Probe-9', 'qol-dre-2-eval-Probe-10', 'qol-dre-2-eval-Probe-11', 'qol-dre-2-eval-Probe-12'],
-        "qol-dre-3-eval": ['qol-dre-3-eval-Probe-1', 'qol-dre-3-eval-Probe-2', 'qol-dre-3-eval-Probe-3', 'qol-dre-3-eval-Probe-4', 'qol-dre-3-eval-Probe-5', 'qol-dre-3-eval-Probe-6', 'qol-dre-3-eval-Probe-7', 'qol-dre-3-eval-Probe-8', 'qol-dre-3-eval-Probe-9', 'qol-dre-3-eval-Probe-10', 'qol-dre-3-eval-Probe-11', 'qol-dre-3-eval-Probe-12'],
-        "vol-dre-1-eval": ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', 'vol-dre-train2-Probe-11', 'vol-dre-train2-Probe-12'],
-        "vol-dre-2-eval": ['vol-dre-2-eval-Probe-1', 'vol-dre-2-eval-Probe-2', 'vol-dre-2-eval-Probe-3', 'vol-dre-2-eval-Probe-4', 'vol-dre-2-eval-Probe-5', 'vol-dre-2-eval-Probe-6', 'vol-dre-2-eval-Probe-7', 'vol-dre-2-eval-Probe-8', 'vol-dre-2-eval-Probe-9', 'vol-dre-2-eval-Probe-10', 'vol-dre-2-eval-Probe-11', 'vol-dre-2-eval-Probe-12'],
-        "vol-dre-3-eval": ['vol-dre-3-eval-Probe-1', 'vol-dre-3-eval-Probe-2', 'vol-dre-3-eval-Probe-3', 'vol-dre-3-eval-Probe-4', 'vol-dre-3-eval-Probe-5', 'vol-dre-3-eval-Probe-6', 'vol-dre-3-eval-Probe-7', 'vol-dre-3-eval-Probe-8', 'vol-dre-3-eval-Probe-9', 'vol-dre-3-eval-Probe-10', 'vol-dre-3-eval-Probe-11', 'vol-dre-3-eval-Probe-12']
+        "qol-dre-1-eval": ['qol-ph1-eval-2-Probe-1', 'qol-ph1-eval-2-Probe-2', 'qol-ph1-eval-2-Probe-3', 'qol-ph1-eval-2-Probe-4', 'qol-ph1-eval-2-Probe-5', 'qol-ph1-eval-2-Probe-6'],
+        "qol-dre-2-eval": ['qol-ph1-eval-3-Probe-1', 'qol-ph1-eval-3-Probe-2', 'qol-ph1-eval-3-Probe-3', 'qol-ph1-eval-3-Probe-4', 'qol-ph1-eval-3-Probe-5', 'qol-ph1-eval-3-Probe-6'],
+        "qol-dre-3-eval": ['qol-ph1-eval-4-Probe-1', 'qol-ph1-eval-4-Probe-2', 'qol-ph1-eval-4-Probe-3', 'qol-ph1-eval-4-Probe-4', 'qol-ph1-eval-4-Probe-5', 'qol-ph1-eval-4-Probe-6'],
+        "vol-dre-1-eval": ['vol-ph1-eval-2-Probe-1', 'vol-ph1-eval-2-Probe-2', 'vol-ph1-eval-2-Probe-3', 'vol-ph1-eval-2-Probe-4', 'vol-ph1-eval-2-Probe-5', 'vol-ph1-eval-2-Probe-6'],
+        "vol-dre-2-eval": ['vol-ph1-eval-3-Probe-1', 'vol-ph1-eval-3-Probe-2', 'vol-ph1-eval-3-Probe-3', 'vol-ph1-eval-3-Probe-4', 'vol-ph1-eval-3-Probe-5', 'vol-ph1-eval-3-Probe-6'],
+        "vol-dre-3-eval": ['vol-ph1-eval-4-Probe-1', 'vol-ph1-eval-4-Probe-2', 'vol-ph1-eval-4-Probe-3', 'vol-ph1-eval-4-Probe-4', 'vol-ph1-eval-4-Probe-5', 'vol-ph1-eval-4-Probe-6']
     }
 }
 
@@ -899,10 +897,9 @@ class ProbeMatcher:
         ad_align = {}
         if RUN_ALIGNMENT:
             try:
-                targets = ['ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
-                        'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
-                        'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
                 self.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
+                targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false')
+                print(targets)
                 for target in targets:
                     ad_align[target] = self.get_session_alignment(f'{ADEPT_URL}api/v1/alignment/session?session_id={self.adept_sid}&target_id={target}&population=false')
                 ad_align['kdmas'] = self.get_session_alignment(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.adept_sid}')
