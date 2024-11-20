@@ -24,7 +24,7 @@ def rerun_soartech_adm_sessions(mongoDB):
         # only keep good adm runs
         good_adm_names = ['ALIGN-ADM-ComparativeRegression-Llama-3.2-3B-Instruct-SoarTech-MatchingChars__5f94293d-a834-4ae7-b3c3-d820a377a6db',
                           'ALIGN-ADM-OutlinesBaseline__9a0c9e90-3140-40fb-8fe6-36f9508ccd36', 
-                          'ALIGN-ADM-ComparativeRegression-Mistral-7B-Instruct-v0.2-ADEPT-10Sample__509b769c-34b7-451f-afe4-8ea63b982815',
+                          'ALIGN-ADM-ComparativeRegression-Mistral-7B-Instruct-v0.3-ADEPT__0fb8644c-086f-4e56-89b7-da65f191530e',
                           'ALIGN-ADM-OutlinesBaseline__07b34c32-7f75-488d-9ce7-ad31c638fd0b',
                           'ALIGN-ADM-OutlinesBaseline', 
                           'ALIGN-ADM-ComparativeRegression-ICL-Template', 
@@ -33,7 +33,7 @@ def rerun_soartech_adm_sessions(mongoDB):
         adm_name_mapping = {
             'ALIGN-ADM-ComparativeRegression-Llama-3.2-3B-Instruct-SoarTech-MatchingChars__5f94293d-a834-4ae7-b3c3-d820a377a6db' : 'ALIGN-ADM-ComparativeRegression-ICL-Template',
             'ALIGN-ADM-OutlinesBaseline__9a0c9e90-3140-40fb-8fe6-36f9508ccd36': 'ALIGN-ADM-OutlinesBaseline', 
-            'ALIGN-ADM-ComparativeRegression-Mistral-7B-Instruct-v0.2-ADEPT-10Sample__509b769c-34b7-451f-afe4-8ea63b982815': 'ALIGN-ADM-ComparativeRegression-ICL-Template',
+            'ALIGN-ADM-ComparativeRegression-Mistral-7B-Instruct-v0.3-ADEPT__0fb8644c-086f-4e56-89b7-da65f191530e': 'ALIGN-ADM-ComparativeRegression-ICL-Template',
             'ALIGN-ADM-OutlinesBaseline__07b34c32-7f75-488d-9ce7-ad31c638fd0b': 'ALIGN-ADM-OutlinesBaseline'
         }
         # remove unnecessary adms
