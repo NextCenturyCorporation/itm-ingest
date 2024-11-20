@@ -564,26 +564,26 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                 current_probe_id = action.get('parameters', {}).get('probe_id')
                 probe_choice = action.get('parameters', {}).get('choice', '')
 
-                
-                for i in range(last_probe_index + 1, len(action_set)):
-                    action_set[i]['probe_id'] = current_probe_id
+                if current_probe_id in env_map[doc_id]['probe_ids']:
+                    for i in range(last_probe_index + 1, len(action_set)):
+                        action_set[i]['probe_id'] = current_probe_id
 
-                if len(cur_scene['actions']) > 0:
-                    for i in range(len(cur_scene['actions'])):
-                        cur_scene['actions'][i]['probe_id'] = current_probe_id
+                    if len(cur_scene['actions']) > 0:
+                        for i in range(len(cur_scene['actions'])):
+                            cur_scene['actions'][i]['probe_id'] = current_probe_id
 
-                last_probe_index = len(action_set) - 1
+                    last_probe_index = len(action_set) - 1
                 
     
                 if doc_id in probe_updates and probe_choice in probe_updates[env_map[doc_id]['id']]:
                     for x in probe_updates[env_map[doc_id]['id']][probe_choice]:
-                        action_set.append({'text': x, 'probe_id': current_probe_id})
-                        cur_scene['actions'].append({'text': x, 'probe_id': current_probe_id})
+                        action_set.append({'text': x, 'probe_id': None})
+                        cur_scene['actions'].append({'text': x, 'probe_id': None})
                 before_probe = 'Before ' + action.get('parameters', {}).get('probe_id')
                 if doc_id in probe_updates and before_probe in probe_updates[env_map[doc_id]['id']]:
                         for x in probe_updates[env_map[doc_id]['id']][before_probe]:
-                           action_set.insert(len(action_set)-2, {'text': x, 'probe_id': current_probe_id})
-                        cur_scene['actions'].insert(len(cur_scene['actions'])-2, {'text': x, 'probe_id': current_probe_id})
+                           action_set.insert(len(action_set)-2, {'text': x, 'probe_id': None})
+                        cur_scene['actions'].insert(len(cur_scene['actions'])-2, {'text': x, 'probe_id': None})
             if action['command'] == 'Alignment Target':
                 action_set[1] = {'text': action['response']['id'], 'probe_id': None}
             # set supplies to first supplies available
@@ -606,7 +606,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                 if len(cur_chars) != len(tmp_chars):
                     # set patients to the first patients given in the scenario
                     if len(cur_chars) > len(tmp_chars) and len(tmp_chars) > 1:
-                        action_set.append({'text': f"Note: The medic is only aware of {tmp_chars}", 'probe_id': current_probe_id})
+                        action_set.append({'text': f"Note: The medic is only aware of {tmp_chars}", 'probe_id': None})
                         cur_scene['char_ids'].extend(tmp_chars)
                         non_zero_supplies = []
                         for x in action['response']['supplies']:
@@ -624,7 +624,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                                 cur_scene['char_ids'] = list(set(cur_scene['char_ids']))
                                 scenes.append(cur_scene)
                                 scene_id += 1
-                            action_set.append({'text': f"Update: New patients discovered: {tmp_chars}", 'probe_id': current_probe_id})
+                            action_set.append({'text': f"Update: New patients discovered: {tmp_chars}", 'probe_id': None})
                             cur_chars = tmp_chars
                             non_zero_supplies = []
                             for x in action['response']['supplies']:
@@ -662,12 +662,12 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                         else:
                             question_text = "Question: Who do you treat first?"
                         if question_text:
-                            action_set.append({'text': question_text, 'probe_id': current_probe_id})
-                            cur_scene['actions'].append({'text': question_text, 'probe_id': current_probe_id})
+                            action_set.append({'text': question_text, 'probe_id': None})
+                            cur_scene['actions'].append({'text': question_text, 'probe_id': None})
                     # since this is ADM, leave in duplicates!
                     printable = ('<HIGHLIGHT>' if highlight_action else '') + printable
-                    action_set.append({'text': printable, 'probe_id': current_probe_id})
-                    cur_scene['actions'].append({'text': printable, 'probe_id': current_probe_id})
+                    action_set.append({'text': printable, 'probe_id': None})
+                    cur_scene['actions'].append({'text': printable, 'probe_id': None})
             # fill out alignment targets and adm names from end data
             if action['command'] == 'Scenario ended':
                 action_set[0]['text'] = f"ADM - {action['parameters']['scenario_id']}"
