@@ -588,7 +588,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         Takes in a full adm document and returns the json in the same form as template
         with the data updated according to the adm's actions
         '''
-        action_set = ['adm', 'alignment']
+        action_set = [{'text': 'adm', 'probe_id': None}, {'text': 'alignment', 'probe_id': None}]
         scenes = []
         scene_id = 1
         cur_scene = {'id': f'Scene {scene_id}', 'char_ids': [], 'actions': [], 'supplies': []}
@@ -598,6 +598,9 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         supplies = [] 
         first_supplies = []
         mission = None 
+        current_probe_id = None
+        last_action_index = -1
+
         try:
             if document['history'][0]['command'] == 'Start Scenario':
                 doc_id = document['history'][0]['response']['id']
@@ -616,25 +619,33 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
             return
         if doc_id in probe_updates and 'Intro' in probe_updates[env_map[doc_id]['id']]:
             for x in probe_updates[env_map[doc_id]['id']]['Intro']:
-                action_set.append(x)
-                cur_scene['actions'].append(x)
+                action_set.append({'text': x, 'probe_id': None})
+                cur_scene['actions'].append({'text': x, 'probe_id': None})
         for ind in range(len(document['history'])):
             action = document['history'][ind]
             next_action = document['history'][ind + 1] if len(document['history']) > ind+1 else None
             get_all_actions = env_map[doc_id]['all_actions']
-            if action['command'] == 'Alignment Target':
-                action_set[1] = action['response']['id']
+            
             if action['command'] == 'Respond to TA1 Probe':
+                current_probe_id = action.get('parameters', {}).get('probe_id')
                 probe_choice = action.get('parameters', {}).get('choice', '')
+
+                if last_action_index >= 0:
+                    action_set[last_action_index]['probe_id'] = current_probe_id
+                    if len(cur_scene['actions']) > 0:
+                        cur_scene['actions'][-1]['probe_id'] = current_probe_id
+    
                 if doc_id in probe_updates and probe_choice in probe_updates[env_map[doc_id]['id']]:
                     for x in probe_updates[env_map[doc_id]['id']][probe_choice]:
-                        action_set.append(x)
-                        cur_scene['actions'].append(x)
+                        action_set.append({'text': x, 'probe_id': current_probe_id})
+                        cur_scene['actions'].append({'text': x, 'probe_id': current_probe_id})
                 before_probe = 'Before ' + action.get('parameters', {}).get('probe_id')
                 if doc_id in probe_updates and before_probe in probe_updates[env_map[doc_id]['id']]:
                         for x in probe_updates[env_map[doc_id]['id']][before_probe]:
-                            action_set.insert(len(action_set)-2, x)
-                            cur_scene['actions'].insert(len(cur_scene['actions'])-2, x)
+                           action_set.insert(len(action_set)-2, {'text': x, 'probe_id': current_probe_id})
+                        cur_scene['actions'].insert(len(cur_scene['actions'])-2, {'text': x, 'probe_id': current_probe_id})
+            if action['command'] == 'Alignment Target':
+                action_set[1] = {'text': action['response']['id'], 'probe_id': None}
             # set supplies to first supplies available
             if action['response'] is not None and 'supplies' in action['response']:
                 if len(supplies) > 0 and len(cur_scene['supplies']) == 0:
@@ -655,7 +666,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                 if len(cur_chars) != len(tmp_chars):
                     # set patients to the first patients given in the scenario
                     if len(cur_chars) > len(tmp_chars) and len(tmp_chars) > 1:
-                        action_set.append(f"Note: The medic is only aware of {tmp_chars}")
+                        action_set.append({'text': f"Note: The medic is only aware of {tmp_chars}", 'probe_id': current_probe_id})
                         cur_scene['char_ids'].extend(tmp_chars)
                         non_zero_supplies = []
                         for x in action['response']['supplies']:
@@ -673,7 +684,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                                 cur_scene['char_ids'] = list(set(cur_scene['char_ids']))
                                 scenes.append(cur_scene)
                                 scene_id += 1
-                            action_set.append(f"Update: New patients discovered: {tmp_chars}")
+                            action_set.append({'text': f"Update: New patients discovered: {tmp_chars}", 'probe_id': current_probe_id})
                             cur_chars = tmp_chars
                             non_zero_supplies = []
                             for x in action['response']['supplies']:
@@ -701,24 +712,26 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                         continue
                 if printable is not None:
                     if 'dre' in doc_id:
+                        question_text = None
                         if ('vol' in doc_id and len(scenes) == 0) or ('qol' in doc_id and len(scenes) == 4):
-                            action_set.append("Question: Who do you treat or get updated vitals on first?")
-                            cur_scene['actions'].append("Question: Who do you treat or get updated vitals on first?")
+                            question_text = "Question: Who do you treat or get updated vitals on first?"
                         elif 'vol' in doc_id and len(scenes) == 3:
-                            action_set.append("Question: Do you use your last tourniquet or save it for future use?")
-                            cur_scene['actions'].append("Question: Do you use your last tourniquet or save it for future use?")    
+                            question_text = "Question: Do you use your last tourniquet or save it for future use?"   
                             if 'tourniquet' not in printable:
                                 printable = 'Save the tourniquet for future use'
                         else:
-                            action_set.append("Question: Who do you treat first?")
-                            cur_scene['actions'].append("Question: Who do you treat first?")
+                            question_text = "Question: Who do you treat first?"
+                        if question_text:
+                            action_set.append({'text': question_text, 'probe_id': current_probe_id})
+                            cur_scene['actions'].append({'text': question_text, 'probe_id': current_probe_id})
                     # since this is ADM, leave in duplicates!
                     printable = ('<HIGHLIGHT>' if highlight_action else '') + printable
-                    action_set.append(printable)
-                    cur_scene['actions'].append(printable)
+                    action_set.append({'text': printable, 'probe_id': current_probe_id})
+                    cur_scene['actions'].append({'text': printable, 'probe_id': current_probe_id})
+                    last_action_index = len(action_set) - 1
             # fill out alignment targets and adm names from end data
             if action['command'] == 'Scenario ended':
-                action_set[0] = f"ADM - {action['parameters']['scenario_id']}"
+                action_set[0]['text'] = f"ADM - {action['parameters']['scenario_id']}"
         page_data = copy.deepcopy(template)
         page_data['scenarioIndex'] = env_map[doc_id]['id']
         page_data['scenarioName'] = env_map[doc_id]['name']
@@ -759,45 +772,45 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                     break
         if len(cur_scene['actions']) > 0:
             action_counts = {}
-            for x in cur_scene['actions']:
-                if x not in action_counts:
-                    action_counts[x] = 0
-                action_counts[x] += 1
+            for action in cur_scene['actions']:
+                if action['text'] not in action_counts:
+                    action_counts[action['text']] = 0
+                action_counts[action['text']] += 1
             new_actions = []
             actions_added = []
-            for x in cur_scene['actions']:
-                if x in actions_added:
+            for action in cur_scene['actions']:
+                if action['text'] in actions_added:
                     continue
-                if action_counts[x] == 1 or 'with' not in x:
-                    new_actions.append(x)
+                if action_counts[action['text']] == 1 or 'with' not in action['text']:
+                    new_actions.append(action)
                 else:
-                    counted_action = x.replace('with ', f'with {action_counts[x]} ')
-                    new_actions.append(counted_action)
-                    actions_added.append(x)
+                    counted_text = action['text'].replace('with ', f'with {action_counts[action["text"]]} ')
+                    new_actions.append({'text': counted_text, 'probe_id': action['probe_id']})
+                    actions_added.append(action['text'])
             cur_scene['actions'] = new_actions
             scenes.append(cur_scene)
         if not env_map[doc_id]['break_scenes']:
             actions_in_scene = []
-            for x in action_set[2:]:
-                if 'New patients' not in x and "The medic is only aware" not in x:
-                    actions_in_scene.append(x)
+            for action in action_set[2:]:
+                if 'New patients' not in action['text'] and "The medic is only aware" not in action['text']:
+                    actions_in_scene.append(action)
             new_actions = []
             if 'MJ4' not in env_map[doc_id]['id']:
                 action_counts = {}
-                for x in actions_in_scene:
-                    if x not in action_counts:
-                        action_counts[x] = 0
-                    action_counts[x] += 1
+                for action in actions_in_scene:
+                    if action['text'] not in action_counts:
+                        action_counts[action['text']] = 0
+                    action_counts[action['text']] += 1
                 actions_added = []
-                for x in actions_in_scene:
-                    if x in actions_added:
+                for action in actions_in_scene:
+                    if action['text'] in actions_added:
                         continue
-                    if action_counts[x] == 1 or 'with' not in x:
-                        new_actions.append(x)
+                    if action_counts[action['text']] == 1 or 'with' not in action['text']:
+                        new_actions.append(action)
                     else:
-                        counted_action = x.replace('with ', f'with {action_counts[x]} ')
-                        new_actions.append(counted_action)
-                        actions_added.append(x)
+                        counted_text = action['text'].replace('with ', f'with {action_counts[action["text"]]} ')
+                        new_actions.append({'text': counted_text, 'probe_id': action['probe_id']})
+                        actions_added.append(action['text'])
             else:
                 new_actions = actions_in_scene
             action_copy = copy.deepcopy(new_actions)
@@ -805,29 +818,30 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
             actions_removed = 0
             # make sure we didn't miss any non-answers
             for i in range(len(action_copy)-1):
-                is_highlighted = '<HIGHLIGHT>' in action_copy[i]
-                action_copy[i] = action_copy[i].replace('<HIGHLIGHT>', '')
-                if 'Question:' in action_copy[i] and ('Update:' in action_copy[i+1] or 'Note:' in action_copy[i+1] or 'Question:' in action_copy[i+1]):
-                    if action_copy[i] == 'Question: How much gauze do you plan to use on the shooter?':
-                        new_actions.insert(i+1+actions_inserted-actions_removed, ('<HIGHLIGHT>' if is_highlighted else '') + 'Do not give any gauze to the shooter')
+                is_highlighted = '<HIGHLIGHT>' in action_copy[i]['text']
+                action_copy[i]['text'] = action_copy[i]['text'].replace('<HIGHLIGHT>', '')
+                probe_id = action_copy[i]['probe_id']
+                if 'Question:' in action_copy[i]['text'] and ('Update:' in action_copy[i+1]['text'] or 'Note:' in action_copy[i+1]['text'] or 'Question:' in action_copy[i+1]['text']):
+                    if action_copy[i]['text'] == 'Question: How much gauze do you plan to use on the shooter?':
+                        new_actions.insert(i+1+actions_inserted-actions_removed, {'text': ('<HIGHLIGHT>' if is_highlighted else '') + 'Do not give any gauze to the shooter', 'probe_id': probe_id})
                         actions_inserted += 1
                     else:
-                        new_actions.insert(i+1+actions_inserted-actions_removed, ('<HIGHLIGHT>' if is_highlighted else '') + 'No action taken')
+                        new_actions.insert(i+1+actions_inserted-actions_removed, {'text': ('<HIGHLIGHT>' if is_highlighted else '') + 'No action taken', 'probe_id': probe_id})
                         actions_inserted += 1
-                if action_copy[i] == 'Treat Victim with 5 gauze on left side':
-                    new_actions.insert(i+actions_inserted-actions_removed, ('<HIGHLIGHT>' if is_highlighted else '') + 'Do not give any gauze to the shooter')
+                if action_copy[i]['text'] == 'Treat Victim with 5 gauze on left side':
+                    new_actions.insert(i+1+actions_inserted-actions_removed, {'text': ('<HIGHLIGHT>' if is_highlighted else '') + 'Do not give any gauze to the shooter', 'probe_id': probe_id})
                     actions_inserted += 1
-                if action_copy[i] == 'Question: How much gauze do you plan to use on the shooter?' and action_copy[i+1] == 'Do not take any action':
-                    new_actions[i+1] = ('<HIGHLIGHT>' if is_highlighted else '') + 'Do not give any gauze to the shooter'
-                if action_copy[i] == 'Question: Do you use more gauze on one of the patients or the same amount on both patients?':
+                if action_copy[i]['text'] == 'Question: How much gauze do you plan to use on the shooter?' and action_copy[i+1]['text'] == 'Do not take any action':
+                    new_actions[i+1]['text'] = ('<HIGHLIGHT>' if is_highlighted else '') + 'Do not give any gauze to the shooter'
+                if action_copy[i]['text'] == 'Question: Do you use more gauze on one of the patients or the same amount on both patients?':
                     upton_count = 0
                     springer_count = 0
                     for j in action_copy:
-                        if 'Treat' in j and 'hemostatic' in j:
-                            if 'Upton' in j:
-                                upton_count = j.split('with ')[1].split('hemostatic')[0].strip()
+                        if 'Treat' in j['text'] and 'hemostatic' in j['text']:
+                            if 'Upton' in j['text']:
+                                upton_count = j['text'].split('with ')[1].split('hemostatic')[0].strip()
                             else:
-                                springer_count = j.split('with ')[1].split('hemostatic')[0].strip()
+                                springer_count = j['text'].split('with ')[1].split('hemostatic')[0].strip()
                     if upton_count == '':
                         upton_count = 1
                     if springer_count == '':
@@ -835,11 +849,11 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                     upton_count = int(upton_count)
                     springer_count = int(springer_count)
                     if upton_count > springer_count:
-                        new_actions[i+1] = ('<HIGHLIGHT>' if is_highlighted else '') + 'Use more gauze on Upton'
+                        new_actions[i+1] = {'text': ('<HIGHLIGHT>' if is_highlighted else '') + 'Use more gauze on Upton', 'probe_id': probe_id}
                     elif springer_count > upton_count:
-                        new_actions[i+1] = ('<HIGHLIGHT>' if is_highlighted else '') + 'Use more gauze on Springer'
+                        new_actions[i+1] = {'text': ('<HIGHLIGHT>' if is_highlighted else '') + 'Use more gauze on Springer', 'probe_id': probe_id}
                     elif springer_count == upton_count:
-                        new_actions[i+1] = ('<HIGHLIGHT>' if is_highlighted else '') + 'Use the same amount of gauze on both'
+                        new_actions[i+1] = {'text': ('<HIGHLIGHT>' if is_highlighted else '') + 'Use the same amount of gauze on both', 'probe_id': probe_id}
                     if 'Treat' in new_actions[i+2]:
                         new_actions.remove(new_actions[i+2])
                         actions_removed += 1
@@ -852,7 +866,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         page_data['admName'] = meta['adm_name']
         # CHECK THIS !!!
         page_data['admType'] = 'baseline' if 'baseline' in meta['adm_name'].lower() else 'aligned'
-        page_data['admAlignment'] = action_set[1]
+        page_data['admAlignment'] = action_set[1]['text']
         page_data['admAuthor'] = 'kitware' if 'ALIGN' in meta['adm_name'] else ('darren' if 'foobar' in meta['adm_name'] else 'TAD')
         page_data['kdmas'] = kdmas
         page_data['admSession'] = meta['session_id']
@@ -860,7 +874,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         medic_data['dmName'] = name
         medic_data['name'] = env_map[doc_id]['name'].replace('SoarTech', 'ST') + ' Scenario: ' + name
         medic_data['title'] = " "
-        medic_data['actions'] = action_set[2:action_set.index('SCENE CHANGE') if 'SCENE CHANGE' in action_set else len(action_set)]
+        medic_data['actions'] = [action['text'] for action in action_set[2:next((i for i, a in enumerate(action_set) if a['text'] == 'SCENE CHANGE'), len(action_set))]]
         medic_data['scenes'] = scenes
         medic_data['supplies'] = first_supplies
         medic_data['situation'] =  env_map[doc_id]['situation']
@@ -886,15 +900,15 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
 
 def remove_location_and_supply(scene):
     for i in range(len(scene['actions']) - 1):
-        if 'Question: How much gauze do you plan to use on the shooter?' in scene['actions'][i]:
-            scene['actions'][i+1] = scene['actions'][i+1].split('on')[0].strip()
-            scene['actions'][i+1] = scene['actions'][i+1].replace('with hemostatic', 'with 1 hemostatic')
-            if 'Update' not in scene['actions'][i+2]:
-                scene['actions'][i+2] = scene['actions'][i+2].split('on')[0].strip()
-                scene['actions'][i+2] = scene['actions'][i+2].replace('with hemostatic', 'with 1 hemostatic')
+        if 'Question: How much gauze do you plan to use on the shooter?' in scene['actions'][i]['text']:
+            scene['actions'][i+1]['text'] = scene['actions'][i+1]['text'].split('on')[0].strip()
+            scene['actions'][i+1]['text'] = scene['actions'][i+1]['text'].replace('with hemostatic', 'with 1 hemostatic')
+            if 'Update' not in scene['actions'][i+2]['text']:
+                scene['actions'][i+2]['text'] = scene['actions'][i+2]['text'].split('on')[0].strip()
+                scene['actions'][i+2]['text'] = scene['actions'][i+2]['text'].replace('with hemostatic', 'with 1 hemostatic')
             continue
-        if 'Question:' in scene['actions'][i]:
-            scene['actions'][i+1] = scene['actions'][i+1].split('with')[0].strip()
+        if 'Question:' in scene['actions'][i]['text']:
+            scene['actions'][i+1]['text'] = scene['actions'][i+1]['text'].split('with')[0].strip()
 
 def main():
     f = open(os.path.join('templates', 'single_medic_template.json'), 'r', encoding='utf-8')
