@@ -13,11 +13,9 @@ def rerun_soartech_adm_sessions(mongoDB):
     scores = {}
     for adm in adms_to_update:
         # get adm name
-        where_is_name = 0
         adm_name = adm['history'][0].get('parameters', {}).get('adm_name', None)
         if adm_name is None:
             adm_name = adm['history'][1].get('parameters', {}).get('adm_name', None)
-            where_is_name = 1
         if adm_name is None:
             print("Could not get adm name for " + adm['_id'])
             continue
@@ -45,7 +43,9 @@ def rerun_soartech_adm_sessions(mongoDB):
         counts[adm_name] += 1
         # replace long kitware names with shorter names
         if adm_name in adm_name_mapping:
-            adm['history'][where_is_name]['parameters']['adm_name'] = adm_name_mapping[adm_name]
+            for i in range(len(adm['history'])):
+                if adm['history'][i].get('parameters', {}).get('adm_name', None) is not None:
+                    adm['history'][i]['parameters']['adm_name'] = adm_name_mapping[adm_name]
             adm_collection.update_one({'_id': adm['_id']}, {"$set": {"history": adm['history']}})
         
         # get new adm session
