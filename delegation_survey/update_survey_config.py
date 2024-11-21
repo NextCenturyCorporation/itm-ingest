@@ -1455,40 +1455,6 @@ def version5_setup():
                     "type": "comment",
                     "name": "Additonal Information About Discomfort",
                     "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
-                },
-                {
-                    "type": "radiogroup",
-                    "name": "Text Scenarios Completed",
-                    "title": "Please verify that the following Text Scenarios have been completed:",
-                    "isRequired": True,
-                    "choices": [
-                        "Yes",
-                        "No",
-                    ],
-                },
-                {
-                    "type": "comment",
-                    "name": "Additonal Information About Text Scenario Mismatch",
-                    "visibleIf": "{Text Scenarios Completed} anyof ['No']",
-                    "title": "Please explain why this participant has not completed these text scenarios. Or, if they have, please ensure you entered the same participant ID.",
-                    "isRequired": True
-                },
-                {
-                    "type": "radiogroup",
-                    "name": "VR Scenarios Completed",
-                    "title": "Please verify that the following VR Scenarios have been completed:",
-                    "isRequired": True,
-                    "choices": [
-                        "Yes",
-                        "No",
-                    ],
-                },
-                {
-                    "type": "comment",
-                    "name": "Additonal Information About VR Scenario Mismatch",
-                    "visibleIf": "{VR Scenarios Completed} anyof ['No']",
-                    "title": "Please explain why this participant has not completed these VR scenarios. Or, if they have, please ensure you entered the same participant ID.",
-                    "isRequired": True
                 }
             ]
     }
