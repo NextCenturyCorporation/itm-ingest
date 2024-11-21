@@ -1582,6 +1582,8 @@ if __name__ == "__main__":
         )
         if resp == "1":
             one_time_db_initialization()
+        elif resp == "2":
+            LOGGER.log(LogLevel.CRITICAL_INFO, "You chose to do nothing. Have a nice, relaxing day!")
         elif resp == "3":
             version3_setup()
         elif resp == "4":
