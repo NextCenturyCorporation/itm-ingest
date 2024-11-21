@@ -717,9 +717,11 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                     else:
                         continue
                 if printable is not None:
-                    if 'dre' in doc_id:
+                    if 'dre' in doc_id or 'ph1' in doc_id:
                         question_text = None
-                        if ('vol' in doc_id and len(scenes) == 0) or ('qol' in doc_id and len(scenes) == 4):
+                        if 'ph1' in doc_id:
+                            question_text = "Question: Who do you treat first?"
+                        elif ('vol' in doc_id and len(scenes) == 0) or ('qol' in doc_id and len(scenes) == 4):
                             question_text = "Question: Who do you treat or get updated vitals on first?"
                         elif 'vol' in doc_id and len(scenes) == 3:
                             question_text = "Question: Do you use your last tourniquet or save it for future use?"   
