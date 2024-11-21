@@ -8,7 +8,7 @@ scenes:
     choice: choice-0
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.9
     parameters:
       treatment: Hemostatic gauze
     probe_id: vol-ph1-eval-3-Probe-1
@@ -19,7 +19,7 @@ scenes:
     choice: choice-1
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.3
     parameters:
       treatment: Tourniquet
     probe_id: vol-ph1-eval-3-Probe-1
@@ -30,7 +30,7 @@ scenes:
     choice: choice-2
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.1
     parameters:
       treatment: Hemostatic gauze
     probe_id: vol-ph1-eval-3-Probe-1
@@ -41,7 +41,7 @@ scenes:
     choice: choice-3
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.7
     parameters: {}
     probe_id: vol-ph1-eval-3-Probe-1
     unstructured: Assess Casualty X
@@ -51,7 +51,7 @@ scenes:
     choice: choice-4
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.3
     parameters: {}
     probe_id: vol-ph1-eval-3-Probe-1
     unstructured: Assess Casualty Y
@@ -83,7 +83,7 @@ scenes:
     choice: choice-0
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.7
     parameters:
       treatment: Pressure bandage
     probe_id: vol-ph1-eval-3-Probe-2
@@ -94,7 +94,7 @@ scenes:
     choice: choice-1
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.3
     parameters:
       treatment: Pressure bandage
     probe_id: vol-ph1-eval-3-Probe-2
@@ -105,7 +105,7 @@ scenes:
     choice: choice-2
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.9
     parameters:
       treatment: Hemostatic gauze
     probe_id: vol-ph1-eval-3-Probe-2
@@ -116,7 +116,7 @@ scenes:
     choice: choice-3
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.1
     parameters:
       treatment: Hemostatic gauze
     probe_id: vol-ph1-eval-3-Probe-2
@@ -302,7 +302,7 @@ scenes:
     choice: choice-0
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.1
     parameters:
       treatment: Burn Dressing
     probe_id: vol-ph1-eval-3-Probe-3
@@ -313,7 +313,7 @@ scenes:
     choice: choice-1
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.9
     parameters:
       treatment: Burn Dressing
     probe_id: vol-ph1-eval-3-Probe-3
@@ -505,7 +505,7 @@ scenes:
     choice: choice-0
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.3
     parameters:
       treatment: Tourniquet
     probe_id: vol-ph1-eval-3-Probe-4
@@ -516,7 +516,7 @@ scenes:
     choice: choice-1
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.9
     parameters:
       treatment: Tourniquet
     probe_id: vol-ph1-eval-3-Probe-4
@@ -526,7 +526,7 @@ scenes:
     choice: choice-2
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.1
     parameters: {}
     probe_id: vol-ph1-eval-3-Probe-4
     unstructured: Save your last tourniquet
@@ -701,7 +701,7 @@ scenes:
     choice: choice-0
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.9
     parameters:
       treatment: Hemostatic gauze
     probe_id: vol-ph1-eval-3-Probe-5
@@ -712,7 +712,7 @@ scenes:
     choice: choice-1
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.1
     parameters:
       treatment: Nasopharyngeal airway
     probe_id: vol-ph1-eval-3-Probe-5
@@ -760,7 +760,7 @@ scenes:
         of survival estimate of 18% if treated immediately.
       visited: true
       vitals:
-        ambulatory: true
+        ambulatory: false
         avpu: UNRESPONSIVE
         breathing: NONE
         heart_rate: FAST
@@ -891,7 +891,7 @@ scenes:
     choice: choice-0
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.1
     parameters:
       treatment: Nasopharyngeal airway
     probe_id: vol-ph1-eval-3-Probe-6
@@ -902,7 +902,7 @@ scenes:
     choice: choice-1
     intent_action: false
     kdma_association:
-      PerceivedQuantityOfLivesSaved: 0
+      PerceivedQuantityOfLivesSaved: 0.9
     parameters:
       treatment: Pressure bandage
     probe_id: vol-ph1-eval-3-Probe-6
@@ -953,7 +953,7 @@ scenes:
         on the leg. TRISS probability of survival estimate of 18% if treated immediately.
       visited: true
       vitals:
-        ambulatory: true
+        ambulatory: false
         avpu: UNRESPONSIVE
         breathing: NONE
         heart_rate: FAST
