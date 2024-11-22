@@ -541,6 +541,12 @@ class DelegationTool:
                'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
                'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
                'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary', 
+               'qol-human-8022671-SplitLowMulti-ph1', 'qol-human-6403274-SplitHighBinary-ph1', 'qol-human-3043871-SplitHighBinary-ph1', 
+               'qol-human-5032922-SplitLowMulti-ph1', 'qol-human-0000001-SplitEvenMulti-ph1', 'qol-human-7040555-SplitHighMulti-ph1',
+               'qol-synth-LowExtreme-ph1', 'qol-synth-HighExtreme-ph1', 'qol-synth-HighCluster-ph1', 'qol-synth-LowCluster-ph1', 
+               'vol-human-8022671-SplitHighMulti-ph1', 'vol-human-1774519-SplitHighMulti-ph1', 'vol-human-6403274-SplitEvenBinary-ph1', 
+               'vol-human-8478698-SplitLowMulti-ph1', 'vol-human-5032922-SplitLowMulti-ph1', 'vol-synth-LowExtreme-ph1', 'vol-synth-HighCluster-ph1',
+               'vol-synth-LowCluster-ph1',
                'ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
                'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
                'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']:
@@ -1382,6 +1388,186 @@ def version4_setup():
     tool.push_changes()
     tool.export_survey_json(os.path.join("survey-configs", "surveyConfig4x.json"))
 
+def version5_setup():
+    """
+    Creates survey version 5.0.
+
+    Note that survey version 5.0 uses images from the text scenarios so that we are not storing duplicate information
+    """
+    tool = DelegationTool(5.0)
+    tool.clear_survey_version()
+
+    exp_page_1 = {
+            "name": "Participant ID Page",
+            "elements": [
+                {
+                    "type": "text",
+                    "name": "Participant ID",
+                    "title": "Enter Participant ID:",
+                    "isRequired": True
+                }
+            ]
+        }
+    tool.add_page_by_json(exp_page_1)
+
+    warning_page = {
+        "name": "PID Warning",
+        "elements": [
+            {
+                "type": "expression",
+                "name": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing.",
+                "title": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing."
+            }
+        ]
+    }
+    tool.add_page_by_json(warning_page)
+
+    exp_page_2 = {
+            "name": "VR Page",
+            "elements": [
+                {
+                    "type": "radiogroup",
+                    "name": "VR Experience Level",
+                    "title": "How much experience did you have with VR Gaming before today?",
+                    "isRequired": True,
+                    "choices": [
+                        "0 - None at all",
+                        "1 - I have used it, but not often",
+                        "2 - I use it occasionally",
+                        "3 - I use it often",
+                        "4 - I use it all the time"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Comfort Level",
+                    "title": "After completing the VR experience, my current physical state is...",
+                    "isRequired": True,
+                    "choices": [
+                        "Very uncomfortable",
+                        "Slightly uncomfortable",
+                        "Neutral",
+                        "Comfortable",
+                        "Very comfortable"
+                    ]
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Discomfort",
+                    "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
+                }
+            ]
+    }
+    tool.add_page_by_json(exp_page_2)
+    intro_page = {
+            "name": "Survey Introduction",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "Survey5 Introduction",
+                    "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how three different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+                }
+            ]
+        }
+    tool.add_page_by_json(intro_page)
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2x.json"), "Note page", None
+    )
+
+    # add comparison options to survey
+    tool.survey["validSingleSets"] = []
+    tool.survey["validOmniSets"] = []
+    adms = ['ALIGN-ADM-OutlinesBaseline', 'ALIGN-ADM-ComparativeRegression-ICL-Template', 'TAD-severity-baseline', 'TAD-aligned']
+    st_targets = ['qol-human-8022671-SplitLowMulti-ph1', 'qol-human-6403274-SplitHighBinary-ph1', 'qol-human-3043871-SplitHighBinary-ph1', 
+                    'qol-human-5032922-SplitLowMulti-ph1', 'qol-human-0000001-SplitEvenMulti-ph1', 'qol-human-7040555-SplitHighMulti-ph1',
+                    'qol-synth-LowExtreme-ph1', 'qol-synth-HighExtreme-ph1', 'qol-synth-HighCluster-ph1', 'qol-synth-LowCluster-ph1', 
+                    'vol-human-8022671-SplitHighMulti-ph1', 'vol-human-1774519-SplitHighMulti-ph1', 'vol-human-6403274-SplitEvenBinary-ph1', 
+                    'vol-human-8478698-SplitLowMulti-ph1', 'vol-human-5032922-SplitLowMulti-ph1', 'vol-synth-LowExtreme-ph1', 'vol-synth-HighCluster-ph1',
+                    'vol-synth-LowCluster-ph1']
+    ad_targets = ['ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
+                    'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 
+                    'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 
+                    'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 'ADEPT-DryRun-Ingroup Bias-0.8', ]
+    for t in st_targets:
+        for adm in adms:
+            if 'qol' in t:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-ph1-eval-2', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-ph1-eval-3', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='qol-ph1-eval-4', append=True
+                )
+            else:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-ph1-eval-2', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-ph1-eval-3', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'SoarTech', scenario_id='vol-ph1-eval-4', append=True
+                )
+    for t in ad_targets:
+        for adm in adms:
+            if 'Moral' in t:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ4-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-MJ5-eval', append=True
+                )
+            else:
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO2-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO4-eval', append=True
+                )
+                tool.add_db_medic_to_survey_by_details(
+                    adm, t, 'Adept', scenario_id='DryRunEval-IO5-eval', append=True
+                )
+    # pages for treating as AI or Human
+    agent_pages = [
+        {
+            "name": "Treat as Human",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are human medics.",
+                    "title": "Please evaluate these triage decision makers as if they are human medics."
+                }
+            ]
+        },
+        {
+            "name": "Treat as AI",
+            "elements": [
+                {
+                    "type": "expression",
+                    "name": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic.",
+                    "title": "Please evaluate these triage decision makers as if they are an Artificial Intelligence (AI) medic."
+                }
+            ]
+        }
+    ]
+    tool.survey['agentPages'] = agent_pages
+
+    # add final page
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "postScenario.json"),
+        "Post-Scenario Measures",
+        None,
+    )
+
+    # save changes
+    tool.push_changes()
+    tool.export_survey_json(os.path.join("survey-configs", "surveyConfig5x.json"))
+
 
 if __name__ == "__main__":
     LOGGER.log(LogLevel.CRITICAL_INFO, "Welcome to the Delegation Survey Tool")
@@ -1392,14 +1578,18 @@ if __name__ == "__main__":
     resp = input("")
     if resp == "":
         resp = input(
-            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Setup survey version 3.0\n\t3. Setup survey version 4.0\n"
+            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Do Nothing\n\t3. Setup survey version 3.0\n\t4. Setup survey version 4.0\n\t5. Setup survey version 5.0\n"
         )
         if resp == "1":
             one_time_db_initialization()
         elif resp == "2":
-            version3_setup()
+            LOGGER.log(LogLevel.CRITICAL_INFO, "You chose to do nothing. Have a nice, relaxing day!")
         elif resp == "3":
+            version3_setup()
+        elif resp == "4":
             version4_setup()
+        elif resp == "5":
+            version5_setup()
         else:
             LOGGER.log(LogLevel.WARN, "Option not recognized. Exiting...")
         exit(0)

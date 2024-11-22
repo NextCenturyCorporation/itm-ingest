@@ -88,13 +88,13 @@ def process_unstructured_text(text):
     return parts[1].strip() if len(parts) > 1 else text.strip()
 
 def get_scene_text(scene, is_first_scene, starting_context):
+    if is_first_scene:
+        return starting_context
+
     if 'probe_config' in scene:
         probe_config = scene['probe_config']
         if isinstance(probe_config, list) and probe_config and 'description' in probe_config[0]:
             return probe_config[0]['description']
-    
-    if is_first_scene:
-        return starting_context
         
     return scene.get('state', {}).get('unstructured', '')
 
@@ -357,7 +357,7 @@ def partition_doc(scenario, filename, eval_type):
         is_first_scene = (scene['id'] == scenario.get('first_scene') or (not scenario.get('first_scene') and scene == scenes[0]))
         page = create_page(scene, is_first_scene, transition_info)
         doc['pages'].append(page)
-        transition_info = None  # Reset transition_info after use
+        transition_info = None  
 
     # Apply visibility conditions
     for page in doc['pages']:
@@ -374,21 +374,18 @@ def upload_config(docs, textbased_mongo_collection):
         print("No new documents to upload.")
         return
     
-    # Check for existing documents and only add new ones
     existing_scenario_ids = set(doc['scenario_id'] for doc in textbased_mongo_collection.find({}, {'scenario_id': 1}))
     
     new_docs = []
     updated_docs = []
     for doc in docs:
         if doc['scenario_id'] in existing_scenario_ids:
-            # Update existing document
             textbased_mongo_collection.replace_one(
                 {'scenario_id': doc['scenario_id']}, 
                 doc
             )
             updated_docs.append(doc['scenario_id'])
         else:
-            # Add new document
             new_docs.append(doc)
     
     if new_docs:
