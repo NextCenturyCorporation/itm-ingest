@@ -159,6 +159,7 @@ def partition_doc(scenario, filename, eval_type):
 
         page = {
             'name': scene['id'],
+            'title': ' ',
             'scenario_id': scenario_id,
             'scenario_name': scenario['name'],
             'elements': []
@@ -209,7 +210,7 @@ def partition_doc(scenario, filename, eval_type):
 
         template_element = {
             'name': 'template ' + str(page['name']),
-            'title': page['name'],
+            'title': ' ',
             'type': 'medicalScenario',
             'unstructured': processed_unstructured,
             'supplies': current_supplies,
