@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, sys
 
 MONGO_URL = "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard" #config('MONGO_URL')
 ST_URL = "https://darpaitm.caci.com/soartech/" #config("ST_URL")
@@ -11,6 +11,8 @@ def rerun_soartech_adm_sessions(mongoDB):
     # Rerun ST sessions 
     counts = {}
     scores = {}
+    good_adms = 0
+    expected_adms = 384
     for adm in adms_to_update:
         # get adm name
         adm_name = adm['history'][0].get('parameters', {}).get('adm_name', None)
@@ -38,6 +40,7 @@ def rerun_soartech_adm_sessions(mongoDB):
         if adm_name not in good_adm_names:
             adm_collection.delete_one({'_id': adm['_id']})
             continue
+
         if adm_name not in counts:
             counts[adm_name] = 0
         counts[adm_name] += 1
@@ -67,6 +70,9 @@ def rerun_soartech_adm_sessions(mongoDB):
             if adm_name not in scores:
                 scores[adm_name] = []
             scores[adm_name].append(adm_score)
+        good_adms += 1
+        sys.stdout.write(f"\r{good_adms} out of {expected_adms} expected adms found so far")
+        sys.stdout.flush()
 
     print(counts)
     clean_scores = {}
@@ -82,6 +88,7 @@ def rerun_soartech_adm_sessions(mongoDB):
                         clean_scores[k][scenario][target] = []
                     clean_scores[k][scenario][target].append(el[scenario][target])
     print(json.dumps(clean_scores, indent=4))
+    
         
 
 def update_adm_run(collection, adm, probes):
