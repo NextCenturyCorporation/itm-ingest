@@ -9,7 +9,7 @@ from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
-RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
+RUN_ALL = False  # run all files in the input directory, even if they have already been run/analyzed, if true
 RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = False
 RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
@@ -739,6 +739,11 @@ class ProbeMatcher:
                         found_match = True
                         matched = cur_scene['action_mapping'][2] if 'Treat' in action_taken['answer'] else cur_scene['action_mapping'][0]
                         break   
+                    elif "Go to Soldier" in action_taken['answerChoices'] and 'Search for More Patients' in action_taken['answerChoices'] and cur_scene['id'] == 'Scene 2A' and self.adept_yaml['id'] == 'DryRunEval-MJ2-eval':
+                        last_action_ind_used += ind
+                        found_match = True
+                        matched = cur_scene['action_mapping'][2] if 'Go to' in action_taken['answer'] else cur_scene['action_mapping'][3]
+                        break   
                     elif "Assess Soldier" in action_taken['answerChoices'] and 'Go Back to Shooter/Victim' in action_taken['answerChoices'] and cur_scene['id'] == 'Scene 3' and self.adept_yaml['id'] == 'DryRunEval-MJ2-eval':
                         last_action_ind_used += ind
                         found_match = True
@@ -1120,10 +1125,10 @@ if __name__ == '__main__':
     if not args.input_dir:
         print("Input directory (-i PATH) is required to run the probe matcher.")
         exit(1)
+    # instantiate mongo client
+    client = MongoClient(config('MONGO_URL'))
+    db = client.dashboard
     if SEND_TO_MONGO:
-        # instantiate mongo client
-        client = MongoClient(config('MONGO_URL'))
-        db = client.dashboard
         # create new collection for simulation runs
         mongo_collection_matches = db['humanSimulator']
         mongo_collection_raw = db['humanSimulatorRaw']
@@ -1132,13 +1137,35 @@ if __name__ == '__main__':
         medic_collection = db['admMedics']
         adm_collection = db["test"]
         mini_adms_collection = db['delegationADMRuns']
-        participant_log_collection = db['participantLog']
+    participant_log_collection = db['participantLog']
 
     # go through the input directory and find all sub directories
     sub_dirs = [name for name in os.listdir(args.input_dir) if os.path.isdir(os.path.join(args.input_dir, name))]
     # for each subdirectory, see if a json file exists
     for dir in sub_dirs:
         parent = os.path.join(args.input_dir, dir)
+        # get date of sim
+        csv_file = open(os.path.join(parent, dir+'.csv'), 'r', encoding='utf-8')
+        reader = csv.reader(csv_file)
+        next(reader)
+        line2 = next(reader)
+        sim_date = datetime.strptime(line2[2], "%m/%d/%Y %I:%M:%S %p")
+        ph1_date = datetime(2024, 11, 24)
+        # if date is after 11/24, we are good! This is part of phase 1
+        valid_date = sim_date > ph1_date
+        # remove files that have invalid pids
+        pid = dir.split('_')[-1]
+        try:
+            pid = int(pid)
+        except:
+            os.system(f'rm -rf {os.path.join(parent)}')
+            continue
+        pid_in_log = participant_log_collection.count_documents({"ParticipantID": int(pid)}) > 0
+
+        if not pid_in_log or not valid_date:
+            os.system(f'rm -rf {parent}')
+            continue
+        
         if os.path.isdir(parent):
             for f in os.listdir(parent):
                 if '.json' in f:
