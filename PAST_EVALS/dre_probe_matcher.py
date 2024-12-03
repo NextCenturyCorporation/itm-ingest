@@ -1244,7 +1244,7 @@ class ProbeMatcher:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 if ('qol' in self.environment and 'qol' in page_scenario) or ('vol' in self.environment and 'vol' in page_scenario):
                     # find the adm session id that matches the medic shown in the delegation survey
-                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey)
+                    adm = db_utils.find_adm_from_medic(4, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
                         continue
                     adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
@@ -1281,7 +1281,7 @@ class ProbeMatcher:
                             'sim_scenario': vr_scenario
                         })
                 elif ('adept' in self.environment and 'DryRunEval' in page_scenario):
-                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
+                    adm = db_utils.find_adm_from_medic(4, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
@@ -1294,7 +1294,7 @@ class ProbeMatcher:
                             if x['command'] == 'Respond to TA1 Probe':
                                 if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
                                     probe_responses.append(x['parameters'])
-                        found_mini_adm = db_utils.mini_adm_run(mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
+                        found_mini_adm = db_utils.mini_adm_run(4, mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
                     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={found_mini_adm["session_id"]}').json()
                     if 'score' not in res:
                         self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")

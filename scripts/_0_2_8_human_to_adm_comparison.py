@@ -55,7 +55,7 @@ def compare_probes(mongoDB):
                 # handle ST scenario, only compare QOL vs QOL and VOL vs VOL
                 if ('qol' in scenario_id and 'qol' in page_scenario) or ('vol' in scenario_id and 'vol' in page_scenario):
                     # find the adm session id that matches the medic shown in the delegation survey
-                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey)
+                    adm = db_utils.find_adm_from_medic(4, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
                         continue
                     adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
@@ -87,7 +87,7 @@ def compare_probes(mongoDB):
                         print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
 
                 elif ('DryRunEval' in scenario_id and 'DryRunEval' in page_scenario):
-                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
+                    adm = db_utils.find_adm_from_medic(4, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
@@ -100,7 +100,7 @@ def compare_probes(mongoDB):
                             if x['command'] == 'Respond to TA1 Probe':
                                 if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
                                     probe_responses.append(x['parameters'])
-                        found_mini_adm = db_utils.mini_adm_run(del_adm_runs_collection, probe_responses, adm_target, survey['results'][page]['admName'])
+                        found_mini_adm = db_utils.mini_adm_run(4, del_adm_runs_collection, probe_responses, adm_target, survey['results'][page]['admName'])
                     # get comparison score
                     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={found_mini_adm["session_id"]}').json()
                     # send document to mongo
@@ -134,7 +134,7 @@ def compare_probes(mongoDB):
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
-            tad_most_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            tad_most_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_most_adm is not None:
                 # get comparison score
                 adm_session_id = tad_most_adm['history'][-1]['parameters']['session_id']
@@ -167,7 +167,7 @@ def compare_probes(mongoDB):
                 
             
             ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
-            kit_most_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_most_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_most_adm is not None:
                 adm_session_id = kit_most_adm['history'][-1]['parameters']['session_id']
                 res = None
@@ -203,7 +203,7 @@ def compare_probes(mongoDB):
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
-            tad_least_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            tad_least_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_least_adm is not None:
                 adm_session_id = tad_least_adm['history'][-1]['parameters']['session_id']
                 res = None
@@ -234,7 +234,7 @@ def compare_probes(mongoDB):
                     print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
 
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
-            kit_least_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_least_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_least_adm is not None:
                 adm_session_id = kit_least_adm['history'][-1]['parameters']['session_id']
                 res = None

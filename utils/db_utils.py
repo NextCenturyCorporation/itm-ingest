@@ -5,7 +5,7 @@ ADEPT_URL = config("ADEPT_DRE_URL")
 ST_URL = config("ST_DRE_URL")
 
 
-def mini_adm_run(collection, probes, target, adm_name):
+def mini_adm_run(evalNumber, collection, probes, target, adm_name):
     adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     scenario = None
     for x in probes:
@@ -20,14 +20,14 @@ def mini_adm_run(collection, probes, target, adm_name):
         })
         scenario = x['scenario_id']
     alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
-    doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': 4}
+    doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber}
     collection.insert_one(doc)
     return doc
 
 
-def find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey):
-    adm_session = medic_collection.find_one({'evalNumber': 4, 'name': page})['admSession']
-    adms = adm_collection.find({'evalNumber': 4, 'history.0.parameters.session_id': adm_session, 'history.0.response.id': page_scenario, 'history.0.parameters.adm_name': survey['results'][page]['admName']})
+def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
+    adm_session = medic_collection.find_one({'evalNumber': eval_number, 'name': page})['admSession']
+    adms = adm_collection.find({'evalNumber': eval_number, 'history.0.parameters.session_id': adm_session, 'history.0.response.id': page_scenario, 'history.0.parameters.adm_name': survey['results'][page]['admName']})
     adm = None
     for x in adms:
         if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
@@ -39,8 +39,8 @@ def find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, s
     return adm
 
 
-def find_most_least_adm(adm_collection, scenario, target, adm_name):
-    adms = adm_collection.find({'evalNumber': 4,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
+def find_most_least_adm(eval_number, adm_collection, scenario, target, adm_name):
+    adms = adm_collection.find({'evalNumber': eval_number,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
     adm = None
     for x in adms:
         if x['history'][len(x['history'])-1]['parameters']['target_id'] == target:

@@ -25,7 +25,7 @@ def find_matching_probe_percentage(mongoDB):
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
-            tad_most_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            tad_most_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_most_adm is not None:
                 perc = calculate_matches(entry, tad_most_adm, attribute)
                 document = {
@@ -41,7 +41,7 @@ def find_matching_probe_percentage(mongoDB):
                 send_document_to_mongo(match_collection, document)
             
             ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
-            kit_most_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_most_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_most_adm is not None:
                 perc = calculate_matches(entry, kit_most_adm, attribute)
                 document = {
@@ -61,7 +61,7 @@ def find_matching_probe_percentage(mongoDB):
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
-            tad_least_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            tad_least_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_least_adm is not None:
                 perc = calculate_matches(entry, tad_least_adm, attribute)
                 document = {
@@ -77,7 +77,7 @@ def find_matching_probe_percentage(mongoDB):
                 send_document_to_mongo(match_collection, document)
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
-            kit_least_adm = db_utils.find_most_least_adm(adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_least_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_least_adm is not None:
                 perc = calculate_matches(entry, kit_least_adm, attribute)
                 document = {
@@ -95,7 +95,7 @@ def find_matching_probe_percentage(mongoDB):
 
         for target in entry.get('group_targets', []):
             attribute = 'QualityOfLife' if 'qol' in target else 'PerceivedQuantityOfLivesSaved' if 'vol' in target else 'Ingroup Bias' if 'Ingroup' in target else 'Moral judgement'
-            tad_aligned = db_utils.find_most_least_adm(adm_collection, scenario_id, target, 'TAD-aligned')
+            tad_aligned = db_utils.find_most_least_adm(4, adm_collection, scenario_id, target, 'TAD-aligned')
             if tad_aligned is not None:
                 perc = calculate_matches(entry, tad_aligned, attribute)
                 document = {
@@ -110,7 +110,7 @@ def find_matching_probe_percentage(mongoDB):
                 }
                 send_document_to_mongo(match_collection, document)
 
-            kit_aligned = db_utils.find_most_least_adm(adm_collection, scenario_id, target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_aligned = db_utils.find_most_least_adm(4, adm_collection, scenario_id, target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_aligned is not None:
                 perc = calculate_matches(entry, kit_aligned, attribute)
                 document = {

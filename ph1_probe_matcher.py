@@ -10,8 +10,8 @@ from dateutil import parser as dateparser
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 RUN_ALIGNMENT = True # send data to servers to calculate alignment if true
 RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
-RUN_COMPARISON = False # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
-RECALCULATE_COMPARISON = False
+RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
+RECALCULATE_COMPARISON = True
 RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
 EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
@@ -73,20 +73,20 @@ JUSTIFY_MAPPING = {
 
 ST_PROBES = {
     "delegation": {
-        "qol-dre-1-eval": ['qol-ph1-eval-2-Probe-1', 'qol-ph1-eval-2-Probe-2', 'qol-ph1-eval-2-Probe-3', 'qol-ph1-eval-2-Probe-4', 'qol-ph1-eval-2-Probe-5', 'qol-ph1-eval-2-Probe-6'],
-        "qol-dre-2-eval": ['qol-ph1-eval-3-Probe-1', 'qol-ph1-eval-3-Probe-2', 'qol-ph1-eval-3-Probe-3', 'qol-ph1-eval-3-Probe-4', 'qol-ph1-eval-3-Probe-5', 'qol-ph1-eval-3-Probe-6'],
-        "qol-dre-3-eval": ['qol-ph1-eval-4-Probe-1', 'qol-ph1-eval-4-Probe-2', 'qol-ph1-eval-4-Probe-3', 'qol-ph1-eval-4-Probe-4', 'qol-ph1-eval-4-Probe-5', 'qol-ph1-eval-4-Probe-6'],
-        "vol-dre-1-eval": ['vol-ph1-eval-2-Probe-1', 'vol-ph1-eval-2-Probe-2', 'vol-ph1-eval-2-Probe-3', 'vol-ph1-eval-2-Probe-4', 'vol-ph1-eval-2-Probe-5', 'vol-ph1-eval-2-Probe-6'],
-        "vol-dre-2-eval": ['vol-ph1-eval-3-Probe-1', 'vol-ph1-eval-3-Probe-2', 'vol-ph1-eval-3-Probe-3', 'vol-ph1-eval-3-Probe-4', 'vol-ph1-eval-3-Probe-5', 'vol-ph1-eval-3-Probe-6'],
-        "vol-dre-3-eval": ['vol-ph1-eval-4-Probe-1', 'vol-ph1-eval-4-Probe-2', 'vol-ph1-eval-4-Probe-3', 'vol-ph1-eval-4-Probe-4', 'vol-ph1-eval-4-Probe-5', 'vol-ph1-eval-4-Probe-6']
+        "qol-ph1-eval-2": ['qol-ph1-eval-2-Probe-1', 'qol-ph1-eval-2-Probe-2', 'qol-ph1-eval-2-Probe-3', 'qol-ph1-eval-2-Probe-4', 'qol-ph1-eval-2-Probe-5', 'qol-ph1-eval-2-Probe-6'],
+        "qol-ph1-eval-3": ['qol-ph1-eval-3-Probe-1', 'qol-ph1-eval-3-Probe-2', 'qol-ph1-eval-3-Probe-3', 'qol-ph1-eval-3-Probe-4', 'qol-ph1-eval-3-Probe-5', 'qol-ph1-eval-3-Probe-6'],
+        "qol-ph1-eval-4": ['qol-ph1-eval-4-Probe-1', 'qol-ph1-eval-4-Probe-2', 'qol-ph1-eval-4-Probe-3', 'qol-ph1-eval-4-Probe-4', 'qol-ph1-eval-4-Probe-5', 'qol-ph1-eval-4-Probe-6'],
+        "vol-ph1-eval-2": ['vol-ph1-eval-2-Probe-1', 'vol-ph1-eval-2-Probe-2', 'vol-ph1-eval-2-Probe-3', 'vol-ph1-eval-2-Probe-4', 'vol-ph1-eval-2-Probe-5', 'vol-ph1-eval-2-Probe-6'],
+        "vol-ph1-eval-3": ['vol-ph1-eval-3-Probe-1', 'vol-ph1-eval-3-Probe-2', 'vol-ph1-eval-3-Probe-3', 'vol-ph1-eval-3-Probe-4', 'vol-ph1-eval-3-Probe-5', 'vol-ph1-eval-3-Probe-6'],
+        "vol-ph1-eval-4": ['vol-ph1-eval-4-Probe-1', 'vol-ph1-eval-4-Probe-2', 'vol-ph1-eval-4-Probe-3', 'vol-ph1-eval-4-Probe-4', 'vol-ph1-eval-4-Probe-5', 'vol-ph1-eval-4-Probe-6']
     },
     "all": {
-        "qol-dre-1-eval": ['qol-ph1-eval-2-Probe-1', 'qol-ph1-eval-2-Probe-2', 'qol-ph1-eval-2-Probe-3', 'qol-ph1-eval-2-Probe-4', 'qol-ph1-eval-2-Probe-5', 'qol-ph1-eval-2-Probe-6'],
-        "qol-dre-2-eval": ['qol-ph1-eval-3-Probe-1', 'qol-ph1-eval-3-Probe-2', 'qol-ph1-eval-3-Probe-3', 'qol-ph1-eval-3-Probe-4', 'qol-ph1-eval-3-Probe-5', 'qol-ph1-eval-3-Probe-6'],
-        "qol-dre-3-eval": ['qol-ph1-eval-4-Probe-1', 'qol-ph1-eval-4-Probe-2', 'qol-ph1-eval-4-Probe-3', 'qol-ph1-eval-4-Probe-4', 'qol-ph1-eval-4-Probe-5', 'qol-ph1-eval-4-Probe-6'],
-        "vol-dre-1-eval": ['vol-ph1-eval-2-Probe-1', 'vol-ph1-eval-2-Probe-2', 'vol-ph1-eval-2-Probe-3', 'vol-ph1-eval-2-Probe-4', 'vol-ph1-eval-2-Probe-5', 'vol-ph1-eval-2-Probe-6'],
-        "vol-dre-2-eval": ['vol-ph1-eval-3-Probe-1', 'vol-ph1-eval-3-Probe-2', 'vol-ph1-eval-3-Probe-3', 'vol-ph1-eval-3-Probe-4', 'vol-ph1-eval-3-Probe-5', 'vol-ph1-eval-3-Probe-6'],
-        "vol-dre-3-eval": ['vol-ph1-eval-4-Probe-1', 'vol-ph1-eval-4-Probe-2', 'vol-ph1-eval-4-Probe-3', 'vol-ph1-eval-4-Probe-4', 'vol-ph1-eval-4-Probe-5', 'vol-ph1-eval-4-Probe-6']
+        "qol-ph1-eval-2": ['qol-ph1-eval-2-Probe-1', 'qol-ph1-eval-2-Probe-2', 'qol-ph1-eval-2-Probe-3', 'qol-ph1-eval-2-Probe-4', 'qol-ph1-eval-2-Probe-5', 'qol-ph1-eval-2-Probe-6'],
+        "qol-ph1-eval-3": ['qol-ph1-eval-3-Probe-1', 'qol-ph1-eval-3-Probe-2', 'qol-ph1-eval-3-Probe-3', 'qol-ph1-eval-3-Probe-4', 'qol-ph1-eval-3-Probe-5', 'qol-ph1-eval-3-Probe-6'],
+        "qol-ph1-eval-4": ['qol-ph1-eval-4-Probe-1', 'qol-ph1-eval-4-Probe-2', 'qol-ph1-eval-4-Probe-3', 'qol-ph1-eval-4-Probe-4', 'qol-ph1-eval-4-Probe-5', 'qol-ph1-eval-4-Probe-6'],
+        "vol-ph1-eval-2": ['vol-ph1-eval-2-Probe-1', 'vol-ph1-eval-2-Probe-2', 'vol-ph1-eval-2-Probe-3', 'vol-ph1-eval-2-Probe-4', 'vol-ph1-eval-2-Probe-5', 'vol-ph1-eval-2-Probe-6'],
+        "vol-ph1-eval-3": ['vol-ph1-eval-3-Probe-1', 'vol-ph1-eval-3-Probe-2', 'vol-ph1-eval-3-Probe-3', 'vol-ph1-eval-3-Probe-4', 'vol-ph1-eval-3-Probe-5', 'vol-ph1-eval-3-Probe-6'],
+        "vol-ph1-eval-4": ['vol-ph1-eval-4-Probe-1', 'vol-ph1-eval-4-Probe-2', 'vol-ph1-eval-4-Probe-3', 'vol-ph1-eval-4-Probe-4', 'vol-ph1-eval-4-Probe-5', 'vol-ph1-eval-4-Probe-6']
     }
 }
 
@@ -526,6 +526,7 @@ class ProbeMatcher:
                 num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
                 participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']}, 
                                                       {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
+
 
     def match_qol_vol_probes(self):
         soartech_scenes = self.soartech_yaml['scenes']
@@ -1010,7 +1011,7 @@ class ProbeMatcher:
             vr_scenario = ENV_MAP[self.environment]
 
             # VR session vs text scenario (ST)
-            text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
+            text_response = text_scenario_collection.find_one({"evalNumber": 5, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
             if text_response is None:
                 self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} {vr_scenario.split('-')[0]} scenario")
                 return None
@@ -1030,7 +1031,7 @@ class ProbeMatcher:
             res = res['score']
         elif 'adept' in self.environment:
             # get text session id
-            text_response = text_scenario_collection.find_one({"evalNumber": 4, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval"]}})
+            text_response = text_scenario_collection.find_one({"evalNumber": 5, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval", 'phase1-adept-eval-MJ2', 'phase1-adept-eval-MJ4', 'phase1-adept-eval-MJ5']}})
             if text_response is None:
                 self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} adept scenario")
                 return None
@@ -1063,7 +1064,7 @@ class ProbeMatcher:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 if ('qol' in self.environment and 'qol' in page_scenario) or ('vol' in self.environment and 'vol' in page_scenario):
                     # find the adm session id that matches the medic shown in the delegation survey
-                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario, survey)
+                    adm = db_utils.find_adm_from_medic(5, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
                         continue
                     adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
@@ -1088,7 +1089,7 @@ class ProbeMatcher:
                             'sim_scenario': vr_scenario
                         })
                 elif ('adept' in self.environment and 'DryRunEval' in page_scenario):
-                    adm = db_utils.find_adm_from_medic(medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
+                    adm = db_utils.find_adm_from_medic(5, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
@@ -1101,7 +1102,7 @@ class ProbeMatcher:
                             if x['command'] == 'Respond to TA1 Probe':
                                 if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
                                     probe_responses.append(x['parameters'])
-                        found_mini_adm = db_utils.mini_adm_run(mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
+                        found_mini_adm = db_utils.mini_adm_run(5, mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
                     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={found_mini_adm["session_id"]}').json()
                     if 'score' not in res:
                         self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
