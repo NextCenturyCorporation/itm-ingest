@@ -1285,7 +1285,7 @@ class ProbeMatcher:
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
-                    found_mini_adm = mini_adms_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName']})
+                    found_mini_adm = mini_adms_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName'], 'evalNumber': 4})
                     if found_mini_adm is None:
                         # get new adm session that contains only the probes seen in the delegation survey
                         probe_ids = AD_DEL_PROBES[page_scenario] # this is where IO/MJ comes into play - choosing the probes

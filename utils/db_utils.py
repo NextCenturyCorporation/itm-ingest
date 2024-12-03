@@ -1,11 +1,9 @@
 import requests
 from decouple import config 
 
-ADEPT_URL = config("ADEPT_DRE_URL")
-ST_URL = config("ST_DRE_URL")
-
 
 def mini_adm_run(evalNumber, collection, probes, target, adm_name):
+    ADEPT_URL = config("ADEPT_DRE_URL") if evalNumber == 4 else config('ADEPT_URL')
     adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     scenario = None
     for x in probes:
@@ -19,7 +17,19 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name):
             "session_id": adept_sid
         })
         scenario = x['scenario_id']
-    alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
+    if evalNumber == 4:
+        alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
+    else:
+        if 'Moral' in target:
+            targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={adept_sid}&population=false&kdma_id=Moral%20judgement').json()
+        else:
+            targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={adept_sid}&population=false&kdma_id=Ingroup%20Bias').json()
+        score = 0
+        for t in targets:
+            if list(t.keys())[0] == target:
+                score = t[list(t.keys())[0]]
+                break
+        alignment = {'alignment_source': {'score': score}}
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber}
     collection.insert_one(doc)
     return doc
