@@ -95,12 +95,12 @@ def compare_probes(mongoDB, EVAL_NUMBER=4):
                     else:
                         print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
 
-                elif ('DryRunEval' in scenario_id and 'DryRunEval' in page_scenario):
+                elif (('DryRunEval' in scenario_id or 'adept' in scenario_id) and ('DryRunEval' in page_scenario or 'adept' in page_scenario)):
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
-                    found_mini_adm = del_adm_runs_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName']})
+                    found_mini_adm = del_adm_runs_collection.find_one({'target': adm_target, 'evalNumber': EVAL_NUMBER, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName']})
                     if found_mini_adm is None:
                         # get new adm session
                         probe_ids = AD_PROBES[page_scenario] # this is where IO/MJ comes into play - choosing the probes
