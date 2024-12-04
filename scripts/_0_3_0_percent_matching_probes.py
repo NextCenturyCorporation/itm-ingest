@@ -1,12 +1,12 @@
 import utils.db_utils as db_utils
 
-def find_matching_probe_percentage(mongoDB):
+def find_matching_probe_percentage(mongoDB, EVAL_NUMBER=4):
     text_scenario_collection = mongoDB['userScenarioResults']
     match_collection = mongoDB['admVsTextProbeMatches']
     adm_collection = mongoDB["test"]
 
     data_to_use = text_scenario_collection.find(
-        {"evalNumber": 4}
+        {"evalNumber": EVAL_NUMBER}
     )
 
     for entry in data_to_use:
@@ -25,7 +25,7 @@ def find_matching_probe_percentage(mongoDB):
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
-            tad_most_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            tad_most_adm = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_most_adm is not None:
                 perc = calculate_matches(entry, tad_most_adm, attribute)
                 document = {
@@ -36,12 +36,12 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'TAD',
                     'attribute': attribute,
                     'adm_alignment_target': most.get('target', list(most.keys())[0]),
-                    'evalNumber': 4
+                    'evalNumber': EVAL_NUMBER
                 }
-                send_document_to_mongo(match_collection, document)
+                db_utils.send_match_document_to_mongo(match_collection, document)
             
             ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
-            kit_most_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_most_adm = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_most_adm is not None:
                 perc = calculate_matches(entry, kit_most_adm, attribute)
                 document = {
@@ -52,16 +52,16 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'kitware',
                     'attribute': attribute,
                     'adm_alignment_target': most.get('target', list(most.keys())[0]),
-                    'evalNumber': 4
+                    'evalNumber': EVAL_NUMBER
                 }
-                send_document_to_mongo(match_collection, document)
+                db_utils.send_match_document_to_mongo(match_collection, document)
 
             edited_target = least.get('target', list(least.keys())[0])
             if 'Ingroup' in attribute or 'Moral' in attribute:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
-            tad_least_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'TAD-aligned')
+            tad_least_adm = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, edited_target, 'TAD-aligned')
             if tad_least_adm is not None:
                 perc = calculate_matches(entry, tad_least_adm, attribute)
                 document = {
@@ -72,12 +72,12 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'TAD',
                     'attribute': attribute,
                     'adm_alignment_target': least.get('target', list(least.keys())[0]),
-                    'evalNumber': 4
+                    'evalNumber': EVAL_NUMBER
                 }
-                send_document_to_mongo(match_collection, document)
+                db_utils.send_match_document_to_mongo(match_collection, document)
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
-            kit_least_adm = db_utils.find_most_least_adm(4, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_least_adm = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_least_adm is not None:
                 perc = calculate_matches(entry, kit_least_adm, attribute)
                 document = {
@@ -88,14 +88,14 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'kitware',
                     'attribute': attribute,
                     'adm_alignment_target': least.get('target', list(least.keys())[0]),
-                    'evalNumber': 4
+                    'evalNumber': EVAL_NUMBER
                 }
-                send_document_to_mongo(match_collection, document)
+                db_utils.send_match_document_to_mongo(match_collection, document)
 
 
         for target in entry.get('group_targets', []):
             attribute = 'QualityOfLife' if 'qol' in target else 'PerceivedQuantityOfLivesSaved' if 'vol' in target else 'Ingroup Bias' if 'Ingroup' in target else 'Moral judgement'
-            tad_aligned = db_utils.find_most_least_adm(4, adm_collection, scenario_id, target, 'TAD-aligned')
+            tad_aligned = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, target, 'TAD-aligned')
             if tad_aligned is not None:
                 perc = calculate_matches(entry, tad_aligned, attribute)
                 document = {
@@ -106,11 +106,11 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'TAD',
                     'attribute': attribute,
                     'adm_alignment_target': target,
-                    'evalNumber': 4
+                    'evalNumber': EVAL_NUMBER
                 }
-                send_document_to_mongo(match_collection, document)
+                db_utils.send_match_document_to_mongo(match_collection, document)
 
-            kit_aligned = db_utils.find_most_least_adm(4, adm_collection, scenario_id, target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
+            kit_aligned = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
             if kit_aligned is not None:
                 perc = calculate_matches(entry, kit_aligned, attribute)
                 document = {
@@ -121,9 +121,9 @@ def find_matching_probe_percentage(mongoDB):
                     'adm_author': 'kitware',
                     'attribute': attribute,
                     'adm_alignment_target': target,
-                    'evalNumber': 4
+                    'evalNumber': EVAL_NUMBER
                 }
-                send_document_to_mongo(match_collection, document)
+                db_utils.send_match_document_to_mongo(match_collection, document)
 
     print("Text vs ADM probe match percentage values added to database.")
 
@@ -172,18 +172,3 @@ def calculate_matches(text, adm, attribute):
 
     return matches / max(1, total)
     
-
-def send_document_to_mongo(match_collection, document):
-    # do not send duplicate documents, make sure if one already exists, we just replace it
-    found_docs = match_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'], 
-                                                'adm_author': document['adm_author'], 'adm_alignment_target': document['adm_alignment_target'], 'attribute': document['attribute']})
-    doc_found = False
-    obj_id = ''
-    for doc in found_docs:
-        doc_found = True
-        obj_id = doc['_id']
-        break
-    if doc_found:
-        match_collection.update_one({'_id': obj_id}, {'$set': document})
-    else:
-        match_collection.insert_one(document)

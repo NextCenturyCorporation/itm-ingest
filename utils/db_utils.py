@@ -1,6 +1,17 @@
 import requests
 from decouple import config 
 
+PH1_SCENARIO_MAP = {
+    "phase1-adept-eval-MJ2": "DryRunEval-MJ2-eval",
+    "phase1-adept-eval-MJ4": "DryRunEval-MJ4-eval",
+    "phase1-adept-eval-MJ5": "DryRunEval-MJ5-eval",
+    "qol-ph1-eval-2": "qol-ph1-eval-2",
+    "qol-ph1-eval-3": "qol-ph1-eval-3",
+    "qol-ph1-eval-4": "qol-ph1-eval-4",
+    "vol-ph1-eval-2": "vol-ph1-eval-2",
+    "vol-ph1-eval-3": "vol-ph1-eval-3",
+    "vol-ph1-eval-4": "vol-ph1-eval-4"
+}
 
 def mini_adm_run(evalNumber, collection, probes, target, adm_name):
     ADEPT_URL = config("ADEPT_DRE_URL") if evalNumber == 4 else config('ADEPT_URL')
@@ -36,6 +47,8 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name):
 
 
 def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
+    if eval_number == 5:
+        page_scenario = PH1_SCENARIO_MAP[page_scenario]
     adm_session = medic_collection.find_one({'evalNumber': eval_number, 'name': page})['admSession']
     adms = adm_collection.find({'evalNumber': eval_number, 'history.0.parameters.session_id': adm_session, 'history.0.response.id': page_scenario, 'history.0.parameters.adm_name': survey['results'][page]['admName']})
     adm = None
@@ -50,6 +63,8 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
 
 
 def find_most_least_adm(eval_number, adm_collection, scenario, target, adm_name):
+    if eval_number == 5:
+        scenario = PH1_SCENARIO_MAP[scenario]
     adms = adm_collection.find({'evalNumber': eval_number,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
     adm = None
     for x in adms:
@@ -60,3 +75,18 @@ def find_most_least_adm(eval_number, adm_collection, scenario, target, adm_name)
         print(f"No matching adm found for scenario {scenario} with adm {adm_name} at target {target}")
         return None
     return adm
+
+def send_match_document_to_mongo(match_collection, document):
+    # do not send duplicate documents, make sure if one already exists, we just replace it
+    found_docs = match_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'], 'evalNumber': document['evalNumber'],
+                                                'adm_author': document['adm_author'], 'adm_alignment_target': document['adm_alignment_target'], 'attribute': document['attribute']})
+    doc_found = False
+    obj_id = ''
+    for doc in found_docs:
+        doc_found = True
+        obj_id = doc['_id']
+        break
+    if doc_found:
+        match_collection.update_one({'_id': obj_id}, {'$set': document})
+    else:
+        match_collection.insert_one(document)

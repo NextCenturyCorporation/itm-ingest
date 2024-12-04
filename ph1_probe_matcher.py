@@ -1119,13 +1119,21 @@ class ProbeMatcher:
         return results
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i PATH')
+    parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i [-w] PATH')
 
     parser.add_argument('-i', '--input_dir', dest='input_dir', type=str, help='The path to the directory where all participant files are. Required.')
+    parser.add_argument('-w', '--weekly', action='store_true', dest='is_weekly', help='A flag to determine if this is a weekly run. If weekly, global variables change.')
     args = parser.parse_args()
     if not args.input_dir:
         print("Input directory (-i PATH) is required to run the probe matcher.")
         exit(1)
+    if args.is_weekly:
+        # should only run new files, and run alignment/comparisons for those missing it
+        SEND_TO_MONGO = True 
+        RUN_ALIGNMENT = True 
+        RUN_ALL = False 
+        RUN_COMPARISON = True 
+        RECALCULATE_COMPARISON = False
     # instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
