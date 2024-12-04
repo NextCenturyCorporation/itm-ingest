@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from decouple import config
 
 MONGO_URL = config('MONGO_URL')
-ST_URL = config("ST_DRE_URL")
+ST_URL = config("ST_DRE_SCALAR_URL")
 UPDATE_DATABASE = True # Update the mongo database tables for text, sim, and adm
 VERBOSE_OUTPUT = True # If True, displays scalar KDMA values for each entry
 DISPLAY_CSV = False # If True, writes csv-like output for text and sim kdma data
