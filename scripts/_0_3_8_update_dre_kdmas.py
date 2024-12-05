@@ -1,9 +1,6 @@
 import requests
-from pymongo import MongoClient
-from decouple import config
 
-MONGO_URL = config('MONGO_URL')
-ST_URL = config("ST_DRE_SCALAR_URL")
+ST_URL = "https://darpaitm.caci.com/soartech_scalar_kdma/" #config("ST_DRE_SCALAR_URL")
 UPDATE_DATABASE = True # Update the mongo database tables for text, sim, and adm
 VERBOSE_OUTPUT = True # If True, displays scalar KDMA values for each entry
 DISPLAY_CSV = False # If True, writes csv-like output for text and sim kdma data
@@ -19,6 +16,35 @@ txt_and_sim_data = {}
       If enabled, update database with new kdma scalar value
     If enabled, print csv-like output for text and sim kdma data:  PID, Text-QOL, Text-VOL, Sim-QOL, Sim-VOL
 """
+def update_soartech_dre_kdmas(mongo_db):
+    """
+    Update DRE SoarTech Text, Sim, and ADM KDMA values with a scalar value.
+    """
+
+    print("Processing SoarTech Text KDMAs...")
+    update_text_kdmas(mongo_db)
+    if VERBOSE_OUTPUT:
+        print("-----")
+    print("Processing SoarTech Sim KDMAs...")
+    update_sim_kdmas(mongo_db)
+    if VERBOSE_OUTPUT:
+        print("-----")
+    print("Processing SoarTech ADM KDMAs...")
+    update_adm_kdmas(mongo_db)
+
+    if DISPLAY_CSV:
+        if VERBOSE_OUTPUT:
+            print("-----")
+        # Supplement with some manually added kdmas derived from YAML files.
+        txt_and_sim_data['202409111']['SIM_PerceivedQuantityOfLivesSaved'] = 0.62
+        txt_and_sim_data['202409112'] = {'SIM_QualityOfLife': 0.3909090909, 'SIM_PerceivedQuantityOfLivesSaved': 0.53636363636}
+        print("CSV-style output:")
+        print("PID,Text-QOL,Text-VOL,Sim-QOL,Sim-VOL")
+        for row in txt_and_sim_data:
+            print(f"{row}, {txt_and_sim_data[row].get('TXT_QualityOfLife', 'n/a')}, {txt_and_sim_data[row].get('TXT_PerceivedQuantityOfLivesSaved', 'n/a')}, {txt_and_sim_data[row].get('SIM_QualityOfLife', 'n/a')}, {txt_and_sim_data[row].get('SIM_PerceivedQuantityOfLivesSaved', 'n/a')}")
+
+    print("Done.")
+
 
 def update_text_kdmas(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
@@ -191,39 +217,3 @@ def update_adm_run(collection, adm, adm_name, probes):
             collection.update_one({'_id': adm['_id']}, {"$set": {"history": adm['history']}})
     else:
         print(f"No profile for ADM ID={adm['_id']}, ADM name={adm_name}")
-
-
-def main():
-    """
-    Update DRE SoarTech Text, Sim, and ADM KDMA values with a scalar value.
-    """
-
-    client = MongoClient(MONGO_URL)
-    mongoDB = client['dashboard']
-
-    print("Processing SoarTech Text KDMAs...")
-    update_text_kdmas(mongoDB)
-    if VERBOSE_OUTPUT:
-        print("-----")
-    print("Processing SoarTech Sim KDMAs...")
-    update_sim_kdmas(mongoDB)
-    if VERBOSE_OUTPUT:
-        print("-----")
-    print("Processing SoarTech ADM KDMAs...")
-    update_adm_kdmas(mongoDB)
-
-    if DISPLAY_CSV:
-        if VERBOSE_OUTPUT:
-            print("-----")
-        # Supplement with some manually added kdmas derived from YAML files.
-        txt_and_sim_data['202409111']['SIM_PerceivedQuantityOfLivesSaved'] = 0.62
-        txt_and_sim_data['202409112'] = {'SIM_QualityOfLife': 0.3909090909, 'SIM_PerceivedQuantityOfLivesSaved': 0.53636363636}
-        print("CSV-style output:")
-        print("PID,Text-QOL,Text-VOL,Sim-QOL,Sim-VOL")
-        for row in txt_and_sim_data:
-            print(f"{row}, {txt_and_sim_data[row].get('TXT_QualityOfLife', 'n/a')}, {txt_and_sim_data[row].get('TXT_PerceivedQuantityOfLivesSaved', 'n/a')}, {txt_and_sim_data[row].get('SIM_QualityOfLife', 'n/a')}, {txt_and_sim_data[row].get('SIM_PerceivedQuantityOfLivesSaved', 'n/a')}")
-
-    print("Done.")
-
-if __name__ == "__main__":
-    main()
