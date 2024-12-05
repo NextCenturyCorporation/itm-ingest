@@ -43,18 +43,14 @@ class ScriptManager:
                 module_name = f"{self.scripts_dir}.{filename[:-3]}"
                 
                 '''
-                    Note: it is going to call the first function found in the script.
-                    We should standardize the main function of each script (if there is more than one)
-                    to be at the beginning of the file.
+                    Note: Your script MUST have 'def main', this function
+                    should take mongo_db as a parameter
                 '''
                 try:
                     module = importlib.import_module(module_name)
-                    main_functions = [
-                        name for name in dir(module)
-                        if callable(getattr(module, name)) and not name.startswith('_')
-                    ]
-                    if main_functions: 
-                        updates.append((version_str, module_name, main_functions[0]))
+                    main_function = getattr(module, 'main')
+                    if main_function: 
+                        updates.append((version_str, module_name, main_function))
                 except ImportError as e:
                     print(f"Warning: Could not import {module_name}: {e}")
                 
