@@ -17,8 +17,8 @@ EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
 
 
-ADEPT_URL = "https://darpaitm.caci.com/adept/" #config("ADEPT_URL")
-ST_URL = "https://darpaitm.caci.com/soartech/" #config("ST_URL")
+ADEPT_URL = config("ADEPT_URL")
+ST_URL = config("ST_URL")
 
 SCENE_MAP = {
     "qol-ph1-eval-2 Narrative": "phase1-soartech-eval-qol2.yaml",
