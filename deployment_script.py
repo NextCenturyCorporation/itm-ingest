@@ -11,12 +11,12 @@ class ScriptManager:
         self.db = self.client[db_name]
         self.scripts_dir = scripts_dir
         self.version_collection = "itm_version"
-
+    
     def get_current_db_version(self):
         collection = self.db[self.version_collection]
         version_obj = collection.find_one()
         return version_obj['version'] if version_obj else "0.0.0"
-
+    
     def update_db_version(self, new_version: str):
         collection = self.db[self.version_collection]
         version_obj = collection.find_one()
@@ -41,15 +41,14 @@ class ScriptManager:
                 
                 # convert filename for import
                 module_name = f"{self.scripts_dir}.{filename[:-3]}"
-                
                 '''
                     Note: Your script MUST have 'def main', this function
                     should take mongo_db as a parameter
                 '''
                 try:
                     module = importlib.import_module(module_name)
-                    main_function = getattr(module, 'main')
-                    if main_function: 
+                    main_function = getattr(module, 'main', None)
+                    if main_function:
                         updates.append((version_str, module_name, main_function))
                 except ImportError as e:
                     print(f"Warning: Could not import {module_name}: {e}")
@@ -74,11 +73,9 @@ class ScriptManager:
 
         print(f"Found {len(pending_scripts)} pending updates")
         
-        for version_str, module_name, function_name in pending_scripts:
-            print(f"Running update {version_str} from {module_name}.{function_name}")
+        for version_str, module_name, update_function in pending_scripts:
+            print(f"Running update {version_str} from {module_name}")
             try:
-                module = importlib.import_module(module_name)
-                update_function = getattr(module, function_name)
                 # mongo instance passed
                 update_function(self.db)
                 self.update_db_version(version_str)
@@ -86,6 +83,7 @@ class ScriptManager:
             except Exception as e:
                 print(f"Error running script {version_str}: {e}")
                 raise  # stops the update process on err
+
         final_version = self.get_current_db_version()
         print(f"\nDatabase has been updated to version {final_version}")
 
