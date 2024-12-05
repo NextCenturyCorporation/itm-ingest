@@ -59,6 +59,6 @@ The probe matcher will output two json files for each input json found: one for 
 
 To utilize this function, you will need to manually run the deployment script.
 We will eventually have a Jenkins job that will run the script whenever ingest is updated.
-Also if you would like to run a new script you will need to modify the script that is being called in deployment script and bump the version.
+To run a new script, add it to the `/scripts` folder, following the naming convention. The deployment script will check the current database version in mongo to determine which scripts need to be run.
 
 The script will only run if the version is a newer version of the db, the script also create the collection for the version if it doesn't exist yet. Set your .env file to point to the instances of the TA1 servers you have running locally. 
