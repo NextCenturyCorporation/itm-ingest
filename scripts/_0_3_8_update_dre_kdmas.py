@@ -16,7 +16,7 @@ txt_and_sim_data = {}
       If enabled, update database with new kdma scalar value
     If enabled, print csv-like output for text and sim kdma data:  PID, Text-QOL, Text-VOL, Sim-QOL, Sim-VOL
 """
-def update_soartech_dre_kdmas(mongo_db):
+def main(mongo_db):
     """
     Update DRE SoarTech Text, Sim, and ADM KDMA values with a scalar value.
     """
