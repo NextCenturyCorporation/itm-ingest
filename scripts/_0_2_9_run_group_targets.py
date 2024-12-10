@@ -31,7 +31,7 @@ GROUP_TARGETS = {
     '202409114': ['vol-group-target-dre-2']
 }
 
-def run_group_targets(mongoDB):
+def main(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
 
     data_to_update = text_scenario_collection.find(

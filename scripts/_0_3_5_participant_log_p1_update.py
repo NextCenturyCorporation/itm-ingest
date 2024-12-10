@@ -1,4 +1,4 @@
-def participant_log_p1_update(mongo_db):
+def main(mongo_db):
     participant_log = mongo_db['participantLog']
     result = participant_log.delete_many({
         '$or': [

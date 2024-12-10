@@ -1,6 +1,6 @@
 import utils.db_utils as db_utils
 
-def find_matching_probe_percentage(mongoDB, EVAL_NUMBER=4):
+def main(mongoDB, EVAL_NUMBER=4):
     text_scenario_collection = mongoDB['userScenarioResults']
     match_collection = mongoDB['admVsTextProbeMatches']
     adm_collection = mongoDB["test"]

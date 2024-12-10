@@ -3,7 +3,7 @@ import yaml
 
 TA1_FOLDER = "phase1/scenarios/"
 
-def load_ta1_yaml_files(mongoDB):
+def main(mongoDB):
     ta1files = [f for f in os.listdir(TA1_FOLDER)]
     ta1files.sort()
 

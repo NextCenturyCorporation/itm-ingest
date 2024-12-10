@@ -1,4 +1,4 @@
-def remove_old_textbased_results(mongoDB):
+def main(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
 
     # only delete data that doesn't have a participantID (all dummy, unused data)

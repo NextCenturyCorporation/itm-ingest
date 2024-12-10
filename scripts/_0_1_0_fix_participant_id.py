@@ -1,4 +1,4 @@
-def fix_participant_id(mongoDB):
+def main(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
 
     text_scenario_collection.update_many(

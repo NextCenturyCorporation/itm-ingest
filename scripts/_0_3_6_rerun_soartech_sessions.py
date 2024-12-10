@@ -4,7 +4,7 @@ MONGO_URL = "mongodb://simplemongousername:simplemongopassword@localhost:27030/?
 ST_URL = "https://darpaitm.caci.com/soartech/" #config("ST_URL")
 
 
-def rerun_soartech_adm_sessions(mongoDB):
+def main(mongoDB):
     adm_collection = mongoDB["test"]
     adms_to_update = adm_collection.find({"evalNumber": 5})
 

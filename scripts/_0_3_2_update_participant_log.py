@@ -1,4 +1,4 @@
-def fix_participant_id(mongoDB):
+def main(mongoDB):
     participant_log = mongoDB['participantLog']
     text_scenario_collection = mongoDB['userScenarioResults']
     survey_collection = mongoDB['surveyResults']

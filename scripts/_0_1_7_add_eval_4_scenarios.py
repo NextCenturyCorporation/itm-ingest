@@ -13,7 +13,7 @@ def load_json_file(folder: str, file_name: str) -> dict:
             encoding='utf-8-sig') as json_file:
         return json.loads(json_file.read())
     
-def load_ta1_yaml_files(ta1_folder, mongoDB):
+def main(ta1_folder, mongoDB):
     ta1files = [f for f in os.listdir(ta1_folder)]
     ta1files.sort()
 

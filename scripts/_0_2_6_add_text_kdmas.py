@@ -4,7 +4,7 @@ from decouple import config
 ADEPT_URL = config("ADEPT_DRE_URL")
 ST_URL = config("ST_DRE_URL")
 
-def get_text_scenario_kdmas(mongoDB):
+def main(mongoDB):
     text_scenario_collection = mongoDB['userScenarioResults']
 
     data_to_update = text_scenario_collection.find(

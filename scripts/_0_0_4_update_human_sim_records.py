@@ -1,4 +1,4 @@
-def update_hum_sim_order_avg_across_scenes(mongoDB):
+def main(mongoDB):
     human_simulator_collection = mongoDB['humanSimulator']
     all_human_sim_records = human_simulator_collection.find({})
 

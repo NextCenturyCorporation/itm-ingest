@@ -1,4 +1,4 @@
-def fix_pid(mongo_db):
+def main(mongo_db):
     text_scenario_results = mongo_db['userScenarioResults']
 
     documents = list(text_scenario_results.find(
