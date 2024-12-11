@@ -4,7 +4,7 @@ import os
 from PIL import Image
 
 
-def reduce_images_delegationMedia(mongoDB):
+def main(mongoDB):
     delegationMedia_col = mongoDB['delegationMedia']
     delegationMedia_res = delegationMedia_col.find({}, {"_id":1, "url":1})
     

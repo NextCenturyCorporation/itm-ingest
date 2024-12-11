@@ -13,12 +13,13 @@ def load_json_file(folder: str, file_name: str) -> dict:
             encoding='utf-8-sig') as json_file:
         return json.loads(json_file.read())
     
-def load_ta1_yaml_files(ta1_folder, mongoDB):
-    ta1files = [f for f in os.listdir(ta1_folder)]
+def main(mongoDB):
+    path = "dre/scenarios/"
+    ta1files = [f for f in os.listdir(path)]
     ta1files.sort()
 
     for file in ta1files:
-        file_name = os.path.join(ta1_folder, file)
+        file_name = os.path.join(path, file)
         with open(file_name) as f: 
             yaml_obj = yaml.safe_load(f)
             yaml_obj["evalNumber"] = 4

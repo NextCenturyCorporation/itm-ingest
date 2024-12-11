@@ -1,4 +1,4 @@
-def update_scenario_index(mongoDB):
+def main(mongoDB):
     survey_collection = mongoDB['surveyResults']
 
     survey_collection.update_many(

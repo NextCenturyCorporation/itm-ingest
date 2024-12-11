@@ -29,7 +29,7 @@ AD_PROBES = {
     "DryRunEval-MJ5-eval": ['Probe 1', 'Probe 1-A.1', 'Probe 1-B.1', 'Probe 2', 'Response 2-A.1-B', 'Response 2-B.1-B', 'Response 2-B.1-B-gauze-u', 'Response 2-A.1-B-gauze-sp', 'Probe 2-A.1-A.1', 'Probe 2-B.1-A.1', 'Probe 2-A.1-B.1-A.1', 'Probe 2-B.1-B.1-A.1', 'Probe 3', 'Probe 4']
 }
 
-def compare_probes(mongoDB, EVAL_NUMBER=4):
+def main(mongoDB, EVAL_NUMBER=4):
     if EVAL_NUMBER == 5:
         ADEPT_URL = config('ADEPT_URL')
         ST_URL = config('ST_URL')

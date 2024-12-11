@@ -1,10 +1,10 @@
 import requests, json, sys
+from decouple import config
+MONGO_URL = config('MONGO_URL')
+ST_URL = config("ST_URL")
 
-MONGO_URL = "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard" #config('MONGO_URL')
-ST_URL = "https://darpaitm.caci.com/soartech/" #config("ST_URL")
 
-
-def rerun_soartech_adm_sessions(mongoDB):
+def main(mongoDB):
     adm_collection = mongoDB["test"]
     adms_to_update = adm_collection.find({"evalNumber": 5})
 

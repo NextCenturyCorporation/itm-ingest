@@ -1,4 +1,4 @@
-def add_survey_version_collection(mongo_db):
+def main(mongo_db):
     survey_version_collection = mongo_db['surveyVersion']
 
     version_document = {'version': '4'}

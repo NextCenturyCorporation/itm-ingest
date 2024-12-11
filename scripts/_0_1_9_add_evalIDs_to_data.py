@@ -4,7 +4,7 @@ import json
 import yaml
 
     
-def load_data(mongoDB):
+def main(mongoDB):
 
     db_surveyResults = mongoDB["surveyResults"]
     db_userScenarioResults = mongoDB["userScenarioResults"]

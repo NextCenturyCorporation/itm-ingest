@@ -1,8 +1,8 @@
 import os
 from decouple import config 
 from pymongo import MongoClient
-from scripts._0_2_8_human_to_adm_comparison import compare_probes
-from scripts._0_3_0_percent_matching_probes import find_matching_probe_percentage
+from scripts._0_2_8_human_to_adm_comparison import main as compare_probes
+from scripts._0_3_0_percent_matching_probes import main as find_matching_probe_percentage
 
 
 if __name__ == '__main__':

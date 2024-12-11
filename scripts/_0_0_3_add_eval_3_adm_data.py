@@ -30,7 +30,7 @@ def load_ta1_yaml_files(ta1_folder, mongoDB):
     print("Finished load TA1 scene files.")
 
 
-def add_eval_3_adm_data(mongoDB):
+def main(mongoDB):
     adm_folder_name = "metrics-adm-data"
     adm_files = [f for f in os.listdir(adm_folder_name)]
     adm_files.sort()

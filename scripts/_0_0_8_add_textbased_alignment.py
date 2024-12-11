@@ -184,7 +184,7 @@ def fix_problem_probe(question, mapping):
         return True
     return False
 
-def add_textbased_alignments(mongo_db):
+def main(mongo_db):
     user_scenario_results_collection = mongo_db['userScenarioResults']
     user_scenario_results = user_scenario_results_collection.find({})
 

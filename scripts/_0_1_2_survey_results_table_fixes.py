@@ -1,4 +1,4 @@
-def fix_survey_results_table(mongoDB):
+def main(mongoDB):
     survey_results_collection = mongoDB['surveyResults']
     survey_results = survey_results_collection.find({})
 

@@ -1,6 +1,6 @@
 
 
-def add_scenario_names(mongoDB):
+def main(mongoDB):
     survey_results_collection = mongoDB['surveyResults']
     survey_results = survey_results_collection.find({})
 

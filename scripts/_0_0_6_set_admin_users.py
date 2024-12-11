@@ -1,7 +1,7 @@
 # Note:  Only current dev users in prod (admins can make others admins and assign other roles)
 admin_prod_users = ["bpippin", "jennifer", "phile", "derek"]
 
-def add_admin_user_role(mongoDB):
+def main(mongoDB):
     users_collection = mongoDB['users']
 
     for user in admin_prod_users:

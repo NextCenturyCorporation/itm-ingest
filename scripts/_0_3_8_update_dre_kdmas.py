@@ -1,6 +1,6 @@
 import requests
-
-ST_URL = "https://darpaitm.caci.com/soartech_scalar_kdma/" #config("ST_DRE_SCALAR_URL")
+from decouple import config 
+ST_URL = config("ST_DRE_SCALAR_URL")
 UPDATE_DATABASE = True # Update the mongo database tables for text, sim, and adm
 VERBOSE_OUTPUT = True # If True, displays scalar KDMA values for each entry
 DISPLAY_CSV = False # If True, writes csv-like output for text and sim kdma data

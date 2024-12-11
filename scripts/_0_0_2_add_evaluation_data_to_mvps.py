@@ -1,4 +1,4 @@
-def add_evaluation_name_to_mvp_data(mongoDB):
+def main(mongoDB):
     scenarios_collection = mongoDB["scenarios"]
     all_scenarios = scenarios_collection.find({})
    

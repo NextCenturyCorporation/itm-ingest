@@ -1,4 +1,4 @@
-def dre_remove_duplicates(mongoDB):
+def main(mongoDB):
     results_collection = mongoDB['test']
 
     adm_names_to_remove = [

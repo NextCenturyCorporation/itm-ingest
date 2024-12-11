@@ -16,7 +16,7 @@ def remove_duplicates(pid, results):
         
     return ids_to_keep
 
-def remove_duplicate_text_entries(mongo_db):
+def main(mongo_db):
     text_collection = mongo_db['userScenarioResults']
     eval_4_results = list(text_collection.find({"evalNumber": 4}))
 
