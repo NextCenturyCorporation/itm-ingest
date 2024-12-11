@@ -1,7 +1,7 @@
 import requests, json, sys
-
-MONGO_URL = "mongodb://simplemongousername:simplemongopassword@localhost:27030/?authSource=dashboard" #config('MONGO_URL')
-ST_URL = "https://darpaitm.caci.com/soartech/" #config("ST_URL")
+from decouple import config
+MONGO_URL = config('MONGO_URL')
+ST_URL = config("ST_URL")
 
 
 def main(mongoDB):
