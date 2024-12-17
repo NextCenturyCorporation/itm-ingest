@@ -2500,7 +2500,7 @@
                 "Upton - intervener, dislocated shoulder"
             ],
             "answer": "Springer - fighter, compound fracture",
-            "timestamp": "2024-12-16T10:43:15.299Z"
+            "timestamp": "2024-12-17T11:00:49.632Z"
         },
         {
             "actionType": "Question",
@@ -2520,177 +2520,7 @@
                 "Upton - intervener, dislocated shoulder"
             ],
             "answer": "Springer - fighter, compound fracture",
-            "timestamp": "2024-12-16T10:43:33.355Z"
-        },
-{
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:43:24.252Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Springer",
-            "treatment": "Hemostatic Gauze",
-            "treatmentLocation": "Right Shoulder",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:44:24.252Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Springer",
-            "treatment": "Hemostatic Gauze",
-            "treatmentLocation": "Right Shoulder",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:44:32.152Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Springer",
-            "treatment": "Hemostatic Gauze",
-            "treatmentLocation": "Right Shoulder",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:44:56.422Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:04.262Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:05.663Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:08.205Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:12.848Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:15.011Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:16.703Z"
+            "timestamp": "2024-12-17T11:01:02.346Z"
         },
         {
             "actionType": "Breathing",
@@ -2707,24 +2537,7 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:45:20.098Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Springer",
-            "treatment": "Splint",
-            "treatmentLocation": "Left Shoulder",
-            "injuryType": "Broken",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:21.758Z"
+            "timestamp": "2024-12-17T11:01:53.111Z"
         },
         {
             "actionType": "Pulse",
@@ -2741,11 +2554,11 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:45:21.852Z"
+            "timestamp": "2024-12-17T11:01:54.295Z"
         },
         {
             "actionType": "Treatment",
-            "casualty": "Upton",
+            "casualty": "Springer",
             "treatment": "Hemostatic Gauze",
             "treatmentLocation": "Right Shoulder",
             "injuryType": "Puncture",
@@ -2758,11 +2571,11 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:45:36.913Z"
+            "timestamp": "2024-12-17T11:02:04.766Z"
         },
         {
             "actionType": "Treatment",
-            "casualty": "Upton",
+            "casualty": "Springer",
             "treatment": "Hemostatic Gauze",
             "treatmentLocation": "Right Shoulder",
             "injuryType": "Puncture",
@@ -2775,11 +2588,45 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:45:41.024Z"
+            "timestamp": "2024-12-17T11:02:09.151Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Springer",
+            "treatment": "Hemostatic Gauze",
+            "treatmentLocation": "Right Shoulder",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2024-12-17T11:02:26.916Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Springer",
+            "treatment": "Splint",
+            "treatmentLocation": "Left Shoulder",
+            "injuryType": "Broken",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2024-12-17T11:02:40.856Z"
         },
         {
             "actionType": "Tag",
-            "casualty": "Upton",
+            "casualty": "Springer",
             "treatment": "",
             "treatmentLocation": "",
             "injuryType": "",
@@ -2792,24 +2639,7 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:45:52.317Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Upton",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "fast",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:45:57.761Z"
+            "timestamp": "2024-12-17T11:03:03.684Z"
         },
         {
             "actionType": "Breathing",
@@ -2826,24 +2656,75 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:45:58.248Z"
+            "timestamp": "2024-12-17T11:03:22.799Z"
         },
         {
-            "actionType": "Tag",
-            "casualty": "Springer",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "orange",
-            "tagType": "DELAYED",
+            "actionType": "Treatment",
+            "casualty": "Upton",
+            "treatment": "Hemostatic Gauze",
+            "treatmentLocation": "Right Shoulder",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
             "pulse": "",
             "breathing": "",
             "SpO2": "",
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:46:09.135Z"
+            "timestamp": "2024-12-17T11:03:24.046Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Upton",
+            "treatment": "Hemostatic Gauze",
+            "treatmentLocation": "Right Shoulder",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2024-12-17T11:03:28.354Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "Upton",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2024-12-17T11:03:45.192Z"
+        },
+        {
+            "actionType": "SpO2",
+            "casualty": "Upton",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "normal",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2024-12-17T11:03:56.385Z"
         },
         {
             "actionType": "Question",
@@ -2862,8 +2743,8 @@
                 "Springer - fighter, compound fracture",
                 "Upton - intervener, dislocated shoulder"
             ],
-            "answer": "Springer - fighter, compound fracture",
-            "timestamp": "2024-12-16T10:46:26.327Z"
+            "answer": "Upton - intervener, dislocated shoulder",
+            "timestamp": "2024-12-17T11:04:21.106Z"
         },
         {
             "actionType": "ApproachPatient",
@@ -2880,7 +2761,24 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:46:57.445Z"
+            "timestamp": "2024-12-17T11:04:51.323Z"
+        },
+        {
+            "actionType": "Breathing",
+            "casualty": "us_soldier",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "normal",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2024-12-17T11:05:23.849Z"
         },
         {
             "actionType": "Treatment",
@@ -2897,7 +2795,7 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:47:33.886Z"
+            "timestamp": "2024-12-17T11:05:38.158Z"
         },
         {
             "actionType": "Question",
@@ -2916,93 +2814,25 @@
                 "Yes",
                 "No"
             ],
-            "answer": "No",
-            "timestamp": "2024-12-16T10:47:53.046Z"
+            "answer": "Yes",
+            "timestamp": "2024-12-17T11:05:58.088Z"
         },
         {
-            "actionType": "Pulse",
-            "casualty": "us_soldier",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:47:56.244Z"
-        },
-        {
-            "actionType": "Tag",
+            "actionType": "Breathing",
             "casualty": "attacker",
             "treatment": "",
             "treatmentLocation": "",
             "injuryType": "",
             "successfulTreatment": false,
-            "tagColor": "red",
-            "tagType": "IMMEDIATE",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:48:18.401Z"
-        },
-        {
-            "actionType": "Breathing",
-            "casualty": "us_soldier",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
             "tagColor": "",
             "tagType": "",
             "pulse": "",
-            "breathing": "normal",
+            "breathing": "fast",
             "SpO2": "",
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:48:39.096Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "us_soldier",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:48:40.212Z"
-        },
-        {
-            "actionType": "Tag",
-            "casualty": "us_soldier",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "orange",
-            "tagType": "DELAYED",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2024-12-16T10:49:10.217Z"
+            "timestamp": "2024-12-17T11:06:33.269Z"
         },
         {
             "actionType": "Treatment",
@@ -3019,7 +2849,7 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2024-12-16T10:49:37.644Z"
+            "timestamp": "2024-12-17T11:06:33.411Z"
         },
         {
             "actionType": "Question",
@@ -3040,7 +2870,7 @@
                 "Local Soldier (Upton)"
             ],
             "answer": "Attacker",
-            "timestamp": "2024-12-16T10:50:20.471Z"
+            "timestamp": "2024-12-17T11:07:06.550Z"
         },
         {
             "actionType": "Question",
@@ -3060,48 +2890,48 @@
                 "Attacker"
             ],
             "answer": "Attacker",
-            "timestamp": "2024-12-16T10:50:33.778Z"
+            "timestamp": "2024-12-17T11:07:19.494Z"
         }
     ],
     "images": [
         {
             "name": "Springer",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Springer.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Springer.jpg"
         },
         {
             "name": "Upton",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Upton.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Upton.jpg"
         },
         {
             "name": "Squad Member 1",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Squad Member 1.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Squad Member 1.jpg"
         },
         {
             "name": "Squad Member 2",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Squad Member 2.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Squad Member 2.jpg"
         },
         {
             "name": "Squad Member 3",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Squad Member 3.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Squad Member 3.jpg"
         },
         {
             "name": "us_soldier",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_us_soldier.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_us_soldier.jpg"
         },
         {
             "name": "Squad Member 4",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Squad Member 4.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Squad Member 4.jpg"
         },
         {
             "name": "Unharmed Attacker",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_Unharmed Attacker.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_Unharmed Attacker.jpg"
         },
         {
             "name": "attacker",
-            "filename": "e0455595-d65a-455a-99b4-2aa742e2b5f1_202411333_attacker.jpg"
+            "filename": "90c83ba5-6d0e-4422-938f-5f68825a76b5_202411346_attacker.jpg"
         }
     ],
-    "runId": "e0455595-d65a-455a-99b4-2aa742e2b5f1",
-    "sessionId": "e0455595-d65a-455a-99b4-2aa742e2b5f1",
-    "participantId": "202411333"
+    "runId": "90c83ba5-6d0e-4422-938f-5f68825a76b5",
+    "sessionId": "90c83ba5-6d0e-4422-938f-5f68825a76b5",
+    "participantId": "202411346"
 }
