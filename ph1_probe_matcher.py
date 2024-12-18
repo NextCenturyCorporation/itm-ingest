@@ -1124,6 +1124,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input_dir', dest='input_dir', type=str, help='The path to the directory where all participant files are. Required.')
     parser.add_argument('-w', '--weekly', action='store_true', dest='is_weekly', help='A flag to determine if this is a weekly run. If weekly, global variables change.')
     args = parser.parse_args()
+    removed = []
     if not args.input_dir:
         print("Input directory (-i PATH) is required to run the probe matcher.")
         exit(1)
@@ -1168,11 +1169,13 @@ if __name__ == '__main__':
             pid = int(pid)
         except:
             os.system(f'rm -rf {os.path.join(parent)}')
+            removed.append(parent)
             continue
         pid_in_log = participant_log_collection.count_documents({"ParticipantID": int(pid)}) > 0
 
         if not pid_in_log or not valid_date:
             os.system(f'rm -rf {parent}')
+            removed.append(parent)
             continue
         
         if os.path.isdir(parent):
@@ -1195,3 +1198,4 @@ if __name__ == '__main__':
                 elif '.html' in f or '.jpg' in f:
                     os.remove(os.path.join(parent, f))
     print()
+    print('Removed:', removed)
