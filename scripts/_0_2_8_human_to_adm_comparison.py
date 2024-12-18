@@ -132,6 +132,9 @@ def main(mongoDB, EVAL_NUMBER=4):
 
 
         # get human to adm comparisons from most/least aligned based on text scenario results
+        if 'mostLeastAligned' not in entry:
+            print(f'Error getting human to adm comparison for most/least aligned for {pid} - mostLeastAligned not found')
+            continue
         for target in entry['mostLeastAligned']:
             attribute = target['target']
             most = target['response'][0]
