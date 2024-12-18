@@ -15,6 +15,9 @@ def main(mongoDB, EVAL_NUMBER=4):
             # ignore test scenarios from adept
             continue
         pid = entry.get('participantID')
+        if 'mostLeastAligned' not in entry:
+            print(f'Error calculating matches for {pid} - mostLeastAligned not found')
+            continue
         for target in entry['mostLeastAligned']:
             attribute = target['target']
             most = target['response'][0]
