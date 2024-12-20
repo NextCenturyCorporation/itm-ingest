@@ -17,7 +17,9 @@ def main(mongo_db):
         
         pid_str = str(pid)
         
-        survey_count = survey_results.count_documents({'results.pid': pid_str})
+        survey_count = survey_results.count_documents({
+            'results.Participant ID Page.questions.Participant ID.response': pid_str
+        })
         
         text_count = text_results.count_documents({'participantID': pid_str})
         
