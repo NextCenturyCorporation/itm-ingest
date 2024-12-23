@@ -246,16 +246,29 @@ class ProbeMatcher:
         then return False in order to skip the analysis of this file.
         '''
         run_this_file = True
-        if not RUN_ALL and os.path.exists(filename):
+        mongo_id = None
+        if 'adept' in self.environment:
+            mongo_id = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
+        elif 'qol' in self.environment or 'vol' in self.environment:
+            mongo_id = self.participantId + '_st_' + self.environment.split('.yaml')[0]
+        else:
+            mongo_id = self.participantId + '_dre_open_world'
+        found = list(mongo_collection_matches.find({'_id': mongo_id}))
+        if not RUN_ALL and ((SEND_TO_MONGO and len(found) > 0 and os.path.exists(filename)) or (not SEND_TO_MONGO and os.path.exists(filename))):
             if RERUN_ADEPT_SESSIONS and 'adept' in self.environment:
                 return run_this_file
             if not RUN_ALIGNMENT:
                 run_this_file = False
             if RUN_ALIGNMENT:
-                f = open(filename, 'r', encoding='utf-8')
-                data = json.load(f)
-                if len(list(data.get('alignment', {}).keys())) > 1 and 'sid' in data.get('alignment', {}):
-                    run_this_file = False
+                # TODO: update this based on database instead of output directory
+                if not SEND_TO_MONGO:
+                    f = open(filename, 'r', encoding='utf-8')
+                    data = json.load(f)
+                    if len(list(data.get('alignment', {}).keys())) > 1 and 'sid' in data.get('alignment', {}):
+                        run_this_file = False
+                else:
+                    if len(list(found[0].get('data', {}).get('alignment', {}).keys())) > 1 and 'sid' in found[0].get('data', {}).get('alignment', {}):
+                        run_this_file = False
         if not run_this_file:
             self.logger.log(LogLevel.CRITICAL_INFO, "File has already been analyzed, skipping analysis...")
             self.analyze = False
