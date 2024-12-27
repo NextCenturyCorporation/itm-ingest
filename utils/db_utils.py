@@ -16,8 +16,8 @@ PH1_SCENARIO_MAP = {
     "vol-ph1-eval-4": "vol-ph1-eval-4"
 }
 
-def mini_adm_run(evalNumber, collection, probes, target, adm_name):
-    ADEPT_URL = config("ADEPT_DRE_URL") if evalNumber == 4 else config('ADEPT_URL')
+def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=False):
+    ADEPT_URL = config("ADEPT_DRE_URL") if evalNumber == 4 and not dre_ph1_run else config('ADEPT_URL')
     adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     scenario = None
     for x in probes:
@@ -31,7 +31,7 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name):
             "session_id": adept_sid
         })
         scenario = x['scenario_id']
-    if evalNumber == 4:
+    if evalNumber == 4 and not dre_ph1_run:
         alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
     else:
         if 'Moral' in target:
@@ -45,6 +45,8 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name):
                 break
         alignment = {'alignment_source': {'score': score}}
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber}
+    if dre_ph1_run:
+        doc['dre_ph1_run'] = True
     collection.insert_one(doc)
     return doc
 
@@ -60,7 +62,7 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
             adm = x
             break
     if adm is None:
-        print(f"No matching adm found for scenario {page_scenario} with adm {survey['results'][page]['admName']} (session {adm_session})")
+        print(f"No matching adm found for scenario {page_scenario} with adm {survey['results'][page]['admName']} (session {adm_session}) (target {survey['results'][page]['admTarget']})")
         return None
     return adm
 

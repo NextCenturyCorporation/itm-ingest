@@ -1,4 +1,4 @@
-import sys
+import sys, argparse
 sys.path.insert(0, '..')
 from pymongo import MongoClient
 from decouple import config 
@@ -12,8 +12,8 @@ Pushes each individual adm to the admMedics collection in mongo.
 '''
 LOGGER = Logger('ADM Converter')
 UPDATE_MONGO = True
-DELETE_MONGO = True
-EVAL = 5
+DELETE_MONGO = False
+EVAL = 4
 
 # reserve 'O' for omnibus
 names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -759,7 +759,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
         if not doc_found:
             i = 0
             name = 'Medic-' + names[i] + str(loop_ind)
-            has_name = mongo_collection.find({'name': name})
+            has_name = mongo_collection.find({'name': name, 'evalNumber': EVAL}) if EVAL == 5 else mongo_collection.find({'name': name})
             found_with_name = False
             for _ in has_name:
                 found_with_name = True
@@ -772,7 +772,7 @@ def set_medic_from_adm(document, template, mongo_collection, db, env_map):
                     loop_ind += 1
                     i = 0
                     name = 'Medic-' + names[i] + str(loop_ind)
-                has_name = mongo_collection.find({'name': name})
+                has_name = mongo_collection.find({'name': name, 'evalNumber': EVAL}) if EVAL == 5 else mongo_collection.find({'name': name})
                 found_with_name = False
                 for _ in has_name:
                     found_with_name = True
@@ -952,5 +952,15 @@ def main():
                 added += 1
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Successfully added/updated {added} adm medics")
 
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i [-w] PATH')
+
+    parser.add_argument('-e', '--eval', dest='eval', type=int, help='Optional. The eval number to use when running. Must be 4 or 5')
+    args = parser.parse_args()
+    if args.eval is not None and args.eval not in [4, 5]:
+        LOGGER.log(LogLevel.ERROR, "Eval argument must be 4 or 5")
+        exit(1)
+    elif args.eval is not None:
+        EVAL = args.eval
     main()
