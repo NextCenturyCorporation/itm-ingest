@@ -976,19 +976,37 @@ class ProbeMatcher:
         Runs VR vs Text alignment comparison and VR vs ADM alignment comparison for 
         the current sim scenario. Adds the result to the output jsons and to mongo
         '''
-        json_data = None
-        f = None
-        if 'qol' in self.environment or 'vol' in self.environment:
-            f = self.output_soartech
-        elif 'adept' in self.environment:
-            f = self.output_adept
-        else:
+        if 'qol' not in self.environment and 'vol' not in self.environment and 'adept' not in self.environment:
             return
-        filename = f.name
-        f.close()
-        readable = open(filename, 'r', encoding='utf-8')
-        json_data = json.load(readable)
-        readable.close()
+        vr_sid = None
+        failed_mongo_check = False
+        json_data = None
+        if SEND_TO_MONGO:
+            mongo_id = None
+            if 'adept' in self.environment:
+                mongo_id = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
+            elif 'qol' in self.environment or 'vol' in self.environment:
+                mongo_id = self.participantId + '_st_' + self.environment.split('.yaml')[0]
+            else:
+                mongo_id = self.participantId + '_dre_open_world'
+            found = list(mongo_collection_matches.find({'_id': mongo_id}))
+            if not found or len(found) == 0:
+                self.logger.log(LogLevel.WARN, "Error getting data from mongo for comparison. Using local file as backup. KDMAs may be lost")
+            else:
+                json_data = found[0]['data']
+        if not SEND_TO_MONGO or failed_mongo_check:
+            f = None
+            if 'qol' in self.environment or 'vol' in self.environment:
+                f = self.output_soartech
+            elif 'adept' in self.environment:
+                f = self.output_adept
+            else:
+                return
+            filename = f.name
+            f.close()
+            readable = open(filename, 'r', encoding='utf-8')
+            json_data = json.load(readable)
+            readable.close()
         vr_sid = json_data.get('alignment', {}).get('sid')
         if vr_sid is None:
             self.logger.log(LogLevel.WARN, "Error getting session id. Maybe alignment hasn't run for file?")
