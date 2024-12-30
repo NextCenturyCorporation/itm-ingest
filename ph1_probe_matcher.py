@@ -260,7 +260,6 @@ class ProbeMatcher:
             if not RUN_ALIGNMENT:
                 run_this_file = False
             if RUN_ALIGNMENT:
-                # TODO: update this based on database instead of output directory
                 if not SEND_TO_MONGO:
                     f = open(filename, 'r', encoding='utf-8')
                     data = json.load(f)
