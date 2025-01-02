@@ -20,7 +20,6 @@ stQOL = [
 def submit_responses(scenario_data, scenario_id, url, session_id):
     response_url = f"{url}/api/v1/response"
     
-    # Iterate through each page in the scenario data
     for field_name, field_value in scenario_data.items():
         if not isinstance(field_value, dict) or 'questions' not in field_value:
             continue
@@ -122,8 +121,7 @@ def get_kdma_value(session_id, url):
 
 def main(mongo_db):
     text_results = mongo_db['userScenarioResults']
-    
-    # Get the specific entry we want to recalculate
+
     text_entry = text_results.find_one({
         'participantID': '202411369',
         'scenario_id': 'qol-ph1-eval-2'

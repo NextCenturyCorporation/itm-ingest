@@ -56,7 +56,6 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
     adm_session = medic_collection.find_one({'evalNumber': eval_number, 'name': page})['admSession']
     
-    # Find ADMs that match the basic criteria
     adms = adm_collection.find({
         'evalNumber': eval_number,
         'history': {
@@ -69,7 +68,6 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
         }
     })
     
-    # Find the ADM with matching target_id in the last history element
     adm = None
     for x in adms:
         if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
