@@ -55,15 +55,29 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
     if eval_number == 5:
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
     adm_session = medic_collection.find_one({'evalNumber': eval_number, 'name': page})['admSession']
-    adms = adm_collection.find({'evalNumber': eval_number, 'history.0.parameters.session_id': adm_session, 'history.0.response.id': page_scenario, 'history.0.parameters.adm_name': survey['results'][page]['admName']})
+    
+    adms = adm_collection.find({
+        'evalNumber': eval_number,
+        'history': {
+            '$elemMatch': {
+                'command': 'Start Scenario',
+                'parameters.session_id': adm_session,
+                'response.id': page_scenario,
+                'parameters.adm_name': survey['results'][page]['admName']
+            }
+        }
+    })
+    
     adm = None
     for x in adms:
         if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
             adm = x
             break
+            
     if adm is None:
         print(f"No matching adm found for scenario {page_scenario} with adm {survey['results'][page]['admName']} (session {adm_session}) (target {survey['results'][page]['admTarget']})")
         return None
+        
     return adm
 
 

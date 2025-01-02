@@ -30,6 +30,7 @@ AD_PROBES = {
 }
 
 def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
+    global ADEPT_URL, ST_URL
     if EVAL_NUMBER == 5:
         ADEPT_URL = config('ADEPT_URL')
         ST_URL = config('ST_URL')
