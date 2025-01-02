@@ -1037,8 +1037,8 @@ class ProbeMatcher:
                 return None
             text_sid = text_response['combinedSessionId']
             # send text and vr session ids to Adept server
-            res_mj = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Moral%20judgement').json()
-            res_io = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={text_sid}&kdma_filter=Ingroup%20Bias').json()
+            res_mj = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={vr_sid}&session_id_2_or_target_id={text_sid}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+            res_io = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={vr_sid}&session_id_2_or_target_id={text_sid}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
             res = {'MJ': None, 'IO': None}
             if res_mj is not None:
                 if 'score' not in res_mj:
@@ -1103,7 +1103,11 @@ class ProbeMatcher:
                                 if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
                                     probe_responses.append(x['parameters'])
                         found_mini_adm = db_utils.mini_adm_run(5, mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={vr_sid}&session_id_2={found_mini_adm["session_id"]}').json()
+                    res = None
+                    if 'Moral' in adm_target:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={vr_sid}&session_id_2_or_target_id={found_mini_adm["session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                    else:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={vr_sid}&session_id_2_or_target_id={found_mini_adm["session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                     if 'score' not in res:
                         self.logger.log(LogLevel.WARN, "Error getting comparison score (adept). You may have to rerun alignment to get a new adept session id.")
                     else:
@@ -1134,7 +1138,7 @@ if __name__ == '__main__':
         RUN_ALIGNMENT = True 
         RUN_ALL = False 
         RUN_COMPARISON = True 
-        RECALCULATE_COMPARISON = False
+        RECALCULATE_COMPARISON = True
     # instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard

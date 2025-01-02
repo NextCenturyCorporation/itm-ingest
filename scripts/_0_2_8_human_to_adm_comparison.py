@@ -111,7 +111,14 @@ def main(mongoDB, EVAL_NUMBER=4):
                                     probe_responses.append(x['parameters'])
                         found_mini_adm = db_utils.mini_adm_run(EVAL_NUMBER, del_adm_runs_collection, probe_responses, adm_target, survey['results'][page]['admName'])
                     # get comparison score
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={found_mini_adm["session_id"]}').json()
+                    res = None
+                    if EVAL_NUMBER == 4:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={found_mini_adm["session_id"]}').json()
+                    else:
+                        if 'Moral' in adm_target:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={found_mini_adm["session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                        else:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={found_mini_adm["session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                     # send document to mongo
                     if res is not None and 'score' in res:
                         document = {
@@ -152,7 +159,13 @@ def main(mongoDB, EVAL_NUMBER=4):
                 adm_session_id = tad_most_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    if EVAL_NUMBER == 4:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    else:
+                        if 'Moral' in edited_target:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                        else:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
@@ -184,7 +197,13 @@ def main(mongoDB, EVAL_NUMBER=4):
                 adm_session_id = kit_most_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    if EVAL_NUMBER == 5:
+                        if 'Moral' in edited_target:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                        else:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
+                    else:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
@@ -220,7 +239,13 @@ def main(mongoDB, EVAL_NUMBER=4):
                 adm_session_id = tad_least_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    if EVAL_NUMBER == 4:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    else:
+                        if 'Moral' in edited_target:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                        else:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
@@ -251,7 +276,13 @@ def main(mongoDB, EVAL_NUMBER=4):
                 adm_session_id = kit_least_adm['history'][-1]['parameters']['session_id']
                 res = None
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    if EVAL_NUMBER == 4:
+                        res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session_id}').json()
+                    else:
+                        if 'Moral' in edited_target:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                        else:
+                            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                 else:
                     # create ST query param
                     query_param = f"session_1={session_id}&session_2={adm_session_id}"
