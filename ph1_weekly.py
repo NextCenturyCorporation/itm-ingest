@@ -15,7 +15,8 @@ if __name__ == '__main__':
 
     # run script that compares humans to adms (RQ1/3/4 column Alignment score (Del|ADM))
     # RQ 5 Alignment score (Participant|ADM (most, least))
-    compare_probes(db, 5)
+    compare_probes(db, 4, True)
+    compare_probes(db, 5, True)
 
     # run matching script (RQ5 columns Match_MostAligned and Match_LeastAligned)
     find_matching_probe_percentage(db, 5)
