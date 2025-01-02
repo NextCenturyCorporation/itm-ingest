@@ -62,7 +62,6 @@ def main(mongoDB):
                             probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
                         else:
                             print('could not find response in mapping!', response, list(mapping.keys()))
-            print("TXT PROBES: " + str(probes))
             send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
             print("Created text session with probes in Adept for: " + str(new_id))
             print("-----")
@@ -90,7 +89,6 @@ def main(mongoDB):
                     break
         if not skip_adm:
             adept_sid = update_adm_run(adm_collection, adm, probe_responses, mini_adms, comparison_db)
-            print("ADM PROBES: " + str(probe_responses))
             print("ADM Session Added for : " + adept_sid)
             print("-----")
 
