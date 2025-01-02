@@ -1,7 +1,7 @@
 import requests
 from decouple import config 
 
-ADEPT_URL = "http://localhost:8081/" #config("ADEPT_URL")
+ADEPT_URL = config("ADEPT_URL")
 ST_URL = config("ST_URL")
 
 GROUP_TARGETS = {
