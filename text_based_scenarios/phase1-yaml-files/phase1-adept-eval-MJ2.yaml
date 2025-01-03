@@ -600,14 +600,14 @@ scenes:
         unstructured: Go back to the previous patients.
         character_id: Shooter
         probe_id: Probe 4-B.1-B.1
-        choice: Probe 4-B.1-B.1-A
+        choice: Response 4-B.1-B.1-A
         next_scene: Scene 4
       - action_id: Treat US military member
         action_type: APPLY_TREATMENT
         unstructured: Do some treatment on US military member.
         character_id: US military member
         probe_id: Probe 4-B.1-B.1
-        choice: Probe 4-B.1-B.1-B
+        choice: Response 4-B.1-B.1-B
         next_scene: Transition to Scene 4
     restricted_actions:
       - CHECK_ALL_VITALS
