@@ -40,9 +40,10 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
             targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={adept_sid}&population=false&kdma_id=Ingroup%20Bias').json()
         score = 0
         for t in targets:
-            if list(t.keys())[0] == target:
-                score = t[list(t.keys())[0]]
-                break
+            if t is not None:
+                if list(t.keys())[0] == target:
+                    score = t[list(t.keys())[0]]
+                    break
         alignment = {'alignment_source': {'score': score}}
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber}
     if dre_ph1_run:

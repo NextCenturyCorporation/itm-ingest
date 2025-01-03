@@ -921,9 +921,10 @@ class ProbeMatcher:
                 io_targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false&kdma_id=Ingroup%20Bias')
                 targets = mj_targets + io_targets
                 for target in targets:
-                    k = list(target.keys())[0]
-                    v = target[k]
-                    ad_align[k] = v
+                    if target is not None:
+                        k = list(target.keys())[0]
+                        v = target[k]
+                        ad_align[k] = v
                 ad_align['kdmas'] = self.get_session_alignment(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.adept_sid}')
                 ad_align['sid'] = self.adept_sid
             except:
@@ -980,6 +981,15 @@ class ProbeMatcher:
         vr_sid = None
         failed_mongo_check = False
         json_data = None
+        f = None
+        if 'qol' in self.environment or 'vol' in self.environment:
+            f = self.output_soartech
+        elif 'adept' in self.environment:
+            f = self.output_adept
+        else:
+            return
+        filename = f.name
+        f.close()
         if SEND_TO_MONGO:
             mongo_id = None
             if 'adept' in self.environment:
@@ -994,15 +1004,6 @@ class ProbeMatcher:
             else:
                 json_data = found[0]['data']
         if not SEND_TO_MONGO or failed_mongo_check:
-            f = None
-            if 'qol' in self.environment or 'vol' in self.environment:
-                f = self.output_soartech
-            elif 'adept' in self.environment:
-                f = self.output_adept
-            else:
-                return
-            filename = f.name
-            f.close()
             readable = open(filename, 'r', encoding='utf-8')
             json_data = json.load(readable)
             readable.close()
@@ -1089,7 +1090,10 @@ class ProbeMatcher:
         results = []
         vr_scenario = ENV_MAP[self.environment]
         # get all adms shown in delegation that match the attribute
-        for page in survey['results']:
+        if not survey or survey.get('results') is None:
+            self.logger.log(LogLevel.WARN, "Could not find survey for " + self.participantId)
+            return []
+        for page in survey.get('results', []):
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 if ('qol' in self.environment and 'qol' in page_scenario) or ('vol' in self.environment and 'vol' in page_scenario):
@@ -1169,6 +1173,7 @@ if __name__ == '__main__':
         RUN_ALL = False 
         RUN_COMPARISON = True 
         RECALCULATE_COMPARISON = True
+        RERUN_ADEPT_SESSIONS = True
     # instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
