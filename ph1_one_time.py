@@ -15,6 +15,13 @@ if __name__ == '__main__':
 
     # run script that compares humans to adms (RQ1/3/4 column Alignment score (Del|ADM))
     # RQ 5 Alignment score (Participant|ADM (most, least))
+    
+    compare_probes(db, 5, False)
+
+    db['itm_version'].update_one({}, {"$set": {'version': '0.4.3'}})
+
+
+    os.system('python3 deployment_script.py')
     compare_probes(db, 4, True)
     compare_probes(db, 5, True)
 

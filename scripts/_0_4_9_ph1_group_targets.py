@@ -273,24 +273,25 @@ def main(mongoDB):
                     alignment = requests.get(f'{ST_URL}api/v1/alignment/session?session_id={session_id}&target_id={x}').json()
                     group_targets[x] = alignment.get('score')
         else:   
-            mj_targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={session_id}&population=false&kdma_id=Moral%20judgement').json()
-            io_targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={session_id}&population=false&kdma_id=Ingroup%20Bias').json()
-            all_targets = mj_targets + io_targets
-            for x in GROUP_TARGETS.get(pid, []):
-                if 'ADEPT' in x:   
-                    found = False
-                    for obj in all_targets:
-                        if x in obj:
-                            group_targets[x] = obj[x]  
-                            found = True
-                            break
-                    if not found:
-                        print(f'Could not find target {x} for {pid}.')
+            continue
+            # mj_targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={session_id}&population=false&kdma_id=Moral%20judgement').json()
+            # io_targets = requests.get(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={session_id}&population=false&kdma_id=Ingroup%20Bias').json()
+            # all_targets = mj_targets + io_targets
+            # for x in GROUP_TARGETS.get(pid, []):
+            #     if 'ADEPT' in x:   
+            #         found = False
+            #         for obj in all_targets:
+            #             if x in obj:
+            #                 group_targets[x] = obj[x]  
+            #                 found = True
+            #                 break
+            #         if not found:
+            #             print(f'Could not find target {x} for {pid}.')
 
         # create object to add/update in database
         if (len(list(group_targets.keys())) > 0):
             updates = {'group_targets': group_targets}
             text_scenario_collection.update_one({'_id': data_id}, {'$set': updates})
 
-    print("Phase 1 Group Target Alignments added to text scenario database.")
+    print("ST Phase 1 Group Target Alignments added to text scenario database.")
 
