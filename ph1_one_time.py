@@ -3,12 +3,15 @@ from decouple import config
 from pymongo import MongoClient
 from scripts._0_2_8_human_to_adm_comparison import main as compare_probes
 from scripts._0_3_0_percent_matching_probes import main as find_matching_probe_percentage
+from adept_repop_ph1 import main as repop
 
 
 if __name__ == '__main__':
     # set up mongo
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
+
+    repop(db)
 
     # run 'weekly' version of probe matcher
     os.system('python3 ph1_probe_matcher.py -i ph1_sim_files -w')

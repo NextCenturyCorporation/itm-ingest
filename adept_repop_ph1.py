@@ -1,6 +1,6 @@
 import requests
 from decouple import config
-from ._0_3_0_percent_matching_probes import main as find_matching_probe_percentage
+from scripts._0_3_0_percent_matching_probes import main as find_matching_probe_percentage
 
 
 MONGO_URL = config('MONGO_URL')
@@ -30,7 +30,9 @@ def main(mongoDB):
     adm_collection = mongoDB["test"]
     adms_to_update = adm_collection.find({"evalNumber": 5})
     mini_adms = mongoDB['delegationADMRuns']
+    mini_adms.delete_many({"evalNumber": 5})
     comparison_db = mongoDB['humanToADMComparison']
+    comparison_db.delete_many({"text_scenario" : {"$regex" : "DryRunEval"}, "evalNumber": 5})
 
     # Add text sessions to Adept Server
     sessions_by_pid = {}
