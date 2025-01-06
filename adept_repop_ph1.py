@@ -4,7 +4,7 @@ from scripts._0_3_0_percent_matching_probes import main as find_matching_probe_p
 
 
 MONGO_URL = config('MONGO_URL')
-ADEPT_URL = config("ADEPT_URL")
+ADEPT_URL = "http://127.0.0.1:8080/" #config("ADEPT_URL")
 
 
 SCENARIO_MAP = {
@@ -15,7 +15,7 @@ SCENARIO_MAP = {
     "phase1-adept-train-IO1": "DryRunEval.IO1"
 }
 
-def main(mongoDB):
+def main(mongoDB, run_adms=True):
     """ 
     Repopulates Phase 1 ADEPT Sessions.
     
@@ -64,6 +64,17 @@ def main(mongoDB):
                             probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
                         else:
                             print('could not find response in mapping!', response, list(mapping.keys()))
+                    if 'probe ' + k + '_conditional' in entry[k]['questions'] and 'response' in entry[k]['questions']['probe ' + k] and 'question_mapping' in entry[k]['questions']['probe ' + k + '_conditional']:
+                        response = entry[k]['questions']['probe ' + k + '_conditional']['response'].replace('.', '')
+                        mapping = entry[k]['questions']['probe ' + k + '_conditional']['question_mapping']
+                        if response in mapping:
+                            if isinstance(mapping[response]['choice'], list):
+                                for c in mapping[response]['choice']:
+                                    probes.append({'probe': {'choice': c, 'probe_id': mapping[response]['probe_id']}})
+                            else:
+                                probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
+                        else:
+                            print('could not find response in mapping!', response, list(mapping.keys()))
             send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
             print("Created text session with probes in Adept for: " + str(new_id))
             print("-----")
@@ -78,21 +89,22 @@ def main(mongoDB):
             comparison_db.update_many({'text_session_id': session_id}, {'$set': {'text_session_id': new_id}})   
 
     # Add ADM sessions to Adept Server
-    for adm in adms_to_update:            
-        # get new adm session
-        probe_responses = []
-        skip_adm = False
-        for x in adm['history']:
-            if x['command'] == 'Respond to TA1 Probe':
-                if not any(substring in x['parameters']['scenario_id'] for substring in ["vol", "qol"]):
-                    probe_responses.append(x['parameters'])
-                else:
-                    skip_adm = True
-                    break
-        if not skip_adm:
-            adept_sid = update_adm_run(adm_collection, adm, probe_responses, mini_adms, comparison_db)
-            print("ADM Session Added for : " + adept_sid)
-            print("-----")
+    if run_adms:
+        for adm in adms_to_update:            
+            # get new adm session
+            probe_responses = []
+            skip_adm = False
+            for x in adm['history']:
+                if x['command'] == 'Respond to TA1 Probe':
+                    if not any(substring in x['parameters']['scenario_id'] for substring in ["vol", "qol"]):
+                        probe_responses.append(x['parameters'])
+                    else:
+                        skip_adm = True
+                        break
+            if not skip_adm:
+                adept_sid = update_adm_run(adm_collection, adm, probe_responses, mini_adms, comparison_db)
+                print("ADM Session Added for : " + adept_sid)
+                print("-----")
 
 def send_probes(probe_url, probes, sid, scenario):
     '''
