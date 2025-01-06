@@ -4,7 +4,7 @@ from scripts._0_3_0_percent_matching_probes import main as find_matching_probe_p
 
 
 MONGO_URL = config('MONGO_URL')
-ADEPT_URL = "http://127.0.0.1:8080/" #config("ADEPT_URL")
+ADEPT_URL = config("ADEPT_URL")
 
 
 SCENARIO_MAP = {
