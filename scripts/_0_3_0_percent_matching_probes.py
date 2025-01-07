@@ -24,7 +24,7 @@ def main(mongoDB, EVAL_NUMBER=4):
             least = target['response'][len(target['response'])-1]
             # find the adm at the text-scenario scenario at the aligned or misaligned target
             edited_target = most.get('target', list(most.keys())[0])
-            if 'Ingroup' in attribute or 'Moral' in attribute:
+            if ('Ingroup' in attribute or 'Moral' in attribute) and '.' not in edited_target and 'Group' not in edited_target:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
@@ -60,7 +60,7 @@ def main(mongoDB, EVAL_NUMBER=4):
                 db_utils.send_match_document_to_mongo(match_collection, document)
 
             edited_target = least.get('target', list(least.keys())[0])
-            if 'Ingroup' in attribute or 'Moral' in attribute:
+            if ('Ingroup' in attribute or 'Moral' in attribute) and '.' not in edited_target and 'Group' not in edited_target:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
