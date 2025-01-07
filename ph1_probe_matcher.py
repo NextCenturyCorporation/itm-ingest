@@ -17,7 +17,7 @@ EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
 
 
-ADEPT_URL = config("ADEPT_URL")
+ADEPT_URL = "http://localhost:8080/" #config("ADEPT_URL")
 ST_URL = config("ST_URL")
 
 SCENE_MAP = {

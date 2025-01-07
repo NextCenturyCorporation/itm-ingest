@@ -1,4 +1,4 @@
-import requests
+import requests, sys
 import utils.db_utils as db_utils
 from decouple import config 
 
@@ -47,7 +47,11 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
         {"evalNumber": EVAL_NUMBER}
     )
 
-    for entry in data_to_use:
+    data_count = text_scenario_collection.count_documents(
+        {"evalNumber": EVAL_NUMBER}
+    )
+
+    for idx, entry in enumerate(data_to_use):
         scenario_id = entry.get('scenario_id')
         if 'MJ1' in scenario_id or 'IO1' in scenario_id:
             # ignore test scenarios from adept
@@ -57,7 +61,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
         # only get completed surveys!
         survey = list(delegation_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid, "results.Post-Scenario Measures": {'$exists': True}}))
         if len(survey) == 0:
-            print(f"No survey found for {pid}")
+            print(f"\nNo survey found for {pid}")
             continue
         survey = survey[-1] # get last survey entry for this pid
         # get human to adm comparisons from delegation survey adms
@@ -66,6 +70,8 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                 page_scenario = survey['results'][page]['scenarioIndex']
                 # handle ST scenario, only compare QOL vs QOL and VOL vs VOL
                 if ('qol' in scenario_id and 'qol' in page_scenario) or ('vol' in scenario_id and 'vol' in page_scenario):
+                    sys.stdout.write(f"\rComputing comparison on {scenario_id} for {pid} (entry {idx} out of {data_count})              ")
+                    sys.stdout.flush()
                     # find the adm session id that matches the medic shown in the delegation survey
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
@@ -99,9 +105,11 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                         send_document_to_mongo(comparison_collection, document)
                         
                     else:
-                        print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
+                        print(f'\nError getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
 
                 elif (('DryRunEval' in scenario_id or 'adept' in scenario_id) and ('DryRunEval' in page_scenario or 'adept' in page_scenario)):
+                    sys.stdout.write(f"\rComputing comparison on {scenario_id} for {pid} (entry {idx} out of {data_count})              ")
+                    sys.stdout.flush()
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
@@ -144,12 +152,12 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                         document['score'] = res['score']
                         send_document_to_mongo(comparison_collection, document)
                     else:
-                        print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
+                        print(f'\nError getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {found_mini_adm["session_id"]}', res)
 
 
         # get human to adm comparisons from most/least aligned based on text scenario results
         if 'mostLeastAligned' not in entry:
-            print(f'Error getting human to adm comparison for most/least aligned for {pid} - mostLeastAligned not found')
+            print(f'\nError getting human to adm comparison for most/least aligned for {pid} - mostLeastAligned not found')
             continue
         for target in entry['mostLeastAligned']:
             attribute = target['target']
@@ -158,7 +166,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
             session_id = session_id.replace('"', '').strip()
             # find the adm at the text-scenario scenario at the aligned or misaligned target
             edited_target = most.get('target', list(most.keys())[0])
-            if 'Ingroup' in attribute or 'Moral' in attribute:
+            if ('Ingroup' in attribute or 'Moral' in attribute) and '.' not in edited_target and 'Group' not in edited_target:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
@@ -200,7 +208,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                     document['score'] = res['score']
                     send_document_to_mongo(comparison_collection, document)
                 else:
-                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                    print(f'\nError getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
                 
             
             ### GET KITWARE ALIGNED AT MOST ALIGNED TARGET
@@ -241,11 +249,11 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                     document['score'] = res['score']
                     send_document_to_mongo(comparison_collection, document)
                 else:
-                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                    print(f'\nError getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
                 
 
             edited_target = least.get('target', list(least.keys())[0])
-            if 'Ingroup' in attribute or 'Moral' in attribute:
+            if ('Ingroup' in attribute or 'Moral' in attribute) and '.' not in edited_target and 'Group' not in edited_target:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
@@ -286,7 +294,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                     document['score'] = res['score']
                     send_document_to_mongo(comparison_collection, document)
                 else:
-                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                    print(f'\nError getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
 
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
             kit_least_adm = db_utils.find_most_least_adm(EVAL_NUMBER, adm_collection, scenario_id, edited_target, 'ALIGN-ADM-ComparativeRegression-ICL-Template')
@@ -326,10 +334,9 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
                     document['score'] = res['score']
                     send_document_to_mongo(comparison_collection, document)
                 else:
-                    print(f'Error getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
+                    print(f'\nError getting comparison for scenario {scenario_id} with text session {session_id} and adm session {adm_session_id}', res)
                 
-
-    print("Human to ADM comparison values added to database.")
+    print("\nHuman to ADM comparison values added to database.")
 
 
 

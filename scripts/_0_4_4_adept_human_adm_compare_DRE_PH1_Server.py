@@ -52,13 +52,19 @@ def main(mongoDB, EVAL_NUMBER=4):
             probes = []
             for k in entry:
                 if isinstance(entry[k], dict) and 'questions' in entry[k]:
-                    if 'probe ' + k in entry[k]['questions'] and 'response' in entry[k]['questions']['probe ' + k] and 'question_mapping' in entry[k]['questions']['probe ' + k]:
-                        response = entry[k]['questions']['probe ' + k]['response'].replace('.', '')
-                        mapping = entry[k]['questions']['probe ' + k]['question_mapping']
-                        if response in mapping:
-                            probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
-                        else:
-                            print('could not find response in mapping!', response, list(mapping.keys()))
+                    for valid_key in [f'probe {k}', f'probe {k}_conditional']:
+                        probe_data = entry[k]['questions'].get(valid_key, {})
+                        if 'response' in probe_data and 'question_mapping' in probe_data:
+                            response = probe_data['response'].replace('.', '')
+                            mapping = probe_data['question_mapping']
+                            if response in mapping:
+                                if isinstance(mapping[response]['choice'], list):
+                                    for c in mapping[response]['choice']:
+                                        probes.append({'probe': {'choice': c, 'probe_id': mapping[response]['probe_id']}})
+                                else:
+                                    probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
+                            else:
+                                print('could not find response in mapping!', response, list(mapping.keys()))
             send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
 
         updates = {}

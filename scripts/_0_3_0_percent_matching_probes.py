@@ -157,11 +157,15 @@ def calculate_matches(text, adm, attribute):
     text_probes = []
     for page in text:
         if type(text[page]) == dict:
-            if 'questions' in text[page] and f'probe {page}' in text[page]['questions'] and 'response' in text[page]['questions'][f'probe {page}']:
-                resp = text[page]['questions'][f'probe {page}']['response'].replace('.', '')
-                if 'question_mapping' in text[page]['questions'][f'probe {page}']:
-                    q_map = text[page]['questions'][f'probe {page}']['question_mapping']
-                    text_probes.append(q_map[resp])
+            if 'questions' in text[page]:
+                for valid_key in [f'probe {page}', f'probe {page}_conditional']:
+                    probe_data = text[page]['questions'].get(valid_key, {})
+                    if 'response' in probe_data:
+                        resp = probe_data['response'].replace('.', '')
+                        if 'question_mapping' in probe_data:
+                            q_map = probe_data['question_mapping']
+                            text_probes.append(q_map[resp])
+
     matches = 0
     total = 0
     # only count probes that both the participant and adm answered (Jennifer's instruction - remind her!)
