@@ -126,9 +126,17 @@ def main(mongoDB, run_adms=True):
                 kdmas = requests.get(f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={mj5s[pid]}").json()
                 mj = requests.get(f"{ADEPT_URL}api/v1/get_ordered_alignment?session_id={mj5s[pid]}&kdma_id=Moral%20judgement").json()
                 io = requests.get(f"{ADEPT_URL}api/v1/get_ordered_alignment?session_id={mj5s[pid]}&kdma_id=Ingroup%20Bias").json()
+                clean_mj = []
+                for x in mj:
+                    for t in x:
+                        clean_mj.append({t.replace('.', ''): x[t]})
+                clean_io = []
+                for x in io:
+                    for t in x:
+                        clean_io.append({t.replace('.', ''): x[t]})
                 updates['mostLeastAligned'] = [
-                    {'target': 'Moral judgement', 'response': mj},
-                    {'target': 'Ingroup Bias', 'response': io}
+                    {'target': 'Moral judgement', 'response': clean_mj},
+                    {'target': 'Ingroup Bias', 'response': clean_io}
                 ]
                 updates['kdmas'] = kdmas
             # if new_id exists, we need to update the session id for all adept that this participant completed (we never know when it will be the last one)
@@ -213,4 +221,8 @@ def update_adm_run(collection, adm, probes, mini_adms, comparison_db):
     return adept_sid
 
 if __name__ == "__main__":
-    main()
+    from pymongo import MongoClient
+    MONGO_URL = config('MONGO_URL')
+    client = MongoClient(MONGO_URL)
+    mongoDB = client['dashboard']
+    main(mongoDB)
