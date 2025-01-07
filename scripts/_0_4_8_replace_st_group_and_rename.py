@@ -34,15 +34,20 @@ def main(mongo_db):
                     delete_count += 1
 
             if history[start_index]['parameters']['adm_name'] == 'ALIGN-ADM-ComparativeRegression-Llama-3.2-3B-Instruct-SoarTech-MatchingChars__67b51a1b-f06e-4667-a2ce-a52c84a85a70':
-                #replace name
-                adm_collection.update_one(
-                    {"_id": adm["_id"]},
-                    {
-                        "$set": {
-                            f"history.{align_index}.parameters.adm_name": "ALIGN-ADM-ComparativeRegression-ICL-Template"
+                # sometime start scenario is index 0 and sometimes index 1.. accounted for
+                updates = {}
+                for i in range(0, start_index + 1):
+                    if ('parameters' in history[i] and 
+                        'adm_name' in history[i]['parameters']):
+                        updates[f"history.{i}.parameters.adm_name"] = "ALIGN-ADM-ComparativeRegression-ICL-Template"
+                
+                if updates:
+                    adm_collection.update_one(
+                        {"_id": adm["_id"]},
+                        {
+                            "$set": updates
                         }
-                    }
-                )
-                rename_count += 1
+                    )
+                    rename_count += 1
     
     print(f'Processed documents: {delete_count} deleted, {rename_count} renamed')
