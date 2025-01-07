@@ -22,9 +22,15 @@ def main(mongoDB, EVAL_NUMBER=4):
     text_scenario_collection = mongoDB['userScenarioResults']
     delegation_collection = mongoDB['surveyResults']
     comparison_collection = mongoDB['humanToADMComparison']
+    comparison_collection.delete_many({"ph1_server": True})
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["test"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
+    del_adm_runs_collection.delete_many({"dre_ph1_run": True})
+    # remove ph1 session ids for fresh start
+    text_scenario_collection.update_many(
+        {"evalNumber": EVAL_NUMBER, "ph1SessionId": {"$exists": True}}, {"$set": {"ph1SessionId": None}}
+    )
 
     data_to_use = text_scenario_collection.find(
         {"evalNumber": EVAL_NUMBER}
