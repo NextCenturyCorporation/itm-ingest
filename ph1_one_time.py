@@ -29,7 +29,6 @@ if __name__ == '__main__':
     rerun_369(db)
     group_targets(db)
 
-    os.system('python3 deployment_script.py')
     compare_probes(db, 4, True)
     compare_probes(db, 5, True)
 
