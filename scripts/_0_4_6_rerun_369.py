@@ -18,7 +18,7 @@ stQOL = [
     ]
 
 def submit_responses(scenario_data, scenario_id, url, session_id):
-    response_url = f"{url}/api/v1/response"
+    response_url = f"{url}api/v1/response"
     
     for field_name, field_value in scenario_data.items():
         if not isinstance(field_value, dict) or 'questions' not in field_value:
@@ -54,7 +54,7 @@ def submit_responses(scenario_data, scenario_id, url, session_id):
                         continue
 
 def get_alignment_data(target_id, url, session_id):
-    alignment_endpoint = '/api/v1/alignment/session'
+    alignment_endpoint = 'api/v1/alignment/session'
     
     try:
         response = requests.get(
@@ -79,7 +79,7 @@ def get_alignment_data(target_id, url, session_id):
         return None
 
 def get_most_least_aligned(session_id, scenario, url):
-    endpoint = '/api/v1/get_ordered_alignment'
+    endpoint = 'api/v1/get_ordered_alignment'
     targets = ['QualityOfLife'] if 'qol' in scenario['scenario_id'] else ['PerceivedQuantityOfLivesSaved']
     
     responses = []
@@ -110,7 +110,7 @@ def get_most_least_aligned(session_id, scenario, url):
     return responses
 
 def get_kdma_value(session_id, url):
-    endpoint = '/api/v1/computed_kdma_profile'
+    endpoint = 'api/v1/computed_kdma_profile'
     try:
         response = requests.get(f"{url}{endpoint}", params={"session_id": session_id})
         response.raise_for_status()
@@ -131,7 +131,7 @@ def main(mongo_db):
         print("Entry not found")
         return
         
-    session_endpoint = '/api/v1/new_session?user_id=default_user'
+    session_endpoint = 'api/v1/new_session?user_id=default_user'
     try:
         response = requests.post(f'{ST_URL}{session_endpoint}')
         response.raise_for_status()

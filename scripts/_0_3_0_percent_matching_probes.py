@@ -24,7 +24,7 @@ def main(mongoDB, EVAL_NUMBER=4):
             least = target['response'][len(target['response'])-1]
             # find the adm at the text-scenario scenario at the aligned or misaligned target
             edited_target = most.get('target', list(most.keys())[0])
-            if 'Ingroup' in attribute or 'Moral' in attribute:
+            if ('Ingroup' in attribute or 'Moral' in attribute) and '.' not in edited_target and 'Group' not in edited_target:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT MOST ALIGNED TARGET
@@ -60,7 +60,7 @@ def main(mongoDB, EVAL_NUMBER=4):
                 db_utils.send_match_document_to_mongo(match_collection, document)
 
             edited_target = least.get('target', list(least.keys())[0])
-            if 'Ingroup' in attribute or 'Moral' in attribute:
+            if ('Ingroup' in attribute or 'Moral' in attribute) and '.' not in edited_target and 'Group' not in edited_target:
                 edited_target = edited_target[:-1] + '.' + edited_target[-1]
             
             ### GET TAD ALIGNED AT LEAST ALIGNED TARGET
@@ -157,11 +157,15 @@ def calculate_matches(text, adm, attribute):
     text_probes = []
     for page in text:
         if type(text[page]) == dict:
-            if 'questions' in text[page] and f'probe {page}' in text[page]['questions'] and 'response' in text[page]['questions'][f'probe {page}']:
-                resp = text[page]['questions'][f'probe {page}']['response'].replace('.', '')
-                if 'question_mapping' in text[page]['questions'][f'probe {page}']:
-                    q_map = text[page]['questions'][f'probe {page}']['question_mapping']
-                    text_probes.append(q_map[resp])
+            if 'questions' in text[page]:
+                for valid_key in [f'probe {page}', f'probe {page}_conditional']:
+                    probe_data = text[page]['questions'].get(valid_key, {})
+                    if 'response' in probe_data:
+                        resp = probe_data['response'].replace('.', '')
+                        if 'question_mapping' in probe_data:
+                            q_map = probe_data['question_mapping']
+                            text_probes.append(q_map[resp])
+
     matches = 0
     total = 0
     # only count probes that both the participant and adm answered (Jennifer's instruction - remind her!)
