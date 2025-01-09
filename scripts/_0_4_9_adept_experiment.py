@@ -26,7 +26,7 @@ def main(db):
     ph1_comparisons = comparisons.find({'evalNumber': 5, 'dre_server': {'$exists': False}, 'adm_scenario': {'$exists': True}})
     for comp in ph1_comparisons:
         res = requests.get(f'{PH1_URL}api/v1/alignment/compare_sessions?session_id_1={comp['text_session_id']}&session_id_2={comp['adm_session_id']}').json()
-        comparison_writer.writerow([comp['pid'], 5, comp['text_session_id'], comp['adm_session_id'], comp['text_scenario'], comp['adm_scenario'], comp['adm_author'], comp['adm_type'], comp['adm_alignment_target'], comp['score'], res['score']])
+        comparison_writer.writerow([comp['pid'], 5, comp['text_session_id'], comp['adm_session_id'], comp['text_scenario'], comp['adm_scenario'], comp['adm_author'], comp['adm_type'], comp['adm_alignment_target'], res['score'], comp['score'],])
 
     # all DRE sessions should be in PH1 server
     if refill_PH1_sessions:
@@ -36,7 +36,7 @@ def main(db):
     dre_comparisons = comparisons.find({'evalNumber': 4, 'ph1_server': True, 'adm_scenario': {'$exists': True}})
     for comp in dre_comparisons:
         res = requests.get(f'{PH1_URL}api/v1/alignment/compare_sessions?session_id_1={comp['text_session_id']}&session_id_2={comp['adm_session_id']}').json()
-        comparison_writer.writerow([comp['pid'], 4, comp['text_session_id'], comp['adm_session_id'], comp['text_scenario'], comp['adm_scenario'], comp['adm_author'], comp['adm_type'], comp['adm_alignment_target'], comp['score'], res['score']])
+        comparison_writer.writerow([comp['pid'], 4, comp['text_session_id'], comp['adm_session_id'], comp['text_scenario'], comp['adm_scenario'], comp['adm_author'], comp['adm_type'], comp['adm_alignment_target'], res['score'], comp['score']])
     comparison_file.close()
 
 
