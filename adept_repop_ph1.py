@@ -1,7 +1,6 @@
 import requests
 from decouple import config
-from scripts._0_3_0_percent_matching_probes import main as find_matching_probe_percentage
-
+import utils.db_utils as db_utils
 
 MONGO_URL = config('MONGO_URL')
 ADEPT_URL = config("ADEPT_URL")
@@ -114,7 +113,7 @@ def main(mongoDB, run_adms=True):
                             else:
                                 print('could not find response in mapping!', response, list(mapping.keys()))
                     
-            send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
+            db_utils.send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
             print("Created text session with probes in Adept for: " + str(new_id))
             print("-----")
 
@@ -180,23 +179,6 @@ def main(mongoDB, run_adms=True):
                 adept_sid = update_adm_run(adm_collection, adm, probe_responses, mini_adms, comparison_db)
                 print("ADM Session Added for : " + adept_sid)
                 print("-----")
-
-def send_probes(probe_url, probes, sid, scenario):
-    '''
-    Sends the probes to the server
-    '''
-    for x in probes:
-        if 'probe' in x and 'choice' in x['probe']:
-            requests.post(probe_url, json={
-                "response": {
-                    "choice": x['probe']['choice'],
-                    "justification": "justification",
-                    "probe_id": x['probe']['probe_id'],
-                    "scenario_id": scenario,
-                },
-                "session_id": sid
-            })
-        
         
 def update_adm_run(collection, adm, probes, mini_adms, comparison_db):
     # get a new session id for adms

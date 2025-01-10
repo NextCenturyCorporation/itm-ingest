@@ -1,5 +1,6 @@
 import requests
 from decouple import config 
+import utils.db_utils as db_utils
 ST_URL = config("ST_DRE_SCALAR_URL")
 UPDATE_DATABASE = True # Update the mongo database tables for text, sim, and adm
 VERBOSE_OUTPUT = True # If True, displays scalar KDMA values for each entry
@@ -67,7 +68,7 @@ def update_text_kdmas(mongoDB):
                         else:
                             print('Could not find response in mapping!', response, list(mapping.keys()))
             session_id = requests.post(f'{ST_URL}api/v1/new_session').text.replace('"', '').strip()
-            send_probes(f'{ST_URL}api/v1/response', probes, session_id, scenario_id)
+            db_utils.send_probes(f'{ST_URL}api/v1/response', probes, session_id, scenario_id)
             kdmas = requests.get(f'{ST_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
             if kdmas.get('computed_kdma_profile'):
                 profile = kdmas['computed_kdma_profile'][0]
@@ -108,7 +109,7 @@ def update_sim_kdmas(mongoDB):
                 else:
                     print('Skipping data with no found match.')
             session_id = requests.post(f'{ST_URL}api/v1/new_session').text.replace('"', '').strip()
-            send_probes(f'{ST_URL}api/v1/response', probes, session_id, scenario_id)
+            db_utils.send_probes(f'{ST_URL}api/v1/response', probes, session_id, scenario_id)
             kdmas = requests.get(f'{ST_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
             if kdmas.get('computed_kdma_profile'):
                 profile = kdmas['computed_kdma_profile'][0]
@@ -142,23 +143,6 @@ def update_sim_kdmas(mongoDB):
                     else:
                         print('->  Unexpected missing profile data; no scalar kdma added.')
                     sim_scenario_collection.update_one({'_id': data_id}, {"$set": {"data": entry['data']}})
-
-
-def send_probes(probe_url, probes, sid, scenario):
-    '''
-    Sends the probes to the server
-    '''
-    for x in probes:
-        if 'probe' in x and 'choice' in x['probe']:
-            resp = requests.post(probe_url, json={
-                "response": {
-                    "choice": x['probe']['choice'],
-                    "justification": "justification",
-                    "probe_id": x['probe']['probe_id'],
-                    "scenario_id": scenario,
-                },
-                "session_id": sid
-            })
 
 
 def update_adm_kdmas(mongoDB):

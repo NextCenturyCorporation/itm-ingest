@@ -627,7 +627,7 @@ class ProbeMatcher:
                     'vol-human-8478698-SplitLowMulti-ph1', 'vol-human-5032922-SplitLowMulti-ph1', 'vol-synth-LowExtreme-ph1', 'vol-synth-HighCluster-ph1',
                     'vol-synth-LowCluster-ph1'
                 ]
-                self.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
+                db_utils.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
                 for target in targets:
                     if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
                         continue
@@ -916,7 +916,7 @@ class ProbeMatcher:
         ad_align = {}
         if RUN_ALIGNMENT:
             try:
-                self.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
+                db_utils.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
                 mj_targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false&kdma_id=Moral%20judgement')
                 io_targets = self.get_session_alignment(f'{ADEPT_URL}api/v1/get_ordered_alignment?session_id={self.adept_sid}&population=false&kdma_id=Ingroup%20Bias')
                 targets = mj_targets + io_targets
@@ -945,23 +945,6 @@ class ProbeMatcher:
                 participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']}, 
                                                       {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
         json.dump(match_data, self.output_adept, indent=4)  
-
-
-    def send_probes(self, probe_url, probes, sid, scenario):
-        '''
-        Sends the probes to the server
-        '''
-        for x in probes:
-            if 'probe' in x and 'choice' in x['probe']:
-                requests.post(probe_url, json={
-                    "response": {
-                        "choice": x['probe']['choice'],
-                        "justification": "justification",
-                        "probe_id": x['probe']['probe_id'],
-                        "scenario_id": scenario,
-                    },
-                    "session_id": sid
-                })
 
 
     def get_session_alignment(self, align_url):

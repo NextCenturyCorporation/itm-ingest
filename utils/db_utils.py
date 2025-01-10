@@ -116,3 +116,20 @@ def send_match_document_to_mongo(match_collection, document):
         match_collection.update_one({'_id': obj_id}, {'$set': document})
     else:
         match_collection.insert_one(document)
+
+
+def send_probes(probe_url, probes, sid, scenario):
+    '''
+    Sends the probes to the server
+    '''
+    for x in probes:
+        if 'probe' in x and 'choice' in x['probe']:
+            requests.post(probe_url, json={
+                "response": {
+                    "choice": x['probe']['choice'],
+                    "justification": "justification",
+                    "probe_id": x['probe']['probe_id'],
+                    "scenario_id": scenario,
+                },
+                "session_id": sid
+            })

@@ -71,7 +71,7 @@ def main(mongoDB, EVAL_NUMBER=4):
                                     probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
                             else:
                                 print('could not find response in mapping!', response, list(mapping.keys()))
-            send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
+            db_utils.send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
 
         updates = {}
         if new_id is not None:
@@ -150,23 +150,6 @@ def main(mongoDB, EVAL_NUMBER=4):
 
     print("Human to ADM comparison values added to database.")
 
-
-def send_probes(probe_url, probes, sid, scenario):
-    '''
-    Sends the probes to the server
-    '''
-    for x in probes:
-        if 'probe' in x and 'choice' in x['probe']:
-            requests.post(probe_url, json={
-                "response": {
-                    "choice": x['probe']['choice'],
-                    "justification": "justification",
-                    "probe_id": x['probe']['probe_id'],
-                    "scenario_id": scenario,
-                },
-                "session_id": sid
-            })
-        
 
 def send_document_to_mongo(comparison_collection, document):
     # do not send duplicate documents, make sure if one already exists, we just replace it
