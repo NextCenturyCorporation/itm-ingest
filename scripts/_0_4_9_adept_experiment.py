@@ -56,14 +56,14 @@ def update_surveys_with_opposite_server(EVAL_NUMBER, db):
                 if 'ADEPT' not in target:
                     continue
 
-                # find comparison values from dre server from database
+                # find comparison values from database
                 comparison_params = {('dre_server' if EVAL_NUMBER == 5 else 'ph1_server'): True, 'evalNumber': EVAL_NUMBER, 'adm_type': page['admAlignment'], 'pid': pid, 'adm_author': page['admAuthor'], 'adm_scenario': page['scenarioIndex']}
                 comparison = comparison_collection.find_one(comparison_params)
                 if not comparison:
                     print('could not find comparison document with parameters', comparison_params)
                     continue
             
-                # get dre server text alignment
+                # get text alignment
                 txt_id = comparison['text_session_id']
                 txt_alignment = get_target_score(EVAL_NUMBER, url, txt_id, target)
 
@@ -109,7 +109,7 @@ def update_surveys_with_opposite_server(EVAL_NUMBER, db):
 
 def get_target_score(EVAL_NUMBER, url, session_id, target):
     '''
-    Endpoint chnaged between DRE and PH1 - DRE server for eval 5 can get just the target. 
+    Endpoint changed between DRE and PH1 - DRE server for eval 5 can get just the target. 
     PH1 server for DRE data will need to search for the target in the output
     '''
     alignment = None
