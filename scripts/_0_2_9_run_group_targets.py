@@ -1,5 +1,6 @@
 import requests
 from decouple import config 
+import utils.db_utils as db_utils
 
 ADEPT_URL = config("ADEPT_DRE_URL")
 ST_URL = config("ST_DRE_URL")
@@ -74,7 +75,7 @@ def main(mongoDB):
                                         probes.append({'probe': {'choice': mapping[response]['choice'], 'probe_id': mapping[response]['probe_id']}})
                                     else:
                                         print('could not find response in mapping!', response, list(mapping.keys()))
-                        send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
+                        db_utils.send_probes(f'{ADEPT_URL}api/v1/response', probes, new_id, scenario_id)
                         # after probes are sent, get kdmas
                         alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={new_id}&target_id={x}&population=false').json()
                     group_targets[x] = alignment.get('score')
@@ -92,20 +93,3 @@ def main(mongoDB):
                 text_scenario_collection.update_one({'_id': data_id}, {'$set': updates})
 
     print("Group Target Alignments added to text scenario database.")
-
-
-def send_probes(probe_url, probes, sid, scenario):
-    '''
-    Sends the probes to the server
-    '''
-    for x in probes:
-        if 'probe' in x and 'choice' in x['probe']:
-            requests.post(probe_url, json={
-                "response": {
-                    "choice": x['probe']['choice'],
-                    "justification": "justification",
-                    "probe_id": x['probe']['probe_id'],
-                    "scenario_id": scenario,
-                },
-                "session_id": sid
-            })

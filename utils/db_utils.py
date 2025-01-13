@@ -16,8 +16,12 @@ PH1_SCENARIO_MAP = {
     "vol-ph1-eval-4": "vol-ph1-eval-4"
 }
 
-def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=False):
-    ADEPT_URL = config("ADEPT_DRE_URL") if evalNumber == 4 and not dre_ph1_run else config('ADEPT_URL')
+def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=False, ph1_dre_run=False):
+    '''
+    dre_ph1_run is if we are running dre data through the phase 1 server
+    ph1_dre_run is if we are running phase 1 data through the dre server
+    '''
+    ADEPT_URL = config("ADEPT_DRE_URL") if ((evalNumber == 4 and not dre_ph1_run) or evalNumber == 5 and ph1_dre_run) else config('ADEPT_URL')
     adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     scenario = None
     for x in probes:
@@ -31,7 +35,7 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
             "session_id": adept_sid
         })
         scenario = x['scenario_id']
-    if evalNumber == 4 and not dre_ph1_run:
+    if (evalNumber == 4 and not dre_ph1_run) or (evalNumber == 5 and ph1_dre_run):
         alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
     else:
         if 'Moral' in target:
@@ -48,6 +52,8 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
     doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber}
     if dre_ph1_run:
         doc['dre_ph1_run'] = True
+    if ph1_dre_run:
+        doc['ph1_in_dre_server_run'] = True
     collection.insert_one(doc)
     return doc
 
@@ -110,3 +116,20 @@ def send_match_document_to_mongo(match_collection, document):
         match_collection.update_one({'_id': obj_id}, {'$set': document})
     else:
         match_collection.insert_one(document)
+
+
+def send_probes(probe_url, probes, sid, scenario):
+    '''
+    Sends the probes to the server
+    '''
+    for x in probes:
+        if 'probe' in x and 'choice' in x['probe']:
+            requests.post(probe_url, json={
+                "response": {
+                    "choice": x['probe']['choice'],
+                    "justification": "justification",
+                    "probe_id": x['probe']['probe_id'],
+                    "scenario_id": scenario,
+                },
+                "session_id": sid
+            })

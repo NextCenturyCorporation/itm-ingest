@@ -29,7 +29,7 @@ AD_PROBES = {
     "DryRunEval-MJ5-eval": ['Probe 1', 'Probe 1-A.1', 'Probe 1-B.1', 'Probe 2', 'Response 2-A.1-B', 'Response 2-B.1-B', 'Response 2-B.1-B-gauze-u', 'Response 2-A.1-B-gauze-sp', 'Probe 2-A.1-A.1', 'Probe 2-B.1-A.1', 'Probe 2-A.1-B.1-A.1', 'Probe 2-B.1-B.1-A.1', 'Probe 3', 'Probe 4']
 }
 
-def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
+def main(mongoDB, EVAL_NUMBER=4, run_new_only=False, ignore_ST=False):
     global ADEPT_URL, ST_URL
     if EVAL_NUMBER == 5:
         ADEPT_URL = config('ADEPT_URL')
@@ -69,7 +69,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 # handle ST scenario, only compare QOL vs QOL and VOL vs VOL
-                if ('qol' in scenario_id and 'qol' in page_scenario) or ('vol' in scenario_id and 'vol' in page_scenario):
+                if not ignore_ST and (('qol' in scenario_id and 'qol' in page_scenario) or ('vol' in scenario_id and 'vol' in page_scenario)):
                     sys.stdout.write(f"\rComputing comparison on {scenario_id} for {pid} (entry {idx} out of {data_count})              ")
                     sys.stdout.flush()
                     # find the adm session id that matches the medic shown in the delegation survey
@@ -161,6 +161,8 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False):
             continue
         for target in entry['mostLeastAligned']:
             attribute = target['target']
+            if ('Ingroup' not in attribute and 'Moral' not in attribute) and ignore_ST:
+                continue
             most = target['response'][0]
             least = target['response'][len(target['response'])-1]
             session_id = session_id.replace('"', '').strip()

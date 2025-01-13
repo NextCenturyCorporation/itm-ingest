@@ -729,10 +729,10 @@ class ProbeMatcher:
                         'vol-human-5032922-SplitLowMulti', 'qol-human-0000001-SplitEvenMulti', 'vol-synth-LowExtreme', 'qol-human-8022671-SplitLowMulti', 'vol-synth-HighExtreme', 
                         'qol-human-5032922-SplitLowMulti', 'vol-synth-HighCluster', 'qol-synth-LowExtreme', 'vol-synth-LowCluster', 'qol-synth-HighExtreme', 'vol-synth-SplitLowBinary', 
                         'qol-synth-HighCluster', 'qol-synth-LowCluster', 'qol-synth-SplitLowBinary']
-                self.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
+                db_utils.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
                 # send fake probes for 3 entries that are missing data. These probes will not be used to calculate alignment!
                 if self.participantId == '202409111' and 'vol' in self.environment:
-                    self.send_probes(f'{ST_URL}api/v1/response', 
+                    db_utils.send_probes(f'{ST_URL}api/v1/response', 
                         [
                             { 
                                 "scene_id": 'id-10', 
@@ -750,7 +750,7 @@ class ProbeMatcher:
                             }
                         ], self.soartech_sid, self.soartech_yaml['id'])
                 if self.participantId == '202409112' and 'qol' in self.environment:
-                    self.send_probes(f'{ST_URL}api/v1/response', 
+                    db_utils.send_probes(f'{ST_URL}api/v1/response', 
                         [
                             { 
                                 "scene_id": 'id-11',
@@ -761,7 +761,7 @@ class ProbeMatcher:
                             }
                         ], self.soartech_sid, self.soartech_yaml['id'])                
                 if self.participantId == '202409112' and 'vol' in self.environment:
-                    self.send_probes(f'{ST_URL}api/v1/response', 
+                    db_utils.send_probes(f'{ST_URL}api/v1/response', 
                         [
                             { 
                                 "scene_id": 'id-6',
@@ -1077,7 +1077,7 @@ class ProbeMatcher:
                 targets = ['ADEPT-DryRun-Moral judgement-0.0', 'ADEPT-DryRun-Ingroup Bias-0.0', 'ADEPT-DryRun-Moral judgement-0.1', 'ADEPT-DryRun-Ingroup Bias-0.1', 'ADEPT-DryRun-Moral judgement-0.2', 'ADEPT-DryRun-Ingroup Bias-0.2', 'ADEPT-DryRun-Moral judgement-0.3', 
                         'ADEPT-DryRun-Ingroup Bias-0.3', 'ADEPT-DryRun-Moral judgement-0.4', 'ADEPT-DryRun-Ingroup Bias-0.4', 'ADEPT-DryRun-Moral judgement-0.5', 'ADEPT-DryRun-Ingroup Bias-0.5', 'ADEPT-DryRun-Moral judgement-0.6', 'ADEPT-DryRun-Ingroup Bias-0.6', 'ADEPT-DryRun-Moral judgement-0.7', 'ADEPT-DryRun-Ingroup Bias-0.7', 'ADEPT-DryRun-Moral judgement-0.8', 
                         'ADEPT-DryRun-Ingroup Bias-0.8', 'ADEPT-DryRun-Moral judgement-0.9', 'ADEPT-DryRun-Ingroup Bias-0.9', 'ADEPT-DryRun-Moral judgement-1.0', 'ADEPT-DryRun-Ingroup Bias-1.0']
-                self.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
+                db_utils.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
                 for target in targets:
                     ad_align[target] = self.get_session_alignment(f'{ADEPT_URL}api/v1/alignment/session?session_id={self.adept_sid}&target_id={target}&population=false')
                 ad_align['kdmas'] = self.get_session_alignment(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.adept_sid}')
@@ -1100,24 +1100,6 @@ class ProbeMatcher:
                 participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']}, 
                                                       {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
         json.dump(match_data, self.output_adept, indent=4)  
-
-
-    def send_probes(self, probe_url, probes, sid, scenario):
-        '''
-        Sends the probes to the server
-        '''
-        for x in probes:
-            if 'probe' in x and 'choice' in x['probe']:
-                requests.post(probe_url, json={
-                    "response": {
-                        "choice": x['probe']['choice'],
-                        "justification": "justification",
-                        "probe_id": x['probe']['probe_id'],
-                        "scenario_id": scenario,
-                    },
-                    "session_id": sid
-                })
-
 
     def get_session_alignment(self, align_url):
         '''
