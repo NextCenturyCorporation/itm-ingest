@@ -9,6 +9,10 @@ def main(mongo_db):
     #update the text scenario results they already took
     text_scenarios = mongo_db['userScenarioResults']
     text_scenarios.update_many(
-        {"participantID": "202411371"},  
-        {"$set": {"participantID": "202501700"}}
-    )
+       {"participantID": "202411371"},
+       {"$set": {
+           "participantID": "202501700",
+           "evalNumber": 6,
+           "evalName": "Jan 2025 Eval"
+       }}
+   )
