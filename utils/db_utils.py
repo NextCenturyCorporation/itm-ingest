@@ -59,12 +59,12 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
 
 
 def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
-    if eval_number == 5:
+    if eval_number == 5 or eval_number == 6:
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
-    adm_session = medic_collection.find_one({'evalNumber': eval_number, 'name': page})['admSession']
+    adm_session = medic_collection.find_one({'evalNumber': 5 if eval_number == 6 else eval_number, 'name': page})['admSession']
     
     adms = adm_collection.find({
-        'evalNumber': eval_number,
+        'evalNumber': 5 if eval_number == 6 else eval_number,
         'history': {
             '$elemMatch': {
                 'command': 'Start Scenario',
@@ -89,9 +89,9 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
 
 
 def find_most_least_adm(eval_number, adm_collection, scenario, target, adm_name):
-    if eval_number == 5:
+    if eval_number == 5 or eval_number == 6:
         scenario = PH1_SCENARIO_MAP[scenario]
-    adms = adm_collection.find({'evalNumber': eval_number,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
+    adms = adm_collection.find({'evalNumber': 5 if eval_number == 6 else eval_number,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
     adm = None
     for x in adms:
         if x['history'][len(x['history'])-1]['parameters']['target_id'] == target:
