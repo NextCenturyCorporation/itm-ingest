@@ -13,8 +13,8 @@ RUN_ALL = True  # run all files in the input directory, even if they have alread
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = True
 RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
-EVAL_NUM = 5
-EVAL_NAME = 'Phase 1 Evaluation'
+EVAL_NUM = 6 #5
+EVAL_NAME = 'Jan 2025 Eval' #'Phase 1 Evaluation'
 
 
 ADEPT_URL = config("ADEPT_URL")
@@ -1025,7 +1025,7 @@ class ProbeMatcher:
             vr_scenario = ENV_MAP[self.environment]
 
             # VR session vs text scenario (ST)
-            text_response = text_scenario_collection.find_one({"evalNumber": 5, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
+            text_response = text_scenario_collection.find_one({"evalNumber": EVAL_NUM, 'participantID': self.participantId, 'scenario_id': {"$regex": vr_scenario.split('-')[0], "$options": "i"}})
             if text_response is None:
                 self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} {vr_scenario.split('-')[0]} scenario")
                 return None
@@ -1045,7 +1045,7 @@ class ProbeMatcher:
             res = res['score']
         elif 'adept' in self.environment:
             # get text session id
-            text_response = text_scenario_collection.find_one({"evalNumber": 5, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval", 'phase1-adept-eval-MJ2', 'phase1-adept-eval-MJ4', 'phase1-adept-eval-MJ5']}})
+            text_response = text_scenario_collection.find_one({"evalNumber": EVAL_NUM, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval", 'phase1-adept-eval-MJ2', 'phase1-adept-eval-MJ4', 'phase1-adept-eval-MJ5']}})
             if text_response is None:
                 self.logger.log(LogLevel.WARN, f"Error getting text response for pid {self.participantId} adept scenario")
                 return None
@@ -1081,7 +1081,7 @@ class ProbeMatcher:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 if ('qol' in self.environment and 'qol' in page_scenario) or ('vol' in self.environment and 'vol' in page_scenario):
                     # find the adm session id that matches the medic shown in the delegation survey
-                    adm = db_utils.find_adm_from_medic(5, medic_collection, adm_collection, page, page_scenario, survey)
+                    adm = db_utils.find_adm_from_medic(EVAL_NUM, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
                         continue
                     adm_session = adm['history'][len(adm['history'])-1]['parameters']['session_id']
@@ -1106,11 +1106,11 @@ class ProbeMatcher:
                             'sim_scenario': vr_scenario
                         })
                 elif ('adept' in self.environment and 'DryRunEval' in page_scenario):
-                    adm = db_utils.find_adm_from_medic(5, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
+                    adm = db_utils.find_adm_from_medic(EVAL_NUM, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
                         continue
                     adm_target = adm['history'][len(adm['history'])-1]['parameters']['target_id']
-                    found_mini_adm = mini_adms_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName'], 'evalNumber': 5})
+                    found_mini_adm = mini_adms_collection.find_one({'target': adm_target, 'scenario': page_scenario.replace('IO', 'MJ'), 'adm_name': survey['results'][page]['admName'], 'evalNumber': EVAL_NUM})
                     if found_mini_adm is None:
                         # get new adm session that contains only the probes seen in the delegation survey
                         probe_ids = AD_DEL_PROBES[page_scenario] # this is where IO/MJ comes into play - choosing the probes
@@ -1119,7 +1119,7 @@ class ProbeMatcher:
                             if x['command'] == 'Respond to TA1 Probe':
                                 if x['parameters']['choice'] in probe_ids or x['parameters']['probe_id'] in probe_ids:
                                     probe_responses.append(x['parameters'])
-                        found_mini_adm = db_utils.mini_adm_run(5, mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
+                        found_mini_adm = db_utils.mini_adm_run(EVAL_NUM, mini_adms_collection, probe_responses, adm_target, survey['results'][page]['admName'])
                     res = None
                     if 'Moral' in adm_target:
                         res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={vr_sid}&session_id_2_or_target_id={found_mini_adm["session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()

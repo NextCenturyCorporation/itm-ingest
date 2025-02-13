@@ -31,7 +31,7 @@ AD_PROBES = {
 
 def main(mongoDB, EVAL_NUMBER=4, run_new_only=False, ignore_ST=False):
     global ADEPT_URL, ST_URL
-    if EVAL_NUMBER == 5:
+    if EVAL_NUMBER == 5 or EVAL_NUMBER == 6:
         ADEPT_URL = config('ADEPT_URL')
         ST_URL = config('ST_URL')
     text_scenario_collection = mongoDB['userScenarioResults']
@@ -233,7 +233,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False, ignore_ST=False):
                     # do not rerun!
                     continue
                 if 'Ingroup' in attribute or 'Moral' in attribute:
-                    if EVAL_NUMBER == 5:
+                    if EVAL_NUMBER == 5 or EVAL_NUMBER == 6:
                         if 'Moral' in edited_target:
                             res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={session_id}&session_id_2_or_target_id={adm_session_id}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
                         else:
