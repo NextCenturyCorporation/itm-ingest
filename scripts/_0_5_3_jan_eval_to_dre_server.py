@@ -3,7 +3,6 @@ import requests
 from adept_repop_ph1 import SCENARIO_MAP
 import utils.db_utils as db_utils
 
-PH1_URL = config("ADEPT_URL")
 DRE_URL = config("ADEPT_DRE_URL")
 
 def main(db):

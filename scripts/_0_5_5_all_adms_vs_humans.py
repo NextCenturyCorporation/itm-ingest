@@ -1,4 +1,4 @@
-import requests, sys, warnings
+import requests, sys, warnings, csv
 from decouple import config 
 warnings.filterwarnings('ignore')
 
@@ -27,12 +27,16 @@ scenario_map = {
 }
 
 def main(mongo_db):
-    find_all_comparisons(mongo_db, 4)
-    find_all_comparisons(mongo_db, 5)
-    find_all_comparisons(mongo_db, 6)
+    output = open('full_probe_comparisons.csv', 'w', encoding='utf-8')
+    writer = csv.writer(output)
+    writer.writerow(['Participant_ID', 'TA1_Name', 'Attribute', 'Scenario', 'Target', 'Alignment score (Participant|target)', 'ADM Name', 'Alignment score (Participant|ADM(target))', 'Match'])
+    # find_all_comparisons(mongo_db, writer, 4)
+    find_all_comparisons(mongo_db, writer, 5)
+    # find_all_comparisons(mongo_db, writer, 6)
+    output.close()
 
 
-def find_all_comparisons(mongo_db, eval_num):
+def find_all_comparisons(mongo_db, writer, eval_num):
     print(f'\n\033[36mStarting comparison-finding for eval {eval_num}\033[0m', flush=True)
     ADEPT_URL = config('ADEPT_DRE_URL') # we only use DRE comparisons for ADEPT
     ST_URL = config("ST_URL") if eval_num != 4 else config('ST_DRE_URL')
@@ -63,8 +67,9 @@ def find_all_comparisons(mongo_db, eval_num):
         relevant_adms = adms.find({'evalNumber': eval_num, 'scenario': scenario}, no_cursor_timeout=True)
         for adm in relevant_adms:
             score = None
-            adm_session_id = adm['history'][-1]['parameters']['session_id']
+            adm_session_id = adm['history'][-1]['parameters']['session_id'] if 'DryRun' not in scenario else adm['history'][-1]['parameters']['dreSessionId']
             adm_target = adm['alignment_target']
+            matches = -1
             found_count = matches_collection.count_documents({
                 'pid': pid,
                 'probe_subset': False,
@@ -85,7 +90,17 @@ def find_all_comparisons(mongo_db, eval_num):
                     'adm_name': adm['adm_name'],
                     'evalNumber': eval_num
                 })
+            else:
+                matches = matches_collection.find_one({
+                    'pid': pid,
+                    'probe_subset': False,
+                    'text_scenario': scenario,
+                    'adm_alignment_target': adm_target,
+                    'adm_name': adm['adm_name'],
+                    'evalNumber': eval_num
+                })['score']
             # do not rerun a comparison calculation that has already been completed
+            score = -1
             found_count = comparisons.count_documents({
                 'pid': pid,
                 'probe_subset': False,
@@ -97,31 +112,58 @@ def find_all_comparisons(mongo_db, eval_num):
                 'evalNumber': eval_num
             })
             if found_count > 0:
-                continue
-            if 'DryRun' not in scenario:
-                # create ST query param
-                query_param = f"session_1={text_session_id}&session_2={adm_session_id}"
-                for probe_id in ST_PROBES[scenario]:
-                    query_param += f"&session1_probes={probe_id}"
-                for probe_id in ST_PROBES[scenario]:
-                    query_param += f"&session2_probes={probe_id}"
-                # get comparison score
-                res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-                score = res['score']
+                score = comparisons.find_one({
+                    'pid': pid,
+                    'probe_subset': False,
+                    'scenario': scenario,
+                    'text_session_id': text_session_id,
+                    'adm_session_id': adm_session_id,
+                    'adm_name': adm['adm_name'],
+                    'adm_alignment_target': adm_target,
+                    'evalNumber': eval_num
+                })['score']
             else:
-                res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={text_session_id}&session_id_2={adm_session_id}').json()
-                score = res['score']
-            comparisons.insert_one({
-                'pid': pid,
-                'probe_subset': False,
-                'scenario': scenario,
-                'text_session_id': text_session_id,
-                'adm_session_id': adm_session_id,
-                'adm_name': adm['adm_name'],
-                'adm_alignment_target': adm_target,
-                'evalNumber': eval_num,
-                'score': score
-        })
+                if 'DryRun' not in scenario:
+                    # create ST query param
+                    query_param = f"session_1={text_session_id}&session_2={adm_session_id}"
+                    for probe_id in ST_PROBES[scenario]:
+                        query_param += f"&session1_probes={probe_id}"
+                    for probe_id in ST_PROBES[scenario]:
+                        query_param += f"&session2_probes={probe_id}"
+                    # get comparison score
+                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                    score = res['score']
+                else:
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={text_session_id}&session_id_2={adm_session_id}').json()
+                    score = res['score']
+                comparisons.insert_one({
+                    'pid': pid,
+                    'probe_subset': False,
+                    'scenario': scenario,
+                    'text_session_id': text_session_id,
+                    'adm_session_id': adm_session_id,
+                    'adm_name': adm['adm_name'],
+                    'adm_alignment_target': adm_target,
+                    'evalNumber': eval_num,
+                    'score': score
+                })
+            att = 'MJ' if 'Moral' in adm_target else 'IO' if 'Ingroup' in adm_target else 'qol' if 'qol' in adm_target else 'vol' if 'vol' in adm_target else 'unknown'
+            ta1 = 'ADEPT' if 'DryRun' in scenario else 'SoarTech'
+            mla = entry['mostLeastAligned']
+            participant_score = -1
+            if ta1 == 'ADEPT':
+                responses = mla[0]['response'] + mla[1]['response']
+                for alignment in responses:
+                    if adm_target.replace('.', '') in alignment:
+                        participant_score = alignment[adm_target.replace('.', '')]
+                        break
+            if ta1 == 'SoarTech':
+                responses = mla[0]['response']
+                for alignment in responses:
+                    if alignment['target'] == adm_target:
+                        participant_score = alignment['score']
+                        break
+            writer.writerow([pid, ta1, att, scenario, adm_target, participant_score, adm['adm_name'], score, matches])
         relevant_adms.close()
     relevant_text.close()
     print(f'\033[36mFinished comparison-finding for eval {eval_num}\033[0m', flush=True)
