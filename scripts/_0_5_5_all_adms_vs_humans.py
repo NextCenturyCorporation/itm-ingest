@@ -29,7 +29,7 @@ scenario_map = {
 def main(mongo_db):
     output = open('full_probe_comparisons.csv', 'w', encoding='utf-8')
     writer = csv.writer(output)
-    writer.writerow(['Participant_ID', 'TA1_Name', 'Attribute', 'Scenario', 'Target', 'Alignment score (Participant|target)', 'ADM Name', 'Alignment score (Participant|ADM(target))', 'Match'])
+    writer.writerow(['Participant_ID', 'Eval Number', 'TA1_Name', 'Attribute', 'Scenario', 'Target', 'Alignment score (Participant|target)', 'ADM Name', 'Alignment score (Participant|ADM(target))', 'Match'])
     # find_all_comparisons(mongo_db, writer, 4)
     find_all_comparisons(mongo_db, writer, 5)
     # find_all_comparisons(mongo_db, writer, 6)
@@ -64,10 +64,10 @@ def find_all_comparisons(mongo_db, writer, eval_num):
         sys.stdout.write(f"\rComputing comparison and matches on {scenario} for {pid} (entry {idx} out of {text_count})              ")
         sys.stdout.flush()
         # we need no_cursor_timeout because there are a lot of server calls, and the mongo cursor will time out otherwise
-        relevant_adms = adms.find({'evalNumber': eval_num, 'scenario': scenario}, no_cursor_timeout=True)
+        relevant_adms = adms.find({'evalNumber': 5 if eval_num == 6 else eval_num, 'scenario': scenario}, no_cursor_timeout=True)
         for adm in relevant_adms:
             score = None
-            adm_session_id = adm['history'][-1]['parameters']['session_id'] if 'DryRun' not in scenario else adm['history'][-1]['parameters']['dreSessionId']
+            adm_session_id = adm['history'][-1]['parameters']['session_id'] if ('DryRun' not in scenario or eval_num == 4) else adm['history'][-1]['parameters']['dreSessionId']
             adm_target = adm['alignment_target']
             matches = -1
             found_count = matches_collection.count_documents({
@@ -163,7 +163,7 @@ def find_all_comparisons(mongo_db, writer, eval_num):
                     if alignment['target'] == adm_target:
                         participant_score = alignment['score']
                         break
-            writer.writerow([pid, ta1, att, scenario, adm_target, participant_score, adm['adm_name'], score, matches])
+            writer.writerow([pid, eval_num, ta1, att, scenario, adm_target, participant_score, adm['adm_name'], score, matches])
         relevant_adms.close()
     relevant_text.close()
     print(f'\033[36mFinished comparison-finding for eval {eval_num}\033[0m', flush=True)
