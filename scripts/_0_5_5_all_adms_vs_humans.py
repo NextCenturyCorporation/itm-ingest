@@ -44,6 +44,7 @@ def find_all_comparisons(mongo_db, writer, eval_num):
     text_scenarios = mongo_db['userScenarioResults']
     comparisons = mongo_db['humanToADMComparison']
     matches_collection = mongo_db['admVsTextProbeMatches']
+    participant_log = mongo_db['participantLog']
 
     relevant_text = text_scenarios.find({'evalNumber': eval_num}, no_cursor_timeout=True)
     text_count = text_scenarios.count_documents({'evalNumber': eval_num})
@@ -51,6 +52,12 @@ def find_all_comparisons(mongo_db, writer, eval_num):
     # for each text scenario, store the comparison between that scenario and all adms at all targets
     for idx, entry in enumerate(relevant_text):
         pid = entry['participantID']
+        try:
+            in_plog = participant_log.count_documents({'ParticipantID': int(pid)})
+            if in_plog == 0:
+                continue
+        except:
+            continue
         scenario = entry['scenario_id']
         # skip adept training scenarios
         if 'train' in scenario or 'MJ1' in scenario or 'IO1' in scenario:
@@ -163,10 +170,20 @@ def find_all_comparisons(mongo_db, writer, eval_num):
                     if alignment['target'] == adm_target:
                         participant_score = alignment['score']
                         break
-            writer.writerow([pid, eval_num, ta1, att, scenario, adm_target, participant_score, adm['adm_name'], score, matches])
+            if participant_score == -1:
+                if 'group_targets' in entry:
+                    group_targets = entry['group_targets']
+                    if adm_target in group_targets:
+                        participant_score = group_targets[adm_target]
+            if participant_score == -1:
+                if not ('group-target' in adm_target or '-Group' in adm_target):
+                    print(f'\033[93mWarning: No target ({adm_target}) found for {pid} with scenario {scenario}\033[0m', flush=True)
+                continue
+            else:
+                writer.writerow([pid, eval_num, ta1, att, scenario, adm_target, float(participant_score), adm['adm_name'], float(score), float(matches)])
         relevant_adms.close()
     relevant_text.close()
-    print(f'\033[36mFinished comparison-finding for eval {eval_num}\033[0m', flush=True)
+    print(f'\n\033[36mFinished comparison-finding for eval {eval_num}\033[0m', flush=True)
 
 
 def calculate_matches(text, adm, attribute):
