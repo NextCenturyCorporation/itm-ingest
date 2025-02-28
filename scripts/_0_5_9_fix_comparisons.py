@@ -312,7 +312,7 @@ def main(mongo_db):
                         print(f"        current score: {current_score}")
                         print(f"        dre_server: {is_dre}")
                         
-                        # Map problem codes to actual probe IDs
+   
                         problem_probe_ids = []
                         for code in found_problem_codes:
                             if code in CODE_TO_PROBE_ID:
@@ -321,7 +321,7 @@ def main(mongo_db):
                                 else:
                                     problem_probe_ids.append(CODE_TO_PROBE_ID[code])
                         
-                        # Rerun the ADM comparison excluding problematic probes
+                        # exclude problem probes
                         print(f"      - Rerunning mini ADM without probes: {problem_probe_ids}")
                         updated_doc = mini_adm_run_fixed(
                             mongo_db, 
@@ -334,13 +334,12 @@ def main(mongo_db):
                         )
                         
                         if updated_doc:
-                            # Update the document in the database
                             comparisons.update_one(
                                 {"_id": doc_id}, 
                                 {"$set": updated_doc}
                             )
                             
-                            # Track score changes
+                            # track score changes
                             old_score = float(doc.get('score', 0))
                             new_score = float(updated_doc['score'])
                             score_change = new_score - old_score
@@ -362,7 +361,6 @@ def main(mongo_db):
         if pid_has_problems:
             processed_pids += 1
     
-    # Print score change summary
     if score_changes:
         avg_change = sum(item['change'] for item in score_changes) / len(score_changes)
         max_change = max(score_changes, key=lambda x: x['change'])
@@ -373,7 +371,6 @@ def main(mongo_db):
         print(f"  Largest increase: {max_change['change']:.4f} (PID: {max_change['pid']}, Scenario: {max_change['scenario']}, DRE: {max_change['is_dre']})")
         print(f"  Largest decrease: {min_change['change']:.4f} (PID: {min_change['pid']}, Scenario: {min_change['scenario']}, DRE: {min_change['is_dre']})")
         
-        # Summarize by server type
         dre_changes = [item for item in score_changes if item['is_dre']]
         non_dre_changes = [item for item in score_changes if not item['is_dre']]
         
