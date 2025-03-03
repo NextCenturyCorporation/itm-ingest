@@ -40,7 +40,6 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
     adm_collection = mongo_db["test"]
     
     api_url = ADEPT_DRE_URL if original_doc.get('dre_server', False) else ADEPT_P1_URL
-    print(f"    Using API URL: {api_url}")
 
     original_target = target
     alt_target = normalize_target(target)
@@ -68,8 +67,6 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
             valid_probe_ids = AD_PROBES[scenario_key]
             break
     
-    if not valid_probe_ids:
-        print(f"    No valid probe IDs found for scenario {scenario} in AD_PROBES dictionary")
     
     probe_responses = []
     skipped_probes = []
@@ -108,10 +105,6 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
     print("      Probelm Probes Skipped:")
     for i, probe in enumerate(skipped_probes):
         print(f"      {i+1}. {probe}")
-    
-    print("      Probes being used in new mini-ADM:")
-    for i, probe_param in enumerate(probe_responses):
-        print(f"      {i+1}. {probe_param['probe_id']} (choice: {probe_param['choice']})")
 
    
     adept_sid = requests.post(f'{api_url}api/v1/new_session').text.replace('"', "").strip()
@@ -258,7 +251,6 @@ def main(mongo_db):
                 print(f"    Name: {adm_name}")
                 print(f"    Target: {adm_target}")
                 print(f"    ADM Author: {adm_author}")
-                print(f"    Problem Text: {problem_text}")
                 print(f"    Matched Codes: {', '.join(found_problem_codes)}")
                 
                 adm_scenario = None
@@ -289,7 +281,6 @@ def main(mongo_db):
                 # if no matches try the other target (0.8 vs 08)
                 if not dre_matching_docs and not non_dre_matching_docs:
                     alt_target = normalize_target(target_query)
-                    print(f"    Trying alternative target format: {alt_target}")
                     
                     dre_query["adm_alignment_target"] = alt_target
                     non_dre_query["adm_alignment_target"] = alt_target
@@ -300,8 +291,6 @@ def main(mongo_db):
                 all_matching_docs = dre_matching_docs + non_dre_matching_docs
                 
                 if all_matching_docs:
-                    print(f"    Found {len(all_matching_docs)} matching documents in MongoDB:")
-                    
                     for doc in all_matching_docs:
                         doc_id = doc.get('_id')
                         doc_scenario = doc.get('adm_scenario', 'N/A')
