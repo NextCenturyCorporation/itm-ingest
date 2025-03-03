@@ -104,10 +104,6 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
             if not should_skip:
                 probe_responses.append(x['parameters'])
 
-    print("      Problem Probes Skipped:")
-    for i, probe in enumerate(skipped_probes):
-        print(f"      {i+1}. {probe}")
-
    
     adept_sid = requests.post(f'{api_url}api/v1/new_session').text.replace('"', "").strip()
     
@@ -304,7 +300,6 @@ def main(mongo_db):
                                     problem_probe_ids.append(CODE_TO_PROBE_ID[code])
                         
                         # exclude problem probes
-                        print(f"      - Rerunning mini ADM without probes: {problem_probe_ids}")
                         updated_doc = mini_adm_run_fixed(
                             mongo_db, 
                             pid, 
