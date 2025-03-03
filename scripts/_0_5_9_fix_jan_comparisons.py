@@ -72,70 +72,118 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
             valid_probe_ids = AD_PROBES[scenario_key]
             break
     
-    
     probe_responses = []
-    skipped_probes = []
-    filtered_probes = []
+    io2_probe4_response = None
+    io5_probe8_response = None
+    probe_scenario_id = None
     
     for x in adm['history']:
         if x['command'] == 'Respond to TA1 Probe':
             probe_id = x['parameters']['probe_id']
-            choice = x['parameters']['choice']
+            choice_id = x['parameters']['choice']
+            probe_scenario_id = x['parameters']['scenario_id']
             
-            is_valid_probe = False
-            if probe_id in valid_probe_ids or choice in valid_probe_ids:
-                is_valid_probe = True
+            #logic from 0_5_8 for IO2 and IO5
+            if 'IO2' in scenario and (probe_id == 'Probe 4' and choice_id == 'Response 4-A' or 
+                                      probe_id == 'Probe 4-B.1' and choice_id == 'Response 4-B.1-A'):
+                io2_probe4_response = x['parameters']
+                io2_probe4_response['probe_id'] = 'Probe 4-B.1-B.1'
+                io2_probe4_response['choice'] = 'Response 4-B.1-B.1-A'
             
-            if not is_valid_probe:
-                filtered_probes.append(f"{probe_id} (choice: {choice})")
-                continue
-                
-            # skip if problem probe
+            
+            if 'IO2' in scenario and probe_id == 'Probe 4-B.1-B.1':
+                io2_probe4_response = x['parameters']
+            
+            
+            if 'IO5' in scenario and probe_id == 'Probe 8-A.1' and choice_id == 'Response 8-A.1-B':
+                io5_probe8_response = x['parameters']
+                io5_probe8_response['probe_id'] = 'Probe 8-A.1-A.1'
+                io5_probe8_response['choice'] = 'Response 8-A.1-A.1-B'
+            
+            is_valid_probe = probe_id in valid_probe_ids or choice_id in valid_probe_ids
+            
+            # Check if probe should be skipped based on problem_probes
             should_skip = False
             for problem_probe in problem_probes:
                 if isinstance(problem_probe, list):
-                    if probe_id in problem_probe or choice in problem_probe:
+                    if probe_id in problem_probe or choice_id in problem_probe:
                         should_skip = True
-                        skipped_probes.append(f"{probe_id} (choice: {choice})")
                         break
                 else:
-                    if probe_id == problem_probe or choice == problem_probe:
+                    if probe_id == problem_probe or choice_id == problem_probe:
                         should_skip = True
-                        skipped_probes.append(f"{probe_id} (choice: {choice})")
                         break
             
-            if not should_skip:
+            if is_valid_probe and not should_skip:
                 probe_responses.append(x['parameters'])
-
-   
+    
+    # 0_5_8 logic
+    if 'IO2' in scenario:
+        probe_responses.insert(0, {
+            'probe_id': 'Probe 4', 
+            'choice': 'Response 4-B', 
+            'justification': 'recalculation - forced probe', 
+            'scenario_id': probe_scenario_id
+        })
+        
+        probe_responses.insert(1, {
+            'probe_id': 'Probe 4-B.1', 
+            'choice': 'Response 4-B.1-B', 
+            'justification': 'recalculation - forced probe', 
+            'scenario_id': probe_scenario_id
+        })
+        
+        if io2_probe4_response:
+            probe_responses.insert(2, io2_probe4_response)
+    
+    if 'IO5' in scenario and io5_probe8_response:
+        probe_responses.append(2, io5_probe8_response)
+    
+    if 'MJ5' in scenario:
+        good_probes = ['Probe 2-A.1-A.1', 'Probe 2-B.1-A.1', 'Probe 2-A.1-B.1-A.1', 'Probe 2-B.1-B.1-A.1']
+        scoreless_springer_responses = ['Response 2-A.1-B', 'Response 2-A.1-B-gauze-sp']
+        scoreless_upton_responses = ['Response 2-B.1-B', 'Response 2-B.1-B-gauze-u']
+        
+        found_probe = False
+        response_to_use = None
+        
+        for probe in probe_responses:
+            if probe['probe_id'] in good_probes:
+                found_probe = True
+                break
+        
+            if probe['choice'] in scoreless_upton_responses + scoreless_springer_responses:
+                response_to_use = 'upton' if probe['choice'] in scoreless_upton_responses else 'springer'
+        
+        if not found_probe and response_to_use:
+            probe_to_add = {
+                'probe_id': 'Probe 2-A.1-A.1', 
+                'choice': 'Response 2-A.1-A.1-A' if response_to_use == 'springer' else 'Response 2-A.1-A.1-B', 
+                'justification': 'recalculation - forced probe', 
+                'scenario_id': probe_scenario_id
+            }
+            probe_responses.append(4, probe_to_add)
+    
     adept_sid = requests.post(f'{api_url}api/v1/new_session').text.replace('"', "").strip()
     
-    # send probes
-    for i, x in enumerate(probe_responses):
+    for probe in probe_responses:
         requests.post(f'{api_url}api/v1/response', json={
             "response": {
-                "choice": x['choice'],
-                "justification": x.get("justification", "justification"),
-                "probe_id": x['probe_id'],
-                "scenario_id": x['scenario_id'],
+                "choice": probe['choice'],
+                "justification": probe.get("justification", "justification"),
+                "probe_id": probe['probe_id'],
+                "scenario_id": probe['scenario_id'],
             },
             "session_id": adept_sid
         })
     
-    # depends on dre or not scoring for comparison endpoint
     is_dre = original_doc.get('dre_server', False)        
     if is_dre:
         res = requests.get(f'{api_url}api/v1/alignment/compare_sessions?session_id_1={original_doc["text_session_id"]}&session_id_2={adept_sid}')
     else:
-        target_pop_id = ""
-        
-        if 'Moral' in target:
-            target_pop_id = "ADEPT-DryRun-Moral%20judgement-Population-All"
-        else:
-            target_pop_id = "ADEPT-DryRun-Ingroup%20Bias-Population-All"
-            
+        target_pop_id = "ADEPT-DryRun-Moral%20judgement-Population-All" if 'Moral' in target else "ADEPT-DryRun-Ingroup%20Bias-Population-All"
         res = requests.get(f'{api_url}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={original_doc["text_session_id"]}&session_id_2_or_target_id={adept_sid}&target_pop_id={target_pop_id}')
-        
+    
     res_json = res.json()
     
     if res_json is not None and 'score' in res_json:
@@ -143,14 +191,13 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
         updated_doc['score'] = res_json['score']
         updated_doc['truncation_error'] = True
         updated_doc['adm_session_id'] = adept_sid
-
         return updated_doc
     else:
         print(f"    Error getting comparison score")
         if res_json:
             print(f"    Response: {res_json}")
         return None
-
+    
 def main(mongo_db):
     script_dir = Path(os.path.dirname(os.path.abspath(__file__)))
     root_dir = script_dir.parent
@@ -292,7 +339,7 @@ def main(mongo_db):
                 if all_matching_docs:
                     for doc in all_matching_docs:
                         doc_id = doc.get('_id')
-                        doc_scenario = doc.get('adm_scenario', 'N/A')
+                        doc_scenario = doc.get('adm_scenario', '')
    
                         problem_probe_ids = []
                         for code in found_problem_codes:
