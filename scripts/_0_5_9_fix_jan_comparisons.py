@@ -48,7 +48,8 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
     query = {
         'evalNumber': 5,
         'scenario': test_scenario,
-        'alignment_target': {'$in': [original_target, alt_target]}
+        'alignment_target': {'$in': [original_target, alt_target]},
+        'adm_name': adm_name
     }
     
     matching_adms = list(adm_collection.find(query))
@@ -57,9 +58,11 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
         print(f"    No matching ADM found for PID {pid}, scenario: {test_scenario}, targets: [{original_target}, {alt_target}]")
         return None
     
+    if len(matching_adms) > 1:
+        raise ValueError(f"More than one matching adm found for PID {pid}, scenario: {test_scenario}, target: {original_target}")
     adm = matching_adms[0]
     
-    # probe ids to incldue
+    # probe ids to include
     valid_probe_ids = []
     for scenario_key in AD_PROBES:
         if scenario_key in scenario:
@@ -101,18 +104,16 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
             if not should_skip:
                 probe_responses.append(x['parameters'])
 
-    print("      Probelm Probes Skipped:")
+    print("      Problem Probes Skipped:")
     for i, probe in enumerate(skipped_probes):
         print(f"      {i+1}. {probe}")
 
    
     adept_sid = requests.post(f'{api_url}api/v1/new_session').text.replace('"', "").strip()
-    print(f"    Created new ADM session: {adept_sid}")
     
-    # send proebs
+    # send probes
     for i, x in enumerate(probe_responses):
-        print(f"      Sending probe {i+1}/{len(probe_responses)}: {x['probe_id']} (choice: {x['choice']})")
-        response = requests.post(f'{api_url}api/v1/response', json={
+        requests.post(f'{api_url}api/v1/response', json={
             "response": {
                 "choice": x['choice'],
                 "justification": x.get("justification", "justification"),
@@ -293,13 +294,6 @@ def main(mongo_db):
                     for doc in all_matching_docs:
                         doc_id = doc.get('_id')
                         doc_scenario = doc.get('adm_scenario', 'N/A')
-                        current_score = doc.get('score', 'N/A')
-                        is_dre = doc.get('dre_server', False)
-                        print(f"      - Doc ID: {doc_id}")
-                        print(f"        adm_scenario: {doc_scenario}")
-                        print(f"        current score: {current_score}")
-                        print(f"        dre_server: {is_dre}")
-                        
    
                         problem_probe_ids = []
                         for code in found_problem_codes:
@@ -327,44 +321,13 @@ def main(mongo_db):
                                 {"$set": updated_doc}
                             )
                             
-                            # track score changes
-                            old_score = float(doc.get('score', 0))
-                            new_score = float(updated_doc['score'])
-                            score_change = new_score - old_score
-                            score_changes.append({
-                                'pid': pid,
-                                'scenario': doc_scenario,
-                                'old_score': old_score,
-                                'new_score': new_score,
-                                'change': score_change,
-                                'percent_change': (score_change / old_score) * 100 if old_score != 0 else 0,
-                                'is_dre': is_dre
-                            })
-                            
-                            print(f"      - Updated document with new score: {new_score}, old score: {old_score}")
                             updated_documents += 1
                 else:
                     print(f"    No matching documents found in MongoDB for this ADM")
         
         if pid_has_problems:
             processed_pids += 1
-    
-    if score_changes:
-        avg_change = sum(item['change'] for item in score_changes) / len(score_changes)
-        
-        print(f"  Average score change: {avg_change:.4f}")
-        
-        dre_changes = [item for item in score_changes if item['is_dre']]
-        non_dre_changes = [item for item in score_changes if not item['is_dre']]
-        
-        if dre_changes:
-            avg_dre_change = sum(item['change'] for item in dre_changes) / len(dre_changes)
-            print(f"  DRE server documents updated: {len(dre_changes)}, Average change: {avg_dre_change:.4f}")
-        
-        if non_dre_changes:
-            avg_non_dre_change = sum(item['change'] for item in non_dre_changes) / len(non_dre_changes)
-            print(f"  Non-DRE server documents updated: {len(non_dre_changes)}, Average change: {avg_non_dre_change:.4f}")
-            
+
     print(f"  - Found {processed_pids} participants with problem ADMs")
     print(f"  - Identified {total_problem_adms} ADMs with relevant problem codes")
     print(f"  - Updated {updated_documents} MongoDB documents")
