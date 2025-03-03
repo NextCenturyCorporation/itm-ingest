@@ -352,13 +352,8 @@ def main(mongo_db):
     
     if score_changes:
         avg_change = sum(item['change'] for item in score_changes) / len(score_changes)
-        max_change = max(score_changes, key=lambda x: x['change'])
-        min_change = min(score_changes, key=lambda x: x['change'])
         
-        print("\nScore Change Summary:")
         print(f"  Average score change: {avg_change:.4f}")
-        print(f"  Largest increase: {max_change['change']:.4f} (PID: {max_change['pid']}, Scenario: {max_change['scenario']}, DRE: {max_change['is_dre']})")
-        print(f"  Largest decrease: {min_change['change']:.4f} (PID: {min_change['pid']}, Scenario: {min_change['scenario']}, DRE: {min_change['is_dre']})")
         
         dre_changes = [item for item in score_changes if item['is_dre']]
         non_dre_changes = [item for item in score_changes if not item['is_dre']]
