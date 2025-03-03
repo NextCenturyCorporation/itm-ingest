@@ -16,7 +16,7 @@ PH1_SCENARIO_MAP = {
     "vol-ph1-eval-4": "vol-ph1-eval-4"
 }
 
-def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=False, ph1_dre_run=False):
+def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=False, ph1_dre_run=False, ADEPT_recalc=False):
     '''
     dre_ph1_run is if we are running dre data through the phase 1 server
     ph1_dre_run is if we are running phase 1 data through the dre server
@@ -56,6 +56,8 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
         doc['ph1_in_dre_server_run'] = True
     elif ph1_dre_run and evalNumber == 6:
         doc['jan_in_dre_server_run'] = True
+    if ADEPT_recalc:
+        doc['recalculation'] = True
     collection.insert_one(doc)
     return doc
 
