@@ -137,7 +137,7 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
             probe_responses.insert(2, io2_probe4_response)
     
     if 'IO5' in scenario and io5_probe8_response:
-        probe_responses.append(2, io5_probe8_response)
+        probe_responses.insert(2, io5_probe8_response)
     
     if 'MJ5' in scenario:
         good_probes = ['Probe 2-A.1-A.1', 'Probe 2-B.1-A.1', 'Probe 2-A.1-B.1-A.1', 'Probe 2-B.1-B.1-A.1']
@@ -162,7 +162,7 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
                 'justification': 'recalculation - forced probe', 
                 'scenario_id': probe_scenario_id
             }
-            probe_responses.append(4, probe_to_add)
+            probe_responses.insert(4, probe_to_add)
     
     adept_sid = requests.post(f'{api_url}api/v1/new_session').text.replace('"', "").strip()
     
