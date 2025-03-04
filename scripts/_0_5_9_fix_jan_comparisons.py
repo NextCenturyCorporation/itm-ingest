@@ -95,7 +95,7 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
                 io2_probe4_response = x['parameters']
             
             
-            if 'IO5' in scenario and probe_id == 'Probe 8-A.1' and choice_id == 'Response 8-A.1-B':
+            if 'IO5' in scenario and probe_id == 'Probe 8-A.1' and choice_id == 'Response 8-A.1-B' and 'Probe 8-A.1' not in problem_probes:
                 io5_probe8_response = x['parameters']
                 io5_probe8_response['probe_id'] = 'Probe 8-A.1-A.1'
                 io5_probe8_response['choice'] = 'Response 8-A.1-A.1-B'
