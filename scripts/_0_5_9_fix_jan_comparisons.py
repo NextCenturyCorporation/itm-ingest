@@ -84,8 +84,8 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
             probe_scenario_id = x['parameters']['scenario_id']
             
             #logic from 0_5_8 for IO2 and IO5
-            if 'IO2' in scenario and (probe_id == 'Probe 4' and choice_id == 'Response 4-A' or 
-                                      probe_id == 'Probe 4-B.1' and choice_id == 'Response 4-B.1-A'):
+            if 'IO2' in scenario and ((probe_id == 'Probe 4' and choice_id == 'Response 4-A') \
+            or (probe_id == 'Probe 4-B.1' and choice_id == 'Response 4-B.1-A')):
                 io2_probe4_response = x['parameters']
                 io2_probe4_response['probe_id'] = 'Probe 4-B.1-B.1'
                 io2_probe4_response['choice'] = 'Response 4-B.1-B.1-A'
@@ -258,8 +258,6 @@ def main(mongo_db):
         'IO4': 'DryRunEval-IO4-eval',
         'IO5': 'DryRunEval-IO5-eval'
     }
-    
-    score_changes = []
     
     for _, row in df.iterrows():
         pid = str(row['PID']) 
