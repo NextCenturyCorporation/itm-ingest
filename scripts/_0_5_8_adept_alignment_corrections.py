@@ -77,7 +77,7 @@ def correct_alignments(mongoDB, EVAL_NUMBER=4, DRE_SERVER=True):
                 elif (('DryRunEval' in scenario_id or 'adept' in scenario_id) and ('DryRunEval' in page_scenario or 'adept' in page_scenario)):
                     sys.stdout.write(f"\rComputing comparison on {scenario_id} for {pid} (entry {idx} out of {data_count})              ")
                     sys.stdout.flush()
-                    # adept requested changes to IO2, MJ5, and IO5 (details here: https://nextcentury.atlassian.net/browse/ITM-873?atlOrigin=eyJpIjoiYjFhMmQxM2Q2ZmQyNGNlOTkwM2Q3NDk4YTM2ODY2Y2IiLCJwIjoiaiJ9)
+                    # adept requested changes to IO2, MJ5, and IO5 (details here: https://nextcentury.atlassian.net/browse/ITM-873)
                     if 'IO2' not in page_scenario and 'IO5' not in page_scenario and 'MJ5' not in page_scenario:
                         continue
 
