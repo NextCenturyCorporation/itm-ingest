@@ -13,8 +13,8 @@ RUN_ALL = True  # run all files in the input directory, even if they have alread
 RUN_COMPARISON = True # run the vr/text and vr/adm comparisons, whether RUN_ALL is True or False
 RECALCULATE_COMPARISON = True
 RERUN_ADEPT_SESSIONS = False # rerun adept sessions only to get new session ids
-EVAL_NUM = 6 #5
-EVAL_NAME = 'Jan 2025 Eval' #'Phase 1 Evaluation'
+EVAL_NUM = 5
+EVAL_NAME = 'Phase 1 Evaluation'
 
 
 ADEPT_URL = config("ADEPT_URL")
@@ -1144,6 +1144,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-i', '--input_dir', dest='input_dir', type=str, help='The path to the directory where all participant files are. Required.')
     parser.add_argument('-w', '--weekly', action='store_true', dest='is_weekly', help='A flag to determine if this is a weekly run. If weekly, global variables change.')
+    parser.add_argument('-e', '--eval_num', dest='eval_num', type=int, help="The eval number to use during runtime")
     args = parser.parse_args()
     removed = []
     if not args.input_dir:
@@ -1157,6 +1158,13 @@ if __name__ == '__main__':
         RUN_COMPARISON = True 
         RECALCULATE_COMPARISON = True
         RERUN_ADEPT_SESSIONS = True
+    if args.eval_num:
+        if args.eval_num == 5:
+            EVAL_NAME = 'Phase 1 Evaluation'
+            EVAL_NUM = 5
+        if args.eval_num == 6:
+            EVAL_NAME = 'Jan 2025 Eval'
+            EVAL_NUM = 6
     # instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
