@@ -11,12 +11,12 @@ if __name__ == '__main__':
     db = client.dashboard
 
     # run 'weekly' version of probe matcher
-    os.system('python3 ph1_probe_matcher.py -i ph1_sim_files -w')
+    os.system('python3 ph1_probe_matcher.py -i ph1_sim_files -w -e 5')
 
     # run script that compares humans to adms (RQ1/3/4 column Alignment score (Del|ADM))
     # RQ 5 Alignment score (Participant|ADM (most, least))
-    compare_probes(db, 4, True)
-    compare_probes(db, 5, True)
+    # compare_probes(db, 4, True)
+    # compare_probes(db, 5, True)
 
     # run matching script (RQ5 columns Match_MostAligned and Match_LeastAligned)
-    find_matching_probe_percentage(db, 5)
+    # find_matching_probe_percentage(db, 5)
