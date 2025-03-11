@@ -39,7 +39,7 @@ def normalize_target(target):
     return target
 
 def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes, original_doc):
-    adm_collection = mongo_db["test"]
+    adm_collection = mongo_db["admTargetRuns"]
     
     api_url = ADEPT_DRE_URL if original_doc.get('dre_server', False) else ADEPT_P1_URL
 

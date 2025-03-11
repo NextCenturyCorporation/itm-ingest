@@ -401,7 +401,7 @@ def main():
 
     ## ADM RESPONSES    
     # only use metrics eval adms
-    adms = db['test'].find({'evalNumber': 3})
+    adms = db['admTargetRuns'].find({'evalNumber': 3})
     added = 0
     for document in adms:
         medic_data = set_medic_from_adm(document, template, medic_mongo_collection, db)

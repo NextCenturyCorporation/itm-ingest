@@ -5,7 +5,7 @@ ST_URL = config("ST_URL")
 
 
 def main(mongoDB):
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     adms_to_update = adm_collection.find({"evalNumber": 5})
 
     # Rerun ST sessions 

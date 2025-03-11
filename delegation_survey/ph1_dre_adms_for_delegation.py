@@ -927,7 +927,7 @@ def main():
 
     ## ADM RESPONSES    
     # only use metrics eval adms
-    adms = db['test'].find({'evaluation.evalNumber': "4" if EVAL == 4 else "5"})
+    adms = db['admTargetRuns'].find({'evaluation.evalNumber': "4" if EVAL == 4 else "5"})
     if DELETE_MONGO:
         db['admMedics'].delete_many({'evalNumber': 4 if EVAL == 4 else 5})
     added = 0

@@ -40,7 +40,7 @@ def main(mongoDB):
         adm_history["evalNumber"] = 3
         adm_history["evalName"] = "Metrics Evaluation"
 
-        test_collection = mongoDB["test"]
+        test_collection = mongoDB["admTargetRuns"]
         test_collection.insert_one(adm_history)
 
     print("Finished loading ADM files")

@@ -1175,7 +1175,7 @@ if __name__ == '__main__':
         text_scenario_collection = db['userScenarioResults']
         delegation_collection = db['surveyResults']
         medic_collection = db['admMedics']
-        adm_collection = db["test"]
+        adm_collection = db["admTargetRuns"]
         mini_adms_collection = db['delegationADMRuns']
     participant_log_collection = db['participantLog']
 

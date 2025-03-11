@@ -144,7 +144,7 @@ def update_sim_kdmas(mongoDB):
 
 
 def update_adm_kdmas(mongoDB):
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     adms_to_update = adm_collection.find({"evalNumber": 5})
 
     for adm in adms_to_update:

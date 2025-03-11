@@ -3,7 +3,7 @@ import utils.db_utils as db_utils
 def main(mongoDB, EVAL_NUMBER=4):
     text_scenario_collection = mongoDB['userScenarioResults']
     match_collection = mongoDB['admVsTextProbeMatches']
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
 
     data_to_use = text_scenario_collection.find(
         {"evalNumber": EVAL_NUMBER}

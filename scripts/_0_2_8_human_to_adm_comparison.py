@@ -40,7 +40,7 @@ def main(mongoDB, EVAL_NUMBER=4, run_new_only=False, ignore_ST=False):
     if not run_new_only:
         comparison_collection.delete_many({'evalNumber': EVAL_NUMBER})
     medic_collection = mongoDB['admMedics']
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
 
     data_to_use = text_scenario_collection.find(

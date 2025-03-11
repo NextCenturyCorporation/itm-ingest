@@ -6,7 +6,7 @@ DRE_URL = config("ADEPT_DRE_URL")
 
 def main(mongoDB):
     '''Populates the DRE server with ALL ADEPT adms'''
-    all_adms = mongoDB['test']
+    all_adms = mongoDB['admTargetRuns']
     adept_adms = all_adms.find({'evalNumber': 5, 'scenario': {'$regex': 'DryRunEval'}})
 
     for adm in adept_adms:
