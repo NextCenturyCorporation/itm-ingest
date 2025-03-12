@@ -6,7 +6,7 @@ import json, copy, os, yaml
 from logger import LogLevel, Logger
 
 '''
-Gets all of the dre (eval #4) ADMs from the 'test' collection in mongo.
+Gets all of the dre (eval #4) ADMs from the 'admTargetRuns' collection in mongo.
 Gets all the data required from those datasets to add to the survey.
 Pushes each individual adm to the admMedics collection in mongo.
 '''
