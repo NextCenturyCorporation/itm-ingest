@@ -52,7 +52,7 @@ def main(db):
 
                 # find adm alignment
                 medic_collection = db['admMedics']
-                adm_collection = db["test"]
+                adm_collection = db["admTargetRuns"]
                 adm = db_utils.find_adm_from_medic(6, medic_collection, adm_collection, pageName, page['scenarioIndex'].replace('IO', 'MJ'), res)
                 if adm is None:
                     print('Could not find adm')
@@ -141,7 +141,7 @@ def send_JAN_to_DRE(mongoDB, EVAL_NUMBER=6):
     comparison_collection = mongoDB['humanToADMComparison']
     comparison_collection.delete_many({"evalNumber": 6, "dre_server": True})
     medic_collection = mongoDB['admMedics']
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
     del_adm_runs_collection.delete_many({"jan_in_dre_server_run": True})
 

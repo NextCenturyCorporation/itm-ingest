@@ -31,7 +31,7 @@ def correct_alignments(mongoDB, EVAL_NUMBER=4, DRE_SERVER=True):
     text_scenario_collection = mongoDB['userScenarioResults']
     delegation_collection = mongoDB['surveyResults']
     medic_collection = mongoDB['admMedics']
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
     comparisons = mongoDB['humanToADMComparison']
 

@@ -6,7 +6,7 @@ to_remove = [
 ]
 
 def main(mongo_db):
-    adm_collection = mongo_db['test']
+    adm_collection = mongo_db['admTargetRuns']
     eval_5_adms = adm_collection.find({"evalNumber": 5})
     
     delete_count = 0

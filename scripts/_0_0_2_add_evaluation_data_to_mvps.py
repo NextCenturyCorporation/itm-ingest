@@ -14,7 +14,7 @@ def main(mongoDB):
 
     print("All scenarios updated with eval information")
 
-    test_collection = mongoDB["test"]
+    test_collection = mongoDB["admTargetRuns"]
     all_test_records = test_collection.find({})
 
     for test_record in all_test_records:

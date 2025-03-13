@@ -6,7 +6,7 @@ import json, copy, os, yaml
 from logger import LogLevel, Logger
 
 '''
-Gets all of the metrics eval (eval #3) ADMs from the 'test' collection in mongo.
+Gets all of the metrics eval (eval #3) ADMs from the 'admTargetRuns' collection in mongo.
 Gets all the data required from those datasets to add to the survey.
 Pushes each individual adm to the admMedics collection in mongo.
 '''
@@ -401,7 +401,7 @@ def main():
 
     ## ADM RESPONSES    
     # only use metrics eval adms
-    adms = db['test'].find({'evalNumber': 3})
+    adms = db['admTargetRuns'].find({'evalNumber': 3})
     added = 0
     for document in adms:
         medic_data = set_medic_from_adm(document, template, medic_mongo_collection, db)

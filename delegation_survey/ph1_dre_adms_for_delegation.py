@@ -6,7 +6,7 @@ import json, copy, os, yaml
 from logger import LogLevel, Logger
 
 '''
-Gets all of the dre (eval #4) ADMs from the 'test' collection in mongo.
+Gets all of the dre (eval #4) ADMs from the 'admTargetRuns' collection in mongo.
 Gets all the data required from those datasets to add to the survey.
 Pushes each individual adm to the admMedics collection in mongo.
 '''
@@ -927,7 +927,7 @@ def main():
 
     ## ADM RESPONSES    
     # only use metrics eval adms
-    adms = db['test'].find({'evaluation.evalNumber': "4" if EVAL == 4 else "5"})
+    adms = db['admTargetRuns'].find({'evaluation.evalNumber': "4" if EVAL == 4 else "5"})
     if DELETE_MONGO:
         db['admMedics'].delete_many({'evalNumber': 4 if EVAL == 4 else 5})
     added = 0

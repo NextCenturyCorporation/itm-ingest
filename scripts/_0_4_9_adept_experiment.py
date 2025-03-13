@@ -69,7 +69,7 @@ def update_surveys_with_opposite_server(EVAL_NUMBER, db):
 
                 # find adm alignment
                 medic_collection = db['admMedics']
-                adm_collection = db["test"]
+                adm_collection = db["admTargetRuns"]
                 adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, pageName, page['scenarioIndex'].replace('IO', 'MJ'), res)
                 if adm is None:
                     print('Could not find adm')
@@ -168,7 +168,7 @@ def send_PH1_to_DRE(mongoDB, EVAL_NUMBER=5):
     comparison_collection = mongoDB['humanToADMComparison']
     comparison_collection.delete_many({"dre_server": True})
     medic_collection = mongoDB['admMedics']
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     del_adm_runs_collection = mongoDB['delegationADMRuns']
     del_adm_runs_collection.delete_many({"ph1_in_dre_server_run": True})
     # remove ph1 session ids for fresh start

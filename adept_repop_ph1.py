@@ -66,7 +66,7 @@ def main(mongoDB, run_adms=True):
     text_scenario_collection = mongoDB['userScenarioResults']
     text_scenario_to_update = text_scenario_collection.find({"evalNumber": 5})
     survey_collection = mongoDB['surveyResults']
-    adm_collection = mongoDB["test"]
+    adm_collection = mongoDB["admTargetRuns"]
     adms_to_update = adm_collection.find({"evalNumber": 5})
     mini_adms = mongoDB['delegationADMRuns']
     mini_adms.delete_many({"evalNumber": 5})

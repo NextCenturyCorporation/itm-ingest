@@ -1,5 +1,5 @@
 def main(mongoDB):
-    results_collection = mongoDB['test']
+    results_collection = mongoDB['admTargetRuns']
 
     adm_names_to_remove = [
         "TAD-baseline",

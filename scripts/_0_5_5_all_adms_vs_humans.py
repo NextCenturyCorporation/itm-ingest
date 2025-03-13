@@ -40,7 +40,7 @@ def find_all_comparisons(mongo_db, writer, eval_num):
     print(f'\n\033[36mStarting comparison-finding for eval {eval_num}\033[0m', flush=True)
     ADEPT_URL = config('ADEPT_DRE_URL') # we only use DRE comparisons for ADEPT
     ST_URL = config("ST_URL") if eval_num != 4 else config('ST_DRE_URL')
-    adms = mongo_db['test']
+    adms = mongo_db['admTargetRuns']
     text_scenarios = mongo_db['userScenarioResults']
     comparisons = mongo_db['humanToADMComparison']
     matches_collection = mongo_db['admVsTextProbeMatches']

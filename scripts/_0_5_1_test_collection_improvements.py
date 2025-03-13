@@ -1,5 +1,5 @@
 def main(mongo_db):
-    test_collection = mongo_db['test']
+    test_collection = mongo_db['admTargetRuns']
     tests = test_collection.find({})
     updated_count = 0
     for test in tests:
