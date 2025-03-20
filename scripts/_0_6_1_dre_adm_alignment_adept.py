@@ -16,12 +16,19 @@ def main(mongoDB):
         history = adm['history']
         dre_session_id = history[-1]['parameters'].get('dreSessionId')
         target = adm["alignment_target"]
+        if "-Group-" in target:
+            continue
         if dre_session_id is None:
             print(f'Error getting dre session id from {adm["adm_name"]} - {adm["scenario"]} - {target}')
             continue
         
         # dre version of alignment score
         alignment = requests.get(f'{DRE_URL}api/v1/alignment/session?session_id={dre_session_id}&target_id={target}&population=false').json()
+
+        if 'score' not in alignment:
+            print(f'Error getting dre alignment from {adm["adm_name"]} - {adm["scenario"]} - {target} with dre session id {dre_session_id}')
+            continue
+        
         
         history[-1]['response']['dre_alignment'] = alignment
         all_adms.update_one({'_id': adm['_id']}, {'$set': {'history': history}})
