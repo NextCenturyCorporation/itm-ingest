@@ -189,6 +189,7 @@ def mini_adm_run_fixed(mongo_db, pid, scenario, adm_name, target, problem_probes
     if res_json is not None and 'score' in res_json:
         updated_doc = original_doc.copy()
         updated_doc['score'] = res_json['score']
+        print('hit truncation error update')
         updated_doc['truncation_error'] = True
         updated_doc['adm_session_id'] = adept_sid
         return updated_doc
