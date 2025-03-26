@@ -61,10 +61,10 @@ def main(mongo_db):
             group_count += 1
         adm_groups[adm_name][target_id].append(adm)
 
+    completed_groups = 0
     for adm_name in adm_groups:
-        for idx, target_id in enumerate(adm_groups[adm_name]):
-            sys.stdout.write(f"\rAnalyzing ADM group {idx} of {group_count}              ")
-            sys.stdout.flush()
+        for target_id in adm_groups[adm_name]:
+            sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count}")
             target_mj = -1
             target_io = -1
             # get mj/io kdma target values to find matching human(s)
@@ -108,6 +108,8 @@ def main(mongo_db):
                     history = adm['history']
                     
                     # get kdmas and averages for each scenario
+                    sys.stdout.flush()
+                    sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get adm kdmas")
                     mj_kdma = kdmas[0]['value'] if kdmas[0]['kdma'] == 'Moral judgement' else kdmas[1]['value']
                     io_kdma = kdmas[1]['value'] if kdmas[1]['kdma'] == 'Ingroup Bias' else kdmas[0]['value']
                     scenario = history[-1]['response']['alignment_source'][0]['scenario_id']
@@ -120,6 +122,8 @@ def main(mongo_db):
                     io_kdma_count += 1
 
                     # send ADMs to DRE server
+                    sys.stdout.flush()
+                    sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - send adms to dre server            ")
                     adm_session_id = create_dre_adm_session(adm, all_adms)
                     # get session id from dre server for text
                     text_session_id = None
@@ -130,10 +134,15 @@ def main(mongo_db):
                             print(f'Error getting dre session id for {match["pid"]}')
                     # if 'narr' or 'train', create new session id, send to dre endpoint AND STORE
                     else:
+                        sys.stdout.flush()
+                        sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get individual text kdmas        ")
                         text_session_id = get_individual_text_session_id(mongo_db, match['pid'], match['type'])
                         if text_session_id is None:
                             print(f'Error getting individual dre session id for {match["pid"]} ({match["type"]})')
                     # get the comparison between the human and adm
+                    sys.stdout.flush()
+                    sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get comparison (text|adm)       ")
+                    sys.stdout.flush()
                     res = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={text_session_id}&session_id_2={adm_session_id}').json()
                     # store comparison in correct spot using {scenario_id} like lines 104-105
                     if 'score' in res:
@@ -150,6 +159,8 @@ def main(mongo_db):
                 new_doc['ave_align'] = align_sum / max(1, align_count)
 
                 multi_kdmas.insert_one(new_doc)
+            completed_groups += 1
+            sys.stdout.flush()
 
 
     print("Multi-KDMA Data collection has been created and populated.")
