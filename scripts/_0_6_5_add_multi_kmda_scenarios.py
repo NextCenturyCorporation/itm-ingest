@@ -22,3 +22,23 @@ def main(mongo_db):
     print("Finished loading ADEPT Multi-kdma scenario files.")
     
     test_mod(mongo_db)
+
+    # remove test data leaked into p1
+    adm_target_runs = mongo_db["admTargetRuns"]
+    
+    adm_names_to_delete = [
+        "ALIGN-ADM-ComparativeRegression-ADEPT__b3da51ed-57ff-429b-8ae8-6ff9dc44b65d",
+        "itm-893test",
+        "itm-893test2",
+        "ALIGN-ADM-RelevanceComparativeRegression-ADEPT__025ec10e-92fe-4db6-9502-3217868d0cdd"
+    ]
+    
+    delete_query = {
+        "evalNumber": 5,
+        "adm_name": {"$in": adm_names_to_delete}
+    }
+
+    # goodbye
+    result = adm_target_runs.delete_many(delete_query)
+    
+    print(f"Deleted {result.deleted_count} test documents from admTargetRuns collection")
