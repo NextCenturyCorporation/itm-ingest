@@ -1,9 +1,10 @@
 import os
 import yaml
-
+from scripts._0_5_1_test_collection_improvements import main as test_mod
 SCENARIOS_FOLDER = 'multi-kdma/scenarios'
 
 def main(mongo_db):
+    
     files = [f for f in os.listdir(SCENARIOS_FOLDER)]
     files.sort()
 
@@ -19,3 +20,5 @@ def main(mongo_db):
             print("Loaded scenario: " + name)
 
     print("Finished loading ADEPT Multi-kdma scenario files.")
+    
+    test_mod(mongo_db)
