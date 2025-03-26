@@ -1,5 +1,5 @@
 from decouple import config 
-import requests, os, csv
+import requests, os, csv, sys
 import utils.db_utils as db_utils
 
 ADEPT_DRE_URL = config("ADEPT_DRE_URL")
@@ -46,6 +46,7 @@ def main(mongo_db):
 
     # an "adm group" consists of 3 adms with the same name and target - one for each ADEPT scenario
     adm_groups = {}
+    group_count = 0
 
     # generate the adm groups, organized by adm_name, then target_id
     for adm in adept_adms:
@@ -57,10 +58,13 @@ def main(mongo_db):
             adm_groups[adm_name] = {}
         if target_id not in adm_groups[adm_name]:
             adm_groups[adm_name][target_id] = []
+            group_count += 1
         adm_groups[adm_name][target_id].append(adm)
 
     for adm_name in adm_groups:
-        for target_id in adm_groups[adm_name]:
+        for idx, target_id in enumerate(adm_groups[adm_name]):
+            sys.stdout.write(f"\rAnalyzing ADM group {idx} of {group_count}              ")
+            sys.stdout.flush()
             target_mj = -1
             target_io = -1
             # get mj/io kdma target values to find matching human(s)
