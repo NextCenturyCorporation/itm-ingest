@@ -1,7 +1,7 @@
 import os
 import yaml
 from scripts._0_5_1_test_collection_improvements import main as test_mod
-SCENARIOS_FOLDER = 'multi-kdma/scenarios'
+SCENARIOS_FOLDER = 'phase1/scenarios'
 
 def main(mongo_db):
     
@@ -9,15 +9,16 @@ def main(mongo_db):
     files.sort()
 
     for file in files:
-        name = os.path.join(SCENARIOS_FOLDER, file)
-        with open(name) as f: 
-            yaml_obj = yaml.safe_load(f)
-            yaml_obj["evalNumber"] = 7
-            yaml_obj["evalName"] = "Multi-kdma Experiment"
+        if 'adept' in file.lower():
+            name = os.path.join(SCENARIOS_FOLDER, file)
+            with open(name) as f: 
+                yaml_obj = yaml.safe_load(f)
+                yaml_obj["evalNumber"] = 7
+                yaml_obj["evalName"] = "Multi-kdma Experiment"
 
-            scenarios_collection = mongo_db["scenarios"]
-            scenarios_collection.insert_one(yaml_obj)
-            print("Loaded scenario: " + name)
+                scenarios_collection = mongo_db["scenarios"]
+                scenarios_collection.insert_one(yaml_obj)
+                print("Loaded scenario: " + name)
 
     print("Finished loading ADEPT Multi-kdma scenario files.")
     
