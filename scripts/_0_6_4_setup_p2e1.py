@@ -1,6 +1,7 @@
 from decouple import config 
 import requests, os, csv, sys
 import utils.db_utils as db_utils
+from scripts._0_5_3_jan_eval_to_dre_server import main as update_dre_server
 
 ADEPT_DRE_URL = config("ADEPT_DRE_URL")
 
@@ -24,6 +25,8 @@ def main(mongo_db):
     Also calculates the comparison alignment between the human who generated the target 
     and the adm run against that "synthetic" target
     '''
+    # run the jan_eval_to_dre_server script to make sure all jan eval text sessions have been sent to the dre server
+    update_dre_server(mongo_db)
     # run the dev script to get text. store in list for easy indexing
     os.system('python3 dev_scripts/get_text_kdmas.py')
     f = open('text_kdmas.csv', 'r', encoding='utf-8')
