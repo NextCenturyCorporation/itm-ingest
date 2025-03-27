@@ -34,7 +34,8 @@ def main(mongo_db):
     header = next(reader)
     text_kdmas = []
     for line in reader:
-        text_kdmas.append(line)
+        if len(line) > 2:  # Skip blank lines
+            text_kdmas.append(line)
     # clean up csv file
     f.close()
     os.remove('text_kdmas.csv')
