@@ -114,6 +114,7 @@ def main(mongo_db):
                     # get kdmas and averages for each scenario
                     sys.stdout.flush()
                     sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get adm kdmas")
+                    kdmas = history[-1]['response']['kdma_values']
                     mj_kdma = kdmas[0]['value'] if kdmas[0]['kdma'] == 'Moral judgement' else kdmas[1]['value']
                     io_kdma = kdmas[1]['value'] if kdmas[1]['kdma'] == 'Ingroup Bias' else kdmas[0]['value']
                     scenario = history[-1]['response']['alignment_source'][0]['scenario_id']
