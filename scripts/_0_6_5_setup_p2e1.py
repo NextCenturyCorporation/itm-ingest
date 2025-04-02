@@ -72,19 +72,20 @@ def main(mongo_db):
             target_mj = -1
             target_io = -1
             # get mj/io kdma target values to find matching human(s)
-            unique_matching_lines = []
+            matching_lines = []
             for entry in adm_groups[adm_name][target_id][0]['history']:
                 if entry['command'] == 'Alignment Target':
                     target_mj = entry['response']['kdma_values'][0]['value']
                     target_io = entry['response']['kdma_values'][1]['value']
-                    unique_matching_lines = get_humans_with_kdmas(text_kdmas, header, target_mj, target_io, mongo_db)
+                    matching_lines = get_humans_with_kdmas(text_kdmas, header, target_mj, target_io, mongo_db)
                     break
 
             # run the comparison for all unique entries
-            for match in unique_matching_lines:
+            for match in matching_lines:
                 new_doc = {
                     'admName': adm_name, 
                     'evalNumber': 7,
+                    'pid': match['pid'],
                     'humanScenario': match['scenario'], 
                     'targetType': match['type'],
                     'mjTarget': float(target_mj), 
@@ -177,7 +178,7 @@ def get_humans_with_kdmas(text_kdmas, kdma_header, mj, io, mongo_db):
     Returns a list of objects containing pids, their scenarios, the session type, 
     and session ids that match.
     There may be more than one matching entry for this kdma set.
-    Ignore the ones with the same scenario and type (narr, eval, overall) 
+    Return all.
     '''
     text_scenarios = mongo_db['userScenarioResults']
     matches = []
@@ -193,20 +194,13 @@ def get_humans_with_kdmas(text_kdmas, kdma_header, mj, io, mongo_db):
             ]})
             kdma_type = line[kdma_header.index('Type')]
             scenario = matching_scenario['scenario_id']
-            # make sure only unique matches appear in the output (no two with the same type and same scenario)
-            duplicate = False
-            for match in matches:
-                if match['type'] == kdma_type and match['scenario'] == scenario:
-                    duplicate = True
-                    break
-            if not duplicate:
-                # kdmas did not change between ph1 and dre servers, so just stick with dre session ids because that's the comparison endpoint we're using
-                matches.append({
-                    'pid': pid,
-                    'type': kdma_type,
-                    'scenario': scenario,
-                    'dreCombinedSession': matching_scenario.get('dreSessionId', matching_scenario.get('combinedSessionId'))
-                    })
+            # kdmas did not change between ph1 and dre servers, so just stick with dre session ids because that's the comparison endpoint we're using
+            matches.append({
+                'pid': pid,
+                'type': kdma_type,
+                'scenario': scenario,
+                'dreCombinedSession': matching_scenario.get('dreSessionId', matching_scenario.get('combinedSessionId'))
+                })
     # this should never happen
     if len(matches) == 0:
         print(f'WARNING: Could not find match for MJ={mj}, IO={io}')
