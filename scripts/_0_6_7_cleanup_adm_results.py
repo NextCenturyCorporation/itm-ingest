@@ -1,7 +1,12 @@
+from scripts._0_5_1_test_collection_improvements import main as test_mod
+
 remove_adm = 'ALIGN-ADM-RelevanceComparativeRegression-ADEPT__4e570b6d-8f9e-4e3c-8d0f-ffcde73a5792'
 relevance = 'ALIGN-ADM-RelevanceComparativeRegression-ADEPT'
 comparative = 'ALIGN-ADM-ComparativeRegression-ADEPT'
+baseline = 'ALIGN-ADM-OutlinesBaseline-ADEPT'
+
 def main(mongo_db):
+    test_mod(mongo_db)
     adm_collection = mongo_db['admTargetRuns']
     eval_7_adms = adm_collection.find({'evalNumber': 7})
 
@@ -21,6 +26,11 @@ def main(mongo_db):
                 {'_id': adm['_id']},
                 {'$set': {'adm_name': comparative}}
             )
+        elif baseline in adm['adm_name']:
+            adm_collection.update_one(
+                {'_id': adm['_id']},
+                {'$set': {'adm_name': baseline}}
+            )
         
         # go through history and clean adm names
         for i, history_entry in enumerate(adm['history']):
@@ -38,6 +48,13 @@ def main(mongo_db):
                             {'_id': adm['_id']},
                             {'$set': {update_field: comparative}}
                         )
+                    elif baseline in param_adm_name:
+                        update_field = f'history.{i}.parameters.adm_name'
+                        adm_collection.update_one(
+                            {'_id': adm['_id']},
+                            {'$set': {update_field: baseline}}
+                        )
+                        
     multi_kdma_collect = mongo_db['multiKdmaData']
     multi_kdma_collect.delete_many({'admName': remove_adm})
     multi_kdma_docs = multi_kdma_collect.find({})
@@ -53,4 +70,8 @@ def main(mongo_db):
                     {'_id': doc['_id']},
                     {'$set': {'admName': comparative}}
                 )
-        
+            elif baseline in doc['admName']:
+                multi_kdma_collect.update_one(
+                    {'_id': doc['_id']},
+                    {'$set': {'admName': baseline}}
+                )
