@@ -92,7 +92,7 @@ def main(mongo_db):
         sys.stdout.flush()
         if 'distance_based_score' in adm['history'][-1]['response']:
             continue
-        alignment = requests.get(f'{SERVER_URL}api/v1/alignment/session?session_id={adm['history'][-1]['parameters']['session_id']}&target_id={adm['alignment_target']}&population=false').json()
+        alignment = requests.get(f"{SERVER_URL}api/v1/alignment/session?session_id={adm['history'][-1]['parameters']['session_id']}&target_id={adm['alignment_target']}&population=false").json()
         adm['history'][-1]['response']['distance_based_score'] = alignment['score']
         adm_collection.update_one({'_id': adm['_id']}, {'$set': adm})
     
