@@ -1,9 +1,8 @@
 from decouple import config 
 import requests, os, csv, sys
 import utils.db_utils as db_utils
-from scripts._0_5_3_jan_eval_to_dre_server import main as update_dre_server
 
-ADEPT_DRE_URL = config("ADEPT_DRE_URL")
+ADEPT_URL = config("ADEPT_URL")
 
 SCENARIO_MAP = {
     'DryRunEval-MJ2-eval': 'AD1',
@@ -25,8 +24,7 @@ def main(mongo_db):
     Also calculates the comparison alignment between the human who generated the target 
     and the adm run against that "synthetic" target
     '''
-    # run the jan_eval_to_dre_server script to make sure all jan eval text sessions have been sent to the dre server
-    update_dre_server(mongo_db)
+
     # run the dev script to get text. store in list for easy indexing
     os.system('python3 dev_scripts/get_text_kdmas.py')
     f = open('text_kdmas.csv', 'r', encoding='utf-8')
@@ -46,7 +44,8 @@ def main(mongo_db):
     multi_kdmas.drop()
 
     all_adms = mongo_db['admTargetRuns']
-    adept_adms = all_adms.find({'evalNumber': 7})
+    # do not get baseline adms - that is handled in _0_6_9
+    adept_adms = all_adms.find({'evalNumber': 7, 'adm_name': {'$ne': 'ALIGN-ADM-OutlinesBaseline-ADEPT'}})
 
     # an "adm group" consists of 3 adms with the same name and target - one for each ADEPT scenario
     adm_groups = {}
@@ -127,29 +126,28 @@ def main(mongo_db):
                     mj_kdma_count += 1
                     io_kdma_count += 1
 
-                    # send ADMs to DRE server
                     sys.stdout.flush()
-                    sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - send adms to dre server            ")
-                    adm_session_id = create_dre_adm_session(adm, all_adms)
-                    # get session id from dre server for text
+                    sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count}                                          ")
+                    adm_session_id = history[-1]['parameters']['session_id']
+                    # get session id from ph1 server for text
                     text_session_id = None
                     # if 'overall', use session id from the match 
                     if match['type'] == 'overall':
-                        text_session_id = match['dreCombinedSession']
+                        text_session_id = match['ph1CombinedSession']
                         if text_session_id is None:
-                            print(f'Error getting dre session id for {match["pid"]}')
-                    # if 'narr' or 'train', create new session id, send to dre endpoint AND STORE
+                            print(f'Error getting ph1 session id for {match["pid"]}')
+                    # if 'narr' or 'train', create new session id, send to ph1 endpoint AND STORE
                     else:
                         sys.stdout.flush()
                         sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get individual text kdmas        ")
                         text_session_id = get_individual_text_session_id(mongo_db, match['pid'], match['type'])
                         if text_session_id is None:
-                            print(f'Error getting individual dre session id for {match["pid"]} ({match["type"]})')
+                            print(f'Error getting individual ph1 session id for {match["pid"]} ({match["type"]})')
                     # get the comparison between the human and adm
                     sys.stdout.flush()
                     sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get comparison (text|adm)       ")
                     sys.stdout.flush()
-                    res = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={text_session_id}&session_id_2={adm_session_id}').json()
+                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={text_session_id}&session_id_2={adm_session_id}').json()
                     # store comparison in correct spot using {scenario_id} like lines 104-105
                     if 'score' in res:
                         new_doc[f'{scenario_id}_align'] = res['score']
@@ -169,7 +167,7 @@ def main(mongo_db):
             sys.stdout.flush()
 
 
-    print("Multi-KDMA Data collection has been created and populated.")
+    print("\nMulti-KDMA Data collection has been created and populated.")
         
 
 def get_humans_with_kdmas(text_kdmas, kdma_header, mj, io, mongo_db):
@@ -194,12 +192,12 @@ def get_humans_with_kdmas(text_kdmas, kdma_header, mj, io, mongo_db):
             ]})
             kdma_type = line[kdma_header.index('Type')]
             scenario = matching_scenario['scenario_id']
-            # kdmas did not change between ph1 and dre servers, so just stick with dre session ids because that's the comparison endpoint we're using
+            # use ph1 session ids because that's the comparison endpoint we're using
             matches.append({
                 'pid': pid,
                 'type': kdma_type,
                 'scenario': scenario,
-                'dreCombinedSession': matching_scenario.get('dreSessionId', matching_scenario.get('combinedSessionId'))
+                'ph1CombinedSession': matching_scenario.get('ph1SessionId', matching_scenario.get('combinedSessionId'))
                 })
     # this should never happen
     if len(matches) == 0:
@@ -208,30 +206,9 @@ def get_humans_with_kdmas(text_kdmas, kdma_header, mj, io, mongo_db):
     return matches
 
 
-def create_dre_adm_session(adm, adm_collection):
-    '''
-    Takes in an adm and sends the probes to the DRE server, storing the 
-    session id back in the database (and returning it)
-    '''
-    history = adm['history']
-    dre_session_id = history[-1]['parameters'].get('dreSessionId')
-    if dre_session_id is not None:
-        return dre_session_id
-    # start new adept session
-    adept_sid = requests.post(f'{ADEPT_DRE_URL}api/v1/new_session').text.replace('"', '').strip()
-    probe_responses = []
-    for x in history:
-        if x['command'] == 'Respond to TA1 Probe':
-            probe_responses.append(x['parameters'])
-    send_probes(probe_responses, adept_sid)
-    history[-1]['parameters']['dreSessionId'] = adept_sid
-    adm_collection.update_one({'_id': adm['_id']}, {'$set': {'history': history}})
-    return adept_sid
-
-
 def send_probes(probe_responses, adept_sid):
     for x in probe_responses:
-        requests.post(f'{ADEPT_DRE_URL}api/v1/response', json={
+        requests.post(f'{ADEPT_URL}api/v1/response', json={
             "response": {
                 "choice": x['choice'],
                 "justification": x["justification"],
@@ -265,17 +242,17 @@ def get_individual_text_session_id(mongo_db, pid, type='narr'):
     for e in entries:
         scenario = e['scenario_id']
         if type == 'train' and ('IO1' in scenario or 'MJ1' in scenario or 'train' in scenario):
-            if 'dreTrainId' in e:
-                return e['dreTrainId']
+            if 'ph1TrainId' in e:
+                return e['ph1TrainId']
             entries_to_use.append(e)
         if type == 'narr' and ('MJ2' in scenario or 'MJ4' in scenario or 'MJ5' in scenario):
-            if 'dreNarrId' in e:
-                return e['dreNarrId']
+            if 'ph1NarrId' in e:
+                return e['ph1NarrId']
             entries_to_use.append(e)
 
 
     # send all probes from that scenario to the server
-    adept_sid = requests.post(f'{ADEPT_DRE_URL}api/v1/new_session').text.replace('"', '').strip()
+    adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
     for entry in entries_to_use:
         probes = []
         for k in entry:
@@ -295,11 +272,11 @@ def get_individual_text_session_id(mongo_db, pid, type='narr'):
                             print('could not find response in mapping!', response, list(mapping.keys()))
         # send probes to server
         scenario = PH1_TO_DRE_MAP[entry['scenario_id']] if entry['scenario_id'] in PH1_TO_DRE_MAP else entry['scenario_id']
-        db_utils.send_probes(f'{ADEPT_DRE_URL}api/v1/response', probes, adept_sid, scenario)
-        # store new individual session id (dre) in the database
+        db_utils.send_probes(f'{ADEPT_URL}api/v1/response', probes, adept_sid, scenario)
+        # store new individual session id (ph1) in the database
         if type == 'narr':
-            text_scenarios.update_one({'_id': entry['_id']}, {'$set': {'dreNarrId': adept_sid}})
+            text_scenarios.update_one({'_id': entry['_id']}, {'$set': {'ph1NarrId': adept_sid}})
         else:
-            text_scenarios.update_one({'_id': entry['_id']}, {'$set': {'dreTrainId': adept_sid}})
+            text_scenarios.update_one({'_id': entry['_id']}, {'$set': {'ph1TrainId': adept_sid}})
 
     return adept_sid
