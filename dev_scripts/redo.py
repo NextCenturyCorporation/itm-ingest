@@ -2,15 +2,16 @@ import sys
 import importlib.util
 import os
 import traceback
+import re
 from pymongo import MongoClient
 from decouple import config
 
 def run_script(version_number):
 
-    if isinstance(version_number, int):
-        version_number = f"{version_number:03d}"
-    else:
-        version_number = version_number.zfill(3)
+    if not re.match(r'^\d{3}$', version_number):
+        print(f"Error: '{version_number}' is invalid. Script number must be exactly 3 digits.")
+        print("Example: 067 (not 67 or 0067)")
+        return
     
     major = version_number[0]
     minor = version_number[1]
