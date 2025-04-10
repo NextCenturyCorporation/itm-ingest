@@ -1,6 +1,6 @@
 from decouple import config 
 import requests
-from adept_repop_ph1 import SCENARIO_MAP
+from dev_scripts.adept_repop_ph1 import SCENARIO_MAP
 import utils.db_utils as db_utils
 
 DRE_URL = config("ADEPT_DRE_URL")
