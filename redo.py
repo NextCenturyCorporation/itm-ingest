@@ -1,6 +1,7 @@
 import sys
 import importlib.util
 import os
+import traceback
 from pymongo import MongoClient
 from decouple import config
 
@@ -51,6 +52,8 @@ def run_script(version_number):
             print(f"Error: Script {script_file} does not have a main function.")
     except Exception as e:
         print(f"Error running script {script_file}: {e}")
+        print("\nTraceback:")
+        traceback.print_exc()
     finally:
         client.close()
 
