@@ -18,7 +18,7 @@ def run_script(version_number):
     
     script_pattern = f"_{major}_{minor}_{patch}_"
     
-    scripts_dir = 'scripts'
+    scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'scripts')
     script_file = None
     
     for filename in os.listdir(scripts_dir):
@@ -44,7 +44,7 @@ def run_script(version_number):
     db = client['dashboard']
     
     try:
-        print(f"Ruuning script {script_file}...")
+        print(f"Running script {script_file}...")
         if hasattr(module, 'main'):
             module.main(db)
             print(f"Script {script_file} ran successfully.")
