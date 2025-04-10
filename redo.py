@@ -19,7 +19,7 @@ def run_script(version_number):
     
     script_pattern = f"_{major}_{minor}_{patch}_"
     
-    scripts_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'scripts')
+    scripts_dir = 'scripts'
     script_file = None
     
     for filename in os.listdir(scripts_dir):
