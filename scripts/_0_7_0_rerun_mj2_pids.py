@@ -22,25 +22,24 @@ def main(mongo_db):
 
     adept_res = text_collec.find(query)
 
-    # Extract unique participant IDs
     participant_ids = set()
     for result in adept_res:
         pid = result["participantID"]
         participant_ids.add(pid)
 
-    # Create a dictionary to group documents by participant ID
     participant_documents = {}
 
-    # For each participant ID, find all their documents
     for pid in participant_ids:
-        # Find all documents for this participant
         participant_docs = text_collec.find({"participantID": pid})
-        # Store the documents in our dictionary
         participant_documents[pid] = list(participant_docs)
 
+    group = 0
     for pid, documents in participant_documents.items():
+        group += 1
+        print(f"processing group {group}/{len(participant_documents)}")
         has_mj2 = any("MJ2" in doc.get("scenario_id", "") for doc in documents)
         if not has_mj2:
+            print('skipping group because no MJ2 document')
             # skip if no mj2
             continue
 
