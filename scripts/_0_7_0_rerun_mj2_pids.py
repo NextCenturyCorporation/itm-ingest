@@ -31,7 +31,12 @@ def main(mongo_db):
 
     for pid in participant_ids:
         participant_docs = text_collec.find({"participantID": pid})
-        participant_documents[pid] = list(participant_docs)
+        filtered_docs = []
+        for doc in participant_docs:
+            scenario_id = doc.get("scenario_id", "").lower()
+            if "qol" not in scenario_id and "vol" not in scenario_id:
+                filtered_docs.append(doc)
+        participant_documents[pid] = filtered_docs
 
     group = 0
     for pid, documents in participant_documents.items():
@@ -79,7 +84,7 @@ def main(mongo_db):
                 },
             )
 
-    # rerun0_6_8(mongo_db)
+    rerun0_6_8(mongo_db)
 
 
 def most_least(session_id):
