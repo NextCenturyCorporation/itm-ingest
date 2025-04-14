@@ -4,8 +4,8 @@ from collections import OrderedDict
 from decouple import config 
 from pymongo import MongoClient
 
-v_gauze = 'Response 3-B.2-A-gauze-v'
-s_gauze = 'Response 3-B.2-B-gauze-s'
+v_gauze = 'Response 3-B.2-B-gauze-v'
+s_gauze = 'Response 3-B.2-A-gauze-s'
 special_case_probe = {
     'DryRunEval-MJ2-eval': {
         'Scene 2A': {
