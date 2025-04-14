@@ -60,7 +60,7 @@ def main(mongo_db):
 
                 text_collec.update_one(
                     {"_id": doc["_id"]},
-                    {"$set": {"ph1NarrId": narr_sess_id, "individual_kdmas": kdmas}},
+                    {"$set": {"ph1NarrId": narr_sess_id, "individual_kdma": kdmas}},
                 )
 
         combined_kdmas = get_kdma_value(combined_sess, ADEPT_URL)
