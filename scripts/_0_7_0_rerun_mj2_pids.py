@@ -74,7 +74,10 @@ def main(mongo_db):
         for doc in documents:
             text_collec.update_one(
                 {"_id": doc["_id"]},
-                {"$set": {"kdmas": combined_kdmas, "combinedSessionId": combined_sess, "mostLeastAligned": most_least_aligned}}
+                {"$set": {"kdmas": combined_kdmas, "combinedSessionId": combined_sess, "mostLeastAligned": most_least_aligned}},
+                {"$unset": {
+                    "distance_based_most_least_aligned": ""
+                }}
             )
             
 
