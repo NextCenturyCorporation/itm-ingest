@@ -44,7 +44,7 @@ def main(mongo_db):
         print(f"processing group {group}/{len(participant_documents)}")
         has_mj2 = any("MJ2" in doc.get("scenario_id", "") for doc in documents)
         if not has_mj2:
-            print('skipping group because no MJ2 document')
+            print("skipping group because no MJ2 document")
             # skip if no mj2
             continue
 
@@ -65,7 +65,10 @@ def main(mongo_db):
 
                 text_collec.update_one(
                     {"_id": doc["_id"]},
-                    {"$set": {"ph1NarrId": narr_sess_id, "individual_kdma": kdmas}},
+                    {
+                        "$set": {"ph1NarrId": narr_sess_id, "individual_kdma": kdmas},
+                        "$unset": {"dreNarrId": ""},
+                    },
                 )
 
         combined_kdmas = get_kdma_value(combined_sess, ADEPT_URL)
@@ -80,7 +83,10 @@ def main(mongo_db):
                         "combinedSessionId": combined_sess,
                         "mostLeastAligned": most_least_aligned,
                     },
-                    "$unset": {"distance_based_most_least_aligned": ""},
+                    "$unset": {
+                        "distance_based_most_least_aligned": "",
+                        "dreSessionId": "",
+                    },
                 },
             )
 
