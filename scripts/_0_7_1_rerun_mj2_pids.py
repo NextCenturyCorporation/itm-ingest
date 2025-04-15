@@ -86,12 +86,13 @@ def main(mongo_db):
         most_least_aligned = most_least(combined_sess)
         # replace combined kdmas of IO and Mj2 docs
         for doc in documents:
+            session_field = "ph1SessionId" if doc.get("evalNumber") == 4 else "combinedSessionId"
             text_collec.update_one(
                 {"_id": doc["_id"]},
                 {
                     "$set": {
                         "kdmas": combined_kdmas,
-                        "combinedSessionId": combined_sess,
+                        session_field: combined_sess,
                         "mostLeastAligned": most_least_aligned,
                     },
                     "$unset": {
