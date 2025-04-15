@@ -122,6 +122,7 @@ def main(mongo_db):
                             "ph1SessionId": combined_sess,
                             "combinedSessionId": dre_combined_sess,
                             "mostLeastAligned": dre_most_least_aligned,
+                            "ph1MostLeastAligned": most_least_aligned,
                             "kdmas": dre_combined_kdmas
                         },
                         "$unset": {
@@ -156,7 +157,8 @@ def main(mongo_db):
         if documents[0]["evalNumber"] == 4:
             # update text session id for updated dre comparisons
             comparison_collec.update_many({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": {"$exists": False}}, {"$set": {"text_session_id": dre_combined_sess}})
-
+            fix_dre_survey_results(pid, mongo_db, most_least_aligned)
+    
     rerun0_6_8(mongo_db)
     # update all dre comparison docs with kdma_filter endpoint
     comparison_docs = comparison_collec.find({"evalNumber": 4, "ph1_server": {"$exists": False}})
@@ -181,3 +183,57 @@ def most_least(session_id, url):
 
         responses.append({"target": target, "response": response.json()})
     return responses
+
+def fix_dre_survey_results(pid, mongo_db, ph1_most_least_aligned):
+    print("inside fix dre")
+    survey_collection = mongo_db['surveyResults']
+    survey = list(survey_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid}))
+    
+    if len(survey) == 0:
+        print(f"No survey found for {pid}")
+        return
+    
+    survey = survey[-1] # get last survey entry for this pid
+    updated = False
+    
+    for page_key, page_value in survey['results'].items():
+        if isinstance(page_value, dict) and 'Medic' in page_key and ' vs ' not in page_key:
+            if 'scenarioIndex' not in page_value or 'qol' in page_value["scenarioIndex"] or 'vol' in page_value["scenarioIndex"]:
+                continue
+                
+            if 'admTarget' not in page_value:
+                continue
+            
+            target = page_value['admTarget']
+            kdma_type = "Moral judgement" if "Moral judgement" in target else "Ingroup Bias"
+            target_list = next((entry for entry in ph1_most_least_aligned if entry.get('target') == kdma_type), None)
+            
+            if not target_list:
+                print(f"No target list found for {kdma_type}")
+                continue
+                
+            target_list = target_list["response"]
+            
+            new_score = None
+            for entry in target_list:
+                for key in entry:
+                    if target in key:
+                        new_score = entry[key]
+                        break
+                if new_score is not None:
+                    break
+            
+            if new_score is None:
+                print(f"Didn't find new score for {target}")
+                continue
+            
+            page_value["ph1TxtAlignment"] = new_score
+            updated = True
+            print(f"Updated ph1TxtAlignment for pid: {pid}, {page_key} with target {target} to {new_score}")
+    
+    if updated:
+        result = survey_collection.update_one({'_id': survey['_id']}, {'$set': {'results': survey['results']}})
+        if result.matched_count > 0:
+            print(f"Successfully updated survey document for {pid}")
+        else:
+            print(f"Failed to update survey document for {pid}")
