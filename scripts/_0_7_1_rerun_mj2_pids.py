@@ -27,6 +27,7 @@ ADEPT_URL = config("ADEPT_URL")
 
 def main(mongo_db):
     text_collec = mongo_db["userScenarioResults"]
+    comparison_collec = mongo_db["humanToADMComparison"]
 
     query = {"evalNumber": {"$gte": 4}, "scenario_id": {"$regex": "DryRun|adept"}}
 
@@ -99,6 +100,8 @@ def main(mongo_db):
                     },
                 },
             )
+        if documents[0]["evalNumber"] > 4:
+            comparison_collec.update_many({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}}, {"$set": {"text_session_id": combined_sess}})
 
     rerun0_6_8(mongo_db)
 
