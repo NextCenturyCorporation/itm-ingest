@@ -146,16 +146,16 @@ def main(mongo_db):
                 )
 
         # replace comparison scores
-        if documents[0]["evalNumber"] > 4:
-            comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}})
-            for doc in comparison_docs:
-                if "Moral" in doc["adm_alignment_target"]:
-                    res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
-                else:
-                    res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
-                comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": combined_sess, "score": res_new["score"]}})
-        elif documents[0]["evalNumber"] == 4:
-            comparison_docs = comparison_collec.update_many({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": {"$exists": False}}, {"$set": {"text_session_id": dre_combined_sess}})
+        comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}}) if documents[0]['evalNumber'] > 4 else comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": True})
+        for doc in comparison_docs:
+            if "Moral" in doc["adm_alignment_target"]:
+                res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+            else:
+                res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
+            comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": combined_sess, "score": res_new["score"]}})
+        if documents[0]["evalNumber"] == 4:
+            # update text session id for updated dre comparisons
+            comparison_collec.update_many({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": {"$exists": False}}, {"$set": {"text_session_id": dre_combined_sess}})
 
     rerun0_6_8(mongo_db)
     # update all dre comparison docs with kdma_filter endpoint
