@@ -158,11 +158,8 @@ def main(mongo_db):
         elif documents[0]["evalNumber"] == 4:
             comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}})
             for doc in comparison_docs:
-                if "Moral" in doc["adm_alignment_target"]:
-                    # REPLACE COMBINED SESS W DRE COMBINED SESS
-                    res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={dre_combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
-                else:
-                    res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={dre_combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
+                res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={dre_combined_sess}&session_id_2={doc["adm_session_id"]}').json()
+                print(res_new["score"])
                 comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": dre_combined_sess, "score": res_new["score"]}})
     rerun0_6_8(mongo_db)
 
