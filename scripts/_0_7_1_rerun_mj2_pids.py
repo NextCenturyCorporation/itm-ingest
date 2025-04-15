@@ -75,7 +75,6 @@ def main(mongo_db):
             submit_responses(doc, scenario_id, combined_sess, ADEPT_URL)
 
             if dre_combined_sess != None:
-                print('running a dre sess')
                 submit_responses(doc, scenario_id, dre_combined_sess, ADEPT_DRE_URL)
 
             if "MJ2" in scenario_id:
@@ -156,11 +155,11 @@ def main(mongo_db):
                     res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                 comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": combined_sess, "score": res_new["score"]}})
         elif documents[0]["evalNumber"] == 4:
-            comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}})
+            comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": {"$exists": False}})
             for doc in comparison_docs:
                 res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={dre_combined_sess}&session_id_2={doc["adm_session_id"]}').json()
-                print(res_new["score"])
                 comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": dre_combined_sess, "score": res_new["score"]}})
+    
     rerun0_6_8(mongo_db)
 
 
