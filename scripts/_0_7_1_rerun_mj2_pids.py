@@ -185,7 +185,6 @@ def most_least(session_id, url):
     return responses
 
 def fix_dre_survey_results(pid, mongo_db, ph1_most_least_aligned):
-    print("inside fix dre")
     survey_collection = mongo_db['surveyResults']
     survey = list(survey_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid}))
     
