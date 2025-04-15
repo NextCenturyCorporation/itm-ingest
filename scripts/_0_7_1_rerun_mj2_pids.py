@@ -156,12 +156,17 @@ def main(mongo_db):
                     res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                 comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": combined_sess, "score": res_new["score"]}})
         elif documents[0]["evalNumber"] == 4:
-            comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}})
-            for doc in comparison_docs:
-                res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={dre_combined_sess}&session_id_2={doc["adm_session_id"]}').json()
-                print(res_new["score"])
-                comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": dre_combined_sess, "score": res_new["score"]}})
+            comparison_docs = comparison_collec.update_many({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": {"$exists": False}}, {"$set": {"text_session_id": dre_combined_sess}})
     rerun0_6_8(mongo_db)
+    # update all dre comparison docs with kdma_filter endpoint
+    comparison_docs = comparison_collec.find({"evalNumber": 4, "ph1_server": {"$exists": False}})
+    for doc in comparison_docs:
+        if "DryRun" in doc['text_scenario'] or "adept" in doc['text_scenario']:
+            if "Moral" in doc["adm_alignment_target"]:
+                res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={doc["text_session_id"]}&session_id_2={doc["adm_session_id"]}&kdma_filter=Moral%20judgement').json()
+            else:
+                res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions?session_id_1={doc["text_session_id"]}&session_id_2={doc["adm_session_id"]}&kdma_filter=Ingroup%20Bias').json()
+            comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"score": res_new["score"]}})
 
 
 def most_least(session_id, url):
