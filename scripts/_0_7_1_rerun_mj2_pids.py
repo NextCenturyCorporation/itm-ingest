@@ -1,3 +1,13 @@
+'''
+https://nextcentury.atlassian.net/jira/software/projects/ITM/boards/116?assignee=60ba425da547eb00686ee0ce&selectedIssue=ITM-964
+
+This script corrects an issue that existed with the kdma scoring for participants who saw the MJ2 text scenario.
+The MJ2 scenario will be run again individually to recalculate Narrative kdma scores and replace with the ta1 session id
+for comparison in other scripts. The two training scenarios will then be run along with the MJ2 scenario to recalculate
+the participant's combined kdma scores, alignment, and session id. 
+'''
+
+
 from scripts._0_5_7_add_Narr_nonNarr_kdmas import submit_responses
 from scripts._0_5_7_add_Narr_nonNarr_kdmas import get_kdma_value
 from scripts._0_6_8_adept_p1e_old_endpoints import main as rerun0_6_8
