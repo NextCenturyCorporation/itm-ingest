@@ -59,7 +59,7 @@ def main(mongo_db):
             continue
 
         session = requests.post(f"{ADEPT_URL}/api/v1/new_session")
-        combined_sess = session.text
+        combined_sess = session.text.replace('"', "").strip()
         for doc in documents:
             scenario_id = doc.get("scenario_id", "N/A")
             scenario_id = adept_scenario_map.get(scenario_id, scenario_id)
@@ -69,7 +69,7 @@ def main(mongo_db):
             if "MJ2" in scenario_id:
                 # mj2 needs narr scores and session replaced as well
                 narr_sess = requests.post(f"{ADEPT_URL}/api/v1/new_session")
-                narr_sess_id = narr_sess.text
+                narr_sess_id = narr_sess.text.replace('"', "").strip()
                 submit_responses(doc, scenario_id, narr_sess_id, ADEPT_URL)
                 kdmas = get_kdma_value(narr_sess_id, ADEPT_URL)
 
