@@ -23,6 +23,7 @@ adept_scenario_map = {
 }
 
 ADEPT_URL = config("ADEPT_URL")
+ADEPT_DRE_URL = config("ADEPT_DRE_URL")
 
 
 def main(mongo_db):
@@ -58,14 +59,24 @@ def main(mongo_db):
             print("skipping group because no MJ2 document")
             # skip if no mj2
             continue
-
+        
         session = requests.post(f"{ADEPT_URL}/api/v1/new_session")
         combined_sess = session.text.replace('"', "").strip()
+
+        dre_combined_sess = None
+        if documents[0]["evalNumber"] == 4:
+            dre_sess = requests.post(f"{ADEPT_DRE_URL}/api/v1/new_session")
+            dre_combined_sess = dre_sess.text.replace('"', "").strip()
+
         for doc in documents:
             scenario_id = doc.get("scenario_id", "N/A")
             scenario_id = adept_scenario_map.get(scenario_id, scenario_id)
 
             submit_responses(doc, scenario_id, combined_sess, ADEPT_URL)
+
+            if dre_combined_sess != None:
+                print('running a dre sess')
+                submit_responses(doc, scenario_id, dre_combined_sess, ADEPT_DRE_URL)
 
             if "MJ2" in scenario_id:
                 # mj2 needs narr scores and session replaced as well
@@ -82,25 +93,60 @@ def main(mongo_db):
                     },
                 )
 
+                if doc.get("evalNumber") == 4:
+                    dre_narr_sess = requests.post(f"{ADEPT_DRE_URL}/api/v1/new_session")
+                    dre_narr_sess_id = dre_narr_sess.text.replace('"', "").strip()
+                    submit_responses(doc, scenario_id, dre_narr_sess_id, ADEPT_DRE_URL)
+                    kdmas = get_kdma_value(dre_narr_sess_id, ADEPT_DRE_URL)
+                    text_collec.update_one(
+                    {"_id": doc["_id"]},
+                    {
+                        "$set": {"dreNarrId": dre_narr_sess_id, "individual_kdma": kdmas},
+                    },
+                )
+
         combined_kdmas = get_kdma_value(combined_sess, ADEPT_URL)
-        most_least_aligned = most_least(combined_sess)
-        # replace combined kdmas of IO and Mj2 docs
+        most_least_aligned = most_least(combined_sess, ADEPT_URL)
+
+        dre_combined_kdmas = None
+        dre_most_least_aligned = None
+        if documents[0]["evalNumber"] == 4:
+            dre_combined_kdmas = get_kdma_value(dre_combined_sess, ADEPT_DRE_URL)
+            dre_most_least_aligned = most_least(dre_combined_sess, ADEPT_DRE_URL)
+        
         for doc in documents:
-            session_field = "ph1SessionId" if doc.get("evalNumber") == 4 else "combinedSessionId"
-            text_collec.update_one(
-                {"_id": doc["_id"]},
-                {
-                    "$set": {
-                        "kdmas": combined_kdmas,
-                        session_field: combined_sess,
-                        "mostLeastAligned": most_least_aligned,
+            if doc.get("evalNumber") == 4:
+                text_collec.update_one(
+                    {"_id": doc["_id"]},
+                    {
+                        "$set": {
+                            "ph1SessionId": combined_sess,
+                            "combinedSessionId": dre_combined_sess,
+                            "mostLeastAligned": dre_most_least_aligned,
+                            "kdmas": dre_combined_kdmas
+                        },
+                        "$unset": {
+                            "distance_based_most_least_aligned": ""
+                        },
                     },
-                    "$unset": {
-                        "distance_based_most_least_aligned": "",
-                        "dreSessionId": "",
+                )
+            else:
+                text_collec.update_one(
+                    {"_id": doc["_id"]},
+                    {
+                        "$set": {
+                            "kdmas": combined_kdmas,
+                            "combinedSessionId": combined_sess,
+                            "mostLeastAligned": most_least_aligned,
+                        },
+                        "$unset": {
+                            "distance_based_most_least_aligned": "",
+                            "dreSessionId": "",
+                        },
                     },
-                },
-            )
+                )
+
+        # replace comparison scores
         if documents[0]["evalNumber"] > 4:
             comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}})
             for doc in comparison_docs:
@@ -109,18 +155,25 @@ def main(mongo_db):
                 else:
                     res_new = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
                 comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": combined_sess, "score": res_new["score"]}})
-                
-
+        elif documents[0]["evalNumber"] == 4:
+            comparison_docs = comparison_collec.find({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "dre_server": {"$exists": False}})
+            for doc in comparison_docs:
+                if "Moral" in doc["adm_alignment_target"]:
+                    # REPLACE COMBINED SESS W DRE COMBINED SESS
+                    res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={dre_combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Moral%20judgement-Population-All').json()
+                else:
+                    res_new = requests.get(f'{ADEPT_DRE_URL}api/v1/alignment/compare_sessions_population?session_id_1_or_target_id={dre_combined_sess}&session_id_2_or_target_id={doc["adm_session_id"]}&target_pop_id=ADEPT-DryRun-Ingroup%20Bias-Population-All').json()
+                comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": dre_combined_sess, "score": res_new["score"]}})
     rerun0_6_8(mongo_db)
 
 
-def most_least(session_id):
+def most_least(session_id, url):
     targets = ["Moral judgement", "Ingroup Bias"]
     responses = []
     for target in targets:
         endpoint = "/api/v1/get_ordered_alignment"
         response = requests.get(
-            f"{ADEPT_URL}{endpoint}",
+            f"{url}{endpoint}",
             params={"session_id": session_id, "kdma_id": target},
         )
 
