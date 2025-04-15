@@ -75,7 +75,6 @@ def main(mongo_db):
             submit_responses(doc, scenario_id, combined_sess, ADEPT_URL)
 
             if dre_combined_sess != None:
-                print('running a dre sess')
                 submit_responses(doc, scenario_id, dre_combined_sess, ADEPT_DRE_URL)
 
             if "MJ2" in scenario_id:
@@ -157,6 +156,7 @@ def main(mongo_db):
                 comparison_collec.update_one({"_id": doc['_id']}, {"$set": {"text_session_id": combined_sess, "score": res_new["score"]}})
         elif documents[0]["evalNumber"] == 4:
             comparison_docs = comparison_collec.update_many({"pid": pid, "text_scenario": {"$regex": "MJ2"}, "ph1_server": {"$exists": False}}, {"$set": {"text_session_id": dre_combined_sess}})
+
     rerun0_6_8(mongo_db)
     # update all dre comparison docs with kdma_filter endpoint
     comparison_docs = comparison_collec.find({"evalNumber": 4, "ph1_server": {"$exists": False}})
