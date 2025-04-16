@@ -67,9 +67,12 @@ def main(mongo_db):
         sys.stdout.write(f"\rRunning alignment comparison on text/adm combo {completed+1} of {comparison_count}")
         completed += 1
         sys.stdout.flush()
-        if 'distance_based_score' in comparison:
-            continue
-        alignment = requests.get(f'{SERVER_URL}api/v1/alignment/compare_sessions?session_id_1={comparison["text_session_id"]}&session_id_2={comparison["adm_session_id"]}').json()
+        # if 'distance_based_score' in comparison:
+        #     continue
+        if 'Moral' in comparison['adm_alignment_target']:
+            alignment = requests.get(f'{SERVER_URL}api/v1/alignment/compare_sessions?session_id_1={comparison["text_session_id"]}&session_id_2={comparison["adm_session_id"]}&kdma_filter=Moral%20judgement').json()
+        else:
+            alignment = requests.get(f'{SERVER_URL}api/v1/alignment/compare_sessions?session_id_1={comparison["text_session_id"]}&session_id_2={comparison["adm_session_id"]}&kdma_filter=Ingroup%20Bias').json()
         comparison['distance_based_score'] = alignment['score']
         comparison_collection.update_one({'_id': comparison['_id']}, {'$set': comparison})
 

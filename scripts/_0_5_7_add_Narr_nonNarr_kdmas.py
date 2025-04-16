@@ -3,6 +3,13 @@ from decouple import config
 
 ADEPT_URL = config("ADEPT_URL")
 
+edge_case_map = {
+    'Probe 4-B.1-B.1-A': 'Response 4-B.1-B.1-A',
+    'Probe 4-B.1-B.1-B': 'Response 4-B.1-B.1-B',
+    'Response 3-B.2-A-gauze-v': 'Response 3-B.2-B-gauze-v',
+    'Response 3-B.2-B-gauze-s' : 'Response 3-B.2-A-gauze-s'
+}
+
 def submit_responses(scenario_data, scenario_id, session_id, url_base):
     for field_name, field_value in scenario_data.items():
         if not isinstance(field_value, dict) or 'questions' not in field_value:
@@ -21,6 +28,9 @@ def submit_responses(scenario_data, scenario_id, session_id, url_base):
             
             choices = mapping['choice'] if isinstance(mapping['choice'], list) else [mapping['choice']]
             for choice in choices:
+                # fix to mj2 probes edge case
+                if 'MJ2' in scenario_id:
+                    choice = edge_case_map.get(choice, choice)
                 response_payload = {
                     "response": {
                         "choice": choice,
