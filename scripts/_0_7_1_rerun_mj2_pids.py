@@ -5,6 +5,10 @@ This script corrects an issue that existed with the kdma scoring for participant
 The MJ2 scenario will be run again individually to recalculate Narrative kdma scores and replace with the ta1 session id
 for comparison in other scripts. The two training scenarios will then be run along with the MJ2 scenario to recalculate
 the participant's combined kdma scores, alignment, and session id. 
+
+The DRE results (that included MJ2) are run through both the DRE server and the PH1 server. The scores nested inside of their
+survey results are then adjusted to reflect the new values (these are pulled for the rq134 table). The comparison scores for DRE are also
+then recalculated. 
 '''
 
 
