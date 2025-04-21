@@ -798,7 +798,7 @@ def one_time_db_initialization():
     Adds survey configs 1 and 2 to the database along with the test config (survey config #2 with no requirements).
     It also adds patient ids to images for adm medic translation
     """
-    tool = DelegationTool(1.0)
+    tool = DelegationTool(1.3)
     tool.import_full_survey(os.path.join("survey-configs", "surveyConfig1x.json"))
     tool.push_changes()
 
