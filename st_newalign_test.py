@@ -1,3 +1,5 @@
+from pymongo import MongoClient
+from decouple import config 
 import utils.soartech_utils as soartech_utils
 from copy import deepcopy
 from random import randint
@@ -119,3 +121,8 @@ def main(mongo_db):
     print(f"\nWith 'opposite' choices (ADM lowest VOL; human highest VOL), the alignment was {score}.")
     score = soartech_utils.get_new_vol_alignment(text_probes, adm_scenario_id, adm_probes, text_scenario_id)
     print(f"With 'opposite' choices (ADM highest VOL; human lowest VOL), the alignment was {score}.")
+
+if __name__ == '__main__':
+    client = MongoClient(config('MONGO_URL'))
+    db = client.dashboard
+    main(db)
