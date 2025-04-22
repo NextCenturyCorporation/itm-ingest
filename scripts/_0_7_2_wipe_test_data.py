@@ -1,3 +1,7 @@
+'''
+Any day where we have a lot of testing before a data collection, this script can be tweaked and run to wipe
+away the noisy data. 
+'''
 def main(mongo_db):
     survey_results = mongo_db['surveyResults']
 
