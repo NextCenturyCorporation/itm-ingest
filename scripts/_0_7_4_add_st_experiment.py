@@ -16,7 +16,7 @@ Store these three sets of alignment values (once for each seen ADM, four KDMAs p
 
 """
 UPDATE_DATABASE = True
-VERBOSE_OUTPUT = True
+VERBOSE_OUTPUT = False
 
 @dataclass
 class Pid_data:
