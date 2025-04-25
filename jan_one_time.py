@@ -8,6 +8,11 @@ if __name__ == '__main__':
     # set up mongo
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
+    delegation_collection = db['surveyResults']
+    delegation_collection.delete_one({
+        'results.pid': '202501702',
+        'results.Post-Scenario Measures': {'$exists': False}
+    })
 
     # run 'weekly' version of probe matcher
     #os.system('python3 ph1_probe_matcher.py -i jan_sim_files -w -e 6')
