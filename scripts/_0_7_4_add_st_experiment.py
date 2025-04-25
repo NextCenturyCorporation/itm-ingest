@@ -1,3 +1,4 @@
+from scripts._0_2_8_human_to_adm_comparison import main as compare_probes
 import utils.soartech_utils as soartech_utils
 from dataclasses import dataclass
 
@@ -55,8 +56,17 @@ def collect_text_probe_responses(mongo_db):
 
 
 def main(mongo_db):
-    comparison_data = collect_text_probe_responses(mongo_db)
+    # First, delete extra incomplete survey for 202501702, and run comparison script in run_new_only mode
+    # to calculate comparison scores using the proper document.
     survey_results_collection = mongo_db['surveyResults']
+    survey_results_collection.delete_one({
+        'results.pid': '202501702',
+        'results.Post-Scenario Measures': {'$exists': False}
+    })
+    compare_probes(mongo_db, 6, True)
+
+    # Collect probe responses
+    comparison_data = collect_text_probe_responses(mongo_db)
 
     for pid in comparison_data.keys():
         if VERBOSE_OUTPUT:
