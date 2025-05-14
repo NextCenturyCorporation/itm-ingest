@@ -49,7 +49,9 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
                     score = t[list(t.keys())[0]]
                     break
         alignment = {'alignment_source': {'score': score}}
-    doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber}
+    kdma_endpoint = "/api/v1/computed_kdma_profile"
+    kdma = requests.get(f"{ADEPT_URL}{kdma_endpoint}", params={"session_id": adept_sid})
+    doc = {'session_id': adept_sid, 'probes': probes, 'alignment': alignment, 'target': target, 'scenario': scenario, 'adm_name': adm_name, 'evalNumber': evalNumber, 'kdma': kdma.json()}
     if dre_ph1_run:
         doc['dre_ph1_run'] = True
     if ph1_dre_run and evalNumber == 5:
