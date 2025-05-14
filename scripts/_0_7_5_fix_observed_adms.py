@@ -1,3 +1,8 @@
+'''
+Ticket:
+https://nextcentury.atlassian.net/jira/software/projects/ITM/boards/116?assignee=60ba425da547eb00686ee0ce&jql=assignee%20%3D%2060ba425da547eb00686ee0ce&selectedIssue=ITM-1000
+'''
+
 from decouple import config 
 import requests
 import utils.db_utils as db_utils
