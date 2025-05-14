@@ -133,7 +133,6 @@ def main(mongo_db):
                                         if entry.get('parameters', {}).get('probe_id') == "Probe 8-A.1-A.1"), None)
                             
                             if not probe:
-                                print('no response to "Probe 8-A.1-A.1"')
                                 probe = next((entry for entry in matching_adm['history'] 
                                             if entry.get('parameters', {}).get('probe_id') == "Probe 8-A.1"), None) 
                             
