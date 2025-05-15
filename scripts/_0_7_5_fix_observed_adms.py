@@ -11,9 +11,7 @@ import utils.db_utils as db_utils
 def main(mongo_db):
     observed_adms = mongo_db["delegationADMRuns"]
     comp_collec = mongo_db["humanToADMComparison"]
-    observed_adms_cursor = observed_adms.find(
-        {"$or": [{"evalNumber": 5}, {"evalNumber": 6}]}
-    )
+    observed_adms_cursor = observed_adms.find({"evalNumber": 5})
     full_adms = mongo_db["admTargetRuns"]
 
     for adm in observed_adms_cursor:
