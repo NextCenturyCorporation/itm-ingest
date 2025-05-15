@@ -13,5 +13,5 @@ output
 */jen-work
 adept-evals/eval4/*.json
 adept-evals/eval4/*.py
-/*.csv
+
 dev_scripts/*.csv
