@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from os import PathLike
-from typing import Optional, Iterable
+from typing import Optional, Iterable, List, Dict
 
 from sklearn.neighbors import KernelDensity
 from scipy.spatial.distance import jensenshannon
@@ -13,8 +13,7 @@ NOTE: This code and scorecard.json was developed by SoarTech, https://soartech.c
 It was integrated into the ITM TA3/CACI pipeline with SoarTech's permission.
 """
 
-def normalize_cdm_data(
-        scores: list[np.ndarray], seed: int | None = None) -> list[np.ndarray]:
+def normalize_cdm_data(scores: List[np.ndarray], seed: Optional[int] = None) -> List[np.ndarray]:
     """
     Normalize scores to remove bias from the difference in the number of CDMs
     who chose each probe response.
@@ -210,7 +209,7 @@ def get_alignments(
         'PerceivedQuantityOfLivesSaved'
     ),
     seed: Optional[int] = None
-) -> dict[str, np.float64]:
+) -> Dict[str, np.float64]:
     """
     Compute alignment scores between two sets of decisions via "golden arm method".
 
