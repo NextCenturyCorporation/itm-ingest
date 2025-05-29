@@ -23,7 +23,7 @@ def create_page(scene, doc):
 
     template_element = {
         'name': 'template ' + str(page['name']),
-        'title': '',
+        'title': ' ',
         'type': 'phase2Text' ,
         'unstructured': unstructured
     } 
