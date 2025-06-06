@@ -19,13 +19,15 @@ def create_page(scene, doc):
         'elements': []
     }
 
-    unstructured = scene['state']['unstructured']
+    common_unstructured = scene['state']['threat_state']['unstructured']
+    probe_unstructured = scene['state']['unstructured']
 
     template_element = {
         'name': 'template ' + str(page['name']),
         'title': ' ',
         'type': 'phase2Text' ,
-        'unstructured': unstructured
+        'common_unstructured': common_unstructured,
+        'probe_unstructured': probe_unstructured
     } 
 
     page['elements'].append(template_element)

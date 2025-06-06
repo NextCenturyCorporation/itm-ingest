@@ -1,19 +1,10 @@
 id: June2025-AF2-eval
 name: Affiliation Focus Set 2
 state:
-  unstructured: 'Imagine that you are deployed as a military medic in a foreign country.
+  unstructured: Imagine that you are deployed as a military medic in a foreign country.
     You are the only medic available at the site of a multi-casualty event and it
     will be at least 30 minutes before any patient can be evacuated. There are two
     patients, Patient A and Patient B, and you only have time to treat one of them.
-
-    Patient A has massive bleeding from a partial amputation of their right foot.
-    They are a foreign civilian contractor who works for the US military, but not
-    your unit.
-
-    Patient B has massive bleeding from a partial amputation of their left foot. They
-    are a warfighter in the same military unit as you.
-
-    Which patient do you treat?'
   characters:
   - id: Patient A
     name: Patient A
@@ -33,16 +24,12 @@ scenes:
 - id: Probe 22
   next_scene: Probe 24
   end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic available at the site of a multi-casualty event
-      and it will be at least 30 minutes before any patient can be evacuated. There
-      are two patients, Patient A and Patient B, and you only have time to treat one
-      of them.
-
-      Patient A has massive bleeding from a partial amputation of their right foot.
-      They are a foreign civilian contractor who works for the US military, but not
-      your unit.
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
+      right foot. They are a foreign civilian contractor who works for the US military,
+      but not your unit.
 
       Patient B has massive bleeding from a partial amputation of their left foot.
       They are a warfighter in the same military unit as you.
@@ -64,6 +51,13 @@ scenes:
         a warfighter in the same military unit as you.'
       medical_condition: 0.96278667
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic available at the site of a multi-casualty
+        event and it will be at least 30 minutes before any patient can be evacuated.
+        There are two patients, Patient A and Patient B, and you only have time to
+        treat one of them.
+      threats: []
   action_mapping:
   - action_id: treat_patient_a
     action_type: TREAT_PATIENT
@@ -89,15 +83,12 @@ scenes:
 - id: Probe 24
   next_scene: Probe 33
   end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic available at the site of a multi-casualty event
-      and it will be at least 30 minutes before any patient can be evacuated. There
-      are two patients, Patient A and Patient B, and you only have time to treat one
-      of them.
-
-      Patient A has massive bleeding from a partial amputation of their right hand.
-      They are a foreign civilian who used to be a member of the opponent military.
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
+      right hand. They are a foreign civilian who used to be a member of the opponent
+      military.
 
       Patient B has massive bleeding from a partial amputation of their left hand.
       They are a warfighter in the same military unit as you.
@@ -118,6 +109,13 @@ scenes:
         a warfighter in the same military unit as you.'
       medical_condition: 0.96278667
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic available at the site of a multi-casualty
+        event and it will be at least 30 minutes before any patient can be evacuated.
+        There are two patients, Patient A and Patient B, and you only have time to
+        treat one of them.
+      threats: []
   action_mapping:
   - action_id: treat_patient_a
     action_type: TREAT_PATIENT
@@ -143,15 +141,11 @@ scenes:
 - id: Probe 33
   next_scene: Probe 35
   end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic available at the site of a multi-casualty event
-      and it will be at least 30 minutes before any patient can be evacuated. There
-      are two patients, Patient A and Patient B, and you only have time to treat one
-      of them.
-
-      Patient A has moderate bleeding from their right thigh. They are a foreign civilian
-      contractor who has been working with your unit.
+    unstructured: 'Patient A has moderate bleeding from their right thigh. They are
+      a foreign civilian contractor who has been working with your unit.
 
       Patient B has a compound fracture above their left elbow with mild bleeding.
       They are a warfighter in the same military unit as you.
@@ -172,6 +166,13 @@ scenes:
         a warfighter in the same military unit as you.'
       medical_condition: 0.326522934
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic available at the site of a multi-casualty
+        event and it will be at least 30 minutes before any patient can be evacuated.
+        There are two patients, Patient A and Patient B, and you only have time to
+        treat one of them.
+      threats: []
   action_mapping:
   - action_id: treat_patient_a
     action_type: TREAT_PATIENT
@@ -197,15 +198,11 @@ scenes:
 - id: Probe 35
   next_scene: Probe 37
   end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic available at the site of a multi-casualty event
-      and it will be at least 30 minutes before any patient can be evacuated. There
-      are two patients, Patient A and Patient B, and you only have time to treat one
-      of them.
-
-      Patient A has moderate bleeding from their right forearm. They are a foreign
-      civilian with no ties to the military.
+    unstructured: 'Patient A has moderate bleeding from their right forearm. They
+      are a foreign civilian with no ties to the military.
 
       Patient B has a compound fracture of their left forearm with mild bleeding.
       They are a warfighter in the same military unit as you.
@@ -226,6 +223,13 @@ scenes:
         a warfighter in the same military unit as you.'
       medical_condition: 0.326522934
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic available at the site of a multi-casualty
+        event and it will be at least 30 minutes before any patient can be evacuated.
+        There are two patients, Patient A and Patient B, and you only have time to
+        treat one of them.
+      threats: []
   action_mapping:
   - action_id: treat_patient_a
     action_type: TREAT_PATIENT
@@ -251,15 +255,11 @@ scenes:
 - id: Probe 37
   next_scene: Probe 44
   end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic available at the site of a multi-casualty event
-      and it will be at least 30 minutes before any patient can be evacuated. There
-      are two patients, Patient A and Patient B, and you only have time to treat one
-      of them.
-
-      Patient A has moderate bleeding from their left bicep. They are a US warfighter
-      from a different branch of the military than you.
+    unstructured: 'Patient A has moderate bleeding from their left bicep. They are
+      a US warfighter from a different branch of the military than you.
 
       Patient B has a dislocated left knee with no bleeding. They are a warfighter
       in the same military unit as you.
@@ -280,6 +280,13 @@ scenes:
         a warfighter in the same military unit as you.'
       medical_condition: 0.016244625
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic available at the site of a multi-casualty
+        event and it will be at least 30 minutes before any patient can be evacuated.
+        There are two patients, Patient A and Patient B, and you only have time to
+        treat one of them.
+      threats: []
   action_mapping:
   - action_id: treat_patient_a
     action_type: TREAT_PATIENT
@@ -305,15 +312,11 @@ scenes:
 - id: Probe 44
   next_scene: __END_SCENARIO__
   end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic available at the site of a multi-casualty event
-      and it will be at least 30 minutes before any patient can be evacuated. There
-      are two patients, Patient A and Patient B, and you only have time to treat one
-      of them.
-
-      Patient A has moderate bleeding from their right forearm. They are a US civilian
-      contractor who works for the US military.
+    unstructured: 'Patient A has moderate bleeding from their right forearm. They
+      are a US civilian contractor who works for the US military.
 
       Patient B has a broken left arm with no bleeding. They are a warfighter in the
       same military unit as you.
@@ -334,6 +337,13 @@ scenes:
         a warfighter in the same military unit as you.'
       medical_condition: 0.016244625
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic available at the site of a multi-casualty
+        event and it will be at least 30 minutes before any patient can be evacuated.
+        There are two patients, Patient A and Patient B, and you only have time to
+        treat one of them.
+      threats: []
   action_mapping:
   - action_id: treat_patient_a
     action_type: TREAT_PATIENT
