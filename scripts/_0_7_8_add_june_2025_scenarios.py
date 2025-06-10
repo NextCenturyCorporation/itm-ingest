@@ -11,7 +11,7 @@ def main(mongo_db):
         with open(name) as f: 
             yaml_obj = yaml.safe_load(f)
             yaml_obj["evalNumber"] = 8
-            yaml_obj["evalName"] = "June 2025 Collaboration"
+            yaml_obj["evalName"] = "Phase 2 June 2025 Collaboration"
 
             scenarios_collection = mongo_db["scenarios"]
             scenarios_collection.insert_one(yaml_obj)
