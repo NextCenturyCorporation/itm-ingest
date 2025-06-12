@@ -7,7 +7,6 @@
             "type": "dynamic-template-phase-2",
             "name": "Test medic 1",
             "title": "Phase 2 Mockup",
-            "dmName": "Test medic 1",
             "probe_question": "Who do you treat first?",
             "options": [
                 "Move to treat the casualty now",
