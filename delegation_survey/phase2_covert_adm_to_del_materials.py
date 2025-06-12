@@ -42,8 +42,9 @@ def convert_adm(adm, scenario, target, name, template, medic_collec):
     medic_name = get_unique_medic_name(medic_collec)
     
     doc.update({
-        'name': medic_name,  # Use the unique Medic-[Letter][Number] name
-        'title': medic_name + ", " + target + ", " + scenario,
+        'name': medic_name,
+        # need to include blank title or it will use the name field
+        'title': ' ',
         'target': target,
         'admName': name,
         'scenarioIndex': scenario,
@@ -56,6 +57,17 @@ def convert_adm(adm, scenario, target, name, template, medic_collec):
 
     # wipe out template default from rows
     doc['elements'][0]['rows'] = []
+    doc['elements'][0]['title'] = ' '
+    
+    # Replace placeholder
+    doc['elements'][0]['name'] = medic_name
+    
+    # Update all the question titles and names that reference placeholder
+    for i, element in enumerate(doc['elements']):
+        if 'name' in element and 'Test medic 1' in element['name']:
+            doc['elements'][i]['name'] = element['name'].replace('Test medic 1', medic_name)
+        if 'title' in element and 'Test medic 1' in element['title']:
+            doc['elements'][i]['title'] = element['title'].replace('Test medic 1', medic_name)
 
     for el in adm['history']:
         # grab scenario name
