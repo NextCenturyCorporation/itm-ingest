@@ -1605,15 +1605,15 @@ def version6_setup():
     tool.add_page_by_json(warning_page)
 
     intro_page = {
-        "name": "Survey Introduction",
-        "elements": [
-            {
-                "type": "html",
-                "name": "Survey6 Introduction",
-                "html": "Welcome to the <strong>Military Triage Delegation Experiment - Phase 2</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>In this phase, you will see scenarios where medics made decisions about whether to move to treat casualties or wait in their current location based on the tactical situation.<br/><br/>Each scenario is presented followed by how different medics carried out their assessment and decision-making for that situation. Their choices are listed showing what they decided to do in each probe scenario.<br/><br/>Each medic vignette is then followed by a few questions to assess how you perceived the medic's decision-making style.<br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/>Please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given.<br/><br/>The survey should take about 20-30 minutes to complete. Thank you for your participation."
-            }
-        ]
-    }
+            "name": "Survey Introduction",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "Survey5 Introduction",
+                    "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how three different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+                }
+            ]
+        }
     tool.add_page_by_json(intro_page)
 
     # Add note page from existing configs
