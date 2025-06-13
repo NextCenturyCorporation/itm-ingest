@@ -148,6 +148,5 @@ def main(mongo_db):
         name = adm['adm_name']
         
         # don't process tests and failed runs
-        if name != 'prodtest' and name != 'prod_multitest' and 'Random' not in name \
-            and '6d0829ad-4e3c-4a03-8f3d-472cc549888f' not in name:
+        if name != 'test' and 'Random' and '6d0829ad-4e3c-4a03-8f3d-472cc549888f' not in name:
             convert_adm(adm, scenario, target, name, template, medic_collec)
