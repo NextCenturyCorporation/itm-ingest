@@ -74,7 +74,6 @@ def process_scenario(scenario):
     doc = add_surveyjs_configs(doc)
 
     for scene in scenario['scenes']:
-        # this will need to be replaced with if scene[id] in list of selected probes (i dont have yet)
         if scene['id']:
             new_page = create_page(scene, doc)
             doc['pages'].append(new_page)
