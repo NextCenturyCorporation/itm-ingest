@@ -147,6 +147,6 @@ def main(mongo_db):
         target = adm['alignment_target']
         name = adm['adm_name']
         
-        # don't process tests
-        if name != 'prodtest':
+        # don't process tests and failed runs
+        if name != 'test' and 'Random' and '6d0829ad-4e3c-4a03-8f3d-472cc549888f' not in name:
             convert_adm(adm, scenario, target, name, template, medic_collec)
