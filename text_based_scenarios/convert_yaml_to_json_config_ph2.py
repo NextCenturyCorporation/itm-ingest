@@ -111,7 +111,6 @@ def upload_configs(docs, collection):
 
 
 def main(mongo_db):
-    print('what')
     text_configs = mongo_db['textBasedConfig']
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -122,9 +121,7 @@ def main(mongo_db):
     for filename in os.listdir(phase2_folder):
         file_path = os.path.join(phase2_folder, filename)
         # don't gen multi kdma 
-        if file_path.includes("AF-MF"):
-            print(filename)
-            print('skipping')
+        if "AF-MF" in filename:
             continue
         try:
             with open(file_path, 'r') as file:
