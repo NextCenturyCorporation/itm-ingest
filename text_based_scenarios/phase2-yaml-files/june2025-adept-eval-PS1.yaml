@@ -1,19 +1,9 @@
 id: June2025-PS1-eval
 name: Personal Safety Focus Set 1
 state:
-  unstructured: 'Imagine that you are deployed as a military medic in a foreign country.
+  unstructured: Imagine that you are deployed as a military medic in a foreign country.
     You are the only medic with your unit. It will be at least 30 minutes before any
     casualty can be evacuated.
-
-    Your squad is patrolling dismounted when it receives fire from a sniper and sustains
-    one casualty. Your unit does not have a good idea of the suspected sniper location.
-    You have not received any additional fire in the last 5 minutes.
-
-    The casualty is in an exposed location and you would need to move across 100 ft
-    of exposed area to reach them. They are not visible from your location.
-
-    You are currently in a location with cover. Do you move to treat the casualty
-    now, or wait in your current location?'
   characters:
   - id: Patient A
     name: Patient A
@@ -34,14 +24,14 @@ scenes:
 - id: Probe 1
   next_scene: Probe 3
   end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic with your unit. It will be at least 30 minutes
-      before any casualty can be evacuated.
-
-      Your squad is patrolling dismounted when it receives fire from a sniper and
-      sustains one casualty. Your unit does not have a good idea of the suspected
-      sniper location. You have not received any additional fire in the last 5 minutes.
+    unstructured: 'Your squad is patrolling dismounted when it receives fire from
+      a sniper and sustains one casualty. Your unit does not have a good idea of the
+      suspected sniper location. You have not received any additional fire in the
+      last 5 minutes.
 
       The casualty is in an exposed location and you would need to move across 100
       ft of exposed area to reach them. They are not visible from your location.
@@ -64,6 +54,11 @@ scenes:
         the last 5 minutes.
       medical_condition: 0.0
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic with your unit. It will be at least 30 minutes
+        before any casualty can be evacuated.
+      threats: []
   action_mapping:
   - action_id: move_to_treat_the_casualty_now
     action_type: TREAT_PATIENT
@@ -88,13 +83,12 @@ scenes:
 - id: Probe 3
   next_scene: Probe 4
   end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic with your unit. It will be at least 30 minutes
-      before any casualty can be evacuated.
-
-      Your platoon is patrolling dismounted when your point squad encounters what
-      seems to be an observation post and sustains one casualty. Your squad exchanged
+    unstructured: 'Your platoon is patrolling dismounted when your point squad encounters
+      what seems to be an observation post and sustains one casualty. Your squad exchanged
       fire. Three enemy troops are reported fleeing the location. You have not received
       any additional fire in the last 2 minutes.
 
@@ -119,6 +113,11 @@ scenes:
         have not received any additional fire in the last 2 minutes.
       medical_condition: 0.0
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic with your unit. It will be at least 30 minutes
+        before any casualty can be evacuated.
+      threats: []
   action_mapping:
   - action_id: move_to_treat_the_casualty_now
     action_type: TREAT_PATIENT
@@ -143,14 +142,13 @@ scenes:
 - id: Probe 4
   next_scene: Probe 7
   end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic with your unit. It will be at least 30 minutes
-      before any casualty can be evacuated.
-
-      In the process of attacking a suspected enemy position, your platoon is pinned
-      down by a heavy volume of fire and sustains one casualty. The enemy fire ceases.
-      You have not received any enemy fire in the last 3 minutes.
+    unstructured: 'In the process of attacking a suspected enemy position, your platoon
+      is pinned down by a heavy volume of fire and sustains one casualty. The enemy
+      fire ceases. You have not received any enemy fire in the last 3 minutes.
 
       The casualty is in a location with cover, but you would need to move across
       20 ft of exposed area to reach them. They are not visible from your location.
@@ -172,6 +170,11 @@ scenes:
         fire ceases. You have not received any enemy fire in the last 3 minutes.
       medical_condition: 0.0
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic with your unit. It will be at least 30 minutes
+        before any casualty can be evacuated.
+      threats: []
   action_mapping:
   - action_id: move_to_treat_the_casualty_now
     action_type: TREAT_PATIENT
@@ -196,14 +199,14 @@ scenes:
 - id: Probe 7
   next_scene: Probe 8
   end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic with your unit. It will be at least 30 minutes
-      before any casualty can be evacuated.
-
-      Your squad is patrolling dismounted when it receives fire from a sniper and
-      sustains one casualty. Your unit does not have a good idea of the suspected
-      sniper location. You have not received any additional fire in the last 5 minutes.
+    unstructured: 'Your squad is patrolling dismounted when it receives fire from
+      a sniper and sustains one casualty. Your unit does not have a good idea of the
+      suspected sniper location. You have not received any additional fire in the
+      last 5 minutes.
 
       The casualty is in an exposed location and you would need to move across 100
       ft of exposed area to reach them. They are bleeding heavily.
@@ -225,6 +228,11 @@ scenes:
         the last 5 minutes.
       medical_condition: 0.0
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic with your unit. It will be at least 30 minutes
+        before any casualty can be evacuated.
+      threats: []
   action_mapping:
   - action_id: move_to_treat_the_casualty_now
     action_type: TREAT_PATIENT
@@ -247,15 +255,14 @@ scenes:
     probes:
     - Probe 7
 - id: Probe 8
-  next_scene: Probe 13
+  next_scene: Probe 14
   end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic with your unit. It will be at least 30 minutes
-      before any casualty can be evacuated.
-
-      Your platoon is patrolling dismounted when your point squad encounters what
-      seems to be an observation post and sustains one casualty. Your squad exchanged
+    unstructured: 'Your platoon is patrolling dismounted when your point squad encounters
+      what seems to be an observation post and sustains one casualty. Your squad exchanged
       fire. You have not received any additional fire in the last 2 minutes.
 
       The casualty is in an exposed location and you would need to move across 100
@@ -277,6 +284,11 @@ scenes:
         exchanged fire. You have not received any additional fire in the last 2 minutes.
       medical_condition: 0.0
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic with your unit. It will be at least 30 minutes
+        before any casualty can be evacuated.
+      threats: []
   action_mapping:
   - action_id: move_to_treat_the_casualty_now
     action_type: TREAT_PATIENT
@@ -298,20 +310,19 @@ scenes:
   transitions:
     probes:
     - Probe 8
-- id: Probe 13
+- id: Probe 14
   next_scene: __END_SCENARIO__
   end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
   state:
-    unstructured: 'Imagine that you are deployed as a military medic in a foreign
-      country. You are the only medic with your unit. It will be at least 30 minutes
-      before any casualty can be evacuated.
-
-      Your squad is patrolling dismounted when it receives fire from a sniper and
-      sustains one casualty. Your unit does not have a good idea of the suspected
-      sniper location. You have not received any additional fire in the last 5 minutes.
+    unstructured: 'Your platoon is patrolling dismounted when your point squad encounters
+      what seems to be an observation post and sustains one casualty. Your squad exchanged
+      fire. You have not received any additional fire in the last 2 minutes.
 
       The casualty is in an exposed location and you would need to move across 100
-      ft of exposed area to reach them. They are may have a broken leg.
+      ft of exposed area to reach them. They may have a broken leg.
 
       You are currently in a location with cover. Do you move to treat the casualty
       now, or wait in your current location?'
@@ -319,35 +330,39 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: The casualty is in an exposed location and you would need to move
-        across 100 ft of exposed area to reach them. They are may have a broken leg.
+        across 100 ft of exposed area to reach them. They may have a broken leg.
       medical_condition: 0.074666667
-      attribute_rating: 0.132077225
+      attribute_rating: 0.336807085
     - id: Patient B
       name: Patient B
-      unstructured: Your squad is patrolling dismounted when it receives fire from
-        a sniper and sustains one casualty. Your unit does not have a good idea of
-        the suspected sniper location. You have not received any additional fire in
-        the last 5 minutes.
+      unstructured: Your platoon is patrolling dismounted when your point squad encounters
+        what seems to be an observation post and sustains one casualty. Your squad
+        exchanged fire. You have not received any additional fire in the last 2 minutes.
       medical_condition: 0.0
       attribute_rating: 1.0
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You are the only medic with your unit. It will be at least 30 minutes
+        before any casualty can be evacuated.
+      threats: []
   action_mapping:
   - action_id: move_to_treat_the_casualty_now
     action_type: TREAT_PATIENT
     unstructured: Move to treat the casualty now
     character_id: Patient A
-    probe_id: Probe 13
-    choice: Response 13-A
+    probe_id: Probe 14
+    choice: Response 14-A
     kdma_association:
       medical: 0.074666667
-      personal_safety: 0.132077225
+      personal_safety: 0.336807085
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
     unstructured: Wait in your current location
-    probe_id: Probe 13
-    choice: Response 13-B
+    probe_id: Probe 14
+    choice: Response 14-B
     kdma_association:
       medical: 0.0
       personal_safety: 1.0
   transitions:
     probes:
-    - Probe 13
+    - Probe 14

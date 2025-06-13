@@ -1569,6 +1569,90 @@ def version5_setup():
     tool.export_survey_json(os.path.join("survey-configs", "surveyConfig5x.json"))
 
 
+def version6_setup():
+    """
+    Creates survey version 6.0 using Phase 2 converted medics.
+    This version uses the new dynamic-template-phase-2 element type.
+    """
+    tool = DelegationTool(6.0)
+    tool.clear_survey_version()
+
+    # Add participant ID page
+    exp_page_1 = {
+        "name": "Participant ID Page",
+        "elements": [
+            {
+                "type": "text",
+                "name": "Participant ID",
+                "title": "Enter Participant ID:",
+                "isRequired": True
+            }
+        ]
+    }
+    tool.add_page_by_json(exp_page_1)
+
+    # Add warning page for invalid participant IDs
+    warning_page = {
+        "name": "PID Warning",
+        "elements": [
+            {
+                "type": "expression",
+                "name": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing.",
+                "title": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing."
+            }
+        ]
+    }
+    tool.add_page_by_json(warning_page)
+
+    intro_page = {
+            "name": "Survey Introduction",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "Survey5 Introduction",
+                    "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how three different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+                }
+            ]
+        }
+    tool.add_page_by_json(intro_page)
+
+    # Add note page from existing configs
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "surveyConfig2x.json"), "Note page", None
+    )
+
+
+    phase2_medics = tool.medics_mongo_collection.find({"evalNumber": 8})
+    
+    medic_count = 0
+    for medic_doc in phase2_medics:
+        medic_copy = copy.deepcopy(medic_doc)
+        if '_id' in medic_copy:
+            del medic_copy['_id']
+        
+        tool.survey["pages"].append(medic_copy)
+        medic_count += 1
+        
+        tool.changes_summary.append(
+            f"Added Phase 2 medic '{medic_copy['name']}' to survey"
+        )
+    
+    LOGGER.log(LogLevel.INFO, f"Added {medic_count} Phase 2 medics to survey version 6.0")
+
+
+    # Add final page - post-scenario measures
+    tool.import_page_from_json(
+        os.path.join("survey-configs", "postScenario.json"),
+        "Post-Scenario Measures",
+        None,
+    )
+
+    # Save changes
+    tool.push_changes()
+    tool.export_survey_json(os.path.join("survey-configs", "surveyConfig6x.json"))
+    
+    LOGGER.log(LogLevel.CRITICAL_INFO, f"Survey version 6.0 created successfully with {medic_count} Phase 2 medics!")
+
 if __name__ == "__main__":
     LOGGER.log(LogLevel.CRITICAL_INFO, "Welcome to the Delegation Survey Tool")
     LOGGER.log(
@@ -1578,7 +1662,7 @@ if __name__ == "__main__":
     resp = input("")
     if resp == "":
         resp = input(
-            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Do Nothing\n\t3. Setup survey version 3.0\n\t4. Setup survey version 4.0\n\t5. Setup survey version 5.0\n"
+            "Would you like to:\n\t1. Complete the one time intialization\n\t2. Do Nothing\n\t3. Setup survey version 3.0\n\t4. Setup survey version 4.0\n\t5. Setup survey version 5.0\n\t6. Setup survey version 6.0"
         )
         if resp == "1":
             one_time_db_initialization()
@@ -1590,6 +1674,8 @@ if __name__ == "__main__":
             version4_setup()
         elif resp == "5":
             version5_setup()
+        elif resp == "6":
+            version6_setup()
         else:
             LOGGER.log(LogLevel.WARN, "Option not recognized. Exiting...")
         exit(0)

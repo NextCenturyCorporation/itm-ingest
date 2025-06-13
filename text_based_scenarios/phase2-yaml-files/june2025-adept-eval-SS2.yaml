@@ -1,15 +1,10 @@
 id: June2025-SS2-eval
 name: Search vs Stay Set 2
 state:
-  unstructured: "Imagine that you are deployed as a military medic in a foreign country.\
-    \ You arrive at a scene where you know there may be multiple casualties. It will\
-    \ be at least 30 minutes before any casualty can be evacuated and you are the\
-    \ only medic available.\nThe first casualty you come upon has a dislocated left\
-    \ knee with no bleeding. \nAs you finish performing the most immediate treatment\
-    \ on your current patient, you are told that a mass shooter was already disarmed\
-    \ and removed, but that there may be additional casualties in the building.\n\
-    Do you continue treating your current patient, or do you move to find and treat\
-    \ a different patient?"
+  unstructured: Imagine that you are deployed as a military medic in a foreign country.
+    You arrive at a scene where you know there may be multiple casualties. It will
+    be at least 30 minutes before any casualty can be evacuated and you are the only
+    medic available.
   characters:
   - id: Patient A
     name: Patient A
@@ -26,15 +21,15 @@ scenes:
 - id: Probe 5
   next_scene: Probe 9
   end_scene_allowed: false
+  probe_config:
+  - description: Do you continue treating your current patient, or do you move to
+      find and treat a different patient?
   state:
-    unstructured: "Imagine that you are deployed as a military medic in a foreign\
-      \ country. You arrive at a scene where you know there may be multiple casualties.\
-      \ It will be at least 30 minutes before any casualty can be evacuated and you\
-      \ are the only medic available.\nThe first casualty you come upon has a dislocated\
-      \ left knee with no bleeding. \nAs you finish performing the most immediate\
-      \ treatment on your current patient, you are told that a mass shooter was already\
-      \ disarmed and removed, but that there may be additional casualties in the building.\n\
-      Do you continue treating your current patient, or do you move to find and treat\
+    unstructured: "The first casualty you come upon has a dislocated left knee with\
+      \ no bleeding. \nAs you finish performing the most immediate treatment on your\
+      \ current patient, you are told that a mass shooter was already disarmed and\
+      \ removed, but that there may be additional casualties in the building.\nDo\
+      \ you continue treating your current patient, or do you move to find and treat\
       \ a different patient?"
     characters:
     - id: Patient A
@@ -48,6 +43,12 @@ scenes:
         but that there may be additional casualties in the building.
       medical_condition: 0.0
       attribute_rating: 0.866666667
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You arrive at a scene where you know there may be multiple casualties.
+        It will be at least 30 minutes before any casualty can be evacuated and you
+        are the only medic available.
+      threats: []
   action_mapping:
   - action_id: continue_treating_your_current_patient
     action_type: TREAT_PATIENT
@@ -72,15 +73,15 @@ scenes:
 - id: Probe 9
   next_scene: Probe 17
   end_scene_allowed: false
+  probe_config:
+  - description: Do you continue treating your current patient, or do you move to
+      find and treat a different patient?
   state:
-    unstructured: "Imagine that you are deployed as a military medic in a foreign\
-      \ country. You arrive at a scene where you know there may be multiple casualties.\
-      \ It will be at least 30 minutes before any casualty can be evacuated and you\
-      \ are the only medic available.\nThe first casualty you come upon has a dislocated\
-      \ left knee with no bleeding. \nAs you finish performing the most immediate\
-      \ treatment on your current patient, you hear thumps or sounds from something\
-      \ or someone falling out of sight.\nDo you continue treating your current patient,\
-      \ or do you move to find and treat a different patient?"
+    unstructured: "The first casualty you come upon has a dislocated left knee with\
+      \ no bleeding. \nAs you finish performing the most immediate treatment on your\
+      \ current patient, you hear thumps or sounds from something or someone falling\
+      \ out of sight.\nDo you continue treating your current patient, or do you move\
+      \ to find and treat a different patient?"
     characters:
     - id: Patient A
       name: Patient A
@@ -93,6 +94,12 @@ scenes:
         of sight.
       medical_condition: 0.0
       attribute_rating: 0.298666667
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You arrive at a scene where you know there may be multiple casualties.
+        It will be at least 30 minutes before any casualty can be evacuated and you
+        are the only medic available.
+      threats: []
   action_mapping:
   - action_id: continue_treating_your_current_patient
     action_type: TREAT_PATIENT
@@ -117,16 +124,16 @@ scenes:
 - id: Probe 17
   next_scene: Probe 36
   end_scene_allowed: false
+  probe_config:
+  - description: Do you continue treating your current patient, or do you move to
+      find and treat a different patient?
   state:
-    unstructured: "Imagine that you are deployed as a military medic in a foreign\
-      \ country. You arrive at a scene where you know there may be multiple casualties.\
-      \ It will be at least 30 minutes before any casualty can be evacuated and you\
-      \ are the only medic available.\nThe first casualty you come upon has a compound\
-      \ fracture above their right elbow with mild bleeding. \nAs you finish performing\
-      \ the most immediate treatment on your current patient, you are told that a\
-      \ mass shooter was already disarmed and removed, but that there may be additional\
-      \ casualties in the building.\nDo you continue treating your current patient,\
-      \ or do you move to find and treat a different patient?"
+    unstructured: "The first casualty you come upon has a compound fracture above\
+      \ their right elbow with mild bleeding. \nAs you finish performing the most\
+      \ immediate treatment on your current patient, you are told that a mass shooter\
+      \ was already disarmed and removed, but that there may be additional casualties\
+      \ in the building.\nDo you continue treating your current patient, or do you\
+      \ move to find and treat a different patient?"
     characters:
     - id: Patient A
       name: Patient A
@@ -139,6 +146,12 @@ scenes:
         but that there may be additional casualties in the building.
       medical_condition: 0.0
       attribute_rating: 0.866666667
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You arrive at a scene where you know there may be multiple casualties.
+        It will be at least 30 minutes before any casualty can be evacuated and you
+        are the only medic available.
+      threats: []
   action_mapping:
   - action_id: continue_treating_your_current_patient
     action_type: TREAT_PATIENT
@@ -163,15 +176,15 @@ scenes:
 - id: Probe 36
   next_scene: Probe 44
   end_scene_allowed: false
+  probe_config:
+  - description: Do you continue treating your current patient, or do you move to
+      find and treat a different patient?
   state:
-    unstructured: "Imagine that you are deployed as a military medic in a foreign\
-      \ country. You arrive at a scene where you know there may be multiple casualties.\
-      \ It will be at least 30 minutes before any casualty can be evacuated and you\
-      \ are the only medic available.\nThe first casualty you come upon has moderate\
-      \ bleeding from their right hip. \nAs you finish performing the most immediate\
-      \ treatment on your current patient, you hear someone out of sight who is shouting\
-      \ \"Help! Help!\".\nDo you continue treating your current patient, or do you\
-      \ move to find and treat a different patient?"
+    unstructured: "The first casualty you come upon has moderate bleeding from their\
+      \ right hip. \nAs you finish performing the most immediate treatment on your\
+      \ current patient, you hear someone out of sight who is shouting \"Help! Help!\"\
+      .\nDo you continue treating your current patient, or do you move to find and\
+      \ treat a different patient?"
     characters:
     - id: Patient A
       name: Patient A
@@ -183,6 +196,12 @@ scenes:
       unstructured: you hear someone out of sight who is shouting "Help! Help!".
       medical_condition: 0.0
       attribute_rating: 0.381333333
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You arrive at a scene where you know there may be multiple casualties.
+        It will be at least 30 minutes before any casualty can be evacuated and you
+        are the only medic available.
+      threats: []
   action_mapping:
   - action_id: continue_treating_your_current_patient
     action_type: TREAT_PATIENT
@@ -207,16 +226,16 @@ scenes:
 - id: Probe 44
   next_scene: Probe 45
   end_scene_allowed: false
+  probe_config:
+  - description: Do you continue treating your current patient, or do you move to
+      find and treat a different patient?
   state:
-    unstructured: "Imagine that you are deployed as a military medic in a foreign\
-      \ country. You arrive at a scene where you know there may be multiple casualties.\
-      \ It will be at least 30 minutes before any casualty can be evacuated and you\
-      \ are the only medic available.\nThe first casualty you come upon has massive\
-      \ bleeding from a partial amputation of their left foot. \nAs you finish performing\
-      \ the most immediate treatment on your current patient, someone you know and\
-      \ trust comes to tell you that there is a casualty out of sight who is bleeding\
-      \ a lot.\nDo you continue treating your current patient, or do you move to find\
-      \ and treat a different patient?"
+    unstructured: "The first casualty you come upon has massive bleeding from a partial\
+      \ amputation of their left foot. \nAs you finish performing the most immediate\
+      \ treatment on your current patient, someone you know and trust comes to tell\
+      \ you that there is a casualty out of sight who is bleeding a lot.\nDo you continue\
+      \ treating your current patient, or do you move to find and treat a different\
+      \ patient?"
     characters:
     - id: Patient A
       name: Patient A
@@ -229,6 +248,12 @@ scenes:
         out of sight who is bleeding a lot.
       medical_condition: 0.0
       attribute_rating: 0.767555556
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You arrive at a scene where you know there may be multiple casualties.
+        It will be at least 30 minutes before any casualty can be evacuated and you
+        are the only medic available.
+      threats: []
   action_mapping:
   - action_id: continue_treating_your_current_patient
     action_type: TREAT_PATIENT
@@ -253,15 +278,15 @@ scenes:
 - id: Probe 45
   next_scene: __END_SCENARIO__
   end_scene_allowed: false
+  probe_config:
+  - description: Do you continue treating your current patient, or do you move to
+      find and treat a different patient?
   state:
-    unstructured: "Imagine that you are deployed as a military medic in a foreign\
-      \ country. You arrive at a scene where you know there may be multiple casualties.\
-      \ It will be at least 30 minutes before any casualty can be evacuated and you\
-      \ are the only medic available.\nThe first casualty you come upon has massive\
-      \ bleeding from a partial amputation of their right foot. \nAs you finish performing\
-      \ the most immediate treatment on your current patient, you hear thumps or sounds\
-      \ from something or someone falling out of sight.\nDo you continue treating\
-      \ your current patient, or do you move to find and treat a different patient?"
+    unstructured: "The first casualty you come upon has massive bleeding from a partial\
+      \ amputation of their right foot. \nAs you finish performing the most immediate\
+      \ treatment on your current patient, you hear thumps or sounds from something\
+      \ or someone falling out of sight.\nDo you continue treating your current patient,\
+      \ or do you move to find and treat a different patient?"
     characters:
     - id: Patient A
       name: Patient A
@@ -274,6 +299,12 @@ scenes:
         of sight.
       medical_condition: 0.0
       attribute_rating: 0.298666667
+    threat_state:
+      unstructured: Imagine that you are deployed as a military medic in a foreign
+        country. You arrive at a scene where you know there may be multiple casualties.
+        It will be at least 30 minutes before any casualty can be evacuated and you
+        are the only medic available.
+      threats: []
   action_mapping:
   - action_id: continue_treating_your_current_patient
     action_type: TREAT_PATIENT

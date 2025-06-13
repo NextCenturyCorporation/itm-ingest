@@ -19,13 +19,15 @@ def create_page(scene, doc):
         'elements': []
     }
 
-    unstructured = scene['state']['unstructured']
+    common_unstructured = scene['state']['threat_state']['unstructured']
+    probe_unstructured = scene['state']['unstructured']
 
     template_element = {
         'name': 'template ' + str(page['name']),
         'title': ' ',
         'type': 'phase2Text' ,
-        'unstructured': unstructured
+        'common_unstructured': common_unstructured,
+        'probe_unstructured': probe_unstructured
     } 
 
     page['elements'].append(template_element)
@@ -72,7 +74,6 @@ def process_scenario(scenario):
     doc = add_surveyjs_configs(doc)
 
     for scene in scenario['scenes']:
-        # this will need to be replaced with if scene[id] in list of selected probes (i dont have yet)
         if scene['id']:
             new_page = create_page(scene, doc)
             doc['pages'].append(new_page)
@@ -118,7 +119,9 @@ def main(mongo_db):
 
     for filename in os.listdir(phase2_folder):
         file_path = os.path.join(phase2_folder, filename)
-
+        # don't gen multi kdma 
+        if "AF-MF" in filename:
+            continue
         try:
             with open(file_path, 'r') as file:
                 scenario = yaml.safe_load(file)

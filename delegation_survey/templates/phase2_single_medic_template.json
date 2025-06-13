@@ -1,0 +1,144 @@
+{
+    "name": "Test phase 2 medic",
+    "scenarioIndex": 0,
+    "pageType": "singleMedic",
+    "elements": [
+        {
+            "type": "dynamic-template-phase-2",
+            "name": "Test medic 1",
+            "title": "Phase 2 Mockup",
+            "probe_question": "Who do you treat first?",
+            "options": [
+                "Move to treat the casualty now",
+                "Wait in your current location"
+            ],
+            "scenarioDescription": "Imagine that you are deployed as a military medic in a foreign country. You are the only medic with your unit. It will be at least 30 minutes before any casualty can be evacuated.",
+            "supplies": [
+                {
+                    "type": "Hemostatic gauze",
+                    "quantity": 1
+                },
+                {
+                    "type": "Tourniquet",
+                    "quantity": 1
+                },
+                {
+                    "type": "Pressure bandage",
+                    "quantity": 1
+                },
+                {
+                    "type": "Decompression Needle",
+                    "quantity": 1
+                },
+                {
+                    "type": "Nasopharyngeal airway",
+                    "quantity": 1
+                },
+                {
+                    "type": "Pulse Oximeter",
+                    "quantity": 1,
+                    "reusable": true
+                },
+                {
+                    "type": "Blanket",
+                    "quantity": 1
+                },
+                {
+                    "type": "Epi Pen",
+                    "quantity": 1,
+                    "reusable": false
+                },
+                {
+                    "type": "Vented Chest Seal",
+                    "quantity": 1
+                },
+                {
+                    "type": "Pain Medications",
+                    "quantity": 1
+                },
+                {
+                    "type": "Splint",
+                    "quantity": 1
+                },
+                {
+                    "type": "Blood",
+                    "quantity": 1
+                }
+            ],
+            "rows": [
+                {
+                    "choice": "Move to treat the casualty now",
+                    "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes. The casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location. You are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                },
+                {
+                    "choice": "Move to treat the casualty now",
+                    "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes. The casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. You are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                },
+                {
+                    "choice": "Wait in your current location",
+                    "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes. The casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. You are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                },
+                {
+                    "choice": "Wait in your current location",
+                    "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes. The casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. You are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                },
+                {
+                    "choice": "Move to treat the casualty now",
+                    "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes. The casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. You are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                }
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "name": "Test medic 1: Do you agree with the decision that this medic made?",
+            "title": "Do you agree with the decision that this medic made?",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+            "title": "The way this medic makes medical decisions is how I make decisions",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Test medic 1: this medic is trustworthy",
+            "title": "This medic is trustworthy",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        },
+        {
+            "type": "radiogroup",
+            "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+            "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+            "choices": [
+                "Strongly disagree",
+                "Disagree",
+                "Neither agree nor disagree",
+                "Agree",
+                "Strongly agree"
+            ],
+            "isRequired": true
+        }
+    ]
+}
