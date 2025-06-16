@@ -1642,7 +1642,7 @@ def version6_setup():
 
     # Add final page - post-scenario measures
     tool.import_page_from_json(
-        os.path.join("survey-configs", "postScenario.json"),
+        os.path.join("survey-configs", "postScenarioPhase2.json"),
         "Post-Scenario Measures",
         None,
     )
