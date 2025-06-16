@@ -63,25 +63,13 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "question1",
+                    "name": "How would you describe your experience with virtual reality technology",
                     "title": "How would you describe your experience with virtual reality technology?",
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "No experience"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Limited experience (used VR once or twice)"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Moderate experience (occasional VR user)"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Extensive experience (regular VR user)"
-                        }
+                        "No experience",
+                        "Limited experience (used VR once or twice)",
+                        "Moderate experience (occasional VR user)",
+                        "Extensive experience (regular VR user)"
                     ]
                 },
                 {
@@ -90,38 +78,14 @@
                     "title": "What is your current role? (choose all that apply):",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Medical student"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Resident"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Physician"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Physician's Assistant"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Nurse"
-                        },
-                        {
-                            "value": "Item 6",
-                            "text": "EMT"
-                        },
-                        {
-                            "value": "Item 7",
-                            "text": "Paramedic"
-                        },
-                        {
-                            "value": "Item 8",
-                            "text": "Military Medicine"
-                        }
+                        "Medical student",
+                        "Resident",
+                        "Physician",
+                        "Physician's Assistant",
+                        "Nurse",
+                        "EMT",
+                        "Paramedic",
+                        "Military Medicine"
                     ],
                     "showOtherItem": true,
                     "otherText": "Other (please specify)"
@@ -139,26 +103,11 @@
                     "title": "How many years of experience do you have in your current medical role?",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Less than 1 year"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "1-3 years"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "4-10 years"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "11-20 years"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "More than 20 years"
-                        }
+                        "Less than 1 year",
+                        "1-3 years",
+                        "4-10 years",
+                        "11-20 years",
+                        "More than 20 years"
                     ]
                 },
                 {
@@ -167,34 +116,13 @@
                     "title": "What is your primary practice environment?",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Urban hospital"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Rural hospital"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Community clinic"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Military installation; Deployed environment"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Academic medical center"
-                        },
-                        {
-                            "value": "Item 6",
-                            "text": "Prehospital/EMS"
-                        },
-                        {
-                            "value": "Item 7",
-                            "text": "Private practice office"
-                        }
+                        "Urban hospital",
+                        "Rural hospital",
+                        "Community clinic",
+                        "Military installation; Deployed environment",
+                        "Academic medical center",
+                        "Prehospital/EMS",
+                        "Private practice office"
                     ],
                     "showOtherItem": true,
                     "otherText": "Other (please specify)"
@@ -204,26 +132,11 @@
                     "name": "Have you participated in mass casualty events",
                     "title": "Have you participated in mass casualty events?",
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "No"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Yes, in training exercises only"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Yes, 1-2 real events"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Yes, 3-5 real events"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Yes, more than 5 real events"
-                        }
+                        "No",
+                        "Yes, in training exercises only",
+                        "Yes, 1-2 real events",
+                        "Yes, 3-5 real events",
+                        "Yes, more than 5 real events"
                     ]
                 },
                 {
@@ -231,58 +144,25 @@
                     "name": "Served in Military",
                     "title": "Are you currently or have you previously served in the military?",
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Currently serving (Active)"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Currently serving (Reserves/Guard)"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Veteran (Retired/Separated)"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Never Served"
-                        }
+                        "Currently serving (Active)",
+                        "Currently serving (Reserves/Guard)",
+                        "Veteran (Retired/Separated)",
+                        "Never Served"
                     ]
                 },
                 {
                     "type": "radiogroup",
                     "name": "Military Branch",
-                    "visibleIf": "{Served in Military} anyof ['Item 1', 'Item 2', 'Item 3']",
+                    "visibleIf": "{Served in Military} anyof ['Currently serving (Active)', 'Currently serving (Reserves/Guard)', 'Veteran (Retired/Separated)']",
                     "title": "If you have military experience, which branch(es)?",
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Army"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Navy"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Air Force"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Marines"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Coast Guard"
-                        },
-                        {
-                            "value": "Item 6",
-                            "text": "Space Force"
-                        },
-                        {
-                            "value": "Item 7",
-                            "text": "USPHS"
-                        }
+                        "Army",
+                        "Navy",
+                        "Air Force",
+                        "Marines",
+                        "Coast Guard",
+                        "Space Force",
+                        "USPHS"
                     ],
                     "showOtherItem": true,
                     "otherText": "Other (please specify)"
@@ -290,91 +170,49 @@
                 {
                     "type": "radiogroup",
                     "name": "Did you serve in a military medical role",
-                    "visibleIf": "{Served in Military} anyof ['Item 1', 'Item 2', 'Item 3']",
+                    "visibleIf": "{Served in Military} anyof ['Currently serving (Active)', 'Currently serving (Reserves/Guard)', 'Veteran (Retired/Separated)']",
                     "title": "Did you serve in a military medical role?",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Yes"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "No"
-                        }
+                        "Yes",
+                        "No"
                     ]
                 },
                 {
                     "type": "text",
-                    "name": "question2",
-                    "visibleIf": "{Did you serve in a military medical role} = 'Item 1'",
+                    "name": "What was/is your medical-related MOS or rate",
+                    "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
                     "title": "What was/is your medical-related MOS or rate? Please Specify (your response might look like 8404- Field Medical Service Technician; 68W- Combat Medic Specialist; 46F Flight Nurse, etc,)",
                     "isRequired": true
                 },
                 {
                     "type": "radiogroup",
-                    "name": "question3",
-                    "visibleIf": "{Did you serve in a military medical role} = 'Item 1'",
+                    "name": "How many years of experience do you have serving in a medical role in the military",
+                    "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
                     "title": "How many years of experience do you have serving in a medical role in the military?",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Less than 1 year"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "1-3 years"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "4-10 years"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "11-20 years"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "More than 20 years"
-                        }
+                        "Less than 1 year",
+                        "1-3 years",
+                        "4-10 years",
+                        "11-20 years",
+                        "More than 20 years"
                     ]
                 },
                 {
                     "type": "checkbox",
-                    "name": "question4",
-                    "visibleIf": "{Did you serve in a military medical role} = 'Item 1'",
+                    "name": "In which environments have you provided medical care during military service",
+                    "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
                     "title": "In which environments have you provided medical care during military service? (Select all that apply)",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Desert/Arid"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Urban"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Jungle/Tropical"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Maritime"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Arctic/Extreme Cold"
-                        },
-                        {
-                            "value": "Item 6",
-                            "text": "Mountain"
-                        },
-                        {
-                            "value": "Item 7",
-                            "text": "None"
-                        }
+                        "Desert/Arid",
+                        "Urban",
+                        "Jungle/Tropical",
+                        "Maritime",
+                        "Arctic/Extreme Cold",
+                        "Mountain",
+                        "None"
                     ],
                     "showOtherItem": true,
                     "otherText": "Other (please specify)"
@@ -382,87 +220,42 @@
                 {
                     "type": "radiogroup",
                     "name": "When did you last complete TCCC training or recertification",
-                    "visibleIf": "{Did you serve in a military medical role} = 'Item 1'",
+                    "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
                     "title": "When did you last complete TCCC training or recertification? ",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Within the last 6 months"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "6-12 months ago"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "1-2 years ago"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "More than 2 years ago"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Never completed"
-                        }
+                        "Within the last 6 months",
+                        "6-12 months ago",
+                        "1-2 years ago",
+                        "More than 2 years ago",
+                        "Never completed"
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "question6",
-                    "visibleIf": "{When did you last complete TCCC training or recertification} <> 'Item 5'",
+                    "name": "How would you rate your expertise with TCCC procedures",
+                    "visibleIf": "{When did you last complete TCCC training or recertification} anyof ['Within the last 6 months', '6-12 months ago', '1-2 years ago', 'More than 2 years ago']",
                     "title": "How would you rate your expertise with TCCC procedures?",
                     "isRequired": true,
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "Novice (limited experience)"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "Intermediate (some experience)"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "Proficient (regular experience)"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "Expert (extensive experience)"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "Master (can teach others)"
-                        }
+                        "Novice (limited experience)",
+                        "Intermediate (some experience)",
+                        "Proficient (regular experience)",
+                        "Expert (extensive experience)",
+                        "Master (can teach others)"
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "question5",
-                    "visibleIf": "{When did you last complete TCCC training or recertification} <> 'Item 5'",
+                    "name": "How many real-world casualties have you assessed using TCCC protocols",
+                    "visibleIf": "{When did you last complete TCCC training or recertification} anyof ['Within the last 6 months', '6-12 months ago', '1-2 years ago', 'More than 2 years ago']",
                     "title": "How many real-world casualties have you assessed using TCCC protocols?",
                     "choices": [
-                        {
-                            "value": "Item 1",
-                            "text": "None"
-                        },
-                        {
-                            "value": "Item 2",
-                            "text": "1-5"
-                        },
-                        {
-                            "value": "Item 3",
-                            "text": "6-15"
-                        },
-                        {
-                            "value": "Item 4",
-                            "text": "16-30"
-                        },
-                        {
-                            "value": "Item 5",
-                            "text": "More than 30"
-                        }
+                        "None",
+                        "1-5",
+                        "6-15",
+                        "16-30",
+                        "More than 30"
                     ]
                 },
                 {
