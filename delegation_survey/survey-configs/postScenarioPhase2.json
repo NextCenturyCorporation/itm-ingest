@@ -63,6 +63,45 @@
         },
         {
           "type": "radiogroup",
+          "name": "I feel that people are generally reliable",
+          "title": "I feel that people are generally reliable",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I usually trust people until they give me a reason not to trust them",
+          "title": "I usually trust people until they give me a reason not to trust them",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Trusting another person is not difficult for me",
+          "title": "Trusting another person is not difficult for me",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
           "name": "How would you describe your experience with virtual reality technology",
           "title": "How would you describe your experience with virtual reality technology?",
           "isRequired": true,
@@ -260,45 +299,6 @@
             "6-15",
             "16-30",
             "More than 30"
-          ]
-        },
-        {
-          "type": "radiogroup",
-          "name": "I feel that people are generally reliable",
-          "title": "I feel that people are generally reliable",
-          "isRequired": true,
-          "choices": [
-            "Strongly disagree",
-            "Disagree",
-            "Neither agree nor disagree",
-            "Agree",
-            "Strongly agree"
-          ]
-        },
-        {
-          "type": "radiogroup",
-          "name": "I usually trust people until they give me a reason not to trust them",
-          "title": "I usually trust people until they give me a reason not to trust them",
-          "isRequired": true,
-          "choices": [
-            "Strongly disagree",
-            "Disagree",
-            "Neither agree nor disagree",
-            "Agree",
-            "Strongly agree"
-          ]
-        },
-        {
-          "type": "radiogroup",
-          "name": "Trusting another person is not difficult for me",
-          "title": "Trusting another person is not difficult for me",
-          "isRequired": true,
-          "choices": [
-            "Strongly disagree",
-            "Disagree",
-            "Neither agree nor disagree",
-            "Agree",
-            "Strongly agree"
           ]
         }
       ]
