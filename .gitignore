@@ -15,10 +15,3 @@ adept-evals/eval4/*.json
 adept-evals/eval4/*.py
 
 dev_scripts/*.csv
-
-# don't want to track survey configs
-delegation_survey/survey-configs/*.json
-
-# want to track these pages used in update_survey_config.py
-!delegation_survey/survey-configs/postScenario.json
-!delegation_survey/survey-configs/postScenarioPhase2.json
