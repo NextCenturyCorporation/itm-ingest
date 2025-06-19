@@ -1,0 +1,307 @@
+{
+    "pages": [
+    {
+      "name": "Post-Scenario Measures",
+      "elements": [
+        {
+          "type": "comment",
+          "name": "What was the biggest influence on your delegation decision between different medics?",
+          "title": "What was the biggest influence on your delegation decision between different medics?",
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
+          "title": "As I was reading through the scenarios and Medic decisions, I actively thought about how I would handle the same situation",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I was easily able to imagine myself as the medic in these scenarios",
+          "title": "I was easily able to imagine myself as the medic in these scenarios",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
+          "title": "I could easily draw from an experience / similar situation to imagine myself as the medics in these scenarios",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
+          "title": "I had enough information in this presentation to make the ratings for the questions asked on the previous pages about the DMs",
+          "isRequired": true,
+          "choices": [
+            "Way too much",
+            "Too much",
+            "Just right",
+            "Too Little",
+            "Way too little"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I feel that people are generally reliable",
+          "title": "I feel that people are generally reliable",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "I usually trust people until they give me a reason not to trust them",
+          "title": "I usually trust people until they give me a reason not to trust them",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Trusting another person is not difficult for me",
+          "title": "Trusting another person is not difficult for me",
+          "isRequired": true,
+          "choices": [
+            "Strongly disagree",
+            "Disagree",
+            "Neither agree nor disagree",
+            "Agree",
+            "Strongly agree"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "How would you describe your experience with virtual reality technology",
+          "title": "How would you describe your experience with virtual reality technology?",
+          "isRequired": true,
+          "choices": [
+            "No experience",
+            "Limited experience (used VR once or twice)",
+            "Moderate experience (occasional VR user)",
+            "Extensive experience (regular VR user)"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "What is your current role",
+          "title": "What is your current role? (choose all that apply):",
+          "isRequired": true,
+          "choices": [
+            "Medical student",
+            "Resident",
+            "Physician",
+            "Physician's Assistant",
+            "Nurse",
+            "EMT",
+            "Paramedic",
+            "Military Medicine"
+          ],
+          "showOtherItem": true,
+          "otherText": "Other (please specify)"
+        },
+        {
+          "type": "comment",
+          "name": "question7",
+          "visibleIf": "{What is your current role} notempty",
+          "title": "Specify specialty, level, year or other specific information about your role",
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "Years of experience in role",
+          "title": "How many years of experience do you have in your current medical role?",
+          "isRequired": true,
+          "choices": [
+            "Less than 1 year",
+            "1-3 years",
+            "4-10 years",
+            "11-20 years",
+            "More than 20 years"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Primary practice environment",
+          "title": "What is your primary practice environment?",
+          "isRequired": true,
+          "choices": [
+            "Urban hospital",
+            "Rural hospital",
+            "Community clinic",
+            "Military installation; Deployed environment",
+            "Academic medical center",
+            "Prehospital/EMS",
+            "Private practice office"
+          ],
+          "showOtherItem": true,
+          "otherText": "Other (please specify)"
+        },
+        {
+          "type": "radiogroup",
+          "name": "Have you participated in mass casualty events",
+          "title": "Have you participated in mass casualty events?",
+          "isRequired": true,
+          "choices": [
+            "No",
+            "Yes, in training exercises only",
+            "Yes, 1-2 real events",
+            "Yes, 3-5 real events",
+            "Yes, more than 5 real events"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "Served in Military",
+          "title": "Are you currently or have you previously served in the military?",
+          "isRequired": true,
+          "choices": [
+            "Currently serving (Active)",
+            "Currently serving (Reserves/Guard)",
+            "Veteran (Retired/Separated)",
+            "Never Served"
+          ]
+        },
+        {
+          "type": "checkbox",
+          "name": "Military Branch",
+          "visibleIf": "{Served in Military} anyof ['Currently serving (Active)', 'Currently serving (Reserves/Guard)', 'Veteran (Retired/Separated)']",
+          "title": "If you have military experience, which branch(es)?",
+          "isRequired": true,
+          "choices": [
+            "Army",
+            "Navy",
+            "Air Force",
+            "Marines",
+            "Coast Guard",
+            "Space Force",
+            "USPHS"
+          ],
+          "showOtherItem": true,
+          "otherText": "Other (please specify)"
+        },
+        {
+          "type": "radiogroup",
+          "name": "Did you serve in a military medical role",
+          "visibleIf": "{Served in Military} anyof ['Currently serving (Active)', 'Currently serving (Reserves/Guard)', 'Veteran (Retired/Separated)']",
+          "title": "Did you serve in a military medical role?",
+          "isRequired": true,
+          "choices": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "type": "text",
+          "name": "What was/is your medical-related MOS or rate",
+          "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
+          "title": "What was/is your medical-related MOS or rate? Please Specify (your response might look like 8404- Field Medical Service Technician; 68W- Combat Medic Specialist; 46F Flight Nurse, etc,)",
+          "isRequired": true
+        },
+        {
+          "type": "radiogroup",
+          "name": "How many years of experience do you have serving in a medical role in the military",
+          "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
+          "title": "How many years of experience do you have serving in a medical role in the military?",
+          "isRequired": true,
+          "choices": [
+            "Less than 1 year",
+            "1-3 years",
+            "4-10 years",
+            "11-20 years",
+            "More than 20 years"
+          ]
+        },
+        {
+          "type": "checkbox",
+          "name": "In which environments have you provided medical care during military service",
+          "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
+          "title": "In which environments have you provided medical care during military service? (Select all that apply)",
+          "isRequired": true,
+          "choices": [
+            "Desert/Arid",
+            "Urban",
+            "Jungle/Tropical",
+            "Maritime",
+            "Arctic/Extreme Cold",
+            "Mountain"
+          ],
+          "showOtherItem": true,
+          "showNoneItem": true,
+          "otherText": "Other (please specify)"
+        },
+        {
+          "type": "radiogroup",
+          "name": "When did you last complete TCCC training or recertification",
+          "visibleIf": "{Did you serve in a military medical role} = 'Yes'",
+          "title": "When did you last complete TCCC training or recertification? ",
+          "isRequired": true,
+          "choices": [
+            "Within the last 6 months",
+            "6-12 months ago",
+            "1-2 years ago",
+            "More than 2 years ago",
+            "Never completed"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "How would you rate your expertise with TCCC procedures",
+          "visibleIf": "{When did you last complete TCCC training or recertification} anyof ['Within the last 6 months', '6-12 months ago', '1-2 years ago', 'More than 2 years ago']",
+          "title": "How would you rate your expertise with TCCC procedures?",
+          "isRequired": true,
+          "choices": [
+            "Novice (limited experience)",
+            "Intermediate (some experience)",
+            "Proficient (regular experience)",
+            "Expert (extensive experience)",
+            "Master (can teach others)"
+          ]
+        },
+        {
+          "type": "radiogroup",
+          "name": "How many real-world casualties have you assessed using TCCC protocols",
+          "visibleIf": "{When did you last complete TCCC training or recertification} anyof ['Within the last 6 months', '6-12 months ago', '1-2 years ago', 'More than 2 years ago']",
+          "title": "How many real-world casualties have you assessed using TCCC protocols?",
+          "choices": [
+            "None",
+            "1-5",
+            "6-15",
+            "16-30",
+            "More than 30"
+          ]
+        }
+      ]
+    }
+  ]
+}

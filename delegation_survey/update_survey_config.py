@@ -1604,6 +1604,44 @@ def version6_setup():
     }
     tool.add_page_by_json(warning_page)
 
+    exp_page_2 = {
+            "name": "VR Page",
+            "elements": [
+                {
+                    "type": "radiogroup",
+                    "name": "VR Experience Level",
+                    "title": "How much experience did you have with VR Gaming before today?",
+                    "isRequired": True,
+                    "choices": [
+                        "0 - None at all",
+                        "1 - I have used it, but not often",
+                        "2 - I use it occasionally",
+                        "3 - I use it often",
+                        "4 - I use it all the time"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Comfort Level",
+                    "title": "After completing the VR experience, my current physical state is...",
+                    "isRequired": True,
+                    "choices": [
+                        "Very uncomfortable",
+                        "Slightly uncomfortable",
+                        "Neutral",
+                        "Comfortable",
+                        "Very comfortable"
+                    ]
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Discomfort",
+                    "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
+                }
+            ]
+    }
+    tool.add_page_by_json(exp_page_2)
+
     intro_page = {
             "name": "Survey Introduction",
             "elements": [
@@ -1642,7 +1680,7 @@ def version6_setup():
 
     # Add final page - post-scenario measures
     tool.import_page_from_json(
-        os.path.join("survey-configs", "postScenario.json"),
+        os.path.join("survey-configs", "postScenarioPhase2.json"),
         "Post-Scenario Measures",
         None,
     )
