@@ -14,7 +14,7 @@ RERUN_SESSIONS = False # rerun sessions only to get new session ids
 EVAL_NUM = 8
 EVAL_NAME = 'Phase 2 June 2025 Collaboration'
 EVAL_PREFIX = 'june2025'
-VERBOSE = True
+VERBOSE = False
 
 
 ADEPT_URL = config("ADEPT_URL")
@@ -107,7 +107,8 @@ class ProbeMatcher:
             pass
 
         filename = os.path.join('output', env.split('.yaml')[0] + f'{pid}.json')
-        print(f"This is where we would determine if we should run {filename}.")
+        if VERBOSE:
+            print(f"This is where we would determine if we should run {filename}.")
         #if not self.should_file_run(filename):
         #    return
         if VERBOSE:
@@ -548,6 +549,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input_dir', dest='input_dir', type=str, help='The path to the directory where all participant files are. Required.')
     parser.add_argument('-w', '--weekly', action='store_true', dest='is_weekly', help='A flag to determine if this is a weekly run. If weekly, global variables change.')
     parser.add_argument('-e', '--eval_num', dest='eval_num', type=int, help="The eval number to use during runtime")
+    parser.add_argument('-v', '--verbose', action='store_true', dest='is_verbose', help="Verbose command line output")
     args = parser.parse_args()
     removed = []
     if not args.input_dir:
@@ -559,6 +561,8 @@ if __name__ == '__main__':
         CALC_KDMAS = True
         RUN_ALL = False
         RERUN_SESSIONS = True
+    if args.is_verbose:
+        VERBOSE = True
     if args.eval_num:
         if args.eval_num == 8:
             EVAL_NAME = 'Phase 2 June 2025 Collaboration'
@@ -595,14 +599,16 @@ if __name__ == '__main__':
         try:
             pid = int(pid)
         except:
-            print(f"Trying to remove pid {pid}, parent file {os.path.join(parent)}.")
+            if VERBOSE:
+                print(f"Trying to remove pid {pid}, parent file {os.path.join(parent)}.")
             #os.system(f'rm -rf {os.path.join(parent)}')
             removed.append(parent)
             continue
         pid_in_log = participant_log_collection.count_documents({"ParticipantID": int(pid)}) > 0
 
         if not pid_in_log or not valid_date:
-            print(f"Trying to remove pid {pid}, parent directory {parent}.")
+            if VERBOSE:
+                print(f"Trying to remove pid {pid}, parent directory {parent}.")
             #os.system(f'rm -rf {parent}')
             removed.append(parent)
             continue
@@ -624,5 +630,6 @@ if __name__ == '__main__':
                         exit()
                 elif '.html' in f or '.jpg' in f:
                     os.remove(os.path.join(parent, f))
-    print()
-    print('Removed:', removed)
+    if VERBOSE:
+        print()
+        print('Removed:', removed)
