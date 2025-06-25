@@ -253,7 +253,7 @@ def main(mongo_db):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Converts TA1 csvs to scenario YAML files.')
+    parser = argparse.ArgumentParser(description='Generates ADM results for synthetically created random assessment subsets.')
     parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose logging')
     parser.add_argument('-n', '--no_output', action='store_true', required=False, default=False,
