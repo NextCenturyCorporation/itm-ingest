@@ -1,5 +1,6 @@
 import csv
 import argparse
+import os
 import random
 import requests
 from pymongo import MongoClient
@@ -104,7 +105,7 @@ def populate_probe_bins():
             continue
 
         full_name = kdma_info['full_name']
-        filename = f"{kdma_info['filename']}.csv"
+        filename = os.path.join('adept-csvs', EVALUATION_TYPE.lower(), f"{kdma_info['filename']}.csv")
         csvfile = open(filename, 'r', encoding='utf-8')
         reader: csv.DictReader = csv.DictReader(csvfile, fieldnames=expected_fields, restkey='junk')
         next(reader) # skip header
