@@ -12,7 +12,7 @@ CALC_KDMAS = False # send data to servers to calculate KDMA values if true
 RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RERUN_SESSIONS = False # rerun sessions only to get new session ids
 EVAL_NUM = 8
-EVAL_NAME = 'Phase 2 June 2025 Collaboration'
+EVAL_NAME = 'June 2025 Collaboration'
 EVAL_PREFIX = 'june2025'
 VERBOSE = False
 
