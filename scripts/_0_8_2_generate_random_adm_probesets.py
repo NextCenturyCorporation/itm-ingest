@@ -156,11 +156,11 @@ def populate_probe_bins():
 
 # Adapted from dbutils.send_probes
 def send_probes(probe_url, session_id, probes: dict, scenario)-> None:
-    for probe_id, response in probes.items():
+    for probe in probes:
         requests.post(probe_url, json={
             "response": {
-                "probe_id": probe_id,
-                "choice": response,
+                "probe_id": probe['probe_id'],
+                "choice": probe['choice'],
                 "justification": "justification",
                 "scenario_id": scenario,
             },
@@ -170,12 +170,15 @@ def send_probes(probe_url, session_id, probes: dict, scenario)-> None:
 
 """
     Create a ta1 session
-    Respond to the random probes based on adm_run['probe_responses']
+    Respond to the random probes based on the adm_run's probe_responses
     Calculate session alignment against adm_data[target] and get kdma values
 """
 def get_ta1_calculations(adm_data: Adm_data, probe_ids: list) -> Tuple[str, float, list]:
     session_id = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
-    send_probes(f'{ADEPT_URL}api/v1/response', session_id, adm_data.probe_responses, adm_data.scenario_id)
+    probes = []
+    for probe_id in probe_ids:
+        probes.append({'probe_id': probe_id, 'choice': adm_data.probe_responses[probe_id]})
+    send_probes(f'{ADEPT_URL}api/v1/response', session_id, probes, adm_data.scenario_id)
     session_alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={session_id}&target_id={adm_data.alignment_target_id}&population=false').json()
     kdmas = requests.get(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
     return session_id, session_alignment['score'], kdmas
@@ -184,6 +187,7 @@ def get_ta1_calculations(adm_data: Adm_data, probe_ids: list) -> Tuple[str, floa
 # Creating synthetic ADM runs based on random assessment probe subset
 """
   # Create synthetic ADM run for random assessment set
+  clear out previous synthetic runs for this evaluation
   for each kdma
     for as many configurable subsets are desired
         select a random probe from each bin, or 1 from each bin per kdma if multi-attribute
@@ -194,6 +198,7 @@ def get_ta1_calculations(adm_data: Adm_data, probe_ids: list) -> Tuple[str, floa
 """
 def create_synthetic_adm_runs(mongo_db):
     adm_collection = mongo_db['admTargetRuns']
+    adm_collection.delete_many({'evalNumber': EVAL_NUM, 'synthetic': True})
     total_synthetic_adm_runs = 0
     for kdma_info in kdmas_info:
         acronym = kdma_info['acronym']
@@ -231,7 +236,7 @@ def create_synthetic_adm_runs(mongo_db):
                 results: dict = {'ta1_session_id': ta1_id, 'alignment_score': alignment_score, 'kdmas': kdmas}
                 synthethic_adm_run: dict = {'evaluation': evaluation, 'results': results, 'evalNumber': EVAL_NUM, 'scenario': synth_scenario_id,
                                             'evalName': EVALUATION_NAME, 'adm_name': adm_data.adm_name, 'synthetic': True,
-                                            'alignment_target': adm_data.alignment_target_id}
+                                            'probe_ids': random_probes, 'alignment_target': adm_data.alignment_target_id}
                 total_kdma_synthetic_adm_runs += 1
 
                 if (SEND_TO_MONGO):
