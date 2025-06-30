@@ -46,11 +46,10 @@ ENVIRONMENTS_BY_PID = {} # Currently unused
 
 class ProbeMatcher:
     logger = Logger("probeMatcher")
-    adept_file = None
-    adept_yaml = None
-    json_file = None
+    ow_yaml = None
+    json_filename = None
     json_data = None
-    output_adept = None
+    output_ow = None
     participantId = ''
     environment = ''
     csv_file = None
@@ -64,8 +63,9 @@ class ProbeMatcher:
         Load in the file and parse the yaml
         '''
         # Get environment from json to choose correct desert/urban yamls
-        self.json_file = open(json_path, 'r', encoding='utf-8')
-        self.json_data = json.load(self.json_file)
+        with open(json_path, 'r', encoding='utf-8') as json_file:
+            self.json_data = json.load(json_file)
+            self.json_filename = json_file.name
         if (self.json_data['configData']['teleportPointOverride'] == 'Tutorial'):
             self.logger.log(LogLevel.CRITICAL_INFO, "Tutorial level, not processing data")
             return
@@ -100,44 +100,40 @@ class ProbeMatcher:
             ENVIRONMENTS_BY_PID[pid] = [self.environment]
         # Create output files
         try:
-            # TBD if we're going to need to generate any output
-            pass
-            #os.mkdir('output')
+            os.makedirs(f'output_{EVAL_PREFIX}', exist_ok=True)
         except:
-            pass
+            print(f"Could not create output directory {f'output_{EVAL_PREFIX}'}.")
 
-        filename = os.path.join('output', env.split('.yaml')[0] + f'{pid}.json')
+        filename = os.path.join(f'output_{EVAL_PREFIX}', env.split('.yaml')[0] + f'{pid}.json')
         if VERBOSE:
             print(f"This is where we would determine if we should run {filename}.")
         #if not self.should_file_run(filename):
         #    return
         if VERBOSE:
-            print(f"This is where we would create {filename}.")
-        #self.output_adept = open(filename, 'w', encoding='utf-8')
-        # Get yaml file
-        if VERBOSE:
-            print(f"This is where we would open {os.path.join(os.path.join('phase2', EVAL_PREFIX), env)}.")
-        #self.adept_file = open(os.path.join(os.path.join('phase2', EVAL_PREFIX), env), 'r', encoding='utf-8')
+            print(f"Create output file {filename}.")
+        self.output_ow = open(filename, 'w', encoding='utf-8')
         try:
-            pass
+            # Get yaml file
+            yaml_filename = os.path.join(os.path.join('phase2', EVAL_PREFIX), env)
             if VERBOSE:
-                print(f"This is where we would load {os.path.join(os.path.join('phase2', EVAL_PREFIX), env)}.")
-            #self.adept_yaml = yaml.load(self.adept_file, Loader=yaml.CLoader)
+                print(f"Opening {yaml_filename}.")
+            ow_file = open(yaml_filename, 'r', encoding='utf-8')
+            if VERBOSE:
+                print(f"Loading {yaml_filename}.")
+            self.ow_yaml = yaml.load(ow_file, Loader=yaml.CLoader)
         except Exception as e:
-            self.logger.log(LogLevel.ERROR, "Error while loading in adept yaml file. Please ensure the file is a valid yaml format and try again.\n\n" + str(e) + "\n")
+            self.logger.log(LogLevel.ERROR, "Error while loading in open world yaml file. Please ensure the file is a valid yaml format and try again.\n\n" + str(e) + "\n")
+        if (ow_file):
+            ow_file.close()
         self.clean_json()
 
     def __del__(self):
         '''
-        Basic cleanup: closing the file loaded in on close.
+        Basic cleanup: closing the output file
         '''
         self.logger.log(LogLevel.DEBUG, "Program closing...")
-        if (self.adept_file):
-            self.adept_file.close()
-        if (self.json_file):
-            self.json_file.close()
-        if (self.output_adept):
-            self.output_adept.close()
+        if (self.output_ow):
+            self.output_ow.close()
 
 
     """
@@ -194,7 +190,7 @@ class ProbeMatcher:
 
     def match_probes(self):
         if EVAL_PREFIX in self.environment:
-            #self.match_ow_probes() # disable probe matching for now, as this isn't yet available in june2025
+            #self.match_ow_probes() # disable probe matching for now, as this isn't yet implemented for june2025
             self.analyze_openworld()
         else:
             self.logger.log(LogLevel.WARN, f"No function available to probe match for environment {self.environment}")
@@ -215,7 +211,7 @@ class ProbeMatcher:
             f'{env}_tag_expectant': False
         }
 
-        ow_csv = open(self.json_file.name.replace('.json', '.csv'), 'r', encoding='utf-8')
+        ow_csv = open(self.json_filename.replace('.json', '.csv'), 'r', encoding='utf-8')
         reader = csv.reader(ow_csv)
         header = next(reader)
         data = []
@@ -426,12 +422,44 @@ class ProbeMatcher:
                     "Civilian Stomach Puncture": 'Civilian 3',
                     "Mil Stomach Puncture": 'US Military 4'
                 }
-            for x in self.json_data['actionList']:
-                if x['actionType'] == 'Question' and 'evacuate' in x['question']:
-                    answers.append(answer_map[x['answer']])
+            for action in self.json_data['actionList']:
+                if action['actionType'] == 'Question' and 'evacuate' in action['question']:
+                    answers.append(answer_map[action['answer']])
             return answers
 
         evaced = get_evaced_patients()
+
+        def get_ps_ss():
+            search1 = None
+            search2 = None
+            answer_map = {
+                "Stay": 0,
+                "Search": 1
+            }
+            ps1 = 0
+            for action in self.json_data['actionList']:
+                if action['actionType'] == 'Question':
+                    if 'search' in action['question']:
+                        try:
+                            if search1 is None:
+                                search1 = answer_map[action['answer']]
+                            elif search2 is None:
+                                search2 = answer_map[action['answer']]
+                            else:
+                                print(f"Warning: more than two 'search' answers; ignoring extras.")
+                                continue
+                        except KeyError as ke:
+                            print(f"Warning: ignoring unexpected Search answer, '{action['answer']}'")
+                elif action['actionType'] == 'MovedBeforeClearedByCommand':
+                    if action['movedBeforeClearedByCommand'] is True:
+                        ps1 = 1 # If any MovedBeforeClearedByCommand is true, then they moved
+
+            return search1, search2, ps1
+
+        search1, search2, ps1 = get_ps_ss()
+        results[f'{env}_search1'] = search1
+        results[f'{env}_search2'] = search2
+        results[f'{env}_personal_safety'] = ps1
 
         if env == 'Desert':
             patients_in_order = ['US Military 1', 'Civilian 1', 'Attacker 1', 'US Military 2', 'Civilian 2', 'Attacker 2', 'Civilian 3', 'US Military 3', 'US Military 4']
@@ -500,7 +528,7 @@ class ProbeMatcher:
 
     # This entire routine needs to be updated for Phase 2.  We can't probe match until we have an OW yaml scenario.
     def match_ow_probes(self):
-        adept_scenes = self.adept_yaml['scenes']
+        ow_scenes = self.ow_yaml['scenes']
         last_action_ind_used = 0
         match_data = []
         found = 0
@@ -509,22 +537,22 @@ class ProbeMatcher:
         This is where probe matching logic will go.  Take a look at ph1_probe_matcher for inspiration.
         """
         print(f"Found {found} out of {total} probes")
-        ad_align = {}
+        ow_align = {}
         if CALC_KDMAS:
             try:
-                self.adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
-                db_utils.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.adept_sid, self.adept_yaml['id'])
-                ad_align['kdmas'] = self.call_ta1(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.adept_sid}')
-                ad_align['sid'] = self.adept_sid
+                self.ow_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+                db_utils.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.ow_sid, self.ow_yaml['id'])
+                ow_align['kdmas'] = self.call_ta1(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.ow_sid}')
+                ow_align['sid'] = self.ow_sid
             except:
                 self.logger.log(LogLevel.WARN, "TA1 Server Get Request failed")
-        match_data = {'alignment': ad_align, 'data': match_data}
+        match_data = {'alignment': ow_align, 'data': match_data}
         if SEND_TO_MONGO:
             mongo_id = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
             try:
-                mongo_collection_matches.insert_one({'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mongo_id})
+                mongo_collection_matches.insert_one({'scenario_id': self.ow_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ow', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mongo_id})
             except:
-                mongo_collection_matches.update_one({'_id': mongo_id}, {'$set': {'scenario_id': self.adept_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ad', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mongo_id}})
+                mongo_collection_matches.update_one({'_id': mongo_id}, {'$set': {'scenario_id': self.ow_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ow', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mongo_id}})
             try:
                 mongo_collection_raw.insert_one({'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
             except:
@@ -533,7 +561,7 @@ class ProbeMatcher:
                 num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
                 participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']},
                                                       {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
-        json.dump(match_data, self.output_adept, indent=4)
+        json.dump(match_data, self.output_ow, indent=4)
 
 
     def call_ta1(self, url):
@@ -544,11 +572,12 @@ class ProbeMatcher:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='ITM - Probe Matcher', usage='probe_matcher.py [-h] -i [-w] [-e] PATH')
+    parser = argparse.ArgumentParser(description=f"ITM - {EVAL_NAME} Probe Matcher", usage='probe_matcher.py [-h] -i [-w] [-e] PATH')
 
     parser.add_argument('-i', '--input_dir', dest='input_dir', type=str, help='The path to the directory where all participant files are. Required.')
     parser.add_argument('-w', '--weekly', action='store_true', dest='is_weekly', help='A flag to determine if this is a weekly run. If weekly, global variables change.')
     parser.add_argument('-e', '--eval_num', dest='eval_num', type=int, help="The eval number to use during runtime")
+    parser.add_argument('-n', '--no_output', action='store_true', dest='no_output', help="Do not send to mongo")
     parser.add_argument('-v', '--verbose', action='store_true', dest='is_verbose', help="Verbose command line output")
     args = parser.parse_args()
     removed = []
@@ -561,6 +590,8 @@ if __name__ == '__main__':
         CALC_KDMAS = True
         RUN_ALL = False
         RERUN_SESSIONS = True
+    if args.no_output:
+        SEND_TO_MONGO = False
     if args.is_verbose:
         VERBOSE = True
     if args.eval_num:
