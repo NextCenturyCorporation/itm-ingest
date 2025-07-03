@@ -523,8 +523,8 @@ class ProbeMatcher:
             return None, None
         try:
             session_id = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
-            #if VERBOSE:
-            print(f"Sending probes: {probes}")
+            if VERBOSE:
+                print(f"Sending probes: {probes}")
             for probe in probes:
                 requests.post(f'{ADEPT_URL}api/v1/response', json={
                     "response": {
