@@ -193,7 +193,7 @@ class ProbeMatcher:
             if not env:
                 self.logger.log(LogLevel.WARN, f"Skipping unknown environment {env}")
                 return
-            self.match_ow_probes(env) # disable probe matching for now, as this isn't yet implemented for june2025
+            self.match_ow_probes(env)
             self.analyze_openworld(env)
         else:
             self.logger.log(LogLevel.WARN, f"No function available to probe match for environment {self.environment}")
@@ -549,6 +549,7 @@ class ProbeMatcher:
     Finally, we send these probes (with their choices) to TA1 to get OW KDMA values for AF and MF.
     """
     def match_ow_probes(self, env: str):
+        self.logger.log(LogLevel.INFO, f"Processing {env}")
         # TODO: parse the YAML file to generate a list of probe ids mapped to a map of patient ids to choice ids.
         ow_scenes = self.ow_yaml['scenes']
         probe_map = [] # a map of probe_ids to a map of sim patient names to choice ids
@@ -596,10 +597,10 @@ class ProbeMatcher:
             first_char = first_engaged(response_map.keys())
             if first_char:
                 probes.append({'probe_id': probe_id, 'choice': response_map[first_char]})
+                match_data.append({'scene_id': probe_id, 'probe_id': probe_id, 'found_match': True, 'response': response_map[first_char], 'user_action': {}})
             else:
-                self.logger.log(LogLevel.WARN, f"Skipping unmatched probe {probe_id}.")
-            # TODO later; not needed for RQ8, and possibly not at all
-            match_data.append({'scene_id': probe_id, 'probe_id': probe_id, 'found_match': True if first_char else False, 'probe': {}, 'user_action': {}})
+                self.logger.log(LogLevel.WARN, f"Unmatched probe {probe_id}.")
+                match_data.append({'scene_id': probe_id, 'probe_id': probe_id, 'found_match': False, 'response': '', 'user_action': {}})
         print(f"Found {len(probes)} out of {len(probe_map)} probes.")
 
         # Send these probes (with their choices) to TA1 to get OW KDMA values for AF and MF
