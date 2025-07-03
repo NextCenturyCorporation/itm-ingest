@@ -1,14 +1,13 @@
-import yaml, argparse, json, os, csv
+import yaml, argparse, json, os, csv, requests
 from logger import LogLevel, Logger
 from pymongo import MongoClient
 from datetime import datetime
-import requests
 from decouple import config
-import utils.db_utils as db_utils
+from typing import Tuple
 from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-CALC_KDMAS = False # send data to servers to calculate KDMA values if true
+CALC_KDMAS = True # send data to servers to calculate KDMA values if true
 RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 RERUN_SESSIONS = False # rerun sessions only to get new session ids
 EVAL_NUM = 8
@@ -90,7 +89,7 @@ class ProbeMatcher:
             return
         self.environment = env
         if EVAL_PREFIX not in self.environment:
-            print(f"Skipping file that is not a June 2025 Open World scenario.")
+            self.logger.log(LogLevel.INFO, f"Skipping file that is not a June 2025 Open World scenario.")
             return
         print(f'Environment: {self.environment}')
 
@@ -102,7 +101,7 @@ class ProbeMatcher:
         try:
             os.makedirs(f'output_{EVAL_PREFIX}', exist_ok=True)
         except:
-            print(f"Could not create output directory {f'output_{EVAL_PREFIX}'}.")
+            self.logger.log(LogLevel.ERROR, f"Could not create output directory {f'output_{EVAL_PREFIX}'}.")
 
         filename = os.path.join(f'output_{EVAL_PREFIX}', env.split('.yaml')[0] + f'{pid}.json')
         if VERBOSE:
@@ -138,7 +137,7 @@ class ProbeMatcher:
 
     """
     I don't *think* we're going to need this for phase 2.  There's no 'alignment'.  But *maybe* we'd want this
-    for recalculating the KDMAs for the OW scenario, once that's available.  So keeping this here as a starting point for that.
+    for recalculating the KDMAs for the OW scenario.  So keeping this here as a starting point for that.
     """
     def should_file_run(self, filename):
         '''
@@ -148,7 +147,7 @@ class ProbeMatcher:
         then return False in order to skip the analysis of this file.
         '''
         run_this_file = True
-        mongo_id =  self.participantId + '_phase2_open_world'
+        mongo_id =  self.participantId + f'_{EVAL_PREFIX}_open_world'
         found = list(mongo_collection_matches.find({'_id': mongo_id}))
         if not RUN_ALL and ((SEND_TO_MONGO and len(found) > 0 and os.path.exists(filename)) or (not SEND_TO_MONGO and os.path.exists(filename))):
             if RERUN_SESSIONS:
@@ -190,14 +189,18 @@ class ProbeMatcher:
 
     def match_probes(self):
         if EVAL_PREFIX in self.environment:
-            #self.match_ow_probes() # disable probe matching for now, as this isn't yet implemented for june2025
-            self.analyze_openworld()
+            env = 'Desert' if 'desert' in self.environment else 'Urban' if 'urban' in self.environment else None
+            if not env:
+                self.logger.log(LogLevel.WARN, f"Skipping unknown environment {env}")
+                return
+            self.match_ow_probes(env) # disable probe matching for now, as this isn't yet implemented for june2025
+            self.analyze_openworld(env)
         else:
             self.logger.log(LogLevel.WARN, f"No function available to probe match for environment {self.environment}")
 
 
-    def analyze_openworld(self):
-        env = 'Desert' if 'desert' in self.environment else 'Urban' if 'urban' in self.environment else None
+    def analyze_openworld(self, env: str):
+
         results = {
             'pid': self.participantId,
             f'{env}_assess_patient': 0,
@@ -446,10 +449,10 @@ class ProbeMatcher:
                             elif search2 is None:
                                 search2 = answer_map[action['answer']]
                             else:
-                                print(f"Warning: more than two 'search' answers; ignoring extras.")
+                                self.logger.log(LogLevel.WARN, "More than two 'search' answers; ignoring extras.")
                                 continue
-                        except KeyError as ke:
-                            print(f"Warning: ignoring unexpected Search answer, '{action['answer']}'")
+                        except KeyError:
+                            self.logger.log(LogLevel.WARN, f"Ignoring unexpected Search answer, '{action['answer']}'")
                 elif action['actionType'] == 'MovedBeforeClearedByCommand':
                     if action['movedBeforeClearedByCommand'] is True:
                         ps1 = 1 # If any MovedBeforeClearedByCommand is true, then they moved
@@ -497,7 +500,7 @@ class ProbeMatcher:
         if VERBOSE:
             print(f"{env} Results: {results}")
         if SEND_TO_MONGO:
-            mongo_id = self.participantId + '_phase2_open_world'
+            mongo_id = self.participantId + f'_{EVAL_PREFIX}_open_world'
             try:
                 mongo_collection_raw.insert_one({'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment.replace('.yaml', '')})
             except:
@@ -512,63 +515,107 @@ class ProbeMatcher:
                                                       {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
 
 
-    def get_scene_by_id(self, scenes, scene_id):
-        for scene in scenes:
-            if scene['id'] == scene_id:
-                return scene
-        return None
+    """
+        Create a ta1 session; respond to the probes; get kdma values
+    """
+    def get_ta1_calculations(self, scenario_id: str, probes: list) -> Tuple[str, list]:
+        if len(probes) == 0:
+            return None, None
+        try:
+            session_id = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+            #if VERBOSE:
+            print(f"Sending probes: {probes}")
+            for probe in probes:
+                requests.post(f'{ADEPT_URL}api/v1/response', json={
+                    "response": {
+                        "probe_id": probe['probe_id'],
+                        "choice": probe['choice'],
+                        "justification": "justification",
+                        "scenario_id": scenario_id,
+                    },
+                    "session_id": session_id
+                })
+            kdmas = requests.get(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
+        except:
+            self.logger.log(LogLevel.WARN, "TA1 Server Get Request failed; no KDMAs generated.")
+            return None, None
+        return session_id, kdmas
 
 
-    def get_next_scene_by_index(self, scenes, this_scene):
-        for i in range(len(scenes)-1):
-            if scenes[i] == this_scene:
-                return scenes[i+1]
-        return None
-
-
-    # This entire routine needs to be updated for Phase 2.  We can't probe match until we have an OW yaml scenario.
-    def match_ow_probes(self):
+    """
+    OpenWorld scenarios are fairly straightforward.  Each probe is a choice between treating Patient A and Patient B.
+    We parse the YAML file to generate a list of probe ids mapped to a map of patient ids to choice ids.
+    Then for each probe, we iterate through the sim json output to see which patient was engaged first, noting the mapped choice.
+    Finally, we send these probes (with their choices) to TA1 to get OW KDMA values for AF and MF.
+    """
+    def match_ow_probes(self, env: str):
+        # TODO: parse the YAML file to generate a list of probe ids mapped to a map of patient ids to choice ids.
         ow_scenes = self.ow_yaml['scenes']
-        last_action_ind_used = 0
+        probe_map = [] # a map of probe_ids to a map of sim patient names to choice ids
+        for scene in ow_scenes:
+            for mapping in scene['action_mapping']:
+                pass # Add a map from the sim patient name to the associated choice id
+
+        # But for now, we are hard-coding the probe_map
+        desert_probe_map = {
+            'June2025-AF-OW-desert.Probe 1':  {'US Military 1': 'Response 1-A',  'Civilian 1':    'Response 1-B' },
+            'June2025-AF-OW-desert.Probe 2a': {'Civilian 1':    'Response 2a-A', 'Attacker 1':    'Response 2a-B'},
+            'June2025-MF-OW-desert.Probe 2b': {'Civilian 1':    'Response 2b-A', 'Attacker 1':    'Response 2b-B'},
+            'June2025-AF-OW-desert.Probe 3':  {'Civilian 3':    'Response 3-A' , 'US Military 3': 'Response 3-B' },
+            'June2025-AF-OW-desert.Probe 4a': {'Attacker 1':    'Response 4a-A', 'US Military 4': 'Response 4a-B'},
+            'June2025-MF-OW-desert.Probe 4b': {'Attacker 1':    'Response 4b-A', 'US Military 4': 'Response 4b-B'},
+            'June2025-AF-OW-desert.Probe 5a': {'Attacker 2':    'Response 5a-A', 'US Military 3': 'Response 5a-B'},
+            'June2025-MF-OW-desert.Probe 5b': {'Attacker 2':    'Response 5b-A', 'US Military 3': 'Response 5b-B'},
+            'June2025-AF-OW-desert.Probe 6':  {'US Military 2': 'Response 6-A' , 'Civilian 2':    'Response 6-B' }
+        }
+        urban_probe_map = {
+            'June2025-MF-OW-urban.Probe 1': {'US Military 1': 'Response 1-A', 'US Military 2': 'Response 1-B'},
+            'June2025-MF-OW-urban.Probe 2': {'Civilian 1':    'Response 2-A', 'Shooter 1':     'Response 2-B'},
+            'June2025-AF-OW-urban.Probe 3': {'US Military 3': 'Response 3-A', 'Civilian 2':    'Response 3-B'},
+            'June2025-AF-OW-urban.Probe 4': {'Civilian 3':    'Response 4-A', 'US Military 4': 'Response 4-B'},
+            'June2025-MF-OW-urban.Probe 5': {'Civilian 3':    'Response 5-A', 'Shooter 1':     'Response 5-B'},
+            'June2025-AF-OW-urban.Probe 6': {'US Military 3': 'Response 6-A', 'Civilian 1':    'Response 6-B'}
+        }
+        probe_map = desert_probe_map if env == 'Desert' else urban_probe_map
+
+        # For each probe, we iterate through the sim json output to see which patient was engaged first, noting the mapped choice.
+        engagement_actions = ['Pulse', 'Treatment', 'Tag']
+        action_list: list = [action for action in self.json_data['actionList'] if action['actionType'] in engagement_actions]
+
+        def first_engaged(characters: list):
+            for action in action_list:
+                for character in characters:
+                    if action['casualty'] == character:
+                        return character
+            return None # None of the characters was engaged
+
+        # Generate the list of probes to send to TA1
+        probes: list = []
         match_data = []
-        found = 0
-        total = 0
-        """
-        This is where probe matching logic will go.  Take a look at ph1_probe_matcher for inspiration.
-        """
-        print(f"Found {found} out of {total} probes")
+        for probe_id, response_map in probe_map.items():
+            first_char = first_engaged(response_map.keys())
+            if first_char:
+                probes.append({'probe_id': probe_id, 'choice': response_map[first_char]})
+            else:
+                self.logger.log(LogLevel.WARN, f"Skipping unmatched probe {probe_id}.")
+            # TODO later; not needed for RQ8, and possibly not at all
+            match_data.append({'scene_id': probe_id, 'probe_id': probe_id, 'found_match': True if first_char else False, 'probe': {}, 'user_action': {}})
+        print(f"Found {len(probes)} out of {len(probe_map)} probes.")
+
+        # Send these probes (with their choices) to TA1 to get OW KDMA values for AF and MF
         ow_align = {}
         if CALC_KDMAS:
-            try:
-                self.ow_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
-                db_utils.send_probes(f'{ADEPT_URL}api/v1/response', match_data, self.ow_sid, self.ow_yaml['id'])
-                ow_align['kdmas'] = self.call_ta1(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={self.ow_sid}')
-                ow_align['sid'] = self.ow_sid
-            except:
-                self.logger.log(LogLevel.WARN, "TA1 Server Get Request failed")
+            ow_align['sid'], ow_align['kdmas'] = self.get_ta1_calculations(self.ow_yaml['id'], probes)
         match_data = {'alignment': ow_align, 'data': match_data}
+        if VERBOSE:
+            print(f"Match data: {match_data}")
         if SEND_TO_MONGO:
-            mongo_id = self.participantId + '_ad_' + self.environment.split('.yaml')[0]
+            mongo_id = self.participantId + '_ow_' + self.environment.split('.yaml')[0]
             try:
                 mongo_collection_matches.insert_one({'scenario_id': self.ow_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ow', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mongo_id})
             except:
                 mongo_collection_matches.update_one({'_id': mongo_id}, {'$set': {'scenario_id': self.ow_yaml['id'], 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': match_data, 'ta1': 'ow', 'env': self.environment.split('.yaml')[0], 'pid': self.participantId, '_id': mongo_id}})
-            try:
-                mongo_collection_raw.insert_one({'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment})
-            except:
-                mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment}, {'$set': {'openWorld': False, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment}})
-            if self.pid_in_log:
-                num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
-                participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']},
-                                                      {'$set': {'claimed': True, "simEntryCount": num_sim_found}})
         json.dump(match_data, self.output_ow, indent=4)
-
-
-    def call_ta1(self, url):
-        '''
-        Makes a call to the TA1 server
-        '''
-        return requests.get(url).json()
 
 
 if __name__ == '__main__':
@@ -606,8 +653,8 @@ if __name__ == '__main__':
     db = client.dashboard
     if SEND_TO_MONGO:
         # create new collection for simulation runs
-        mongo_collection_matches = db['humanSimulator']
-        mongo_collection_raw = db['humanSimulatorRaw']
+        mongo_collection_matches = db['humanSimulatorNew']
+        mongo_collection_raw = db['humanSimulatorRawNew']
     participant_log_collection = db['participantLog']
     text_scenario_collection = db['userScenarioResults']
 
