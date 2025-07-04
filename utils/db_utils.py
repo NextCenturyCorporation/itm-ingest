@@ -67,25 +67,40 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
 def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
     if eval_number == 5 or eval_number == 6:
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
-    adm_session = medic_collection.find_one({'evalNumber': 5 if eval_number == 6 else eval_number, 'name': page})['admSession']
+    ADM_SESSION_VAR_NAME = 'admSessionId' if eval_number == 8 else 'admSession'
+    adm_session = medic_collection.find_one({'evalNumber': 5 if eval_number == 6 else eval_number, 'name': page})[ADM_SESSION_VAR_NAME]
     
-    adms = adm_collection.find({
-        'evalNumber': 5 if eval_number == 6 else eval_number,
-        'history': {
-            '$elemMatch': {
-                'command': 'Start Scenario',
-                'parameters.session_id': adm_session,
-                'response.id': page_scenario,
-                'parameters.adm_name': survey['results'][page]['admName']
-            }
-        }
-    })
-    
+    adms = []
     adm = None
-    for x in adms:
-        if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
+    if eval_number < 8:
+        adms = adm_collection.find({
+            'evalNumber': 5 if eval_number == 6 else eval_number,
+            'history': {
+                '$elemMatch': {
+                    'command': 'Start Scenario',
+                    'parameters.session_id': adm_session,
+                    'response.id': page_scenario,
+                    'parameters.adm_name': survey['results'][page]['admName']
+                }
+            }
+        })
+
+        for x in adms:
+            if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
+                adm = x
+                break
+    if eval_number >= 8:
+        adms = adm_collection.find({
+            'evaluation.evalNumber': str(eval_number),
+            'evaluation.scenario_id': page_scenario,
+            'evaluation.adm_name': survey['results'][page]['admName'],
+            'evaluation.alignment_target_id': survey['results'][page]['admTarget']
+        })
+
+        for x in adms:
             adm = x
             break
+    
             
     if adm is None:
         print(f"No matching adm found for scenario {page_scenario} with adm {survey['results'][page]['admName']} (session {adm_session}) (target {survey['results'][page]['admTarget']})")
