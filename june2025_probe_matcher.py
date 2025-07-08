@@ -9,19 +9,12 @@ from dateutil import parser as dateparser
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
 CALC_KDMAS = True # send data to servers to calculate KDMA values if true
 RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
-RERUN_SESSIONS = False # rerun sessions only to get new session ids
-EVAL_NUM = 8
-EVAL_NAME = 'June 2025 Collaboration'
-EVAL_PREFIX = 'june2025'
+DEFAULT_EVAL_NUM = 8
+EVAL_NUM = None
+EVAL_NAME = None
+EVAL_PREFIX = None
 VERBOSE = False
-
-
 ADEPT_URL = config("ADEPT_URL")
-
-SCENE_MAP = {
-    "June 2025 OW Desert": f"{EVAL_PREFIX}-desert-openworld.yaml",
-    "June 2025 OW Urban": f"{EVAL_PREFIX}-urban-openworld.yaml"
-}
 
 KDMA_MAP = {
     'affiliation': 'AF',
@@ -53,7 +46,6 @@ class ProbeMatcher:
     environment = ''
     csv_file = None
     timestamp = None
-    analyze = True
     pid_in_log = False
 
 
@@ -83,15 +75,17 @@ class ProbeMatcher:
         pid = pid if pid != '' else self.json_data['sessionId']
         self.participantId = pid
         self.pid_in_log = participant_log_collection.count_documents({"ParticipantID": int(pid)}) > 0
-        env = SCENE_MAP.get(self.json_data["configData"]["narrative"]["narrativeDescription"], '')
-        if env == '':
-            self.logger.log(LogLevel.WARN, f'Skipping narrative {self.json_data["configData"]["narrative"]["narrativeDescription"]}.')
+        narrative = self.json_data["configData"]["narrative"]["narrativeDescription"]
+        if 'Desert' in narrative:
+            env = f"{EVAL_PREFIX}-desert-openworld.yaml"
+        elif 'Urban' in narrative:
+            env = f"{EVAL_PREFIX}-urban-openworld.yaml"
+        else:
+            self.logger.log(LogLevel.WARN, f'Skipping narrative {narrative} since it is not a(n) {EVAL_PREFIX} Open World scenario.')
             return
+
         self.environment = env
-        if EVAL_PREFIX not in self.environment:
-            self.logger.log(LogLevel.INFO, f"Skipping file that is not a June 2025 Open World scenario.")
-            return
-        print(f'Environment: {self.environment}')
+        self.logger.log(LogLevel.INFO, f'Environment: {self.environment}')
 
         if pid in ENVIRONMENTS_BY_PID:
             ENVIRONMENTS_BY_PID[pid].append(self.environment)
@@ -105,20 +99,16 @@ class ProbeMatcher:
 
         filename = os.path.join(f'output_{EVAL_PREFIX}', env.split('.yaml')[0] + f'{pid}.json')
         if VERBOSE:
-            print(f"This is where we would determine if we should run {filename}.")
-        #if not self.should_file_run(filename):
-        #    return
-        if VERBOSE:
-            print(f"Create output file {filename}.")
+            self.logger.log(LogLevel.INFO, f"Create output file {filename}.")
         self.output_ow = open(filename, 'w', encoding='utf-8')
         try:
             # Get yaml file
             yaml_filename = os.path.join(os.path.join('phase2', EVAL_PREFIX), env)
             if VERBOSE:
-                print(f"Opening {yaml_filename}.")
+                self.logger.log(LogLevel.INFO, f"Opening {yaml_filename}.")
             ow_file = open(yaml_filename, 'r', encoding='utf-8')
             if VERBOSE:
-                print(f"Loading {yaml_filename}.")
+                self.logger.log(LogLevel.INFO, f"Loading {yaml_filename}.")
             self.ow_yaml = yaml.load(ow_file, Loader=yaml.CLoader)
         except Exception as e:
             self.logger.log(LogLevel.ERROR, "Error while loading in open world yaml file. Please ensure the file is a valid yaml format and try again.\n\n" + str(e) + "\n")
@@ -133,40 +123,6 @@ class ProbeMatcher:
         self.logger.log(LogLevel.DEBUG, "Program closing...")
         if (self.output_ow):
             self.output_ow.close()
-
-
-    """
-    I don't *think* we're going to need this for phase 2.  There's no 'alignment'.  But *maybe* we'd want this
-    for recalculating the KDMAs for the OW scenario.  So keeping this here as a starting point for that.
-    """
-    def should_file_run(self, filename):
-        '''
-        If RUN_ALL is False, looks to see if the input file already has a matching output file. If it does and:
-            1. We are not calculating KDMAs OR
-            2. We are calculating KDMAs but KDMAs have already been calculated for this file
-        then return False in order to skip the analysis of this file.
-        '''
-        run_this_file = True
-        mongo_id =  self.participantId + f'_{EVAL_PREFIX}_open_world'
-        found = list(mongo_collection_matches.find({'_id': mongo_id}))
-        if not RUN_ALL and ((SEND_TO_MONGO and len(found) > 0 and os.path.exists(filename)) or (not SEND_TO_MONGO and os.path.exists(filename))):
-            if RERUN_SESSIONS:
-                return run_this_file
-            if not CALC_KDMAS:
-                run_this_file = False
-            if CALC_KDMAS:
-                if not SEND_TO_MONGO:
-                    f = open(filename, 'r', encoding='utf-8')
-                    data = json.load(f)
-                    if len(list(data.get('alignment', {}).keys())) > 1 and 'sid' in data.get('alignment', {}):
-                        run_this_file = False
-                else:
-                    if len(list(found[0].get('data', {}).get('alignment', {}).keys())) > 1 and 'sid' in found[0].get('data', {}).get('alignment', {}):
-                        run_this_file = False
-        if not run_this_file:
-            self.logger.log(LogLevel.CRITICAL_INFO, "File has already been analyzed, skipping analysis...")
-            self.analyze = False
-        return run_this_file
 
 
     def clean_json(self):
@@ -268,15 +224,11 @@ class ProbeMatcher:
                         count += 1
                         patient = x[header.index('PatientID')].split(' Root')[0]
                         if patient not in per_patient:
-                            #if VERBOSE:
-                            #    print(f"Adding patient {patient} to assessments")
                             per_patient[patient] = 0
                         per_patient[patient] += 1
             return {'count': count, 'per_patient': per_patient}
 
         assessments = count_assessment_actions()
-        if VERBOSE:
-            print(f"Assessments: {assessments}")
         results[f'{env}_assess_total'] = assessments['count']
         results[f'{env}_assess_patient'] = results[f'{env}_assess_total'] / max(1, patients_engaged)
 
@@ -498,7 +450,7 @@ class ProbeMatcher:
                 text_kdma_results[f"Participant Text {KDMA_MAP[kdma['kdma']]} KDMA"] = kdma.get('value', '')
 
         if VERBOSE:
-            print(f"{env} Results: {results}")
+            self.logger.log(LogLevel.INFO, f"\n{env} Results: {results}")
         if SEND_TO_MONGO:
             mongo_id = self.participantId + f'_{EVAL_PREFIX}_open_world'
             try:
@@ -524,7 +476,7 @@ class ProbeMatcher:
         try:
             session_id = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
             if VERBOSE:
-                print(f"Sending probes: {probes}")
+                self.logger.log(LogLevel.INFO, f"--> Sending probes: {probes}")
             for probe in probes:
                 requests.post(f'{ADEPT_URL}api/v1/response', json={
                     "response": {
@@ -601,7 +553,7 @@ class ProbeMatcher:
             else:
                 self.logger.log(LogLevel.WARN, f"Unmatched probe {probe_id}.")
                 match_data.append({'scene_id': probe_id, 'probe_id': probe_id, 'found_match': False, 'response': '', 'user_action': {}})
-        print(f"Found {len(probes)} out of {len(probe_map)} probes.")
+        self.logger.log(LogLevel.INFO, f"Found {len(probes)} out of {len(probe_map)} probes.")
 
         # Send these probes (with their choices) to TA1 to get OW KDMA values for AF and MF
         ow_align = {}
@@ -609,7 +561,8 @@ class ProbeMatcher:
             ow_align['sid'], ow_align['kdmas'] = self.get_ta1_calculations(self.ow_yaml['id'], probes)
         match_data = {'alignment': ow_align, 'data': match_data}
         if VERBOSE:
-            print(f"Match data: {match_data}")
+            print()
+            self.logger.log(LogLevel.INFO, f"\nMatch data: {match_data}")
         if SEND_TO_MONGO:
             mongo_id = self.participantId + '_ow_' + self.environment.split('.yaml')[0]
             try:
@@ -632,30 +585,33 @@ if __name__ == '__main__':
     if not args.input_dir:
         print("Input directory (-i PATH) is required to run the probe matcher.")
         exit(1)
-    if args.is_weekly:
-        # Should only run new files, and run alignment for those missing it
+    if args.is_weekly: # Not currently used in phase 2
+        # Should only run new files, and calculate KDMAs for those missing it
         SEND_TO_MONGO = True
         CALC_KDMAS = True
         RUN_ALL = False
-        RERUN_SESSIONS = True
     if args.no_output:
         SEND_TO_MONGO = False
     if args.is_verbose:
         VERBOSE = True
-    if args.eval_num:
-        if args.eval_num == 8:
-            EVAL_NAME = 'Phase 2 June 2025 Collaboration'
-            EVAL_NUM = 8
-        else:
-            print(f"Evaluation #{args.eval_num} is not supported at this time.")
-            exit(1)
+    EVAL_NUM = DEFAULT_EVAL_NUM if not args.eval_num else args.eval_num
+    if EVAL_NUM == 8:
+        EVAL_NAME = 'June 2025 Collaboration'
+        EVAL_PREFIX = 'june2025'
+    elif EVAL_NUM == 9:
+        EVAL_NAME = 'July 2025 Collaboration'
+        EVAL_PREFIX = 'july2025'
+    else:
+        print(f"Evaluation #{EVAL_NUM} is not supported at this time.")
+        exit(1)
+
     # Instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
     if SEND_TO_MONGO:
         # create new collection for simulation runs
-        mongo_collection_matches = db['humanSimulatorNew']
-        mongo_collection_raw = db['humanSimulatorRawNew']
+        mongo_collection_matches = db['humanSimulator']
+        mongo_collection_raw = db['humanSimulatorRaw']
     participant_log_collection = db['participantLog']
     text_scenario_collection = db['userScenarioResults']
 
@@ -671,24 +627,20 @@ if __name__ == '__main__':
         line2 = next(reader)
         sim_date = datetime.strptime(line2[2], "%m/%d/%Y %I:%M:%S %p")
         ph2_date = datetime(2025, 6, 2)
-        # If date is after 6/2, we are good! This is part of phase 2
+        # If date is after 6/2/2025, we are good! This is part of phase 2
         valid_date = sim_date > ph2_date
         # Remove files that have invalid pids
         pid = dir.split('_')[-1]
         try:
             pid = int(pid)
         except:
-            if VERBOSE:
-                print(f"Trying to remove pid {pid}, parent file {os.path.join(parent)}.")
-            #os.system(f'rm -rf {os.path.join(parent)}')
+            print(f"Remove invalidly formatted pid {pid}, parent file {os.path.join(parent)}.")
             removed.append(parent)
             continue
         pid_in_log = participant_log_collection.count_documents({"ParticipantID": int(pid)}) > 0
 
         if not pid_in_log or not valid_date:
-            if VERBOSE:
-                print(f"Trying to remove pid {pid}, parent directory {parent}.")
-            #os.system(f'rm -rf {parent}')
+            print(f"Remove pid {pid}, parent directory {parent}, because it is not in the participant log or has an invalid date.")
             removed.append(parent)
             continue
 
@@ -699,8 +651,7 @@ if __name__ == '__main__':
                     # json found! Grab matching csv and send to the probe matcher
                     try:
                         matcher = ProbeMatcher(os.path.join(parent, f))
-                        # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
-                        if matcher.environment != '' and matcher.analyze:
+                        if matcher.environment != '':
                             matcher.match_probes()
                         matcher.__del__()
                     except Exception as e:
@@ -709,6 +660,9 @@ if __name__ == '__main__':
                         exit()
                 elif '.html' in f or '.jpg' in f:
                     os.remove(os.path.join(parent, f))
-    if VERBOSE:
+
+    if len(removed) > 0:
         print()
-        print('Removed:', removed)
+        print('Remove the following path(s):')
+        for path in removed:
+            print(f"  {path}")
