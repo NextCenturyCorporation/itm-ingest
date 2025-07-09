@@ -2,10 +2,7 @@ import requests
 import utils.db_utils as db_utils
 from decouple import config 
 
-# compares the text responses for adept from DRE using the Phase 1 server
-# first, we have to recreate all of the adept sessions for ADEPT DRE text on the Phase 1 server
-# then, we have to create the "mini-adms" on the phase 1 server
-# finally, we can compare
+# compares the text responses for adept to ADMs to populate comparison collection
 
 ADEPT_URL = config("ADEPT_URL")
 
@@ -23,7 +20,14 @@ def main(mongoDB, EVAL_NUMBER=8):
         {"evalNumber": EVAL_NUMBER}
     )
 
+    total_text_scenarios = text_scenario_collection.count_documents(
+        {"evalNumber": EVAL_NUMBER}
+    )
+    current_text_scenario = 1
     for entry in data_to_use:
+        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation 8.")
+        current_text_scenario += 1
+
         scenario_id = entry.get('scenario_id')
         session_id = entry.get('combinedSessionId')
         pid = entry.get('participantID')
