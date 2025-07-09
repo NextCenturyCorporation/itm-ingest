@@ -9,12 +9,13 @@ state:
   characters:
   - id: Patient A
     name: Patient A
-    unstructured: Military member of your unit, a chest wound and is gasping for breath
+    unstructured: Military member of your unit, a chest wound and is gasping for breath;
+      US Military 1
     medical_condition: 0.9847
     attribute_rating: 1.0
   - id: Patient B
     name: Patient B
-    unstructured: Local civilian with foot amputation
+    unstructured: Local civilian with foot amputation; Civilian 1
     medical_condition: 0.9628
     attribute_rating: 0.3955
 scenes:
@@ -34,12 +35,12 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Military member of your unit, a chest wound and is gasping for
-        breath
+        breath; US Military 1
       medical_condition: 0.9847
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
-      unstructured: Local civilian with foot amputation
+      unstructured: Local civilian with foot amputation; Civilian 1
       medical_condition: 0.9628
       attribute_rating: 0.3955
     threat_state:
@@ -85,12 +86,13 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Local civilian with foot amputation
+      unstructured: Local civilian with foot amputation; Civilian 1
       medical_condition: 0.9628
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
-      unstructured: Civilian wearing black clothing with hand amputation
+      unstructured: Civilian wearing black clothing with hand amputation; Attacker
+        1
       medical_condition: 0.9623
       attribute_rating: 0.3955
     threat_state:
@@ -136,12 +138,13 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Local civilian with foot amputation
+      unstructured: Local civilian with foot amputation; Civilian 1
       medical_condition: 0.9628
       attribute_rating: 0.8
     - id: Patient B
       name: Patient B
-      unstructured: Civilian wearing black clothing with hand amputation
+      unstructured: Civilian wearing black clothing with hand amputation; Attacker
+        1
       medical_condition: 0.9623
       attribute_rating: 0.0
     threat_state:
@@ -189,13 +192,14 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Local civilian with moderate bleeding from their thigh
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        3
       medical_condition: 0.8243
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with severe burns on their right
-        arm and torso, covering 20% of their body
+        arm and torso, covering 20% of their body; US Military 3
       medical_condition: 0.6852
       attribute_rating: 1.0
     threat_state:
@@ -243,12 +247,14 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Civilian wearing black clothing with hand amputation
+      unstructured: Civilian wearing black clothing with hand amputation; Attacker
+        1
       medical_condition: 0.9623
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
-      unstructured: Military member of your unit with a broken left wrist, no bleeding
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        US Military 4
       medical_condition: 0.0162
       attribute_rating: 1.0
     threat_state:
@@ -296,12 +302,14 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Civilian wearing black clothing with hand amputation
+      unstructured: Civilian wearing black clothing with hand amputation; Attacker
+        1
       medical_condition: 0.9623
       attribute_rating: 0.0
     - id: Patient B
       name: Patient B
-      unstructured: Military member of your unit with a broken left wrist, no bleeding
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        US Military 4
       medical_condition: 0.0162
       attribute_rating: 0.8
     threat_state:
@@ -350,13 +358,13 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Civilian wearing black clothing with moderate bleeding from their
-        shoulder
+        shoulder; Attacker 2
       medical_condition: 0.8248
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with severe burns on their right
-        arm and torso, covering 20% of their body
+        arm and torso, covering 20% of their body; US Military 3
       medical_condition: 0.6852
       attribute_rating: 1.0
     threat_state:
@@ -405,13 +413,13 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Civilian wearing black clothing with moderate bleeding from their
-        shoulder
+        shoulder; Attacker 2
       medical_condition: 0.8248
       attribute_rating: 0.0
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with severe burns on their right
-        arm and torso, covering 20% of their body
+        arm and torso, covering 20% of their body; US Military 3
       medical_condition: 0.6852
       attribute_rating: 0.8
     threat_state:
@@ -460,13 +468,13 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
-        torso; possible internal bleeding
+        torso; possible internal bleeding; US Military 2
       medical_condition: 0.8377
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: A local civilian with moderate bleeding from their torso; possible
-        internal bleeding
+        internal bleeding; Civilian 2
       medical_condition: 0.8377
       attribute_rating: 0.3955
     threat_state:

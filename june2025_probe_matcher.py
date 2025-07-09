@@ -502,34 +502,21 @@ class ProbeMatcher:
     """
     def match_ow_probes(self, env: str):
         self.logger.log(LogLevel.INFO, f"Processing {env}")
-        # TODO: parse the YAML file to generate a list of probe ids mapped to a map of patient ids to choice ids.
-        ow_scenes = self.ow_yaml['scenes']
-        probe_map = [] # a map of probe_ids to a map of sim patient names to choice ids
-        for scene in ow_scenes:
+        # Parse the YAML file to generate a map of probe IDs to a map of sim patient names to choice ids
+        probe_map = {}
+        for scene in self.ow_yaml['scenes']:
+            patient_name_map = {} # maps patient ID to sim patient name
+            response_map = {} # maps sim patient name to response (choice_id)
+            probe_id = None
+            for character in scene['state']['characters']:
+                sim_patient_name = character['unstructured'].split(';')[-1].strip() # Sim patient name added after semi-colon in csv
+                patient_name_map[character['id']] = sim_patient_name
             for mapping in scene['action_mapping']:
-                pass # Add a map from the sim patient name to the associated choice id
-
-        # But for now, we are hard-coding the probe_map
-        desert_probe_map = {
-            'June2025-AF-OW-desert.Probe 1':  {'US Military 1': 'Response 1-A',  'Civilian 1':    'Response 1-B' },
-            'June2025-AF-OW-desert.Probe 2a': {'Civilian 1':    'Response 2a-A', 'Attacker 1':    'Response 2a-B'},
-            'June2025-MF-OW-desert.Probe 2b': {'Civilian 1':    'Response 2b-A', 'Attacker 1':    'Response 2b-B'},
-            'June2025-AF-OW-desert.Probe 3':  {'Civilian 3':    'Response 3-A' , 'US Military 3': 'Response 3-B' },
-            'June2025-AF-OW-desert.Probe 4a': {'Attacker 1':    'Response 4a-A', 'US Military 4': 'Response 4a-B'},
-            'June2025-MF-OW-desert.Probe 4b': {'Attacker 1':    'Response 4b-A', 'US Military 4': 'Response 4b-B'},
-            'June2025-AF-OW-desert.Probe 5a': {'Attacker 2':    'Response 5a-A', 'US Military 3': 'Response 5a-B'},
-            'June2025-MF-OW-desert.Probe 5b': {'Attacker 2':    'Response 5b-A', 'US Military 3': 'Response 5b-B'},
-            'June2025-AF-OW-desert.Probe 6':  {'US Military 2': 'Response 6-A' , 'Civilian 2':    'Response 6-B' }
-        }
-        urban_probe_map = {
-            'June2025-MF-OW-urban.Probe 1': {'US Military 1': 'Response 1-A', 'US Military 2': 'Response 1-B'},
-            'June2025-MF-OW-urban.Probe 2': {'Civilian 1':    'Response 2-A', 'Shooter 1':     'Response 2-B'},
-            'June2025-AF-OW-urban.Probe 3': {'US Military 3': 'Response 3-A', 'Civilian 2':    'Response 3-B'},
-            'June2025-AF-OW-urban.Probe 4': {'Civilian 3':    'Response 4-A', 'US Military 4': 'Response 4-B'},
-            'June2025-MF-OW-urban.Probe 5': {'Civilian 3':    'Response 5-A', 'Shooter 1':     'Response 5-B'},
-            'June2025-AF-OW-urban.Probe 6': {'US Military 3': 'Response 6-A', 'Civilian 1':    'Response 6-B'}
-        }
-        probe_map = desert_probe_map if env == 'Desert' else urban_probe_map
+                probe_id = mapping['probe_id']
+                choice_id = mapping['choice']
+                character_id = mapping['character_id']
+                response_map[patient_name_map[character_id]] = choice_id
+            probe_map[probe_id] = response_map
 
         # For each probe, we iterate through the sim json output to see which patient was engaged first, noting the mapped choice.
         engagement_actions = ['Pulse', 'Treatment', 'Tag']

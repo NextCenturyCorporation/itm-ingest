@@ -11,14 +11,14 @@ state:
   - id: Patient A
     name: Patient A
     unstructured: Military member of your unit with moderate bleeding from their right
-      bicep
+      bicep; US Military 1
     medical_condition: 0.8248
     attribute_rating: 0.8
   - id: Patient B
     name: Patient B
     unstructured: Military member of your unit with moderate bleeding from their torso;
       possible internal bleeding; accidentally discharged thier weapon, resulting
-      in two civilian casualties
+      in two civilian casualties; US Military 2
     medical_condition: 0.8377
     attribute_rating: 0.706
 scenes:
@@ -40,14 +40,14 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
-        right bicep
+        right bicep; US Military 1
       medical_condition: 0.8248
       attribute_rating: 0.8
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with moderate bleeding from their
         torso; possible internal bleeding; accidentally discharged thier weapon, resulting
-        in two civilian casualties
+        in two civilian casualties; US Military 2
       medical_condition: 0.8377
       attribute_rating: 0.706
     threat_state:
@@ -97,13 +97,14 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Local civilian with a broken right wrist; no bleeding
+      unstructured: Local civilian with a broken right wrist; no bleeding; Civilian
+        1
       medical_condition: 0.0162
       attribute_rating: 0.8
     - id: Patient B
       name: Patient B
       unstructured: Local civilian in a blue hat with moderate bleeding from their
-        right shoulder
+        right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.0
     threat_state:
@@ -153,12 +154,13 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
-        right thigh
+        right thigh; US Military 3
       medical_condition: 0.8248
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
-      unstructured: A local civilian with a chest wound and gasping for breath
+      unstructured: A local civilian with a chest wound and gasping for breath; Civilian
+        2
       medical_condition: 0.9848
       attribute_rating: 0.3955
     threat_state:
@@ -208,13 +210,14 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: A local civilian with massive bleeding from their torso
+      unstructured: A local civilian with massive bleeding from their torso; Civilian
+        3
       medical_condition: 0.9869
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with massive bleeding from their
-        torso
+        torso; US Military 4
       medical_condition: 0.9869
       attribute_rating: 1.0
     threat_state:
@@ -264,13 +267,14 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: A local civilian with massive bleeding from their torso
+      unstructured: A local civilian with massive bleeding from their torso; Civilian
+        3
       medical_condition: 0.9869
       attribute_rating: 0.8
     - id: Patient B
       name: Patient B
       unstructured: Local civilian in a blue hat with moderate bleeding from their
-        right shoulder
+        right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.0
     threat_state:
@@ -320,12 +324,13 @@ scenes:
     - id: Patient A
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
-        right thigh
+        right thigh; US Military 3
       medical_condition: 0.8248
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
-      unstructured: Local civilian with a broken right wrist; no bleeding
+      unstructured: Local civilian with a broken right wrist; no bleeding; Civilian
+        1
       medical_condition: 0.0162
       attribute_rating: 0.3955
     threat_state:
