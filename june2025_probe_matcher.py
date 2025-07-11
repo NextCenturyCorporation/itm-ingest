@@ -412,9 +412,9 @@ class ProbeMatcher:
             return search1, search2, ps1
 
         search1, search2, ps1 = get_ps_ss()
-        results[f'{env}_search1'] = search1
-        results[f'{env}_search2'] = search2
-        results[f'{env}_personal_safety'] = ps1
+        results[f'{env} Search1'] = search1
+        results[f'{env} Search2'] = search2
+        results[f'{env} Personal_safety'] = ps1
 
         if env == 'Desert':
             patients_in_order = ['US Military 1', 'Civilian 1', 'Attacker 1', 'US Military 2', 'Civilian 2', 'Attacker 2', 'Civilian 3', 'US Military 3', 'US Military 4']
@@ -428,15 +428,15 @@ class ProbeMatcher:
             name = f'Patient{i+1}'
             sim_name = patients_in_order[i]
             triage_time = triage_times['interactions'].get(sim_name, 0)
-            results[f'{env}_{name}_time'] = triage_time
+            results[f'{env} {name}_time'] = triage_time
             try:
-                results[f'{env}_{name}_order'] = clean_patient_order_engaged.index(sim_name) + 1
+                results[f'{env} {name}_order'] = clean_patient_order_engaged.index(sim_name) + 1
             except:
-                results[f'{env}_{name}_order'] = 'N/A'
-            results[f'{env}_{name}_evac'] = 'Yes' if sim_name in evaced else 'No'
-            results[f'{env}_{name}_assess'] = assessments['per_patient'].get(sim_name, 0)
-            results[f'{env}_{name}_treat'] = treatments['per_patient'].get(sim_name, 0)
-            results[f'{env}_{name}_tag'] = tag_counts['tags'].get(sim_name, 'N/A')
+                results[f'{env} {name}_order'] = 'N/A'
+            results[f'{env} {name}_evac'] = 'Yes' if sim_name in evaced else 'No'
+            results[f'{env} {name}_assess'] = assessments['per_patient'].get(sim_name, 0)
+            results[f'{env} {name}_treat'] = treatments['per_patient'].get(sim_name, 0)
+            results[f'{env} {name}_tag'] = tag_counts['tags'].get(sim_name, 'N/A')
 
         text_response = text_scenario_collection.find_one({"evalNumber": EVAL_NUM, 'participantID': self.participantId})
         text_kdma_results = {}
@@ -451,6 +451,8 @@ class ProbeMatcher:
 
         if VERBOSE:
             self.logger.log(LogLevel.INFO, f"\n{env} Results: {results}")
+
+        self.logger.log(LogLevel.INFO, f"{'' if SEND_TO_MONGO else 'NOT '}Saving to database.")
         if SEND_TO_MONGO:
             mongo_id = self.participantId + f'_{EVAL_PREFIX}_open_world'
             try:
