@@ -159,15 +159,15 @@ class ProbeMatcher:
 
         results = {
             'pid': self.participantId,
-            f'{env}_assess_patient': 0,
-            f'{env}_assess_total': 0,
-            f'{env}_treat_patient': 0,
-            f'{env}_treat_total': 0,
-            f'{env}_triage_time': 0,
-            f'{env}_triage_time_patient': 0,
-            f'{env}_engage_patient': 0,
-            f'{env}_tag_acc': 0,
-            f'{env}_tag_expectant': False
+            f'{env} Assess_patient': 0,
+            f'{env} Assess_total': 0,
+            f'{env} Treat_patient': 0,
+            f'{env} Treat_total': 0,
+            f'{env} Triage_time': 0,
+            f'{env} Triage_time_patient': 0,
+            f'{env} Engage_patient': 0,
+            f'{env} Tag_acc': 0,
+            f'{env} Tag_expectant': False
         }
 
         ow_csv = open(self.json_filename.replace('.json', '.csv'), 'r', encoding='utf-8')
@@ -207,7 +207,7 @@ class ProbeMatcher:
         patients_treated = engaged_counts['treated']
         patient_order_engaged = engaged_counts['order']
         engagement_times = list({item: patient_order_engaged.count(item) for item in set(patient_order_engaged)}.values())
-        results[f'{env}_engage_patient'] = sum(engagement_times) / max(1, len(engagement_times))
+        results[f'{env} Engage_patient'] = sum(engagement_times) / max(1, len(engagement_times))
 
 
         def count_assessment_actions():
@@ -229,8 +229,8 @@ class ProbeMatcher:
             return {'count': count, 'per_patient': per_patient}
 
         assessments = count_assessment_actions()
-        results[f'{env}_assess_total'] = assessments['count']
-        results[f'{env}_assess_patient'] = results[f'{env}_assess_total'] / max(1, patients_engaged)
+        results[f'{env} Assess_total'] = assessments['count']
+        results[f'{env} Assess_patient'] = results[f'{env} Assess_total'] / max(1, patients_engaged)
 
         def count_treatment_actions():
             '''returns the total count of treatment actions during the scenario'''
@@ -246,8 +246,8 @@ class ProbeMatcher:
             return {'count': count, 'per_patient': per_patient}
 
         treatments = count_treatment_actions()
-        results[f'{env}_treat_total'] = treatments['count']
-        results[f'{env}_treat_patient'] = results[f'{env}_treat_total'] / max(1, patients_treated)
+        results[f'{env} Treat_total'] = treatments['count']
+        results[f'{env} Treat_patient'] = results[f'{env} Treat_total'] / max(1, patients_treated)
 
         def get_triage_time():
             '''gets the time from start to finish (in seconds) to complete the scenario'''
@@ -256,7 +256,7 @@ class ProbeMatcher:
                 end = float(data[len(data)-2][1])
                 return ((end-start))/1000
 
-        results[f'{env}_triage_time'] = get_triage_time()
+        results[f'{env} Triage_time'] = get_triage_time()
 
         def get_tags():
             if env == 'Desert':
@@ -297,8 +297,8 @@ class ProbeMatcher:
             return {'correct': correct, 'count': count, 'tags': tags_applied}
 
         tag_counts = get_tags()
-        results[f'{env}_tag_acc'] = tag_counts['correct'] / tag_counts['count']
-        results[f'{env}_tag_expectant'] = 'Yes' if tag_counts['tags'].get('US Soldier 3') == 'gray' else 'No'
+        results[f'{env} Tag_ACC'] = tag_counts['correct'] / tag_counts['count']
+        results[f'{env} Tag_Expectant'] = 'Yes' if tag_counts['tags'].get('US Soldier 3') == 'gray' else 'No'
 
         def find_time_per_patient():
             '''
@@ -350,7 +350,7 @@ class ProbeMatcher:
             return {'interactions': interactions, 'total': total_time/1000}
 
         triage_times = find_time_per_patient()
-        results[f'{env}_triage_time_patient'] = triage_times['total'] / max(1, patients_engaged)
+        results[f'{env} Triage_time_patient'] = triage_times['total'] / max(1, patients_engaged)
 
         def get_evaced_patients():
             answers = []
@@ -425,7 +425,7 @@ class ProbeMatcher:
             if x not in clean_patient_order_engaged:
                 clean_patient_order_engaged.append(x)
         for i in range(len(patients_in_order)):
-            name = f'patient{i+1}'
+            name = f'Patient{i+1}'
             sim_name = patients_in_order[i]
             triage_time = triage_times['interactions'].get(sim_name, 0)
             results[f'{env}_{name}_time'] = triage_time
