@@ -67,7 +67,7 @@ def create_page(scene, doc):
 def process_scenario(scenario):
     doc = {
         'scenario_id': scenario['id'], 
-        'eval': 'Phase 2 June 2025 Collaboration',
+        'eval': 'Phase 2 July 2025 Collaboration',
         'name': scenario['name'],
         'pages': []
         }
