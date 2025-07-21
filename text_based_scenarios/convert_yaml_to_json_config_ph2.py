@@ -1,4 +1,4 @@
-import os, yaml
+import os, yaml, re
 
 def add_surveyjs_configs(doc):
     doc['showQuestionNumbers'] = False
@@ -113,14 +113,15 @@ def main(mongo_db):
     text_configs = mongo_db['textBasedConfig']
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    phase2_folder = os.path.join(current_dir, 'phase2/july2025')
+    # go up one level to root to find scenarios
+    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/july2025')
 
     all_docs = []
 
     for filename in os.listdir(phase2_folder):
         file_path = os.path.join(phase2_folder, filename)
-        # don't gen multi kdma 
-        if "AF-MF" in filename:
+        # don't gen multi kdma. also skip files that don't trail with a number (non subset files)
+        if "AF-MF" in filename or not re.match(r'.*\d+\.yaml$', filename):
             continue
         try:
             with open(file_path, 'r') as file:
