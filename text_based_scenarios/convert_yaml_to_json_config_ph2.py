@@ -113,7 +113,7 @@ def main(mongo_db):
     text_configs = mongo_db['textBasedConfig']
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    phase2_folder = os.path.join(current_dir, 'phase2-yaml-files')
+    phase2_folder = os.path.join(current_dir, 'phase2/july2025')
 
     all_docs = []
 
