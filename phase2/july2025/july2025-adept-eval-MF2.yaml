@@ -205,7 +205,9 @@ scenes:
       loss. They sabotaged a train and seriously injured 2 people.
 
       Patient B has moderate bleeding from their right hip. They are a bystander who
-      was injured.'
+      was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -260,7 +262,9 @@ scenes:
       an obviously dangerous prank and seriously injured 2 people.
 
       Patient B has a compound fracture above their left elbow with mild bleeding.
-      They are a bystander who was injured.'
+      They are a bystander who was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -314,7 +318,9 @@ scenes:
       a large IED, killing 1 person and seriously injuring 5 people.
 
       Patient B has a broken right arm with no bleeding. They are a bystander who
-      was injured.'
+      was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A

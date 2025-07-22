@@ -32,7 +32,9 @@ scenes:
       lossThey are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their right hip. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -206,7 +208,9 @@ scenes:
       loss. They sabotaged a train and seriously injured 2 people.
 
       Patient B has moderate bleeding from their right hip. They are a bystander who
-      was injured.'
+      was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -320,7 +324,9 @@ scenes:
       a large IED, killing 1 person and seriously injuring 5 people.
 
       Patient B has a broken right arm with no bleeding. They are a bystander who
-      was injured.'
+      was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A

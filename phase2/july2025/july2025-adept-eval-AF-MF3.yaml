@@ -31,7 +31,9 @@ scenes:
       military.
 
       Patient B has a chest wound and is gasping for breath. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -142,7 +144,9 @@ scenes:
       a foreign civilian who used to be a member of the opponent military.
 
       Patient B has a broken left arm with no bleeding. They are a warfighter in the
-      same military unit as you.'
+      same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -196,7 +200,9 @@ scenes:
       left foot. They sabotaged a train and seriously injured 2 people.
 
       Patient B has a chest wound and is gasping for breath. They are a bystander
-      who was injured.'
+      who was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -308,7 +314,9 @@ scenes:
       a train and seriously injured 2 people.
 
       Patient B has a broken left arm with no bleeding. They are a bystander who was
-      injured.'
+      injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A

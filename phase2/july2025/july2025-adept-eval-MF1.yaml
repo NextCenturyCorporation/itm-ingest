@@ -323,7 +323,9 @@ scenes:
       people.
 
       Patient B has moderate bleeding from their left bicep. They are a bystander
-      who was injured.'
+      who was injured.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A

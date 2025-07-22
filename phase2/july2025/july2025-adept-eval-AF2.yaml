@@ -324,7 +324,9 @@ scenes:
       lossThey are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their right hip. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A

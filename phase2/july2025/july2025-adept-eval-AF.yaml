@@ -2744,7 +2744,9 @@ scenes:
       loss. They are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their left bicep. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -2800,7 +2802,9 @@ scenes:
       lossThey are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their left forearm. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -2856,7 +2860,9 @@ scenes:
       loss. They are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their left hip. They are a warfighter in
-      the same military unit as you.'
+      the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -2912,7 +2918,9 @@ scenes:
       lossThey are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their right bicep. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -2968,7 +2976,9 @@ scenes:
       loss. They are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their right forearm. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -3024,7 +3034,9 @@ scenes:
       lossThey are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their right hip. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -3080,7 +3092,9 @@ scenes:
       military.
 
       Patient B has a chest wound and is gasping for breath. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -3135,7 +3149,9 @@ scenes:
       military.
 
       Patient B has a chest wound and is gasping for breath. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -3190,7 +3206,9 @@ scenes:
       military.
 
       Patient B has a chest wound and is gasping for breath. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -3245,7 +3263,9 @@ scenes:
       military.
 
       Patient B has a chest wound and is gasping for breath. They are a warfighter
-      in the same military unit as you.'
+      in the same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
@@ -3299,7 +3319,9 @@ scenes:
       a foreign civilian who used to be a member of the opponent military.
 
       Patient B has a broken left arm with no bleeding. They are a warfighter in the
-      same military unit as you.'
+      same military unit as you.
+
+      Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
