@@ -14,7 +14,10 @@ def main(mongo_db):
             yaml_obj["evalName"] = "Phase 2 June 2025 Collaboration"
 
             scenarios_collection = mongo_db["scenarios"]
-            scenarios_collection.insert_one(yaml_obj)
-            print("Loaded scenario: " + name)
-
-    print("Finished loading June 2025 evaluation scenarios.")
+            scenario_id = yaml_obj.get("id")
+            if scenario_id:
+                result = scenarios_collection.replace_one(
+                    {"id": scenario_id},
+                    yaml_obj,
+                    upsert=True  
+                )

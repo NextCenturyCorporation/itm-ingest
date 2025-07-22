@@ -1,7 +1,7 @@
 from decouple import config 
 import requests
 from scripts._0_4_4_adept_human_adm_compare_DRE_PH1_Server import main as dre_to_ph1
-from adept_repop_ph1 import SCENARIO_MAP
+from PAST_EVALS.adept_repop_ph1 import SCENARIO_MAP
 import utils.db_utils as db_utils
 
 PH1_URL = config("ADEPT_URL")
