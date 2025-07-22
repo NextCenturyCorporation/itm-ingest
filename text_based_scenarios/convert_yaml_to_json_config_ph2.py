@@ -98,7 +98,7 @@ def upload_configs(docs, collection):
         )
         
         if result.upserted_id:
-            print(f"Uploaded new scenario: {scenario_id}")
+            print(f"Uploaded new text scenario: {scenario_id}")
             uploaded_count += 1
         elif result.modified_count > 0:
             print(f"Replaced existing scenario: {scenario_id}")
