@@ -1,4 +1,5 @@
 from delegation_survey.phase2_covert_adm_to_del_materials import main as convert_adms
+from delegation_survey.update_survey_config import version7_setup
 def main(mongo_db):
     adm_runs_to_keep = [
         'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__479d4f7a-f2e5-4f1a-a975-686af0f6be70',
@@ -28,4 +29,7 @@ def main(mongo_db):
         [{'$set': {'adm_name': {'$arrayElemAt': [{'$split': ['$adm_name', '__']}, 0]}}}]
     )
     
+    # survey setup
     convert_adms(mongo_db, 9)
+
+    version7_setup(True)

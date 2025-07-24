@@ -290,7 +290,7 @@ class DelegationTool:
                 f"Created new survey version '{new_version}' from version '{prev}'",
             )
 
-    def push_changes(self):
+    def push_changes(self, auto_confirm=False):
         """
         Submits changes to the database
         """
@@ -306,8 +306,11 @@ class DelegationTool:
                     time.sleep(0.25)
                 else:
                     time.sleep(0.02)
-        LOGGER.log(LogLevel.WARN, "Push all to database? (y/n) ")
-        resp = input("")
+        if auto_confirm:
+            resp = "y"
+        else:
+            LOGGER.log(LogLevel.WARN, "Push all to database? (y/n) ")
+            resp = input("")
         if resp.strip() in ["y", "Y"]:
             try:
                 self.survey_mongo_collection.update_one(
@@ -1691,7 +1694,7 @@ def version6_setup():
     
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Survey version 6.0 created successfully with {medic_count} Phase 2 medics!")
 
-def version7_setup():
+def version7_setup(auto_confirm=False):
     tool = DelegationTool(7.0)
     tool.clear_survey_version()
 
@@ -1804,7 +1807,7 @@ def version7_setup():
     )
 
     # Save changes
-    tool.push_changes()
+    tool.push_changes(auto_confirm)
     tool.export_survey_json(os.path.join("survey-configs", "surveyConfig7x.json"))
     
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Survey version 7.0 created successfully with {medic_count} Phase 2 medics!")
