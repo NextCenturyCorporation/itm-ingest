@@ -32,4 +32,4 @@ def main(mongo_db):
     # survey setup
     convert_adms(mongo_db, 9)
 
-    version7_setup(True)
+    version7_setup(auto_confirm=True)

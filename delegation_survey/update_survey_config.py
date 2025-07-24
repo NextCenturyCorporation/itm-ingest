@@ -1,4 +1,4 @@
-import sys
+import sys, os
 
 sys.path.insert(0, "..")
 from pymongo import MongoClient
@@ -233,16 +233,18 @@ class DelegationTool:
                 return page
         return False
 
-    def initialize_survey(self, version, is_new):
+    def initialize_survey(self, version, is_new, auto_confirm=False):
         """
         Adds the initial survey base to the database
         """
-        if not is_new:
+        if not is_new and not auto_confirm:
             LOGGER.log(
                 LogLevel.WARN,
                 "This will overwrite all previous delegation survey data in the database. Are you sure you want to do this? (y/n) ",
             )
             overwrite = input("")
+        elif not is_new and auto_confirm:
+            overwrite = "y"
         if is_new or overwrite.strip() in ["y", "Y"]:
             self.survey = {
                 "title": "ITM Delegation Survey",
@@ -647,11 +649,11 @@ class DelegationTool:
         json.dump(survey_copy, f, indent=4)
         f.close()
 
-    def clear_survey_version(self):
+    def clear_survey_version(self, auto_confirm=False):
         """
         Restarts a survey version with the bare bones.
         """
-        self.initialize_survey(self.survey["version"], False)
+        self.initialize_survey(self.survey["version"], False, auto_confirm)
         self.changes_summary.append("Cleared all data from survey")
 
     def append_comparison_page(self, name1, name2, scenario_index, alignment):
@@ -1696,7 +1698,7 @@ def version6_setup():
 
 def version7_setup(auto_confirm=False):
     tool = DelegationTool(7.0)
-    tool.clear_survey_version()
+    tool.clear_survey_version(auto_confirm)
 
     # Add participant ID page
     exp_page_1 = {
@@ -1776,8 +1778,9 @@ def version7_setup(auto_confirm=False):
     tool.add_page_by_json(intro_page)
 
     # Add note page from existing configs
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     tool.import_page_from_json(
-        os.path.join("survey-configs", "surveyConfig2x.json"), "Note page", None
+        os.path.join(script_dir, "survey-configs", "surveyConfig2x.json"), "Note page", None
     )
 
 
@@ -1801,14 +1804,14 @@ def version7_setup(auto_confirm=False):
 
     # Add final page - post-scenario measures
     tool.import_page_from_json(
-        os.path.join("survey-configs", "postScenarioPhase2.json"),
+        os.path.join(script_dir, "survey-configs", "postScenarioPhase2.json"),
         "Post-Scenario Measures",
         None,
     )
 
     # Save changes
-    tool.push_changes(auto_confirm)
-    tool.export_survey_json(os.path.join("survey-configs", "surveyConfig7x.json"))
+    tool.push_changes(auto_confirm=auto_confirm)
+    tool.export_survey_json(os.path.join(script_dir, "survey-configs", "surveyConfig7x.json"))
     
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Survey version 7.0 created successfully with {medic_count} Phase 2 medics!")
 
