@@ -34,7 +34,7 @@ def find_action_by_choice(scene, choice_id):
             return action
     return None
 
-def convert_adm(adm, scenario, target, name, template, medic_collec):
+def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber):
     # start building document to be uploaded
     doc = copy.deepcopy(template)
     
@@ -52,14 +52,13 @@ def convert_adm(adm, scenario, target, name, template, medic_collec):
         'alignmentScore': adm['results']['alignment_score'],
         'kdmas': adm['results']['kdmas'],
         'admAuthor': 'kitware',
-        'evalNumber': 8,
+        'evalNumber': evalNumber,
     })
 
     # wipe out template default from rows
     doc['elements'][0]['rows'] = []
     doc['elements'][0]['title'] = ' '
     
-    # Replace placeholder
     doc['elements'][0]['name'] = medic_name
     
     # Update all the question titles and names that reference placeholder
@@ -78,7 +77,8 @@ def convert_adm(adm, scenario, target, name, template, medic_collec):
     
     # Load the corresponding YAML file
     if scenario_name:
-        yaml_dir = os.path.join('text_based_scenarios', 'phase2-yaml-files')
+        extension = 'june2025' if evalNumber == 8 else 'july2025'
+        yaml_dir = os.path.join('phase2', extension)
         yaml_data = None
         
         for filename in os.listdir(yaml_dir):
@@ -134,12 +134,12 @@ def convert_adm(adm, scenario, target, name, template, medic_collec):
     print(f"Creating medic document with name: {medic_name}")
     medic_collec.insert_one(doc)
 
-def main(mongo_db):
+def main(mongo_db, evalNumber):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     template_path = os.path.join(script_dir, 'templates', 'phase2_single_medic_template.json')
     f = open(template_path, 'r', encoding='utf-8')
     template = json.load(f)
-    adm_runs = mongo_db['admTargetRuns'].find({"evalNumber": 8})
+    adm_runs = mongo_db['admTargetRuns'].find({"evalNumber": evalNumber})
     medic_collec = mongo_db['admMedics']
 
     for adm in adm_runs:
@@ -149,4 +149,4 @@ def main(mongo_db):
         
         # don't process tests and failed runs
         if 'test' not in name and 'Random' not in name and '6d0829ad-4e3c-4a03-8f3d-472cc549888f' not in name:
-            convert_adm(adm, scenario, target, name, template, medic_collec)
+            convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber)
