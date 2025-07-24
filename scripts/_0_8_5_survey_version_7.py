@@ -15,10 +15,17 @@ def main(mongo_db):
 
     print("Updated eval number from string to int")
 
+    # delete extra adm runs
     delete_result = adm_runs_collection.delete_many({
         'evalNumber': 9,
         'adm_name': {'$nin': adm_runs_to_keep}
     })
-
     print(f"Deleted {delete_result.deleted_count} documents that were not included in approved list of adm names")
+    
+    #remove long string of numbers/letters after __ to clean adm names
+    adm_runs_collection.update_many(
+        {'evalNumber': 9, 'adm_name': {'$regex': '__'}},
+        [{'$set': {'adm_name': {'$arrayElemAt': [{'$split': ['$adm_name', '__']}, 0]}}}]
+    )
+    
     convert_adms(mongo_db, 9)
