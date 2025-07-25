@@ -28,6 +28,14 @@ def main(mongo_db):
         {'evalNumber': 9, 'adm_name': {'$regex': '__'}},
         [{'$set': {'adm_name': {'$arrayElemAt': [{'$split': ['$adm_name', '__']}, 0]}}}]
     )
+
+
+    # remove "random" adm from eval number 8
+    delete_result_random = adm_runs_collection.delete_many({
+        'evalNumber': 8,
+        'adm_name': {'$regex': 'Random', '$options': 'i'}
+    })
+    print(f"Deleted {delete_result_random.deleted_count} Random ADM runs from eval number 8")
     
     # survey setup
     convert_adms(mongo_db, 9)
