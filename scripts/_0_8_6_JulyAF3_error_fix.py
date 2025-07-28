@@ -25,10 +25,10 @@ def main(mongo_db):
     adm_medic_collection = mongo_db['admMedics']
 
     # delete adm medics
-    delete_count = adm_medic_collection.delete_many({
+    adm_medic_collection.delete_many({
         'evalNumber': 9
     })
-    print(f'Deleted {delete_count} from admMedics')
+
     # regen adm medics
     convert_adms(mongo_db, 9)
 
