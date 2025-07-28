@@ -1,6 +1,6 @@
 from delegation_survey.phase2_covert_adm_to_del_materials import main as convert_adms
 from delegation_survey.update_survey_config import version7_setup
-
+from text_based_scenarios.convert_yaml_to_json_config_ph2 import main as text_scenarios
 def main(mongo_db):
     adm_runs_collection = mongo_db['admTargetRuns']
 
@@ -21,6 +21,9 @@ def main(mongo_db):
         {'evalNumber': 9, 'adm_name': {'$regex': '__'}},
         [{'$set': {'adm_name': {'$arrayElemAt': [{'$split': ['$adm_name', '__']}, 0]}}}]
     )
+
+    # re generate text scenarios
+    text_scenarios(mongo_db)
 
     adm_medic_collection = mongo_db['admMedics']
 
