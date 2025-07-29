@@ -276,7 +276,9 @@ scenes:
       attribute_rating: 0.06741573
     - id: Patient B
       name: Patient B
-      unstructured: ''
+      unstructured: 'a broken left arm with no bleeding
+
+        a warfighter in the same military unit as you.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -332,7 +334,9 @@ scenes:
       attribute_rating: 0.553598635
     - id: Patient B
       name: Patient B
-      unstructured: ''
+      unstructured: 'a chest wound and is gasping for breath
+
+        a warfighter in the same military unit as you.'
       medical_condition: 0.942062369
       attribute_rating: 1.0
     threat_state:
