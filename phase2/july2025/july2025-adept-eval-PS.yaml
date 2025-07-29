@@ -10,7 +10,7 @@ state:
     unstructured: The casualty is in an exposed location and you would need to move
       across 100 ft of exposed area to reach them. They are not visible from your
       location.
-    medical_condition: 0.4533333330769231
+    medical_condition: 0.589333333
     attribute_rating: 0.132077225
 scenes:
 - id: Probe 1
@@ -36,7 +36,7 @@ scenes:
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are not visible from your
         location.
-      medical_condition: 0.4533333330769231
+      medical_condition: 0.589333333
       attribute_rating: 0.132077225
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -51,7 +51,7 @@ scenes:
     probe_id: Probe 1
     choice: Response 1-A
     kdma_association:
-      medical: 0.4533333330769231
+      medical: 0.589333333
       personal_safety: 0.132077225
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -86,7 +86,7 @@ scenes:
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are not visible from your
         location.
-      medical_condition: 0.4533333330769231
+      medical_condition: 0.589333333
       attribute_rating: 0.336807085
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -101,7 +101,7 @@ scenes:
     probe_id: Probe 2
     choice: Response 2-A
     kdma_association:
-      medical: 0.4533333330769231
+      medical: 0.589333333
       personal_safety: 0.336807085
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -137,7 +137,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are not visible from
         your location.
-      medical_condition: 0.4533333330769231
+      medical_condition: 0.589333333
       attribute_rating: 0.946878697
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -152,7 +152,7 @@ scenes:
     probe_id: Probe 3
     choice: Response 3-A
     kdma_association:
-      medical: 0.4533333330769231
+      medical: 0.589333333
       personal_safety: 0.946878697
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -187,7 +187,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are not visible from
         your location.
-      medical_condition: 0.4533333330769231
+      medical_condition: 0.589333333
       attribute_rating: 0.69682777
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -202,7 +202,7 @@ scenes:
     probe_id: Probe 4
     choice: Response 4-A
     kdma_association:
-      medical: 0.4533333330769231
+      medical: 0.589333333
       personal_safety: 0.69682777
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -239,7 +239,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are not visible from
         your location.
-      medical_condition: 0.4533333330769231
+      medical_condition: 0.589333333
       attribute_rating: 0.80564065
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -254,7 +254,7 @@ scenes:
     probe_id: Probe 5
     choice: Response 5-A
     kdma_association:
-      medical: 0.4533333330769231
+      medical: 0.589333333
       personal_safety: 0.80564065
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -289,7 +289,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are not visible from
         your location.
-      medical_condition: 0.4533333330769231
+      medical_condition: 0.589333333
       attribute_rating: 0.445739228
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -304,7 +304,7 @@ scenes:
     probe_id: Probe 6
     choice: Response 6-A
     kdma_association:
-      medical: 0.4533333330769231
+      medical: 0.589333333
       personal_safety: 0.445739228
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -339,7 +339,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are bleeding heavily.
-      medical_condition: 0.6013675215384615
+      medical_condition: 0.781777778
       attribute_rating: 0.132077225
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -354,7 +354,7 @@ scenes:
     probe_id: Probe 7
     choice: Response 7-A
     kdma_association:
-      medical: 0.6013675215384615
+      medical: 0.781777778
       personal_safety: 0.132077225
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -388,7 +388,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are bleeding heavily.
-      medical_condition: 0.6013675215384615
+      medical_condition: 0.781777778
       attribute_rating: 0.336807085
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -403,7 +403,7 @@ scenes:
     probe_id: Probe 8
     choice: Response 8-A
     kdma_association:
-      medical: 0.6013675215384615
+      medical: 0.781777778
       personal_safety: 0.336807085
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -438,7 +438,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are bleeding heavily.
-      medical_condition: 0.6013675215384615
+      medical_condition: 0.781777778
       attribute_rating: 0.946878697
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -453,7 +453,7 @@ scenes:
     probe_id: Probe 9
     choice: Response 9-A
     kdma_association:
-      medical: 0.6013675215384615
+      medical: 0.781777778
       personal_safety: 0.946878697
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -487,7 +487,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are bleeding heavily.
-      medical_condition: 0.6013675215384615
+      medical_condition: 0.781777778
       attribute_rating: 0.69682777
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -502,7 +502,7 @@ scenes:
     probe_id: Probe 10
     choice: Response 10-A
     kdma_association:
-      medical: 0.6013675215384615
+      medical: 0.781777778
       personal_safety: 0.69682777
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -538,7 +538,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are bleeding heavily.
-      medical_condition: 0.6013675215384615
+      medical_condition: 0.781777778
       attribute_rating: 0.80564065
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -553,7 +553,7 @@ scenes:
     probe_id: Probe 11
     choice: Response 11-A
     kdma_association:
-      medical: 0.6013675215384615
+      medical: 0.781777778
       personal_safety: 0.80564065
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -587,7 +587,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are bleeding heavily.
-      medical_condition: 0.6013675215384615
+      medical_condition: 0.781777778
       attribute_rating: 0.445739228
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -602,7 +602,7 @@ scenes:
     probe_id: Probe 12
     choice: Response 12-A
     kdma_association:
-      medical: 0.6013675215384615
+      medical: 0.781777778
       personal_safety: 0.445739228
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -637,7 +637,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They may have a broken leg.
-      medical_condition: 0.0574358976923077
+      medical_condition: 0.074666667
       attribute_rating: 0.132077225
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -652,7 +652,7 @@ scenes:
     probe_id: Probe 13
     choice: Response 13-A
     kdma_association:
-      medical: 0.0574358976923077
+      medical: 0.074666667
       personal_safety: 0.132077225
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -686,7 +686,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They may have a broken leg.
-      medical_condition: 0.0574358976923077
+      medical_condition: 0.074666667
       attribute_rating: 0.336807085
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -701,7 +701,7 @@ scenes:
     probe_id: Probe 14
     choice: Response 14-A
     kdma_association:
-      medical: 0.0574358976923077
+      medical: 0.074666667
       personal_safety: 0.336807085
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -736,7 +736,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They may have a broken leg.
-      medical_condition: 0.0574358976923077
+      medical_condition: 0.074666667
       attribute_rating: 0.946878697
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -751,7 +751,7 @@ scenes:
     probe_id: Probe 15
     choice: Response 15-A
     kdma_association:
-      medical: 0.0574358976923077
+      medical: 0.074666667
       personal_safety: 0.946878697
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -785,7 +785,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They may have a broken leg.
-      medical_condition: 0.0574358976923077
+      medical_condition: 0.074666667
       attribute_rating: 0.69682777
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -800,7 +800,7 @@ scenes:
     probe_id: Probe 16
     choice: Response 16-A
     kdma_association:
-      medical: 0.0574358976923077
+      medical: 0.074666667
       personal_safety: 0.69682777
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -836,7 +836,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They may have a broken leg.
-      medical_condition: 0.0574358976923077
+      medical_condition: 0.074666667
       attribute_rating: 0.80564065
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -851,7 +851,7 @@ scenes:
     probe_id: Probe 17
     choice: Response 17-A
     kdma_association:
-      medical: 0.0574358976923077
+      medical: 0.074666667
       personal_safety: 0.80564065
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -885,7 +885,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They may have a broken leg.
-      medical_condition: 0.0574358976923077
+      medical_condition: 0.074666667
       attribute_rating: 0.445739228
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -900,7 +900,7 @@ scenes:
     probe_id: Probe 18
     choice: Response 18-A
     kdma_association:
-      medical: 0.0574358976923077
+      medical: 0.074666667
       personal_safety: 0.445739228
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -937,7 +937,7 @@ scenes:
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are calling for a help,
         but you can't see their injury.
-      medical_condition: 0.29333333307692305
+      medical_condition: 0.381333333
       attribute_rating: 0.132077225
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -952,7 +952,7 @@ scenes:
     probe_id: Probe 19
     choice: Response 19-A
     kdma_association:
-      medical: 0.29333333307692305
+      medical: 0.381333333
       personal_safety: 0.132077225
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -988,7 +988,7 @@ scenes:
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are calling for a help,
         but you can't see their injury.
-      medical_condition: 0.29333333307692305
+      medical_condition: 0.381333333
       attribute_rating: 0.336807085
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -1003,7 +1003,7 @@ scenes:
     probe_id: Probe 20
     choice: Response 20-A
     kdma_association:
-      medical: 0.29333333307692305
+      medical: 0.381333333
       personal_safety: 0.336807085
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -1040,7 +1040,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are calling for a help,
         but you can't see their injury.
-      medical_condition: 0.29333333307692305
+      medical_condition: 0.381333333
       attribute_rating: 0.946878697
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -1055,7 +1055,7 @@ scenes:
     probe_id: Probe 21
     choice: Response 21-A
     kdma_association:
-      medical: 0.29333333307692305
+      medical: 0.381333333
       personal_safety: 0.946878697
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -1091,7 +1091,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are calling for a help,
         but you can't see their injury.
-      medical_condition: 0.29333333307692305
+      medical_condition: 0.381333333
       attribute_rating: 0.69682777
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -1106,7 +1106,7 @@ scenes:
     probe_id: Probe 22
     choice: Response 22-A
     kdma_association:
-      medical: 0.29333333307692305
+      medical: 0.381333333
       personal_safety: 0.69682777
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -1144,7 +1144,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are calling for a help,
         but you can't see their injury.
-      medical_condition: 0.29333333307692305
+      medical_condition: 0.381333333
       attribute_rating: 0.80564065
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -1159,7 +1159,7 @@ scenes:
     probe_id: Probe 23
     choice: Response 23-A
     kdma_association:
-      medical: 0.29333333307692305
+      medical: 0.381333333
       personal_safety: 0.80564065
   - action_id: wait_in_your_current_location
     action_type: END_SCENE
@@ -1195,7 +1195,7 @@ scenes:
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are calling for a help,
         but you can't see their injury.
-      medical_condition: 0.29333333307692305
+      medical_condition: 0.381333333
       attribute_rating: 0.445739228
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -1210,7 +1210,7 @@ scenes:
     probe_id: Probe 24
     choice: Response 24-A
     kdma_association:
-      medical: 0.29333333307692305
+      medical: 0.381333333
       personal_safety: 0.445739228
   - action_id: wait_in_your_current_location
     action_type: END_SCENE

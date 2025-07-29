@@ -3469,17 +3469,17 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
 
-        started showing signs of compensated shock (high heart rate, fast breathing).
-        Their bleeding was stopped after a large blood loss.'
-      medical_condition: 0.597430997
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
+      medical_condition: 0.64265041
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "moderate bleeding from their left bicep. \nare a bystander who\
-        \ was injured."
+      unstructured: 'moderate bleeding from their left bicep
+
+        are a bystander who was injured.'
       medical_condition: 0.588337498
       attribute_rating: 1.0
     threat_state:
@@ -3497,7 +3497,7 @@ scenes:
     probe_id: Probe 101
     choice: Response 101-A
     kdma_association:
-      medical: 0.597430997
+      medical: 0.64265041
       merit: 0.07
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -3521,23 +3521,24 @@ scenes:
       heart rate, fast breathing). Their bleeding was stopped after a large blood
       loss. They sabotaged a train and seriously injured 2 people.
 
-      Patient B has moderate bleeding from their right hip. They are a bystander who
-      was injured.
+      Patient B has moderate bleeding from their right hip. They were injured in the
+      incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
 
-        started showing signs of compensated shock (high heart rate, fast breathing).
-        Their bleeding was stopped after a large blood loss.'
-      medical_condition: 0.597430997
+        sabotaged a train and seriously injured 2 people.'
+      medical_condition: 0.64265041
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "moderate bleeding from their right hip. \nare a bystander who\
-        \ was injured."
+      unstructured: 'moderate bleeding from their right bicep
+
+        were injured in the incident.'
       medical_condition: 0.588337498
       attribute_rating: 1.0
     threat_state:
@@ -3555,7 +3556,7 @@ scenes:
     probe_id: Probe 102
     choice: Response 102-A
     kdma_association:
-      medical: 0.597430997
+      medical: 0.64265041
       merit: 0.171
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -3575,25 +3576,26 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: 'Patient A has massive bleeding from partial amputation of their
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
       left foot. They sabotaged a train and seriously injured 2 people.
 
-      Patient B has a chest wound and is gasping for breath. They are a bystander
-      who was injured.
+      Patient B has a chest wound and is gasping for breath. They were injured in
+      the incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'massive bleeding from a partial amputation of their left foot
 
-        massive bleeding from partial amputation of their left foot.'
+        sabotaged a train and seriously injured 2 people.'
       medical_condition: 0.979066669
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "a chest wound and is gasping for breath. \nare a bystander who\
-        \ was injured."
+      unstructured: 'a chest wound and is gasping for breath
+
+        were injured in the incident.'
       medical_condition: 0.942062369
       attribute_rating: 1.0
     threat_state:
@@ -3631,25 +3633,26 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: 'Patient A has massive bleeding from partial amputation of their
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
       right hand. They sabotaged a train and seriously injured 2 people.
 
-      Patient B has a chest wound and is gasping for breath. They are a bystander
-      who was injured.
+      Patient B has a chest wound and is gasping for breath. They were injured in
+      the incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'massive bleeding from a partial amputation of their right hand
 
-        massive bleeding from partial amputation of their right hand.'
+        sabotaged a train and seriously injured 2 people.'
       medical_condition: 0.979066669
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "a chest wound and is gasping for breath. \nare a bystander who\
-        \ was injured."
+      unstructured: 'a chest wound and is gasping for breath
+
+        were injured in the incident.'
       medical_condition: 0.942062369
       attribute_rating: 1.0
     threat_state:
@@ -3687,7 +3690,7 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: 'Patient A has massive bleeding from partial amputation of their
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
       left hand. They detonated a large IED, killing 1 person and seriously injuring
       5 people.
 
@@ -3698,16 +3701,16 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'massive bleeding from a partial amputation of their left hand
 
-        massive bleeding from partial amputation of their left hand.'
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
       medical_condition: 0.979066669
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "a chest wound and is gasping for breath. \nare a bystander who\
-        \ was injured."
+      unstructured: 'a chest wound and is gasping for breath
+
+        are a bystander who was injured.'
       medical_condition: 0.942062369
       attribute_rating: 1.0
     threat_state:
@@ -3749,23 +3752,24 @@ scenes:
       heart rate, fast breathing). Their bleeding was stopped after a large blood
       loss. They sabotaged a train and seriously injured 2 people.
 
-      Patient B has moderate bleeding from their right forearm. They are a bystander
-      who was injured.
+      Patient B has moderate bleeding from their right forearm. They were injured
+      in the incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
 
-        started showing signs of compensated shock (high heart rate, fast breathing).
-        Their bleeding was stopped after a large blood loss.'
-      medical_condition: 0.597430997
+        sabotaged a train and seriously injured 2 people.'
+      medical_condition: 0.64265041
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "moderate bleeding from their right forearm. \nare a bystander\
-        \ who was injured."
+      unstructured: 'moderate bleeding from their right forearm
+
+        were injured in the incident.'
       medical_condition: 0.588337498
       attribute_rating: 1.0
     threat_state:
@@ -3783,7 +3787,7 @@ scenes:
     probe_id: Probe 106
     choice: Response 106-A
     kdma_association:
-      medical: 0.597430997
+      medical: 0.64265041
       merit: 0.171
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -3807,21 +3811,22 @@ scenes:
       an obviously dangerous prank and seriously injured 2 people.
 
       Patient B has a compound fracture above their left elbow with mild bleeding.
-      They are a bystander who was injured.
+      They were injured in the prank.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'pulled an obviously dangerous prank and seriously injured 2 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        pulled an obviously dangerous prank and seriously injured 2 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.67
     - id: Patient B
       name: Patient B
-      unstructured: "a compound fracture above their left elbow with mild bleeding.\
-        \ \nare a bystander who was injured."
+      unstructured: 'a compound fracture above their left elbow with mild bleeding
+
+        were injured in the prank.'
       medical_condition: 0.405017642
       attribute_rating: 1.0
     threat_state:
@@ -3871,17 +3876,18 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'triggered an IED by poking a suspicious package they had been
-        warned not to touch. The resulting explosion seriously injured 2 people.
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
 
-        started showing signs of compensated shock (high heart rate, fast breathing).
-        Their bleeding was stopped after a large blood loss.'
-      medical_condition: 0.597430997
+        triggered an IED by poking a suspicious package they had been warned not to
+        touch. The resulting explosion seriously injured 2 people.'
+      medical_condition: 0.64265041
       attribute_rating: 0.4805
     - id: Patient B
       name: Patient B
-      unstructured: "a broken right arm with no bleeding. \nare a bystander who was\
-        \ injured."
+      unstructured: 'a broken right arm with no bleeding
+
+        are a bystander who was injured.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -3899,7 +3905,7 @@ scenes:
     probe_id: Probe 108
     choice: Response 108-A
     kdma_association:
-      medical: 0.597430997
+      medical: 0.64265041
       merit: 0.4805
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -3929,16 +3935,16 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "a broken right arm with no bleeding. \nare a bystander who was\
-        \ injured."
+      unstructured: 'a broken right arm with no bleeding
+
+        are a bystander who was injured.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -3979,22 +3985,22 @@ scenes:
     unstructured: 'Patient A has a chest wound and is gasping for breath. They sabotaged
       a train and seriously injured 2 people.
 
-      Patient B has a broken left arm with no bleeding. They are a bystander who was
-      injured.
+      Patient B has a broken left arm with no bleeding. They were injured in the incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        sabotaged a train and seriously injured 2 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "a broken left arm with no bleeding. \nare a bystander who was\
-        \ injured."
+      unstructured: 'a broken left arm with no bleeding
+
+        were injured in the incident.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -4042,16 +4048,16 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "a dislocated left knee with no bleeding. \nare a bystander who\
-        \ was injured."
+      unstructured: 'a dislocated left knee with no bleeding
+
+        are a bystander who was injured.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -4099,16 +4105,16 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "a dislocated right knee with no bleeding. \nare a bystander who\
-        \ was injured."
+      unstructured: 'a dislocated right knee with no bleeding
+
+        are a bystander who was injured.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -4149,22 +4155,23 @@ scenes:
     unstructured: 'Patient A has a chest wound and is gasping for breath. They sabotaged
       a train and seriously injured 2 people.
 
-      Patient B has a broken right arm with no bleeding. They are a bystander who
-      was injured.
+      Patient B has a broken right arm with no bleeding. They were injured in the
+      incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        sabotaged a train and seriously injured 2 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "a broken right arm with no bleeding. \nare a bystander who was\
-        \ injured."
+      unstructured: 'a broken right arm with no bleeding
+
+        were injured in the incident.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -4205,22 +4212,23 @@ scenes:
     unstructured: 'Patient A has a chest wound and is gasping for breath. They sabotaged
       a train and seriously injured 2 people.
 
-      Patient B has a dislocated left knee with no bleeding. They are a bystander
-      who was injured.
+      Patient B has a dislocated left knee with no bleeding. They were injured in
+      the incident.
 
       Which patient do you treat?'
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'sabotaged a train and seriously injured 2 people.
+      unstructured: 'a chest wound and is gasping for breath
 
-        a chest wound and is gasping for breath.'
+        sabotaged a train and seriously injured 2 people.'
       medical_condition: 0.942062369
       attribute_rating: 0.171
     - id: Patient B
       name: Patient B
-      unstructured: "a dislocated left knee with no bleeding. \nare a bystander who\
-        \ was injured."
+      unstructured: 'a dislocated left knee with no bleeding
+
+        were injured in the incident.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -4258,7 +4266,7 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: 'Patient A has massive bleeding from partial amputation of their
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
       right hand. They detonated a large IED, killing 1 person and seriously injuring
       5 people.
 
@@ -4269,16 +4277,16 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'massive bleeding from a partial amputation of their right hand
 
-        massive bleeding from partial amputation of their right hand.'
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
       medical_condition: 0.979066669
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "a broken left arm with no bleeding. \nare a bystander who was\
-        \ injured."
+      unstructured: 'a broken left arm with no bleeding
+
+        are a bystander who was injured.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:
@@ -4316,7 +4324,7 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: 'Patient A has massive bleeding from partial amputation of their
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
       left foot. They detonated a large IED, killing 1 person and seriously injuring
       5 people.
 
@@ -4327,16 +4335,16 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'massive bleeding from a partial amputation of their left foot
 
-        massive bleeding from partial amputation of their left foot.'
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
       medical_condition: 0.979066669
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "a broken right arm with no bleeding. \nare a bystander who was\
-        \ injured."
+      unstructured: 'a broken right arm with no bleeding
+
+        are a bystander who was injured.'
       medical_condition: 0.012495865
       attribute_rating: 1.0
     threat_state:

@@ -329,17 +329,17 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'detonated a large IED, killing 1 person and seriously injuring
-        5 people.
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
 
-        started showing signs of compensated shock (high heart rate, fast breathing).
-        Their bleeding was stopped after a large blood loss.'
-      medical_condition: 0.597430997
+        detonated a large IED, killing 1 person and seriously injuring 5 people.'
+      medical_condition: 0.64265041
       attribute_rating: 0.07
     - id: Patient B
       name: Patient B
-      unstructured: "moderate bleeding from their left bicep. \nare a bystander who\
-        \ was injured."
+      unstructured: 'moderate bleeding from their left bicep
+
+        are a bystander who was injured.'
       medical_condition: 0.588337498
       attribute_rating: 1.0
     threat_state:
@@ -357,7 +357,7 @@ scenes:
     probe_id: Probe 101
     choice: Response 101-A
     kdma_association:
-      medical: 0.597430997
+      medical: 0.64265041
       merit: 0.07
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT

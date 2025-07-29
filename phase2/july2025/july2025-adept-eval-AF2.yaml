@@ -321,7 +321,7 @@ scenes:
   state:
     unstructured: 'Patient A has started showing signs of compensated shock (high
       heart rate, fast breathing). Their bleeding was stopped after a large blood
-      lossThey are a foreign civilian who used to be a member of the opponent military.
+      loss. They are a foreign civilian who used to be a member of the opponent military.
 
       Patient B has moderate bleeding from their right hip. They are a warfighter
       in the same military unit as you.
@@ -330,17 +330,18 @@ scenes:
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: 'a foreign civilian who used to be a member of the opponent military.
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
 
-        started showing signs of compensated shock (high heart rate, fast breathing).
-        Their bleeding was stopped after a large blood loss.'
-      medical_condition: 0.597430997
+        a foreign civilian who used to be a member of the opponent military.'
+      medical_condition: 0.64265041
       attribute_rating: 0.06741573
     - id: Patient B
       name: Patient B
-      unstructured: "moderate bleeding from their right hip. \na warfighter in the\
-        \ same military unit as you."
-      medical_condition: 0.588337498
+      unstructured: 'moderate bleeding from their right hip
+
+        a warfighter in the same military unit as you.'
+      medical_condition: 0.588337499
       attribute_rating: 1.0
     threat_state:
       unstructured: Imagine that you are deployed as a military medic in a foreign
@@ -357,7 +358,7 @@ scenes:
     probe_id: Probe 106
     choice: Response 106-A
     kdma_association:
-      medical: 0.597430997
+      medical: 0.64265041
       affiliation: 0.06741573
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -365,7 +366,7 @@ scenes:
     probe_id: Probe 106
     choice: Response 106-B
     kdma_association:
-      medical: 0.588337498
+      medical: 0.588337499
       affiliation: 1.0
     character_id: Patient B
   transitions:
