@@ -1,4 +1,4 @@
-import yaml, argparse, json, os, csv, requests
+import yaml, argparse, json, os, csv, requests, copy
 from logger import LogLevel, Logger
 from pymongo import MongoClient
 from datetime import datetime
@@ -27,6 +27,51 @@ ACTION_TRANSLATION = {
     "TREAT_PATIENT": "Treatment",
     'END_SCENE': 'Wait',
     "SEARCH": "Search"
+}
+
+REQ_HEMORRHAGE_PROCEDURES = {
+    'desert': {
+        'US Military 1': ['R Chest Puncture'],
+        'Civilian 1': ['L Shin Amputation'],
+        'Attacker 1': ['R Wrist Amputation'],
+        'US Military 2': ['L Stomach Puncture'],
+        'Civilian 2': ['R Stomach Puncture'],
+        'Attacker 2': ['L Shoulder Puncture'],
+        'Civilian 3': ['L Thigh Laceration']
+    },
+    'urban': {
+        'US Military 1': ['R Bicep Puncture'],
+        'US Military 2': ['L Stomach Puncture'],
+        'Shooter 1': ['L Shoulder Puncture'],
+        'US Military 3': ['R Thigh Puncture'],
+        'Civilian 2': ['L Chest Puncture'],
+        'Civilian 3': ['R Stomach Puncture'],
+        'US Military 4': ['L Stomach Puncture']
+    }
+}
+
+ALL_REQ_PROCEDURES = {
+    'desert': {
+        'US Military 1': ['R Chest Puncture', 'L Chest Collapse'],
+        'Civilian 1': ['L Shin Amputation'],
+        'Attacker 1': ['R Wrist Amputation'],
+        'US Military 2': ['L Stomach Puncture'],
+        'Civilian 2': ['R Stomach Puncture'],
+        'Attacker 2': ['L Shoulder Puncture'],
+        'Civilian 3': ['L Thigh Laceration'],
+        'US Military 3': ['L Forearm Burn', 'L Chest Burn'],
+        'US Military 4': ['L Wrist Broken']
+    },
+    'urban': {
+        'US Military 1': ['R Bicep Puncture'],
+        'US Military 2': ['L Stomach Puncture'],
+        'Civilian 1': ['R Wrist Broken'],
+        'Shooter 1': ['L Shoulder Puncture'],
+        'US Military 3': ['R Thigh Puncture'],
+        'Civilian 2': ['L Chest Puncture', 'R Chest Collapse'],
+        'Civilian 3': ['R Stomach Puncture'],
+        'US Military 4': ['L Stomach Puncture']
+    }
 }
 
 mongo_collection_matches = None
@@ -167,7 +212,10 @@ class ProbeMatcher:
             f'{env} Triage_time_patient': 0,
             f'{env} Engage_patient': 0,
             f'{env} Tag_acc': 0,
-            f'{env} Tag_expectant': False
+            f'{env} Tag_expectant': False,
+            f'{env} Hemorrhage control': 0,
+            f'{env} Hemorrhage control_time': None,
+            f'{env} Triage Performance': 0
         }
 
         ow_csv = open(self.json_filename.replace('.json', '.csv'), 'r', encoding='utf-8')
@@ -179,7 +227,7 @@ class ProbeMatcher:
         if ow_csv:
             ow_csv.close()
 
-        def timestamp_to_milliseconds(timestamp):
+        def timestamp_to_seconds(timestamp):
             return datetime.fromisoformat(str(dateparser.parse(timestamp))).timestamp()
 
         def find_patients_engaged():
@@ -219,8 +267,8 @@ class ProbeMatcher:
             for x in data:
                 # only count actions that are more than 5 seconds apart from the last of the same type of action
                 if x[0] in assessment_actions:
-                    if (x[0] not in last_done or (timestamp_to_milliseconds(x[2]) - last_done[x[0]]) > 5):
-                        last_done[x[0]] = timestamp_to_milliseconds(x[2])
+                    if (x[0] not in last_done or (timestamp_to_seconds(x[2]) - last_done[x[0]]) > 5):
+                        last_done[x[0]] = timestamp_to_seconds(x[2])
                         count += 1
                         patient = x[header.index('PatientID')].split(' Root')[0]
                         if patient not in per_patient:
@@ -415,6 +463,84 @@ class ProbeMatcher:
         results[f'{env} Search1'] = search1
         results[f'{env} Search2'] = search2
         results[f'{env} Personal_safety'] = ps1
+
+        def get_hemorrhage_control():
+            to_complete = copy.deepcopy(REQ_HEMORRHAGE_PROCEDURES[env.lower()])
+            start_time = 0
+            end_time = 0
+            for x in data:
+                if x[0] == 'SESSION_START':
+                    start_time = timestamp_to_seconds(x[header.index('Timestamp')])
+                if x[0] == 'INJURY_TREATED':
+                    patient = x[header.index("PatientID")]
+                    where = x[header.index("InjuryName")]
+                    completed = x[header.index("InjuryTreatmentComplete")]
+                    # only look for hemorrhage control that has been completed
+                    if completed:
+                        if patient in to_complete:
+                            # if hemorrhage has been completely treated, remove from list
+                            if where in to_complete[patient]:
+                                to_complete[patient].remove(where)
+                                # update end time to latest treatment. As the csv is written in read in time order, this will end up getting
+                                # the last hemorrhage control to calculate end time minus start time
+                                end_time = timestamp_to_seconds(x[header.index('Timestamp')])
+                                # remove patients whose hemorrhages have all been treated
+                                if len(to_complete[patient]) == 0:
+                                    del to_complete[patient]
+
+            # if there are no patients left in the dictionary, we have succeeded with hemorrhage control!
+            res = 1 if len(list(to_complete.keys())) == 0 else 0
+            time_to_hcontrol = (end_time-start_time) if res == 1 else None
+            if time_to_hcontrol:
+                minutes = int(time_to_hcontrol // 60)
+                seconds = int(time_to_hcontrol % 60)
+                time_to_hcontrol = str(minutes) + ':' + str(seconds)
+            return {'completed': res, 'time': time_to_hcontrol}
+        
+        hem_control = get_hemorrhage_control()
+        results[f'{env} Hemorrhage control'] = hem_control['completed']
+        results[f'{env} Hemorrhage control_time'] = hem_control['time']
+
+        def get_triage_performance():
+            '''
+            For every expected treatment, assign a 1 if they applied it and a 0 if they didn't.
+            Assign an extra 0 for any treatment applied that isn't correct.
+            Use the mean (decimal) as the percentage. 
+            In other words, score hits, misses, and false alarms where both misses and false alarms are treated as incorrect.
+            The denominator is the total # of treatments they applied + # of treatments they did not attempt
+            '''
+            to_complete = copy.deepcopy(ALL_REQ_PROCEDURES[env.lower()])
+            total_tools_applied = 0
+            correct_tools_applied = 0
+            misses = 0
+            for x in data:
+                # injury treated will always be followed by tool applied, which we'll use to count total
+                # we use injury treated to count correct applications
+                if x[0] == 'INJURY_TREATED':
+                    patient = x[header.index("PatientID")]
+                    where = x[header.index("InjuryName")]
+                    completed = x[header.index("InjuryTreatmentComplete")]
+                    if completed:
+                        correct_tools_applied += 1
+                        if patient in to_complete:
+                            # if injury has been treated, remove from list
+                            if where in to_complete[patient]:
+                                to_complete[patient].remove(where)
+                                # remove patients who are completely treated
+                                if len(to_complete[patient]) == 0:
+                                    del to_complete[patient]
+                # injury_treated wouldn't get the false alarms; tool hover/selected could be them trying and failing
+                # so tool_applied works best here to get hits and false alarms
+                # TODO: ask about lollipops/pain meds - is there anything that shouldn't be treated as a treatment?
+                if x[0] == 'TOOL_APPLIED':
+                    total_tools_applied += 1
+            # count misses
+            for patient in to_complete:
+                misses += len(to_complete[patient])
+
+            return correct_tools_applied / max(1, total_tools_applied + misses)
+        
+        results[f'{env} Triage Performance'] = get_triage_performance()
 
         if env == 'Desert':
             patients_in_order = ['US Military 1', 'Civilian 1', 'Attacker 1', 'US Military 2', 'Civilian 2', 'Attacker 2', 'Civilian 3', 'US Military 3', 'US Military 4']

@@ -7,6 +7,7 @@ scripts/__pycache__
 
 # output folder
 output
+output_june2025
 
 # annoying mac file
 *.DS_Store
