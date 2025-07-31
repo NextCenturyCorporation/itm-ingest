@@ -515,10 +515,6 @@ class ProbeMatcher:
             # if there are no patients left in the dictionary, we have succeeded with hemorrhage control!
             res = 1 if len(list(to_complete.keys())) == 0 else 0
             time_to_hcontrol = (end_time-start_time) if res == 1 else None
-            if time_to_hcontrol:
-                minutes = int(time_to_hcontrol // 60)
-                seconds = int(time_to_hcontrol % 60)
-                time_to_hcontrol = str(minutes) + ':' + str(seconds)
             return {'completed': res, 'time': time_to_hcontrol}
         
         hem_control = get_hemorrhage_control()
