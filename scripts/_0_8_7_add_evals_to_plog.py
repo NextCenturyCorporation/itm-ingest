@@ -17,6 +17,7 @@ def main(mongo_db):
             except:
                 if pid == '202409113A' or pid == '202409113B':
                     evalNum = 4
+                    plog_collection.update_one({'_id': doc['_id']}, {'$set': {'evalNum': evalNum}})
                 else:
                     print(f'Could not convert pid {pid} to int')
                 continue
