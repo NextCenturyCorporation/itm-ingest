@@ -573,7 +573,7 @@ class ProbeMatcher:
                 if patient not in to_complete:
                     correct_tools_applied += supplemental_points[patient]
 
-            return correct_tools_applied / max(1, total_tools_applied + misses)
+            return (correct_tools_applied / max(1, total_tools_applied + misses)) * 100
         
         results[f'{env} Triage Performance'] = get_triage_performance()
 
