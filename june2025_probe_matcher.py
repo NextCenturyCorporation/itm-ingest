@@ -52,25 +52,49 @@ REQ_HEMORRHAGE_PROCEDURES = {
 
 ALL_REQ_PROCEDURES = {
     'desert': {
-        'US Military 1': ['R Chest Puncture', 'L Chest Collapse'],
+        'US Military 1': ['R Chest Puncture', 'L Chest Collapse'], 
         'Civilian 1': ['L Shin Amputation'],
         'Attacker 1': ['R Wrist Amputation'],
         'US Military 2': ['L Stomach Puncture'],
         'Civilian 2': ['R Stomach Puncture'],
-        'Attacker 2': ['L Shoulder Puncture'],
+        'Attacker 2': ['L Shoulder Puncture'], 
         'Civilian 3': ['L Thigh Laceration'],
-        'US Military 3': ['L Forearm Burn', 'L Chest Burn'],
+        'US Military 3': ['L Forearm Burn', 'L Chest Burn'], 
         'US Military 4': ['L Wrist Broken']
     },
     'urban': {
-        'US Military 1': ['R Bicep Puncture'],
-        'US Military 2': ['L Stomach Puncture'],
-        'Civilian 1': ['R Wrist Broken'],
-        'Shooter 1': ['L Shoulder Puncture'],
-        'US Military 3': ['R Thigh Puncture'],
-        'Civilian 2': ['L Chest Puncture', 'R Chest Collapse'],
-        'Civilian 3': ['R Stomach Puncture'],
-        'US Military 4': ['L Stomach Puncture']
+        'US Military 1': ['R Bicep Puncture'], 
+        'US Military 2': ['L Stomach Puncture'], 
+        'Civilian 1': ['R Wrist Broken'], 
+        'Shooter 1': ['L Shoulder Puncture'], 
+        'US Military 3': ['R Thigh Puncture'], 
+        'Civilian 2': ['L Chest Puncture', 'R Chest Collapse'], 
+        'Civilian 3': ['R Stomach Puncture'], 
+        'US Military 4': ['L Stomach Puncture'] 
+    }
+}
+
+SUPPLEMENTAL_PROCEDURES = {
+    'desert': {
+        'US Military 1': ['Nasal Airway'],
+        'Civilian 1': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'],
+        'Attacker 1': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'],
+        'US Military 2': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'],
+        'Civilian 2': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'], 
+        'Attacker 2': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'], 
+        'Civilian 3': ['IV Blood', 'Blanket', 'Fentanyl Lollipop'], 
+        'US Military 3': ['Blanket', 'Fentanyl Lollipop'],
+        'US Military 4': []
+    },
+    'urban': {
+        'US Military 1': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'],
+        'US Military 2': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'],
+        'Civilian 1': ['Fentanyl Lollipop'], 
+        'Shooter 1': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'], 
+        'US Military 3': ['IV Blood', 'Blanket', 'Fentanyl Lollipop'],
+        'Civilian 2': ['L Chest Puncture', 'R Chest Collapse'], 
+        'Civilian 3': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop'], 
+        'US Military 4': ['IV Blood', 'Antibiotics', 'Blanket', 'Fentanyl Lollipop']
     }
 }
 
@@ -510,6 +534,8 @@ class ProbeMatcher:
             The denominator is the total # of treatments they applied + # of treatments they did not attempt
             '''
             to_complete = copy.deepcopy(ALL_REQ_PROCEDURES[env.lower()])
+            supplemental = copy.deepcopy(SUPPLEMENTAL_PROCEDURES[env.lower()])
+            supplemental_points = {}
             total_tools_applied = 0
             correct_tools_applied = 0
             misses = 0
@@ -521,22 +547,35 @@ class ProbeMatcher:
                     where = x[header.index("InjuryName")]
                     completed = x[header.index("InjuryTreatmentComplete")]
                     if completed:
-                        correct_tools_applied += 1
                         if patient in to_complete:
                             # if injury has been treated, remove from list
                             if where in to_complete[patient]:
                                 to_complete[patient].remove(where)
+                                correct_tools_applied += 1
                                 # remove patients who are completely treated
                                 if len(to_complete[patient]) == 0:
                                     del to_complete[patient]
                 # injury_treated wouldn't get the false alarms; tool hover/selected could be them trying and failing
                 # so tool_applied works best here to get hits and false alarms
-                # TODO: ask about lollipops/pain meds - is there anything that shouldn't be treated as a treatment?
                 if x[0] == 'TOOL_APPLIED':
                     total_tools_applied += 1
+
+                    # count the number of allowed supplemental treatments given to a patient (allows for multiple applications)
+                    patient = x[header.index('PatientID')]
+                    tool = x[header.index('ToolType')]
+                    if patient in supplemental and tool in supplemental[patient]:
+                        if patient not in supplemental_points:
+                            supplemental_points[patient] = 0
+                        supplemental_points[patient] += 1
+
             # count misses
             for patient in to_complete:
                 misses += len(to_complete[patient])
+
+            # add supplemental points (only counts if the participant gave the required treatments first!)
+            for patient in supplemental_points:
+                if patient not in to_complete:
+                    correct_tools_applied += supplemental_points[patient]
 
             return correct_tools_applied / max(1, total_tools_applied + misses)
         
