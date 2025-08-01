@@ -6,7 +6,29 @@ import re
 from pymongo import MongoClient
 from decouple import config
 
-def run_script(version_number):
+
+def parse_arg(arg):
+    """
+    Determines what type the extra argument (if provided) should be
+    int, float, bool, or string (fallback)
+    """
+    try:
+        return int(arg)
+    except ValueError:
+        pass
+    
+    try:
+        return float(arg)
+    except ValueError:
+        pass
+    
+    if arg.lower() in ('true', 'false'):
+        return arg.lower() == 'true'
+    
+    # string fallback
+    return arg
+
+def run_script(version_number, extra_args):
 
     if not re.match(r'^\d{3}$', version_number):
         print(f"Error: '{version_number}' is invalid. Script number must be exactly 3 digits.")
@@ -32,6 +54,11 @@ def run_script(version_number):
         return
     
     print(f"Found script: {script_file}")
+
+    parsed_args = [parse_arg(arg) for arg in extra_args]
+
+    if parsed_args:
+        print(f"Additional arguments: {parsed_args}")
     
     script_path = os.path.join(scripts_dir, script_file)
     script_name = script_file[:-3] 
@@ -47,7 +74,7 @@ def run_script(version_number):
     try:
         print(f"Running script {script_file}...")
         if hasattr(module, 'main'):
-            module.main(db)
+            module.main(db, *parsed_args)
             print(f"Script {script_file} ran successfully.")
         else:
             print(f"Error: Script {script_file} does not have a main function.")
@@ -59,13 +86,16 @@ def run_script(version_number):
         client.close()
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python redo.py <script number>")
+    if len(sys.argv) < 2:
+        print("Usage: python redo.py <script number> [additional arguments...]")
         print("Example: python redo.py 067")
+        print("Example with args: python redo.py 067 arg1 arg2 arg3")
         return
     
     script_number = sys.argv[1]
-    run_script(script_number)
+    extra_args = sys.argv[2:] if len(sys.argv) > 2 else []
+    
+    run_script(script_number, extra_args)
 
 if __name__ == "__main__":
     main()
