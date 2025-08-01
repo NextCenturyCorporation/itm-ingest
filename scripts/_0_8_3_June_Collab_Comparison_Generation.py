@@ -12,7 +12,7 @@ def main(mongoDB, EVAL_NUMBER=8):
     comparison_collection = mongoDB['humanToADMComparison']
     
     # Let's you rerun script when necessary to repopulate as more participants come in
-    comparison_collection.delete_many({"evalNumber": 8})
+    comparison_collection.delete_many({"evalNumber": EVAL_NUMBER})
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["admTargetRuns"]
 
@@ -25,7 +25,7 @@ def main(mongoDB, EVAL_NUMBER=8):
     )
     current_text_scenario = 1
     for entry in data_to_use:
-        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation 8.")
+        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation {EVAL_NUMBER}.")
         current_text_scenario += 1
 
         scenario_id = entry.get('scenario_id')
