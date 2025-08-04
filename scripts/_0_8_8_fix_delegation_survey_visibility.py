@@ -6,7 +6,7 @@ def main(mongo_db):
     ROLE_QUESTION_INDEX = 9
     QUESTION7_INDEX = 10
 
-    ROLE_ANYOF = '{What is your current role} anyof ["Medical student","Resident","Physician","Physician\'s Assistant","Nurse","EMT","Paramedic","Military Medicine"]'
+    ROLE_ANYOF = '{What is your current role} anyof ["Medical student","Resident","Physician","Physician\\\'s Assistant","Nurse","EMT","Paramedic","Military Medicine"]'
     MEDICAL_ROLE = '({Served in Military} anyof ["Currently serving (Active)", "Currently serving (Reserves/Guard)", "Veteran (Retired/Separated)"]) and ({Did you serve in a military medical role} = "Yes")'
     TCCC_FOLLOWUP = (
         '({Served in Military} anyof ["Currently serving (Active)", "Currently serving (Reserves/Guard)", '
