@@ -77,7 +77,15 @@ def main(mongo_db):
                     modified = True
             else:
                 print(f"Unexpected name at element {index} in {doc.get('_id')}: '{name}'")
-
+        
+        #Bug C: Last TCCC Question in Survey Should Be Required
+        if len(elements) > 22:
+            element22 = elements[22]
+            if element22.get("name") == "How many real-world casualties have you assessed using TCCC protocols":
+                if element22.get("isRequired") is not True:
+                    element22["isRequired"] = True
+                    modified = True
+    
         if modified:
             delegation_collection.update_one(
                 {"_id": doc["_id"]},
