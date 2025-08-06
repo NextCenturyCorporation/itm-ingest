@@ -14,14 +14,6 @@ import utils.db_utils as db_utils
 MONGO_URL = config("MONGO_URL")
 ADEPT_URL = config("ADEPT_URL")
 
-import requests
-from decouple import config
-from collections import defaultdict
-import utils.db_utils as db_utils
-
-MONGO_URL = config("MONGO_URL")
-ADEPT_URL = config("ADEPT_URL")
-
 
 def main(mongo_db):
    text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 8}})
