@@ -1,6 +1,6 @@
 import requests
 from decouple import config 
-
+import re
 PH1_SCENARIO_MAP = {
     "phase1-adept-eval-MJ2": "DryRunEval-MJ2-eval",
     "phase1-adept-eval-MJ4": "DryRunEval-MJ4-eval",
@@ -139,13 +139,21 @@ def send_match_document_to_mongo(match_collection, document):
         match_collection.insert_one(document)
 
 
+def giveFullScenario(scenario):
+    parts = scenario.rsplit('-', 1)
+    if len(parts) == 2:
+        first_part = re.sub(r'\d+$', '', parts[0])
+        return f"{first_part}-{parts[1]}"
+    
+    return scenario
+
 def send_probes(probe_url, probes, sid, scenario):
     '''
     Sends the probes to the server
     '''
     for x in probes:
         if 'probe' in x and 'choice' in x['probe']:
-            requests.post(probe_url, json={
+            send = requests.post(probe_url, json={
                 "response": {
                     "choice": x['probe']['choice'],
                     "justification": "justification",
@@ -154,3 +162,17 @@ def send_probes(probe_url, probes, sid, scenario):
                 },
                 "session_id": sid
             })
+            if 'status' in send.json():
+                '''
+                Some YAML files changed after very first June collect so probes won't be found
+                in subset files, we can still grab them from the full file
+                '''
+                requests.post(probe_url, json={
+                    "response": {
+                        "choice": x['probe']['choice'],
+                        "justification": "justification",
+                        "probe_id": x['probe']['probe_id'],
+                        "scenario_id": giveFullScenario(scenario),
+                    },
+                    "session_id": sid
+                })

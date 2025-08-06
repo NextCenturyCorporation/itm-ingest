@@ -82,9 +82,6 @@ def main(mongo_db):
         corresponding_medic = mongo_db["admMedics"].find_one(
             {"admSessionId": old_session_id}
         )
-        
-        if not corresponding_medic:
-            print(f"Warning: No corresponding medic found for session id: {old_session_id}")
 
         probes = []
         for entry in adm_run["history"]:
