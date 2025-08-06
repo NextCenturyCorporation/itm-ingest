@@ -14,68 +14,77 @@ import utils.db_utils as db_utils
 MONGO_URL = config("MONGO_URL")
 ADEPT_URL = config("ADEPT_URL")
 
+import requests
+from decouple import config
+from collections import defaultdict
+import utils.db_utils as db_utils
+
+MONGO_URL = config("MONGO_URL")
+ADEPT_URL = config("ADEPT_URL")
+
 
 def main(mongo_db):
-    text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 8}})
-    adm_medics = mongo_db["admMedics"].find({"evalNumber": {"$gte": 8}})
-    adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": {"$gte": 8}})
+   text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 8}})
+   adm_medics = mongo_db["admMedics"].find({"evalNumber": {"$gte": 8}})
+   adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": {"$gte": 8}})
 
-    # group text scenarios by pid
-    participant_groups = defaultdict(list)
-    for result in text_scenarios:
-        participant_groups[result["participantID"]].append(result)
+   # group text scenarios by pid
+   participant_groups = defaultdict(list)
+   for result in text_scenarios:
+       participant_groups[result["participantID"]].append(result)
 
-    for participant_id, documents in participant_groups.items():
-        print(
-            f"Processing participant {participant_id} with {len(documents)} documents"
-        )
+   for participant_id, documents in participant_groups.items():
+       if len(documents) != 4:
+           print(
+               f"Warning: Participant {participant_id} has {len(documents)} documents instead of 4"
+           )
+           continue
 
-        if len(documents) != 4:
-            print(
-                f"Warning: Participant {participant_id} has {len(documents)} documents instead of 4"
-            )
+       # creates new session id and responds to all probes using it
+       sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
+       
+       for idx, document in enumerate(documents, 1):
+           probes = []
+           for key, value in document.items():
+               if isinstance(value, dict) and "questions" in value:
+                   probe = value["questions"].get(f"probe {key}", {})
+                   response = probe.get("response", "").replace(".", "")
+                   mapping = probe.get("question_mapping", {})
+                   if response in mapping:
+                       probes.append(
+                           {
+                               "probe": {
+                                   "choice": mapping[response]["choice"],
+                                   "probe_id": mapping[response]["probe_id"],
+                               }
+                           }
+                       )
+           
+           db_utils.send_probes(
+               f"{ADEPT_URL}api/v1/response", probes, sid, document["scenario_id"]
+           )
+           
+           # update the session id on the text based documents
+           mongo_db["userScenarioResults"].update_one(
+               {"_id": document["_id"]}, {"$set": {"combinedSessionId": sid}}
+           )
+
+   for adm_run in adm_runs:
+        # skip over the synthetic runs
+        if 'history' not in adm_run:
             continue
 
-        # creates new session id and responds to all probes using it
-        sid = (
-            requests.post(f"{ADEPT_URL}api/v1/new_session")
-            .text.replace('"', "")
-            .strip()
-        )
-        for document in documents:
-            probes = []
-            for key, value in document.items():
-                if isinstance(value, dict) and "questions" in value:
-                    probe = value["questions"].get(f"probe {key}", {})
-                    response = probe.get("response", "").replace(".", "")
-                    mapping = probe.get("question_mapping", {})
-                    if response in mapping:
-                        probes.append(
-                            {
-                                "probe": {
-                                    "choice": mapping[response]["choice"],
-                                    "probe_id": mapping[response]["probe_id"],
-                                }
-                            }
-                        )
-            db_utils.send_probes(
-                f"{ADEPT_URL}api/v1/response", probes, sid, document["scenario_id"]
-            )
-            # update the session id on the text based documents
-            mongo_db["userScenarioResults"].update_one(
-                {"_id": document["_id"]}, {"$set": {"combinedSessionId": sid}}
-            )
-
-    for adm_run in adm_runs:
-        sid = (
-            requests.post(f"{ADEPT_URL}api/v1/new_session")
-            .text.replace('"', "")
-            .strip()
-        )
+        old_session_id = adm_run.get("results", {}).get("ta1_session_id", "")
+       
+        sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
+        
         # probably not needed but better to update the admMedics collection as well
         corresponding_medic = mongo_db["admMedics"].find_one(
-            {"admSessionId": adm_run.get("results", {}).get("ta1_session_id")}
+            {"admSessionId": old_session_id}
         )
+        
+        if not corresponding_medic:
+            print(f"Warning: No corresponding medic found for session id: {old_session_id}")
 
         probes = []
         for entry in adm_run["history"]:
@@ -89,10 +98,11 @@ def main(mongo_db):
                         }
                     }
                 )
-
+        
         db_utils.send_probes(
-            f"{ADEPT_URL}api/v1/response", probes, sid, document["scenario_id"]
+            f"{ADEPT_URL}api/v1/response", probes, sid, adm_run.get("scenario", "")
         )
+        
         if corresponding_medic:
             mongo_db["admMedics"].update_one(
                 {"_id": corresponding_medic["_id"]}, {"$set": {"admSessionId": sid}}
@@ -118,9 +128,9 @@ def main(mongo_db):
 
 
 if __name__ == "__main__":
-    from pymongo import MongoClient
+   from pymongo import MongoClient
 
-    MONGO_URL = config("MONGO_URL")
-    client = MongoClient(MONGO_URL)
-    mongoDB = client["dashboard"]
-    main(mongoDB)
+   MONGO_URL = config("MONGO_URL")
+   client = MongoClient(MONGO_URL)
+   mongoDB = client["dashboard"]
+   main(mongoDB)
