@@ -91,10 +91,7 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
                 break
     if eval_number >= 8:
         adms = adm_collection.find({
-            'evaluation.evalNumber': str(eval_number),
-            'evaluation.scenario_id': page_scenario,
-            'adm_name': survey['results'][page]['admName'],
-            'evaluation.alignment_target_id': survey['results'][page]['admTarget']
+            'results.ta1_session_id': adm_session
         })
 
         for x in adms:
