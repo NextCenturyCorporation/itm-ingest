@@ -17,7 +17,7 @@ ADEPT_URL = config("ADEPT_URL")
 
 def main(mongo_db):
    text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 8}})
-   adm_medics = mongo_db["admMedics"].find({"evalNumber": {"$gte": 8}})
+   comparison_collec = mongo_db["humanToADMComparison"].find({"evalNumber": {"$gte": 8}})
    adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": {"$gte": 8}})
 
    # group text scenarios by pid
@@ -34,8 +34,8 @@ def main(mongo_db):
 
        # creates new session id and responds to all probes using it
        sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
-       
        for idx, document in enumerate(documents, 1):
+           old_sid = document.get("combinedSessionId")
            probes = []
            for key, value in document.items():
                if isinstance(value, dict) and "questions" in value:
@@ -60,6 +60,13 @@ def main(mongo_db):
            mongo_db["userScenarioResults"].update_one(
                {"_id": document["_id"]}, {"$set": {"combinedSessionId": sid}}
            )
+
+           if old_sid:
+               # update the text session id in humanToADMComparison
+               mongo_db["humanToADMComparison"].update_many(
+                    {"text_session_id": old_sid},
+                    {"$set": {"text_session_id": sid}}
+                )
 
    for adm_run in adm_runs:
         # skip over the synthetic runs
@@ -114,6 +121,12 @@ def main(mongo_db):
                 {"sessionAlign.command": "TA1 Session Alignment"},
             ],
         )
+
+        if old_session_id:
+             mongo_db["humanToADMComparison"].update_many(
+                {"adm_session_id": old_session_id},
+                {"$set": {"adm_session_id": sid}}
+            )
 
 
 if __name__ == "__main__":
