@@ -1,6 +1,6 @@
 import requests
 from decouple import config 
-
+import re
 PH1_SCENARIO_MAP = {
     "phase1-adept-eval-MJ2": "DryRunEval-MJ2-eval",
     "phase1-adept-eval-MJ4": "DryRunEval-MJ4-eval",
@@ -67,7 +67,7 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
 def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
     if eval_number == 5 or eval_number == 6:
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
-    ADM_SESSION_VAR_NAME = 'admSessionId' if eval_number == 8 else 'admSession'
+    ADM_SESSION_VAR_NAME = 'admSessionId' if eval_number >= 8 else 'admSession'
     adm_session = medic_collection.find_one({'evalNumber': 5 if eval_number == 6 else eval_number, 'name': page})[ADM_SESSION_VAR_NAME]
     
     adms = []
@@ -91,10 +91,7 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
                 break
     if eval_number >= 8:
         adms = adm_collection.find({
-            'evaluation.evalNumber': str(eval_number),
-            'evaluation.scenario_id': page_scenario,
-            'evaluation.adm_name': survey['results'][page]['admName'],
-            'evaluation.alignment_target_id': survey['results'][page]['admTarget']
+            'results.ta1_session_id': adm_session
         })
 
         for x in adms:
@@ -139,13 +136,21 @@ def send_match_document_to_mongo(match_collection, document):
         match_collection.insert_one(document)
 
 
+def giveFullScenario(scenario):
+    parts = scenario.rsplit('-', 1)
+    if len(parts) == 2:
+        first_part = re.sub(r'\d+$', '', parts[0])
+        return f"{first_part}-{parts[1]}"
+    
+    return scenario
+
 def send_probes(probe_url, probes, sid, scenario):
     '''
     Sends the probes to the server
     '''
     for x in probes:
         if 'probe' in x and 'choice' in x['probe']:
-            requests.post(probe_url, json={
+            send = requests.post(probe_url, json={
                 "response": {
                     "choice": x['probe']['choice'],
                     "justification": "justification",
@@ -154,3 +159,17 @@ def send_probes(probe_url, probes, sid, scenario):
                 },
                 "session_id": sid
             })
+            if 'status' in send.json():
+                '''
+                Some YAML files changed after very first June collect so probes won't be found
+                in subset files, we can still grab them from the full file
+                '''
+                requests.post(probe_url, json={
+                    "response": {
+                        "choice": x['probe']['choice'],
+                        "justification": "justification",
+                        "probe_id": x['probe']['probe_id'],
+                        "scenario_id": giveFullScenario(scenario),
+                    },
+                    "session_id": sid
+                })

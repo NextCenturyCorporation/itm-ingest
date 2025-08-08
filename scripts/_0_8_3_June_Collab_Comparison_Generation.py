@@ -12,7 +12,7 @@ def main(mongoDB, EVAL_NUMBER=8):
     comparison_collection = mongoDB['humanToADMComparison']
     
     # Let's you rerun script when necessary to repopulate as more participants come in
-    comparison_collection.delete_many({"evalNumber": 8})
+    comparison_collection.delete_many({"evalNumber": EVAL_NUMBER})
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["admTargetRuns"]
 
@@ -25,7 +25,7 @@ def main(mongoDB, EVAL_NUMBER=8):
     )
     current_text_scenario = 1
     for entry in data_to_use:
-        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation 8.")
+        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation {EVAL_NUMBER}.")
         current_text_scenario += 1
 
         scenario_id = entry.get('scenario_id')
@@ -40,30 +40,30 @@ def main(mongoDB, EVAL_NUMBER=8):
         for page in survey['results']:
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
-                if ('June2025' in scenario_id):
-                    adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
-                    if adm is None:
-                        continue
-                    adm_session = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})['admSessionId']
+                adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
+                if adm is None:
+                    continue
 
-                    res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
+                adm_session = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})['admSessionId']
 
-                    # send document to mongo
-                    if res is not None and 'score' in res:
-                        document = {
-                            'pid': pid,
-                            'adm_type': survey['results'][page]['admAlignment'],
-                            'score': res['score'],
-                            'text_scenario': scenario_id,
-                            'text_session_id': session_id.replace('"', "").strip(),
-                            'adm_scenario': page_scenario,
-                            'adm_session_id': adm_session,
-                            'adm_alignment_target': survey['results'][page]['admTarget'],
-                            'evalNumber': EVAL_NUMBER
-                        }
-                        send_document_to_mongo(comparison_collection, document)
-                    else:
-                        print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {adm_session}', res)
+                res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
+
+                # send document to mongo
+                if res is not None and 'score' in res:
+                    document = {
+                        'pid': pid,
+                        'adm_type': survey['results'][page]['admAlignment'],
+                        'score': res['score'],
+                        'text_scenario': scenario_id,
+                        'text_session_id': session_id.replace('"', "").strip(),
+                        'adm_scenario': page_scenario,
+                        'adm_session_id': adm_session,
+                        'adm_alignment_target': survey['results'][page]['admTarget'],
+                        'evalNumber': EVAL_NUMBER
+                    }
+                    send_document_to_mongo(comparison_collection, document)
+                else:
+                    print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {adm_session}', res)
 
 
     print("Human to ADM comparison values added to database.")
