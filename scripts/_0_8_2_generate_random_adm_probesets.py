@@ -9,9 +9,9 @@ from dataclasses import dataclass
 from typing import Tuple
 
 # These are constants that cannot be overridden via the command line
-EVALUATION_TYPE = 'June2025'
-EVALUATION_NAME = 'Phase 2 June 2025 Collaboration'
-EVAL_NUM = 8
+EVALUATION_TYPE = 'July2025'
+EVALUATION_NAME = 'Phase 2 July 2025 Collaboration'
+EVAL_NUM = 9
 DOMAIN = 'p2triage'
 TA1_NAME = 'adept'
 ADEPT_URL = config("ADEPT_URL")
@@ -26,17 +26,17 @@ IGNORED_LIST = []
 all_bin_ranges: dict = {
     'AF':    [0,  0.2, 0.35, 0.5, 0.65,  0.8, 1],
     'MF':    [0,  0.2, 0.35, 0.5, 0.65,  0.8, 1],
-    'SS':    [0,  0.2, 0.35, 0.5, 0.65, 0.79, 1],
+    'SS':    [0,  0.2, 0.35, 0.5,  0.6, 0.75, 1],
     'PS':    [0, 0.26,  0.4, 0.5, 0.66, 0.75, 1],
 	'AF-MF': [0, 0.35, 0.65, 1]
 }
 
 kdmas_info: list[dict] = [
-    {'acronym': 'MF', 'full_name': 'Merit Focus', 'filename': 'June2025MeritFocus', 'ranges': [0.2, 0.35, 0.5, 0.65,  0.8, 1]},
-    {'acronym': 'AF', 'full_name': 'Affiliation Focus', 'filename': 'June2025AffiliationFocus', 'ranges': [0.2, 0.35, 0.5, 0.65,  0.8, 1]},
-    {'acronym': 'SS', 'full_name': 'Search vs Stay', 'filename': 'June2025SearchStay', 'ranges': [0.2, 0.35, 0.5, 0.65,  0.79, 1]},
-    {'acronym': 'PS', 'full_name': 'Personal Safety Focus', 'filename': 'June2025PersonalSafety', 'ranges': [0.26, 0.4, 0.5, 0.66,  0.75, 1]},
-    {'acronym': 'AF-MF', 'full_name': 'Affiliation Focus-Merit Focus', 'filename': 'June2025-AF-MF', 'ranges': [0.35, 0.65, 1]}
+    {'acronym': 'MF', 'full_name': 'Merit Focus', 'filename': f'{EVALUATION_TYPE}MeritFocus'},
+    {'acronym': 'AF', 'full_name': 'Affiliation Focus', 'filename': f'{EVALUATION_TYPE}AffiliationFocus'},
+    {'acronym': 'SS', 'full_name': 'Search vs Stay', 'filename': f'{EVALUATION_TYPE}SearchStay'},
+    {'acronym': 'PS', 'full_name': 'Personal Safety Focus', 'filename': f'{EVALUATION_TYPE}PersonalSafety'},
+    {'acronym': 'AF-MF', 'full_name': 'Affiliation Focus-Merit Focus', 'filename': f'{EVALUATION_TYPE}-AF-MF'}
     ]
 
 expected_fields = ['scenario_id', 'scenario_name', 'probe_id', 'intro_text', 'probe_full_text', 'probe_question',
@@ -46,13 +46,13 @@ expected_fields = ['scenario_id', 'scenario_name', 'probe_id', 'intro_text', 'pr
 
 # Maps a kdma to a map of bin numbers to a list of probe IDs in that bin.
 # A bin number is an int from 0 to the number of ranges-1.  This list is generated from all_bin_ranges and the csv file from TA1.
-all_probe_bins: dict = {} #\
+all_probe_bins: dict = {}
 # e.g., { 'AF': {'AF0': ['Probe 1', 'Probe 5', 'Probe 25', 'Probe 29'], 'AF1': ['Probe 8', 'Probe 17', 'Probe 32', 'Probe 44']}}
 
 # Maps a kdma to a list of Adm_data for that attribute
 # Each entry in the list contains the probe responses for an ADM run (one per target, each of baseline and aligned)
 all_adm_data: dict = {}
-# e.g., {'AF': [{'name': 'baseline', 'alignment_target_id': 'ADEPT-June2025-affiliation-0.3', 'probe_responses': {'Probe 1': "Response 1-A", ... }], ...}
+# e.g., {'AF': [{'name': 'baseline', 'alignment_target_id': 'ADEPT-July2025-affiliation-0.3', 'probe_responses': {'Probe 1': "Response 1-A", ... }], ...}
 
 
 @dataclass
@@ -193,7 +193,7 @@ def get_ta1_calculations(adm_data: Adm_data, probe_ids: list) -> Tuple[str, floa
         select a random probe from each bin, or 1 from each bin per kdma if multi-attribute
         foreach adm_data[acronym] (n=22 or 8)
             Get alignment and kdmas from TA1 based on ADM choices to random probes
-            create synthetic scenario id and name, e.g. "June2025-AFr23-eval" and "Affiliation Focus Random Set 23"
+            create synthetic scenario id and name, e.g. "July2025-AFr23-eval" and "Affiliation Focus Random Set 23"
             create synthetic row in admTargetRuns populating it with content from adm_data[target], calculated session alignment, kdmas, and scenario id/name
 """
 def create_synthetic_adm_runs(mongo_db):
@@ -217,7 +217,7 @@ def create_synthetic_adm_runs(mongo_db):
 
             for adm_data in all_adm_data[acronym]:
                 ta1_id, alignment_score, kdmas = get_ta1_calculations(adm_data, random_probes)
-                synth_scenario_id = f"{EVALUATION_TYPE}-{acronym}r{subset_num}-eval" # e.g., "June2025-AFr23-eval"
+                synth_scenario_id = f"{EVALUATION_TYPE}-{acronym}r{subset_num}-eval" # e.g., "July2025-AFr23-eval"
                 synth_scenario_name = f"{kdma_info['full_name']} Random Set {subset_num}" # e.g., "Search vs Stay Random Set 23"
                 if VERBOSE:
                     print(f"  {synth_scenario_id}: Got alignment score of {alignment_score} and kdmas of {kdmas}")
