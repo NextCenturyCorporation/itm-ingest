@@ -27,16 +27,16 @@ class TreatmentLogger:
         treatments_counted = []
         for action in actions:
             if action['actionType'] == 'Treatment':
-                patient = env + ' - ' + action['casualty']
+                patient = action['casualty'] + f' ({env})'
                 tool = action['treatment']
                 loc = action['treatmentLocation']
                 inj = action['injuryType']
-                full_string = patient + ' - ' + loc + ' ' + inj + ' - ' + tool
+                full_string = patient + ' - ' + tool + ' - ' + loc + ' ' + inj
                 if full_string not in self.treatments_applied_by_pid[pid]:
                     self.treatments_applied_by_pid[pid][full_string] = 0
                 self.treatments_applied_by_pid[pid][full_string] += 1
 
-                patientless_string = loc + ' ' + inj + ' - ' + tool
+                patientless_string = tool + ' - ' + loc + ' ' + inj
                 if patient not in self.treatments_applied_per_patient:
                     self.treatments_applied_per_patient[patient] = {}
                     self.num_pids_who_applied_per_patient[patient] = {}
@@ -47,42 +47,45 @@ class TreatmentLogger:
                 if full_string not in treatments_counted:
                     self.num_pids_who_applied_per_patient[patient][patientless_string] += 1
                     treatments_counted.append(full_string)
-
-
-    def generate_treatment_csv(self):
+                    
+    def generate_treatment_csv(self, total):
         '''
         Call after all update_logger_from_json calls are complete.
         Generates a csv that organizes the treatment data.
         '''
-        f = open('treatments_per_patient.csv', 'w', encoding='utf-8')
+        f = open('number_of_people_who_treated_each_patient_with_treatment.csv' if not total else 'total_treatments_per_patient.csv', 'w', encoding='utf-8')
         writer = csv.writer(f)
+        inverted = {}
+        treatments = []
         header = []
-        for patient in self.num_pids_who_applied_per_patient:
-            for treatment in self.num_pids_who_applied_per_patient[patient]:
-                clean_treatment = treatment.replace('Full Body', '').replace('  - ', '').replace('  ', ' ').replace(' None', '').replace('Nostril - ', '').strip()
-                total_applied_treatments = '# ' + clean_treatment + ' applied'
-                if total_applied_treatments not in header:
-                    header.append(total_applied_treatments)
-        header.sort()
-        header = [item for pair in zip(header, ['# participants']*len(header)) for item in pair]
+        dict_to_use = self.num_pids_who_applied_per_patient if not total else self.treatments_applied_per_patient
+        for patient in dict_to_use:
+            header.append(patient)
+            for treatment in dict_to_use[patient]:
+                formattedTreatment = treatment.replace(' -  ', '').replace('None', '(No Applicable Injury)').replace(' - Full Body ', '')
+                if formattedTreatment not in treatments:
+                    treatments.append(formattedTreatment)
+                if formattedTreatment not in inverted:
+                    inverted[formattedTreatment] = {}
+                if patient not in inverted[formattedTreatment]:
+                    inverted[formattedTreatment][patient] = 0
+                inverted[formattedTreatment][patient] += dict_to_use[patient][treatment]
+        treatments.sort()
+        print(json.dumps(inverted, indent=4))
 
-        header.insert(0, 'PatientID')
+        header.insert(0, 'Treatment')
         writer.writerow(header)
-        for patient in self.num_pids_who_applied_per_patient:
-            row = [patient]
+        for treatment in treatments:
+            row = [treatment]
             for _ in range(len(header)-1):
                 row.append(0)
-            for treatment in self.num_pids_who_applied_per_patient[patient]:
-                clean_treatment = treatment.replace('Full Body', '').replace('  - ', '').replace('  ', ' ').replace(' None', '').replace('Nostril - ', '').strip()
-                total_applied_treatments = '# ' + clean_treatment + ' applied'
-                # record total treatments applied
-                row[header.index(total_applied_treatments)] = row[header.index(total_applied_treatments)] + self.treatments_applied_per_patient[patient][treatment]
-                # record # participants who applied this treatment
-                row[header.index(total_applied_treatments)+1] = row[header.index(total_applied_treatments)+1] + self.num_pids_who_applied_per_patient[patient][treatment]
+            for patient in inverted[treatment]:
+                row[header.index(patient)] = inverted[treatment][patient]
             writer.writerow(row)
         writer.writerow(['Total Desert Participants', self.desert_participants])
         writer.writerow(['Total Urban Participants', self.urban_participants])
         f.close()
+
 
 
 if __name__ == '__main__':
@@ -111,4 +114,5 @@ if __name__ == '__main__':
                     open_file.close()
                     continue
 
-    treatment_logger.generate_treatment_csv()
+    treatment_logger.generate_treatment_csv(True)
+    treatment_logger.generate_treatment_csv(False)
