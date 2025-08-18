@@ -745,12 +745,8 @@ if __name__ == '__main__':
     if args.is_verbose:
         VERBOSE = True
     EVAL_NUM = DEFAULT_EVAL_NUM if not args.eval_num else args.eval_num
-    if EVAL_NUM == 8:
-        EVAL_NAME = 'June 2025 Collaboration'
+    if EVAL_NUM == 8 or EVAL_NUM == 9:
         EVAL_PREFIX = 'june2025'
-    elif EVAL_NUM == 9:
-        EVAL_NAME = 'July 2025 Collaboration'
-        EVAL_PREFIX = 'july2025'
     else:
         print(f"Evaluation #{EVAL_NUM} is not supported at this time.")
         exit(1)
@@ -793,7 +789,17 @@ if __name__ == '__main__':
             print(f"Remove pid {pid}, parent directory {parent}, because it is not in the participant log or has an invalid date.")
             removed.append(parent)
             continue
-
+        if "202506" in str(pid):
+            EVAL_NAME = 'June 2025 Collaboration'
+            EVAL_PREFIX = 'june2025'
+            EVAL_NUM = 8
+        elif "202507" in str(pid):
+            EVAL_NAME = 'July 2025 Collaboration'
+            EVAL_PREFIX = 'june2025'
+            EVAL_NUM = 9
+        else:
+            print(f"Cannot match eval number to pid {pid}. Skipping.")
+            continue
         if os.path.isdir(parent):
             for f in os.listdir(parent):
                 if '.json' in f:
