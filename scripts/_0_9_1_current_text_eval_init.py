@@ -1,16 +1,15 @@
 def main(mongo_db):
-    current_text_eval = mongo_db['textEvalVersion']
-    pid_bounds = mongo_db['pidBounds']
+    config_collection = mongo_db['surveyVersion']
 
-    eval_doc = {
-        'eval': 'Phase 2 July 2025 Collaboration'
-    }
+    doc = config_collection.find_one({})
 
-    current_text_eval.insert_one(eval_doc)
-
-    pid_doc = {
-        'lowPid': 202570100,
-        'highPid': 202570299
-    }
-
-    pid_bounds.insert_one(pid_doc)
+    config_collection.update_one(
+        {'_id': doc['_id']},
+        {
+            '$set': {
+                'lowPid': 202570100,
+                'highPid': 202570299,
+                'textScenarios': 'Phase 2 July 2025 Collaboration'
+            }
+        }
+        )
