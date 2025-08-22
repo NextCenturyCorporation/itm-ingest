@@ -745,7 +745,7 @@ if __name__ == '__main__':
     if args.is_verbose:
         VERBOSE = True
     EVAL_NUM = DEFAULT_EVAL_NUM if not args.eval_num else args.eval_num
-    if EVAL_NUM == 8 or EVAL_NUM == 9:
+    if EVAL_NUM in [8, 9, 10]:
         EVAL_PREFIX = 'june2025'
     else:
         print(f"Evaluation #{EVAL_NUM} is not supported at this time.")
@@ -797,6 +797,10 @@ if __name__ == '__main__':
             EVAL_NAME = 'July 2025 Collaboration'
             EVAL_PREFIX = 'june2025'
             EVAL_NUM = 9
+        elif "202507" in str(pid):
+            EVAL_NAME = 'September 2025 Collaboration'
+            EVAL_PREFIX = 'june2025'
+            EVAL_NUM = 10
         else:
             print(f"Cannot match eval number to pid {pid}. Skipping.")
             continue
