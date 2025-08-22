@@ -797,7 +797,7 @@ if __name__ == '__main__':
             EVAL_NAME = 'July 2025 Collaboration'
             EVAL_PREFIX = 'june2025'
             EVAL_NUM = 9
-        elif "202507" in str(pid):
+        elif "202509" in str(pid):
             EVAL_NAME = 'September 2025 Collaboration'
             EVAL_PREFIX = 'june2025'
             EVAL_NUM = 10
