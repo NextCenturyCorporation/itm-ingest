@@ -1,4 +1,6 @@
 import os, yaml, re
+from pymongo import MongoClient
+from decouple import config
 
 def add_surveyjs_configs(doc):
     doc['showQuestionNumbers'] = False
@@ -67,7 +69,7 @@ def create_page(scene, doc):
 def process_scenario(scenario):
     doc = {
         'scenario_id': scenario['id'], 
-        'eval': 'Phase 2 July 2025 Collaboration',
+        'eval': 'Phase 2 September 2025 Collaboration',
         'name': scenario['name'],
         'pages': []
         }
@@ -114,7 +116,7 @@ def main(mongo_db):
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # go up one level to root to find scenarios
-    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/july2025')
+    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/september2025')
 
     all_docs = []
 
@@ -132,3 +134,8 @@ def main(mongo_db):
             print(f"Error processing {filename}: {str(e)}")
 
     upload_configs(all_docs, text_configs)
+
+if __name__ == '__main__':
+    client = MongoClient(config('MONGO_URL'))
+    db = client.dashboard
+    main(db)
