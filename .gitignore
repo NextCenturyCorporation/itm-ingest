@@ -15,3 +15,6 @@ adept-evals/eval4/*.json
 adept-evals/eval4/*.py
 
 dev_scripts/*.csv
+
+treatment_counts.csv
+treatments_per_patient.csv

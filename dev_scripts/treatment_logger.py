@@ -53,7 +53,7 @@ class TreatmentLogger:
         Call after all update_logger_from_json calls are complete.
         Generates a csv that organizes the treatment data.
         '''
-        f = open('number_of_people_who_treated_each_patient_with_treatment.csv' if not total else 'total_treatments_per_patient.csv', 'w', encoding='utf-8')
+        f = open('treatment_counts.csv' if not total else 'treatments_per_patient.csv', 'w', encoding='utf-8')
         writer = csv.writer(f)
         inverted = {}
         treatments = []
@@ -71,7 +71,6 @@ class TreatmentLogger:
                     inverted[formattedTreatment][patient] = 0
                 inverted[formattedTreatment][patient] += dict_to_use[patient][treatment]
         treatments.sort()
-        print(json.dumps(inverted, indent=4))
 
         header.insert(0, 'Treatment')
         writer.writerow(header)
