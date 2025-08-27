@@ -33,6 +33,7 @@ def create_adm(target, probe_set, attr, probe_set_index, template, medic_collect
         'scenarioIndex': scenario,
         'admAuthor': 'kitware',
         'evalNumber': 10,
+        'admName': 'Default'
     })
 
     doc['elements'][0]['rows'] = []
@@ -133,6 +134,7 @@ def ps_and_af(medic_collection):
             new_doc['title'] = ' '
             new_doc['scenarioIndex'] = f"Sept2025-PSAF{i}-combined-eval"
             new_doc['admAuthor'] = 'kitware'
+            new_doc['admName'] = 'Default'
             new_doc['evalNumber'] = 10
             new_doc['target'] = f"PS-{ps_target}_AF-{af_target}"
 
@@ -153,7 +155,7 @@ def multi_adm(medic_collection):
         1: [0, 0, 0, 0, 0, 0],
         2: [1, 1, 0, 0, 0, 0],
         3: [1, 1, 1, 1, 0, 0],
-        4: [0, 0, 0, 0, 0, 0]
+        4: [1, 1, 1, 1, 1, 1]
     }
 
     yaml_dir = os.path.join('phase2', 'september2025')
@@ -197,6 +199,7 @@ def multi_adm(medic_collection):
                 'scenarioIndex': scenario,
                 'admAuthor': 'kitware',
                 'evalNumber': 10,
+                'admName': 'Default'
             })
 
             element = doc['elements'][0]
