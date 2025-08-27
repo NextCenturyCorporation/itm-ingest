@@ -620,10 +620,6 @@ class ProbeMatcher:
                 mongo_collection_raw.insert_one({'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId, '_id': self.participantId + '_' + self.environment.replace('.yaml', '')})
             except:
                 mongo_collection_raw.update_one({'_id': self.participantId + '_' + self.environment.replace(' ', '-')}, {'$set': {'openWorld': True, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, 'data': self.json_data, 'pid': self.participantId}})
-            try:
-                mongo_collection_matches.insert_one({'scenario_id': 'eval_open_world', 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, f'{env}_data': results, 'openWorld': True, 'env': self.environment.split('.yaml')[0], 'text_kdmas': text_kdma_results, 'pid': self.participantId, '_id': mongo_id})
-            except:
-                mongo_collection_matches.update_one({'_id': mongo_id}, {'$set': {'scenario_id': 'eval_open_world', 'timestamp': self.timestamp, 'evalNumber': EVAL_NUM, 'evalName': EVAL_NAME, f'{env}_data': results, 'openWorld': True, 'env': self.environment.split('.yaml')[0], 'text_kdmas': text_kdma_results, 'pid': self.participantId, '_id': mongo_id}})
             if self.pid_in_log:
                 num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participantId)})
                 participant_log_collection.update_one({'_id': participant_log_collection.find_one({"ParticipantID": int(self.participantId)})['_id']},
