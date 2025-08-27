@@ -15,8 +15,10 @@ fake_adm_mappings = {
     ]
 }
 
-
-
+multi_mapping = [
+    ['Probe 125', 'Probe 102', 'Probe 129', 'Probe 186', 'Probe 213', 'Probe 192'],
+    ['Probe 132', 'Probe 111', 'Probe 131', 'Probe 375', 'Probe 402', 'Probe 381']
+]
 
 def create_adm(target, probe_set, attr, probe_set_index, template, medic_collection):
     doc = copy.deepcopy(template)
@@ -146,6 +148,78 @@ def ps_and_af(medic_collection):
             print(f"Creating combined PS/AF medic: {new_doc['name']} ({new_doc['scenarioIndex']})")
             medic_collection.insert_one(new_doc)
     
+def multi_adm(medic_collection):
+    targets = {
+        1: [0, 0, 0, 0, 0, 0],
+        2: [1, 1, 0, 0, 0, 0],
+        3: [1, 1, 1, 1, 0, 0],
+        4: [0, 0, 0, 0, 0, 0]
+    }
+
+    yaml_dir = os.path.join('phase2', 'september2025')
+
+    for probe_set_index, probe_set in enumerate(multi_mapping, start=1):
+        scenario = f'Sept2025-PS-AF{probe_set_index}-eval'
+
+        yaml_data = None
+        for filename in os.listdir(yaml_dir):
+            if not filename.endswith('.yaml'):
+                continue
+            yaml_path = os.path.join(yaml_dir, filename)
+            try:
+                with open(yaml_path, 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+                    if data.get('id') == scenario:
+                        yaml_data = data
+                        break
+            except Exception as e:
+                print(f"Error reading {filename}: {e}")
+                continue
+
+        if not yaml_data:
+            print(f"Warning: No YAML file found with name matching scenario: {scenario}")
+            continue
+
+        choices = [action['unstructured'] for action in yaml_data['scenes'][0]['action_mapping']]
+        scenario_description = yaml_data['scenes'][0]['state']['threat_state']['unstructured']
+
+        for target_id, target_pattern in targets.items():
+            medic_name = get_unique_medic_name(medic_collection)
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            template_path = os.path.join(script_dir, 'templates', 'phase2_single_medic_template.json')
+            with open(template_path, 'r', encoding='utf-8') as f:
+                doc = json.load(f)
+
+            doc.update({
+                'name': medic_name,
+                'title': ' ',
+                'target': f'PS-AF-{target_id}',
+                'scenarioIndex': scenario,
+                'admAuthor': 'kitware',
+                'evalNumber': 10,
+            })
+
+            element = doc['elements'][0]
+            element['rows'] = []
+            element['title'] = ' '
+            element['name'] = medic_name
+            element['options'] = choices
+            element['scenarioDescription'] = scenario_description
+
+            for probe, choice_idx in zip(probe_set, target_pattern):
+                scene = find_scene_by_probe_id(yaml_data, f'Sept2025-PS-AF-eval.{probe}')
+                if not scene:
+                    print(f"Error: did not find matching probe {probe} in yaml for {scenario}")
+                    continue
+
+                row_data = {
+                    'choice': scene['action_mapping'][choice_idx]['unstructured'],
+                    'probe_unstructured': scene['state']['unstructured']
+                }
+                element['rows'].append(row_data)
+
+            print(f"Creating MULTI medic: {medic_name} ({doc['scenarioIndex']})")
+            medic_collection.insert_one(doc)
 
 def main(mongo_db):
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -161,3 +235,4 @@ def main(mongo_db):
             create_adm('low', probe_set, attr, probe_set_index, template, medic_collection)
 
     ps_and_af(medic_collection)
+    multi_adm(medic_collection)
