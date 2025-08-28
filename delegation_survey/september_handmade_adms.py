@@ -212,6 +212,12 @@ def multi_adm(medic_collection):
             element['options'] = choices
             element['scenarioDescription'] = scenario_description
 
+            for i, elem in enumerate(doc['elements']):
+                if 'name' in elem and 'Test medic 1' in elem['name']:
+                    doc['elements'][i]['name'] = elem['name'].replace('Test medic 1', medic_name)
+                if 'title' in elem and 'Test medic 1' in elem['title']:
+                    doc['elements'][i]['title'] = elem['title'].replace('Test medic 1', medic_name)
+
             for probe, choice_idx in zip(probe_set, target_pattern):
                 scene = find_scene_by_probe_id(yaml_data, f'Sept2025-PS-AF-eval.{probe}')
                 if not scene:
