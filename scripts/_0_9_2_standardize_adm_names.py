@@ -3,6 +3,11 @@ from datetime import datetime
 def main(mongo_db):
     adm_runs = mongo_db['admTargetRuns']
 
+    adm_runs.update_many(
+        {'evalNumber': {'$gte': 8}, 'adm_name': {'$regex': '__'}},
+        [{'$set': {'adm_name': {'$arrayElemAt': [{'$split': ['$adm_name', '__']}, 0]}}}]
+    )
+
     documents = adm_runs.find({'evalNumber': {'$gte': 8}})
 
     for doc in documents:
