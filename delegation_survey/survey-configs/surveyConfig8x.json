@@ -151,15 +151,27 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
@@ -292,15 +304,27 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
@@ -433,15 +457,27 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
@@ -574,15 +610,27 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
@@ -715,15 +763,27 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
@@ -856,15 +916,27 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
@@ -997,15 +1069,27 @@
                     "rows": [
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1138,15 +1222,27 @@
                     "rows": [
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1279,15 +1375,27 @@
                     "rows": [
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1420,15 +1528,27 @@
                     "rows": [
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1561,15 +1681,27 @@
                     "rows": [
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1702,15 +1834,27 @@
                     "rows": [
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1843,27 +1987,51 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -1996,27 +2164,51 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -2149,27 +2341,51 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -2302,27 +2518,51 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. You have not received any additional fire in the last 2 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian with no ties to the military.\nPatient B has a dislocated left knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian contractor who has been working with your unit.\nPatient B has moderate bleeding from their left hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their left bicep. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -2455,27 +2695,51 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -2608,27 +2872,51 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -2761,27 +3049,51 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -2914,27 +3226,51 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your platoon is patrolling dismounted when your point squad encounters what seems to be an observation post and sustains one casualty. Your squad exchanged fire. Three enemy troops are reported fleeing the location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They may have a broken leg. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a dislocated right knee with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian contractor who has been working with your unit.\nPatient B has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has started showing signs of compensated shock (high heart rate, fast breathing). Their bleeding was stopped after a large blood loss. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has moderate bleeding from their right hip. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -3067,27 +3403,51 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -3220,27 +3580,51 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -3373,27 +3757,51 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient B",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },
@@ -3526,27 +3934,51 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are calling for a help, but you can't see their injury. They are a warfighter in the same military unit as you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has a chest wound and is gasping for breath. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a broken left arm with no bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has moderate bleeding from their right hip. They are a US warfighter from a different branch of the military than you.\nPatient B has a compound fracture of their left forearm with mild bleeding. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         },
                         {
                             "choice": "Treat Patient A",
-                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?"
+                            "probe_unstructured": "Patient A has massive bleeding from a partial amputation of their left foot. They are a foreign civilian who used to be a member of the opponent military.\nPatient B has a chest wound and is gasping for breath. They are a warfighter in the same military unit as you.\nWhich patient do you treat?",
+                            "options": [
+                                "Treat Patient A",
+                                "Treat Patient B"
+                            ]
                         }
                     ]
                 },

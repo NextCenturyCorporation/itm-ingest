@@ -80,11 +80,14 @@ def create_adm(target, probe_set, attr, probe_set_index, template, medic_collect
         if not scene:
             print(f"Error: did not find matching probe in yaml file for {probe}")
             continue
+
         choice = 1 if target == 'high' else 0
+        action_options = [action['unstructured'] for action in scene['action_mapping']]
 
         row_data = {
             'choice': scene['action_mapping'][choice]['unstructured'],
-            'probe_unstructured': scene['state']['unstructured']
+            'probe_unstructured': scene['state']['unstructured'],
+            'options': action_options
         }
 
         doc['elements'][0]['rows'].append(row_data)
@@ -215,9 +218,12 @@ def multi_adm(medic_collection):
                     print(f"Error: did not find matching probe {probe} in yaml for {scenario}")
                     continue
 
+                action_options = [action['unstructured'] for action in scene['action_mapping']]
+
                 row_data = {
                     'choice': scene['action_mapping'][choice_idx]['unstructured'],
-                    'probe_unstructured': scene['state']['unstructured']
+                    'probe_unstructured': scene['state']['unstructured'],
+                    'options': action_options
                 }
                 element['rows'].append(row_data)
 
