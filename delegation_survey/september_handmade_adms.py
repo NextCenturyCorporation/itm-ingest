@@ -150,6 +150,22 @@ def ps_and_af(medic_collection):
             new_doc['elements'][0]['name'] = medic_name
             new_doc['elements'][0]['title'] = ' '
 
+            #replace with new medic name
+            for j, elem in enumerate(new_doc['elements']):
+                if 'name' in elem:
+                    if 'Medic-' in elem['name']:
+                        parts = elem['name'].split(':')
+                        if len(parts) > 1:
+                            new_doc['elements'][j]['name'] = medic_name + ':' + ':'.join(parts[1:])
+                        else:
+                            new_doc['elements'][j]['name'] = medic_name
+                if 'title' in elem and 'Medic-' in elem['title']:
+                    parts = elem['title'].split(':')
+                    if len(parts) > 1:
+                        new_doc['elements'][j]['title'] = medic_name + ':' + ':'.join(parts[1:])
+                    else:
+                        new_doc['elements'][j]['title'] = medic_name
+
             print(f"Creating combined PS/AF medic: {new_doc['name']} ({new_doc['scenarioIndex']})")
             medic_collection.insert_one(new_doc)
     

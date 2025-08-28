@@ -2037,7 +2037,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: Do you agree with the decision that this medic made?",
+                    "name": "Medic-K94: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -2050,7 +2050,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-K94: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -2063,7 +2063,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: this medic is trustworthy",
+                    "name": "Medic-K94: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -2076,7 +2076,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-K94: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -2214,7 +2214,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: Do you agree with the decision that this medic made?",
+                    "name": "Medic-K95: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -2227,7 +2227,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-K95: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -2240,7 +2240,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: this medic is trustworthy",
+                    "name": "Medic-K95: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -2253,7 +2253,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K82: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-K95: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -2391,7 +2391,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: Do you agree with the decision that this medic made?",
+                    "name": "Medic-K96: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -2404,7 +2404,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-K96: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -2417,7 +2417,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: this medic is trustworthy",
+                    "name": "Medic-K96: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -2430,7 +2430,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-K96: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -2568,7 +2568,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: Do you agree with the decision that this medic made?",
+                    "name": "Medic-K97: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -2581,7 +2581,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-K97: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -2594,7 +2594,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: this medic is trustworthy",
+                    "name": "Medic-K97: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -2607,7 +2607,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K83: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-K97: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -2745,7 +2745,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: Do you agree with the decision that this medic made?",
+                    "name": "Medic-K98: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -2758,7 +2758,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-K98: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -2771,7 +2771,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: this medic is trustworthy",
+                    "name": "Medic-K98: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -2784,7 +2784,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-K98: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -2922,7 +2922,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: Do you agree with the decision that this medic made?",
+                    "name": "Medic-K99: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -2935,7 +2935,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-K99: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -2948,7 +2948,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: this medic is trustworthy",
+                    "name": "Medic-K99: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -2961,7 +2961,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K84: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-K99: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -3099,7 +3099,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L46: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -3112,7 +3112,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L46: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -3125,7 +3125,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: this medic is trustworthy",
+                    "name": "Medic-L46: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -3138,7 +3138,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L46: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -3276,7 +3276,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L47: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -3289,7 +3289,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L47: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -3302,7 +3302,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: this medic is trustworthy",
+                    "name": "Medic-L47: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -3315,7 +3315,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K85: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L47: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -3453,7 +3453,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L48: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -3466,7 +3466,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L48: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -3479,7 +3479,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: this medic is trustworthy",
+                    "name": "Medic-L48: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -3492,7 +3492,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L48: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -3630,7 +3630,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L49: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -3643,7 +3643,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L49: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -3656,7 +3656,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: this medic is trustworthy",
+                    "name": "Medic-L49: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -3669,7 +3669,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K86: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L49: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -3807,7 +3807,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L50: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -3820,7 +3820,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L50: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -3833,7 +3833,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: this medic is trustworthy",
+                    "name": "Medic-L50: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -3846,7 +3846,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L50: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -3984,7 +3984,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L51: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -3997,7 +3997,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L51: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4010,7 +4010,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: this medic is trustworthy",
+                    "name": "Medic-L51: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4023,7 +4023,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Medic-K87: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L51: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -4111,33 +4111,57 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L52: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -4150,7 +4174,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L52: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4163,7 +4187,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L52: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4176,7 +4200,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L52: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -4264,33 +4288,57 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L53: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -4303,7 +4351,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L53: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4316,7 +4364,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L53: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4329,7 +4377,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L53: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -4417,33 +4465,57 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L54: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -4456,7 +4528,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L54: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4469,7 +4541,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L54: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4482,7 +4554,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L54: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -4570,33 +4642,57 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they are bleeding a lot. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L55: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -4609,7 +4705,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L55: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4622,7 +4718,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L55: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4635,7 +4731,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L55: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -4723,33 +4819,57 @@
                     "rows": [
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L56: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -4762,7 +4882,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L56: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4775,7 +4895,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L56: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4788,7 +4908,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L56: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -4876,33 +4996,57 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L57: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -4915,7 +5059,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L57: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -4928,7 +5072,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L57: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -4941,7 +5085,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L57: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -5029,33 +5173,57 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Move to treat the casualty now",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L58: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -5068,7 +5236,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L58: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -5081,7 +5249,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L58: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -5094,7 +5262,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L58: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
@@ -5182,33 +5350,57 @@
                     "rows": [
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your squad is patrolling dismounted when it receives fire from a sniper and sustains one casualty. Your unit does not have a good idea of the suspected sniper location. You have not received any additional fire in the last 5 minutes.\nThe casualty is in a location with cover, but you would need to move across 100 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "During a company advance to contact, you make contact with a comparable enemy force and sustain one casualty. Your company successfully calls in supporting arms against the enemy location. You have not received any additional fire in the last 2 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are screaming, but you can't see their injury. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "In the process of attacking a suspected enemy position, your platoon is pinned down by a heavy volume of fire and sustains one casualty. The enemy fire ceases. You have not received any enemy fire in the last 3 minutes.\nThe casualty is in an exposed location and you would need to move across 100 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a foreign civilian with no ties to the military.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         },
                         {
                             "choice": "Wait in your current location",
-                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?"
+                            "probe_unstructured": "Your unit is conducting a mounted patrol on JLTVs when you are ambushed, receiving small arms and RPG fire, and sustaining one casualty. Your unit returns fire at the suspected enemy location. About six enemy troops are spotted withdrawing. You have not received any additional fire in the last 3 minutes.\nThe casualty is in a location with cover, but you would need to move across 20 ft of exposed area to reach them. They are not visible from your location, but you are told they aren't breathing. They are a US warfighter from a different branch of the military than you.\nYou are currently in a location with cover. Do you move to treat the casualty now, or wait in your current location?",
+                            "options": [
+                                "Move to treat the casualty now",
+                                "Wait in your current location"
+                            ]
                         }
                     ]
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: Do you agree with the decision that this medic made?",
+                    "name": "Medic-L59: Do you agree with the decision that this medic made?",
                     "title": "Do you agree with the decision that this medic made?",
                     "choices": [
                         "Strongly disagree",
@@ -5221,7 +5413,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: The way this medic makes medical decisions is how I make decisions",
+                    "name": "Medic-L59: The way this medic makes medical decisions is how I make decisions",
                     "title": "The way this medic makes medical decisions is how I make decisions",
                     "choices": [
                         "Strongly disagree",
@@ -5234,7 +5426,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: this medic is trustworthy",
+                    "name": "Medic-L59: this medic is trustworthy",
                     "title": "This medic is trustworthy",
                     "choices": [
                         "Strongly disagree",
@@ -5247,7 +5439,7 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Test medic 1: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
+                    "name": "Medic-L59: I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "title": "I would be comfortable allowing this medic to execute medical triage, even if I could not monitor it",
                     "choices": [
                         "Strongly disagree",
