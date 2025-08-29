@@ -1815,6 +1815,125 @@ def version7_setup(auto_confirm=False):
     
     LOGGER.log(LogLevel.CRITICAL_INFO, f"Survey version 7.0 created successfully with {medic_count} Phase 2 medics!")
 
+def version8_setup(auto_confirm=False):
+    tool = DelegationTool(8.0)
+    tool.clear_survey_version(auto_confirm)
+
+    # Add participant ID page
+    exp_page_1 = {
+        "name": "Participant ID Page",
+        "elements": [
+            {
+                "type": "text",
+                "name": "Participant ID",
+                "title": "Enter Participant ID:",
+                "isRequired": True
+            }
+        ]
+    }
+    tool.add_page_by_json(exp_page_1)
+
+    # Add warning page for invalid participant IDs
+    warning_page = {
+        "name": "PID Warning",
+        "elements": [
+            {
+                "type": "expression",
+                "name": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing.",
+                "title": "Warning: The Participant ID you entered is not part of this experiment. Please go back and ensure you have typed in the PID correctly before continuing."
+            }
+        ]
+    }
+    tool.add_page_by_json(warning_page)
+
+    exp_page_2 = {
+            "name": "VR Page",
+            "elements": [
+                {
+                    "type": "radiogroup",
+                    "name": "VR Experience Level",
+                    "title": "How much experience did you have with VR Gaming before today?",
+                    "isRequired": True,
+                    "choices": [
+                        "0 - None at all",
+                        "1 - I have used it, but not often",
+                        "2 - I use it occasionally",
+                        "3 - I use it often",
+                        "4 - I use it all the time"
+                    ]
+                },
+                {
+                    "type": "radiogroup",
+                    "name": "VR Comfort Level",
+                    "title": "After completing the VR experience, my current physical state is...",
+                    "isRequired": True,
+                    "choices": [
+                        "Very uncomfortable",
+                        "Slightly uncomfortable",
+                        "Neutral",
+                        "Comfortable",
+                        "Very comfortable"
+                    ]
+                },
+                {
+                    "type": "comment",
+                    "name": "Additonal Information About Discomfort",
+                    "title": "Please identify any specific discomfort (headache, disoriented, queasy, etc.)"
+                }
+            ]
+    }
+    tool.add_page_by_json(exp_page_2)
+
+    intro_page = {
+            "name": "Survey Introduction",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "Survey8 Introduction",
+                    "html": "Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how three different medics carried out their assessment and treatment separately for that situation. Their actions are listed in the order they performed them.\n<br/>\n<br/>\nEach medic vignette is then followed by a few questions to assess how you perceived the medic’s decision-making style. <br/><br/>While you work your way through each vignette imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation."
+                }
+            ]
+        }
+    tool.add_page_by_json(intro_page)
+
+    # Add note page from existing configs
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    tool.import_page_from_json(
+        os.path.join(script_dir, "survey-configs", "surveyConfig2x.json"), "Note page", None
+    )
+
+
+    phase2_medics = tool.medics_mongo_collection.find({"evalNumber": 10})
+    
+    medic_count = 0
+    for medic_doc in phase2_medics:
+        medic_copy = copy.deepcopy(medic_doc)
+        if '_id' in medic_copy:
+            del medic_copy['_id']
+        
+        tool.survey["pages"].append(medic_copy)
+        medic_count += 1
+        
+        tool.changes_summary.append(
+            f"Added Phase 2 medic '{medic_copy['name']}' to survey"
+        )
+    
+    LOGGER.log(LogLevel.INFO, f"Added {medic_count} Phase 2 medics to survey version 8.0")
+
+
+    # Add final page - post-scenario measures
+    tool.import_page_from_json(
+        os.path.join(script_dir, "survey-configs", "postScenarioPhase2.json"),
+        "Post-Scenario Measures",
+        None,
+    )
+
+    # Save changes
+    tool.push_changes(auto_confirm=auto_confirm)
+    tool.export_survey_json(os.path.join(script_dir, "survey-configs", "surveyConfig8x.json"))
+    
+    LOGGER.log(LogLevel.CRITICAL_INFO, f"Survey version 8.0 created successfully with {medic_count} Phase 2 medics!")
+
 if __name__ == "__main__":
     LOGGER.log(LogLevel.CRITICAL_INFO, "Welcome to the Delegation Survey Tool")
     LOGGER.log(
