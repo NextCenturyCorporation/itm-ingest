@@ -1,9 +1,9 @@
 import os, json, copy, yaml
-names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-names_used = []
 
 # grabs a medic name, makes sure no duplicate in admMedics collection
 def get_unique_medic_name(medic_collec):
+    names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 
+             'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     existing_medics = medic_collec.find(
         {"name": {"$regex": "^Medic-[A-Z]\\d{1,2}$"}}, 
         {"name": 1}
