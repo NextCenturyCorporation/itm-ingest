@@ -2,14 +2,13 @@
 One-time run to move adm_name, alignment_target, and scenario to the 
 top level of evals 1 and 2 (MVP and September Milestone) in admTargetRuns.
 
-Also removes duplicate scenarios from the scenarios collection for evals 1 and 2
+Also removes duplicate scenarios from the scenarios collection for evals 1, 2, and 3
 '''
 
 def main(mongo_db):
-    query_to_update = {'evalNumber': {'$in': [1, 2]}}
 
     adm_collection = mongo_db['admTargetRuns']
-    adms = adm_collection.find(query_to_update)
+    adms = adm_collection.find({'evalNumber': {'$in': [1, 2]}})
     updated = 0
     for adm in adms:
         last_elem = adm['history'][-1]
@@ -32,7 +31,7 @@ def main(mongo_db):
     print(f'Updated {updated} adms in admTargetRuns')
 
     scenario_collection = mongo_db['scenarios']
-    scenarios = scenario_collection.find(query_to_update)
+    scenarios = scenario_collection.find({'evalNumber': {'$in': [1, 2, 3]}})
     found = []
     deleted = 0
     for scenario in scenarios:
