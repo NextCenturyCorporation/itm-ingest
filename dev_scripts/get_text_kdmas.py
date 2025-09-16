@@ -2,67 +2,58 @@ import csv
 from pymongo import MongoClient
 from decouple import config 
 
-IO = 'Ingroup Bias'
-MJ = 'Moral judgement'
+AF = 'affiliation'
+MF = 'merit'
+PS = 'personal_safety'
+SS = 'search'
+FILENAME = 'text_kdmas.csv'
 
-def get_text_kdmas(mongo_db, output='text_kdmas.csv'):
+def get_text_kdmas(mongo_db, output=FILENAME):
     '''
-    Create a csv that contains all mj and io kdmas from all participants (evals 4/5/6), 
-    including overall, narrative, and non-narrative values.
+    Create a csv that contains all kdmas from all participants (July, aka eval 9).
     '''
     f = open(output, 'w', encoding='utf-8')
     writer = csv.writer(f)
-    header = ['PID', 'Eval', 'Type', 'MJ', 'IO']
+    header = ['PID', 'Type', 'AF', 'MF', 'PS', 'SS']
     writer.writerow(header)
     text_scenarios = mongo_db['userScenarioResults']
     p_log = mongo_db['participantLog']
 
-    valid_text = text_scenarios.find({
-        'evalNumber': {'$in': [4, 5, 6]}, 
-        '$or': [
-            {'scenario_id': {'$regex': 'DryRun'}}, 
-            {'scenario_id': {'$regex': 'adept'}}
-            ]
-        })
-    
+    valid_text = text_scenarios.find({'evalNumber': 9})
     kdma_map = {}
+    found_pids = []
+    num_rows = 0
 
     for entry in valid_text:
         pid = entry['participantID']
+        if pid in found_pids:
+            continue # Already got kdma data for this pid
         pid_found = 0
         try:
             pid_found = p_log.count_documents({'ParticipantID': int((pid))})
         except:
             # not a valid pid to be number-fied
             continue
-        if pid_found == 0:
+        if not pid_found:
             continue
+        found_pids.append(pid)
         if pid not in kdma_map:
-            kdma_map[pid] = {'overall': {'mj': -1, 'io': -1}, 'train': {'mj': -1, 'io': -1}, 'narr': {'mj': -1, 'io': -1}}
-        scenario = entry['scenario_id']
+            kdma_map[pid] = {'af': -1, 'mf': -1, 'ps': -1, 'ss': -1}
 
-        overall_kdmas = entry['kdmas']
-        kdma_map[pid]['overall']['mj'] = get_kdma_att(overall_kdmas, MJ)
-        kdma_map[pid]['overall']['io'] = get_kdma_att(overall_kdmas, IO)
+        kdmas = entry['kdmas']
+        kdma_map[pid]['af'] = get_kdma_att(kdmas, AF)
+        kdma_map[pid]['mf'] = get_kdma_att(kdmas, MF)
+        kdma_map[pid]['ps'] = get_kdma_att(kdmas, PS)
+        kdma_map[pid]['ss'] = get_kdma_att(kdmas, SS)
 
-
-        indi_kdmas = entry.get('individual_kdma', [])
-        if (len(indi_kdmas) == 0):
-            print(f'Individual KDMA missing for {pid}')
-        if 'IO1' in scenario:
-            kdma_map[pid]['train']['io'] = get_kdma_att(indi_kdmas, IO)
-        elif 'MJ1' in scenario:
-            kdma_map[pid]['train']['mj'] = get_kdma_att(indi_kdmas, MJ)
-        else:
-            kdma_map[pid]['narr']['mj'] = get_kdma_att(indi_kdmas, MJ)
-            kdma_map[pid]['narr']['io'] = get_kdma_att(indi_kdmas, IO)
-        
         if is_map_complete(kdma_map[pid]):
-            writer.writerow([pid, entry['evalNumber'], 'overall', kdma_map[pid]['overall']['mj'], kdma_map[pid]['overall']['io']])
-            writer.writerow([pid, entry['evalNumber'], 'train', kdma_map[pid]['train']['mj'], kdma_map[pid]['train']['io']])
-            writer.writerow([pid, entry['evalNumber'], 'narr', kdma_map[pid]['narr']['mj'], kdma_map[pid]['narr']['io']])
+            num_rows += 1
+            writer.writerow([pid, entry['evalNumber'],
+                             kdma_map[pid]['af'], kdma_map[pid]['mf'],
+                             kdma_map[pid]['ps'], kdma_map[pid]['ss']
+                             ])
 
-
+    print(f"Wrote {num_rows} rows to {FILENAME}")
     f.close()
 
 
@@ -70,7 +61,7 @@ def is_map_complete(map):
     '''
     Takes in a kdma_map and returns if all values have been filled in
     '''
-    return map['overall']['mj'] != -1 and map['overall']['io'] != -1 and map['train']['mj'] != -1 and map['train']['io'] != -1 and map['narr']['mj'] != -1 and map['narr']['io'] != -1
+    return map['af'] != -1 and map['mf'] != -1 and map['ps'] != -1 and map['ss'] != -1
 
 
 def get_kdma_att(kdmas, att):
