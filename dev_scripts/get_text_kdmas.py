@@ -14,7 +14,7 @@ def get_text_kdmas(mongo_db, output=FILENAME):
     '''
     f = open(output, 'w', encoding='utf-8')
     writer = csv.writer(f)
-    header = ['PID', 'Type', 'AF', 'MF', 'PS', 'SS']
+    header = ['PID', 'Eval', 'AF', 'MF', 'PS', 'SS']
     writer.writerow(header)
     text_scenarios = mongo_db['userScenarioResults']
     p_log = mongo_db['participantLog']
