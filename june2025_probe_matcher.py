@@ -126,7 +126,7 @@ class ProbeMatcher:
         with open(json_path, 'r', encoding='utf-8') as json_file:
             self.json_data = json.load(json_file)
             self.json_filename = json_file.name
-        if (self.json_data['configData']['teleportPointOverride'] == 'Tutorial'):
+        if (self.json_data['configData']['teleportPointOverride'] == 'Tutorial' or 'Tutorial' in self.json_data.get('configData', {}).get('narrative', {}).get('narrativeSections', [{'sectionDescription': ''}])[0].get('sectionDescription')):
             self.logger.log(LogLevel.CRITICAL_INFO, "Tutorial level, not processing data")
             return
         if (len(self.json_data['actionList']) <= 1):
