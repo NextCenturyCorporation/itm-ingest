@@ -247,7 +247,9 @@ def multi_adm(medic_collection):
                 row_data = {
                     'choice': scene['action_mapping'][choice_idx]['unstructured'],
                     'probe_unstructured': scene['state']['unstructured'],
-                    'options': action_options
+                    'options': action_options,
+                    'probe_id': scene['action_mapping'][choice_idx]['probe_id'],
+                    'choice_id': scene['action_mapping'][choice_idx]['choice']
                 }
                 element['rows'].append(row_data)
 

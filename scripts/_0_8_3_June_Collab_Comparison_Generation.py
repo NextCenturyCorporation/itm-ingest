@@ -40,7 +40,7 @@ def main(mongoDB, EVAL_NUMBER=8):
         for page in survey['results']:
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
-                if 'combined' in page_scenario or 'PS-AF' in page_scenario:
+                if 'combined' in page_scenario:
                     continue
                 if EVAL_NUMBER != 10:
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)

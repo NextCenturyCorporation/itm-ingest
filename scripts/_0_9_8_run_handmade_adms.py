@@ -20,7 +20,7 @@ def main(mongo_db):
     sept_medics = medics.find({"evalNumber": 10})
 
     for medic in sept_medics:
-        if "combined" in medic["scenarioIndex"] or "PS-AF" in medic["scenarioIndex"]:
+        if "combined" in medic["scenarioIndex"]:
             # we can't score these ones yet
             continue
         sid = (
