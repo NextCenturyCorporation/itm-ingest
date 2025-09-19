@@ -40,9 +40,12 @@ def main(mongoDB, EVAL_NUMBER=8):
         for page in survey['results']:
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
-                adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
-                if adm is None:
+                if 'combined' in page_scenario or 'PS-AF' in page_scenario:
                     continue
+                if EVAL_NUMBER != 10:
+                    adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
+                    if adm is None:
+                        continue
 
                 adm_session = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})['admSessionId']
 
@@ -52,7 +55,7 @@ def main(mongoDB, EVAL_NUMBER=8):
                 if res is not None and 'score' in res:
                     document = {
                         'pid': pid,
-                        'adm_type': survey['results'][page]['admAlignment'],
+                        'adm_type': survey.get('results', {}).get(page, {}).get('admAlignment'),
                         'score': res['score'],
                         'text_scenario': scenario_id,
                         'text_session_id': session_id.replace('"', "").strip(),

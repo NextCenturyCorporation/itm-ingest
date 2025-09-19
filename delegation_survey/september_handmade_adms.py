@@ -87,7 +87,9 @@ def create_adm(target, probe_set, attr, probe_set_index, template, medic_collect
         row_data = {
             'choice': scene['action_mapping'][choice]['unstructured'],
             'probe_unstructured': scene['state']['unstructured'],
-            'options': action_options
+            'options': action_options,
+            'probe_id': scene['action_mapping'][choice]['probe_id'],
+            'choice_id': scene['action_mapping'][choice]['choice']
         }
 
         doc['elements'][0]['rows'].append(row_data)
