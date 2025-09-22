@@ -126,7 +126,7 @@ class ProbeMatcher:
         with open(json_path, 'r', encoding='utf-8') as json_file:
             self.json_data = json.load(json_file)
             self.json_filename = json_file.name
-        if (self.json_data['configData']['teleportPointOverride'] == 'Tutorial'):
+        if (self.json_data['configData']['teleportPointOverride'] == 'Tutorial' or 'Tutorial' in self.json_data.get('configData', {}).get('narrative', {}).get('narrativeSections', [{'sectionDescription': ''}])[0].get('sectionDescription')):
             self.logger.log(LogLevel.CRITICAL_INFO, "Tutorial level, not processing data")
             return
         if (len(self.json_data['actionList']) <= 1):
@@ -599,7 +599,7 @@ class ProbeMatcher:
             results[f'{env} {name}_treat'] = treatments['per_patient'].get(sim_name, 0)
             results[f'{env} {name}_tag'] = tag_counts['tags'].get(sim_name, 'N/A')
 
-        text_response = text_scenario_collection.find_one({"evalNumber": EVAL_NUM, 'participantID': self.participantId})
+        text_response = text_scenario_collection.find_one({"evalNumber": 9 if '2025093' in str(self.participantId) else EVAL_NUM, 'participantID': self.participantId, "scenario_id": {"$not": {"$regex": "PS-AF"}}})
         text_kdma_results = {}
         if text_response is None:
             self.logger.log(LogLevel.WARN, f"Error getting text KDMAs for pid {self.participantId}.")
