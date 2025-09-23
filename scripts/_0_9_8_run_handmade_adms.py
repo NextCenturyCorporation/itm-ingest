@@ -7,9 +7,8 @@ import requests
 from delegation_survey.september_handmade_adms import main as add_probe_ids
 import utils.db_utils as db_utils
 from decouple import config
-
+from collections import defaultdict
 ADEPT_URL = config("ADEPT_URL")
-
 
 def main(mongo_db):
     # will edit the admMedics collection for eval 10
@@ -20,36 +19,63 @@ def main(mongo_db):
     sept_medics = medics.find({"evalNumber": 10})
 
     for medic in sept_medics:
-        if "combined" in medic["scenarioIndex"]:
-            # we can't score these ones yet
-            continue
-        sid = (
-            requests.post(f"{ADEPT_URL}api/v1/new_session")
-            .text.replace('"', "")
-            .strip()
-        )
-        scenario = medic["scenarioIndex"]
         responses = medic["elements"][0]["rows"]
-        probes = []
+        
+        responses_by_scenario = defaultdict(list)
         for response in responses:
-            probes.append(
+            responses_by_scenario[response["scenario_id"]].append(response)
+        
+        sessions_data = []
+        for scenario_id, scenario_responses in responses_by_scenario.items():
+            sid = (
+                requests.post(f"{ADEPT_URL}api/v1/new_session")
+                .text.replace('"', "")
+                .strip()
+            )
+            
+
+            probes = [
                 {
                     "probe": {
                         "choice": response["choice_id"],
                         "probe_id": response["probe_id"],
                     }
                 }
-            )
-        db_utils.send_probes(f"{ADEPT_URL}api/v1/response", probes, sid, scenario)
-        kdmas = requests.get(
-            f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={sid}"
-        ).json()
-        medics.update_one(
-            {"_id": medic["_id"]},
-            {
-                "$set": {
-                    "kdmas": kdmas,
-                    "admSessionId": sid,
+                for response in scenario_responses
+            ]
+            
+            db_utils.send_probes(f"{ADEPT_URL}api/v1/response", probes, sid, scenario_id)
+            
+   
+            kdmas = requests.get(
+                f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={sid}"
+            ).json()
+            
+            sessions_data.append({
+                "scenario_id": scenario_id,
+                "session_id": sid,
+                "kdmas": kdmas
+            })
+        
+
+        if len(sessions_data) == 1:
+            medics.update_one(
+                {"_id": medic["_id"]},
+                {
+                    "$set": {
+                        "kdmas": sessions_data[0]["kdmas"],
+                        "admSessionId": sessions_data[0]["session_id"],
+                    }
                 }
-            },
-        )
+            )
+        else:
+            # combined runs
+            medics.update_one(
+                {"_id": medic["_id"]},
+                {
+                    "$set": {
+                        "admSessionIdsByScenario": {s["scenario_id"]: s["session_id"] for s in sessions_data},
+                        "kdmasByScenario": {s["scenario_id"]: s["kdmas"] for s in sessions_data}
+                    }
+                }
+            )

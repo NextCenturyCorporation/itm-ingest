@@ -89,7 +89,8 @@ def create_adm(target, probe_set, attr, probe_set_index, template, medic_collect
             'probe_unstructured': scene['state']['unstructured'],
             'options': action_options,
             'probe_id': scene['action_mapping'][choice]['probe_id'],
-            'choice_id': scene['action_mapping'][choice]['choice']
+            'choice_id': scene['action_mapping'][choice]['choice'],
+            'scenario_id': scenario
         }
 
         doc['elements'][0]['rows'].append(row_data)
@@ -249,7 +250,8 @@ def multi_adm(medic_collection):
                     'probe_unstructured': scene['state']['unstructured'],
                     'options': action_options,
                     'probe_id': scene['action_mapping'][choice_idx]['probe_id'],
-                    'choice_id': scene['action_mapping'][choice_idx]['choice']
+                    'choice_id': scene['action_mapping'][choice_idx]['choice'],
+                    'scenario_id': scenario
                 }
                 element['rows'].append(row_data)
 
