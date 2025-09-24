@@ -402,13 +402,19 @@ def main():
     textbased_mongo_collection = db['textBasedConfig']
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    '''
+    commented out for U.K data collection
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
     phase1_folder = os.path.join(current_dir, 'phase1-yaml-files')
+    '''
+
+    uk_folder = os.path.join(os.path.dirname(current_dir), 'phase2/uk')
 
     all_docs = []
 
-    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre'), (phase1_folder, 'phase1')]:
+    for folder, eval_type in [(uk_folder, 'phase 1 uk')]:
         if not os.path.exists(folder):
             print(f"Warning: {folder} does not exist.")
             continue
