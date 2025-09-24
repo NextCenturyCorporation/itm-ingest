@@ -59,6 +59,7 @@ class Adm_data:
     adm_name: str
     text_session_id: str
     human_kdmas: list
+    pid: str
     scenario_id: str
     probe_responses: dict
 
@@ -69,8 +70,6 @@ def get_text_session_id(mongo_db, adm_entry):
     target_text_kdmas: dict = {}
     for history_entry in adm_entry["history"]:
         if history_entry["command"] == "Alignment Target":
-            #print(f"Found alignment target.")
-            #raw_text_kdma_values = history_entry['response']['kdma_values']
             for kdma in history_entry['response']['kdma_values']:
                 target_text_kdmas[kdma['kdma']] = kdma['value']
             break
@@ -106,7 +105,7 @@ def get_text_session_id(mongo_db, adm_entry):
             if target_text_kdmas[target_kdma_name] != get_kdma_att(text_entry['kdmas'], target_kdma_name):
                 found = False # One of the kdmas didn't match, so this isn't the entry we're looking for
         if found: # Found the full set of matching KDMAs, so return the session ID
-            return text_entry['combinedSessionId'], text_entry['kdmas']
+            return text_entry['combinedSessionId'], text_entry['kdmas'], text_entry['participantID']
 
     print(f"Warning: couldn't find KDMAs for ADM {adm_entry['adm_name']} with KDMAs {target_text_kdmas}.")
     return None
@@ -128,7 +127,7 @@ def load_adm_data(mongo_db):
         # A list of all probe responses for all adm runs for this attribute (one per target/adm type combination)
         kdma_adm_data: list = [] 
         for adm_run in adm_runs:
-            text_session_id, human_kdmas = get_text_session_id(mongo_db, adm_run)
+            text_session_id, human_kdmas, pid = get_text_session_id(mongo_db, adm_run)
             adm_name = adm_run['evaluation']['adm_name']
             if 'Random' in adm_name:
                 continue
@@ -136,7 +135,7 @@ def load_adm_data(mongo_db):
             for h in adm_run['history']:
                 if h['command'] == 'Respond to TA1 Probe':
                     probe_responses[h['parameters']['probe_id']] = h['parameters']['choice']
-            adm_data = Adm_data(adm_name, text_session_id, human_kdmas, scenario_id, probe_responses)
+            adm_data = Adm_data(adm_name, text_session_id, human_kdmas, pid, scenario_id, probe_responses)
             if VERBOSE:
                 print(f"Adding {len(adm_data.probe_responses)} probe responses for {adm_data.adm_name} for text session {adm_data.text_session_id}")
             kdma_adm_data.append(adm_data)
@@ -276,6 +275,7 @@ def create_synthetic_adm_runs(mongo_db):
                                     'scenario_id': synth_scenario_id,
                                     'alignment_target_id': adm_data.text_session_id,
                                     'human_kdmas': adm_data.human_kdmas,
+                                    'human_pid': adm_data.pid,
                                     'adm_name': adm_data.adm_name,
                                     'adm_profile': 'baseline' if 'baseline' in adm_data.adm_name.lower() else 'aligned',
                                     'domain': DOMAIN,
