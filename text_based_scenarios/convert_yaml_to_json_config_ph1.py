@@ -406,7 +406,7 @@ def main():
 
     all_docs = []
 
-    for folder, eval_type in [(uk_folder, 'phase 1 uk')]:
+    for folder, eval_type in [(uk_folder, 'Eval 12 UK Phase 1')]:
         if not os.path.exists(folder):
             print(f"Warning: {folder} does not exist.")
             continue
