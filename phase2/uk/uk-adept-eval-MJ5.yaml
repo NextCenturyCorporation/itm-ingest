@@ -1135,7 +1135,7 @@ scenes:
           - {threat_type: IED activity, severity: moderate}
           - {threat_type: Gunfire, severity: moderate}
       characters:
-        - id: uk_soldier
+        - id: us_soldier
           name: UK soldier
           unstructured: The UK soldier wounded in the attack. Has moderate bleeding from a glancing shot.
           intent: no intent
@@ -1156,7 +1156,7 @@ scenes:
             heart_rate: NORMAL
             spo2: NORMAL
         - id: attacker
-          name: attacker
+          name: Attacker
           unstructured: The wounded friend of the other attacker who asked for help. Was involved in attacking the UK military site.
           unseen: true
           intent: intend major harm
@@ -1232,7 +1232,7 @@ scenes:
           relevant_state:
             - characters[attacker].unseen
       characters:
-        - id: uk_soldier
+        - id: us_soldier
           name: UK soldier
           unstructured: The UK soldier wounded in the attack. Has moderate bleeding from a glancing shot. He seems dizzy and may have hit his head.
           intent: no intent
@@ -1253,7 +1253,7 @@ scenes:
             heart_rate: NORMAL
             spo2: NORMAL
         - id: attacker
-          name: attacker
+          name: Attacker
           unstructured: The wounded friend of the other attacker who asked for help. Was involved in attacking the UK military site.
           unseen: false # being explicit about the fact that the attacker has now been moved to the same location as the UK soldier and the DM
           intent: intend major harm
@@ -1353,7 +1353,7 @@ scenes:
             - characters[attacker].intent
       characters:
         - id: attacker
-          name: attacker
+          name: Attacker
           unstructured: The wounded friend of the other attacker who asked for help. Was involved in attacking the UK military site, but we learn that he was forced into it.
           intent: no intent
           directness_of_causality: direct
@@ -1536,7 +1536,7 @@ scenes:
             - characters[attacker].intent
       characters:
         - id: attacker
-          name: attacker
+          name: Attacker
           unstructured: The wounded friend of the other attacker who asked for help. Was involved in attacking the UK military site, but we learn that he was forced into it.
           intent: no intent
           directness_of_causality: direct
@@ -1554,7 +1554,7 @@ scenes:
             breathing: FAST
             heart_rate: FAST
             spo2: LOW
-        - id: uk_soldier
+        - id: us_soldier
           name: UK soldier
           unstructured: The UK soldier wounded in the attack. Has moderate bleeding from a glancing shot. He seems dizzy and may have hit his head.
           unseen: false
