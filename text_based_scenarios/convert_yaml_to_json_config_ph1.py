@@ -374,20 +374,12 @@ def upload_config(docs, textbased_mongo_collection):
     if not docs:
         print("No new documents to upload.")
         return
-    
-    existing_scenario_ids = set(doc['scenario_id'] for doc in textbased_mongo_collection.find({}, {'scenario_id': 1}))
+
     
     new_docs = []
     updated_docs = []
     for doc in docs:
-        if doc['scenario_id'] in existing_scenario_ids:
-            textbased_mongo_collection.replace_one(
-                {'scenario_id': doc['scenario_id']}, 
-                doc
-            )
-            updated_docs.append(doc['scenario_id'])
-        else:
-            new_docs.append(doc)
+        new_docs.append(doc)
     
     if new_docs:
         textbased_mongo_collection.insert_many(new_docs)
