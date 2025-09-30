@@ -93,15 +93,15 @@ def main(mongo_db):
             target_ps = get_kdma_value(first_adm['evaluation']['human_kdmas'], 'personal_safety')
             target_ss = get_kdma_value(first_adm['evaluation']['human_kdmas'], 'search')
             # get af/mf/ps/ss kdma target values to find matching human(s)
-            matching_lines = []
-            matching_lines = get_humans_with_kdmas(text_kdmas, text_kdma_header, target_af, target_mf, target_ps, target_ss, mongo_db)
+            matching_pids = []
+            matching_pids = get_humans_with_kdmas(text_kdmas, text_kdma_header, target_af, target_mf, target_ps, target_ss)
 
             # run the comparison for all unique entries
-            for match in matching_lines:
+            for pid in matching_pids:
                 new_doc = {
                     'admName': adm_name,
                     'evalNumber': EVAL_NUM,
-                    'pid': match['pid'],
+                    'pid': pid,
                     'afTarget': float(target_af),
                     'mfTarget': float(target_mf),
                     'psTarget': float(target_ps),
@@ -186,6 +186,9 @@ def main(mongo_db):
     for pid in pids:
         baselines = adm_collection.find({'evalNumber': EVAL_NUM, 'synthetic': True, 'evaluation.adm_profile': 'baseline',
                                         'evaluation.human_pid': pid, 'scenario': {'$regex': 'July2025-'}})
+        if not baselines.alive:  # Go find matching pids and grab those baselines instead
+            pass # TBD
+
         af_base_sum = 0
         mf_base_sum = 0
         ps_base_sum = 0
@@ -239,15 +242,13 @@ def main(mongo_db):
     print("\nMulti-KDMA Data collection has been created and populated.")
 
 
-def get_humans_with_kdmas(text_kdmas, kdma_header, af, mf, ps, ss, mongo_db):
+def get_humans_with_kdmas(text_kdmas, kdma_header, af, mf, ps, ss) -> list:
     '''
     Takes in the text_kdmas list along with kdma values to find.
-    Returns a list of objects containing pids, their scenarios,
-    and session ids that match.
+    Returns a list of pids that match.
     There may be more than one matching entry for this kdma set.
     Return all.
     '''
-    text_scenarios = mongo_db['userScenarioResults']
     matches = []
     for line in text_kdmas:
         line_af = float(line[kdma_header.index('AF')])
@@ -255,14 +256,7 @@ def get_humans_with_kdmas(text_kdmas, kdma_header, af, mf, ps, ss, mongo_db):
         line_ps = float(line[kdma_header.index('PS')])
         line_ss = float(line[kdma_header.index('SS')])
         if af == line_af and mf == line_mf and ps == line_ps and ss == line_ss:
-            pid = line[kdma_header.index('PID')]
-            matching_scenario = text_scenarios.find_one({'participantID': pid, 'scenario_id': {'$regex': 'July2025-'}})
-            scenario = matching_scenario['scenario_id']
-            matches.append({
-                'pid': pid,
-                'scenario': scenario,
-                'combinedSession': matching_scenario.get('combinedSessionId')
-                })
+            matches.append(line[kdma_header.index('PID')])
     # This should never happen, so we exit if it does.
     if len(matches) == 0:
         print(f'FATAL: Could not find match for AF={af}, MF={mf}, PS={ps}, SS={ss}')
