@@ -1,10 +1,16 @@
 
-import copy, re
+import copy, re, os, json
 def main(mongo_db):
     delegation_adms = mongo_db['delegationADMRuns']
     admMedics = mongo_db['admMedics']
     delegation_config = mongo_db['delegationConfig']
     survey_v5 = delegation_config.find_one({'_id': 'delegation_v5.0'})
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    post_scenario_path = os.path.join(script_dir, 'survey-configs', 'postScenarioPhase2.json')
+    with open(post_scenario_path, 'r') as f:
+        post_scenario_json = json.load(f)
+        post_scenario_page = post_scenario_json['pages'][0]
     
     # only using MJ2, IO2, VOL3 (VOL2 used in text and there was no VOL1 for phase 1)
     # ADEPT scenarios paired with Kitware, ST paired with Parralax
@@ -56,7 +62,10 @@ def main(mongo_db):
     for page in old_pages:
         # starter pages
         if 'scenarioIndex' not in page:
-            new_pages.append(page)
+            if page['name'] == "Post-Scenario Measures":
+                new_pages.append(post_scenario_page)
+            else: 
+                new_pages.append(page)
         # only keep necessary pages
         elif page['scenarioIndex'] in valid_scenarios:
             adm_name = page.get('admName', '')
