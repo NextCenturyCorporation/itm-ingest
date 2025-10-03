@@ -374,20 +374,12 @@ def upload_config(docs, textbased_mongo_collection):
     if not docs:
         print("No new documents to upload.")
         return
-    
-    existing_scenario_ids = set(doc['scenario_id'] for doc in textbased_mongo_collection.find({}, {'scenario_id': 1}))
+
     
     new_docs = []
     updated_docs = []
     for doc in docs:
-        if doc['scenario_id'] in existing_scenario_ids:
-            textbased_mongo_collection.replace_one(
-                {'scenario_id': doc['scenario_id']}, 
-                doc
-            )
-            updated_docs.append(doc['scenario_id'])
-        else:
-            new_docs.append(doc)
+        new_docs.append(doc)
     
     if new_docs:
         textbased_mongo_collection.insert_many(new_docs)
@@ -402,13 +394,19 @@ def main():
     textbased_mongo_collection = db['textBasedConfig']
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    '''
+    commented out for U.K data collection
     mre_folder = os.path.join(current_dir, 'mre-yaml-files')
     dre_folder = os.path.join(current_dir, 'dre-yaml-files')
     phase1_folder = os.path.join(current_dir, 'phase1-yaml-files')
+    '''
+
+    uk_folder = os.path.join(os.path.dirname(current_dir), 'phase2/uk')
 
     all_docs = []
 
-    for folder, eval_type in [(mre_folder, 'mre'), (dre_folder, 'dre'), (phase1_folder, 'phase1')]:
+    for folder, eval_type in [(uk_folder, 'Eval 12 UK Phase 1')]:
         if not os.path.exists(folder):
             print(f"Warning: {folder} does not exist.")
             continue
