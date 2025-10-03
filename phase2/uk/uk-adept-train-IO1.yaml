@@ -101,7 +101,7 @@ state:
     visited: true
   - id: P1 Patient B
     name: Patient B
-    unstructured: 'A UK soldier in another unit.
+    unstructured: 'A US soldier in another unit.
 
       '
     rapport: neutral
@@ -258,7 +258,7 @@ scenes:
       visited: true
     - id: P5 Patient B
       name: Patient B
-      unstructured: 'A UK soldier in another unit. Has a better prognosis for survival
+      unstructured: 'A US soldier in another unit. Has a better prognosis for survival
         than Patient A.
 
         '
