@@ -1,8 +1,9 @@
 def main(mongo_db):
     collection_names = mongo_db.list_collection_names()
-    if 'evaluationIDs' in collection_names:
-        collection_orig = mongo_db['evaluationIDs']
-        collection_orig.rename('evalData')
+    if 'evaluationIDS' in collection_names:
+        collection_orig = mongo_db['evaluationIDS']
+        if 'evalData' not in collection_names:
+            collection_orig.rename('evalData')
     collection = mongo_db['evalData']
     collection.drop()
 
