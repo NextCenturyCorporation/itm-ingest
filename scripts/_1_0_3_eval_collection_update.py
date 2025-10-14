@@ -151,7 +151,7 @@ def main(mongo_db):
             "admProbeResponses": True,
             "admAlignment": True,
             "admResults": True,
-            "humanSimPlayByPlay": False, # for now
+            "humanSimPlayByPlay": True,
             "humanSimProbes": False,
             "participantLevelData": True,
             "textResults": True,
@@ -170,7 +170,7 @@ def main(mongo_db):
             "admProbeResponses": True,
             "admAlignment": True,
             "admResults": True,
-            "humanSimPlayByPlay": False, # for now
+            "humanSimPlayByPlay": True,
             "humanSimProbes": False,
             "participantLevelData": True,
             "textResults": True,
