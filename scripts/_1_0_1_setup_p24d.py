@@ -5,6 +5,8 @@ from decouple import config
 EVAL_NUM = 11
 ADEPT_URL = config("ADEPT_URL")
 HIT_TA1_SERVER = True # Useful if you can't reach the TA1 server
+PYTHON_CMD = 'python3'
+FOUR_D_COLLECTION = 'multiKdmaData4D'
 
 def get_kdma_value(kdmas, kdma_name):
     '''
@@ -17,7 +19,7 @@ def get_kdma_value(kdmas, kdma_name):
 
 def main(mongo_db):
     # Create a new DB to store all the data.
-    multi_kdmas_4d = mongo_db['multiKdmaData4D']
+    multi_kdmas_4d = mongo_db[FOUR_D_COLLECTION]
     multi_kdmas_4d.drop()
 
     adm_collection = mongo_db['admTargetRuns']
@@ -72,7 +74,7 @@ def main(mongo_db):
         adms_added += 1
 
     # Run the dev script to get human kdmas; store in list for easy indexing.
-    os.system('python3 dev_scripts/get_p2_4d_text_kdmas.py')
+    os.system(f'{PYTHON_CMD} dev_scripts/get_p2_4d_text_kdmas.py')
     file = open('text_kdmas.csv', 'r', encoding='utf-8')
     reader = csv.reader(file)
     text_kdma_header = next(reader)
@@ -183,12 +185,40 @@ def main(mongo_db):
     for line in text_kdmas:
         pids.append(line[text_kdma_header.index('PID')])
 
+    pid_count = len(pids)
+    pid_num = 0
     for pid in pids:
-        baselines = adm_collection.find({'evalNumber': EVAL_NUM, 'synthetic': True, 'evaluation.adm_profile': 'baseline',
-                                        'evaluation.human_pid': pid, 'scenario': {'$regex': 'July2025-'}})
-        if not baselines.alive:  # Go find matching pids and grab those baselines instead
-            pass # TBD
+        cursor = adm_collection.find({'evalNumber': EVAL_NUM, 'synthetic': True, 'evaluation.adm_profile': 'baseline',
+                                      'evaluation.human_pid': pid, 'scenario': {'$regex': 'July2025-'}})
+        baselines = list(cursor)
+        if len(baselines) == 0:  # Go find ADM with matching pids and grab those baselines instead
+            print(f"Missing pid {pid}.")
+            for line in text_kdmas:
+                if line[text_kdma_header.index('PID')] == pid:
+                    af = float(line[text_kdma_header.index('AF')])
+                    mf = float(line[text_kdma_header.index('MF')])
+                    ps = float(line[text_kdma_header.index('PS')])
+                    ss = float(line[text_kdma_header.index('SS')])
+                    break
+            print(f"  Looking for matching baseline ADM with MF={mf},AF={af},PS={ps},SS={ss}.")
+            cursor = adm_collection.find({'evalNumber': EVAL_NUM, 'synthetic': True,
+                                          'evaluation.adm_profile': 'baseline', 'scenario': {'$regex': 'July2025-'},
+                                           'evaluation.human_kdmas': {
+                                           '$all': [
+                                               {'$elemMatch': {'kdma': 'merit', 'value': mf}},
+                                               {'$elemMatch': {'kdma': 'personal_safety', 'value': ps}},
+                                               {'$elemMatch': {'kdma': 'affiliation', 'value': af}},
+                                               {'$elemMatch': {'kdma': 'search', 'value': ss}}
+                                           ]
+                                           }})
+            baselines = list(cursor)
+            if len(baselines) == 0:
+                print(f"  STILL Missing pid {pid}, so skipping.")
+            else:
+                print(f"  Found at pid {baselines[0]['evaluation']['human_pid']}.")
 
+        pid_num += 1
+        print(f"Processing pid {pid} (#{pid_num} of {pid_count}).")
         af_base_sum = 0
         mf_base_sum = 0
         ps_base_sum = 0
@@ -202,7 +232,7 @@ def main(mongo_db):
         for adm in baselines:
             kdma_name = adm['results']['kdmas'][0]['kdma']
             kdma_value = adm['results']['kdmas'][0]['value']
-            # TBD:  Only have to do this once for baseline as the kdmas shouldn't vary.
+            # TBD:  Only have to do this once for baseline as the kdmas shouldn't vary.  If it saved us a trip to TA1, we'd cache.
             match kdma_name:
                 case 'affiliation':
                     af_base_sum += kdma_value
@@ -239,7 +269,7 @@ def main(mongo_db):
         )
     print("Baseline data collection complete.")
 
-    print("\nMulti-KDMA Data collection has been created and populated.")
+    print(f"\nMulti-KDMA Data collection '{FOUR_D_COLLECTION}' has been created and populated.")
 
 
 def get_humans_with_kdmas(text_kdmas, kdma_header, af, mf, ps, ss) -> list:
