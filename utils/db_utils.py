@@ -67,7 +67,7 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
 def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
     if eval_number == 5 or eval_number == 6:
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
-    ADM_SESSION_VAR_NAME = 'admSessionId' if eval_number >= 8 else 'admSession'
+    ADM_SESSION_VAR_NAME = 'admSessionId' if eval_number >= 8 and eval_number != 12 else 'admSession'
     adm_session = medic_collection.find_one({'evalNumber': 5 if eval_number == 6 else eval_number, 'name': page})[ADM_SESSION_VAR_NAME]
     
     adms = []
