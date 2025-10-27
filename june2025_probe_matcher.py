@@ -20,7 +20,9 @@ KDMA_MAP = {
     'affiliation': 'AF',
     'merit': 'MF',
     'personal_safety': 'PS',
-    'search': 'SS'
+    'search': 'SS',
+    'Moral judgement': 'MJ',
+    'Ingroup Bias': 'IO'
 }
 
 ACTION_TRANSLATION = {
@@ -369,7 +371,7 @@ class ProbeMatcher:
             return {'correct': correct, 'count': count, 'tags': tags_applied}
 
         tag_counts = get_tags()
-        results[f'{env} Tag_ACC'] = tag_counts['correct'] / tag_counts['count']
+        results[f'{env} Tag_ACC'] = tag_counts['correct'] / max(1, tag_counts['count'])
         results[f'{env} Tag_Expectant'] = 'Yes' if tag_counts['tags'].get('US Soldier 3') == 'gray' else 'No'
 
         def find_time_per_patient():
@@ -745,7 +747,7 @@ if __name__ == '__main__':
     if args.is_verbose:
         VERBOSE = True
     EVAL_NUM = DEFAULT_EVAL_NUM if not args.eval_num else args.eval_num
-    if EVAL_NUM in [8, 9, 10]:
+    if EVAL_NUM in [8, 9, 10, 12]:
         EVAL_PREFIX = 'june2025'
     else:
         print(f"Evaluation #{EVAL_NUM} is not supported at this time.")
@@ -801,6 +803,10 @@ if __name__ == '__main__':
             EVAL_NAME = 'September 2025 Collaboration'
             EVAL_PREFIX = 'june2025'
             EVAL_NUM = 10
+        elif "202510" in str(pid):
+            EVAL_NAME = 'Eval 12 UK Phase 1'
+            EVAL_PREFIX = 'june2025'
+            EVAL_NUM = 12
         else:
             print(f"Cannot match eval number to pid {pid}. Skipping.")
             continue
