@@ -17,7 +17,7 @@ EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
 
 
-ADEPT_URL = config("ADEPT_URL")
+ADEPT_URL = config("ADEPT_PH1_URL")
 ST_URL = config("ST_URL")
 
 SCENE_MAP = {
@@ -1165,6 +1165,9 @@ if __name__ == '__main__':
         if args.eval_num == 6:
             EVAL_NAME = 'Jan 2025 Eval'
             EVAL_NUM = 6
+        if args.eval_num == 12:
+            EVAL_NAME = 'Eval 12 UK Phase 1'
+            EVAL_NUM = 12
     # instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard

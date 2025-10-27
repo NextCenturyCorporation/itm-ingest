@@ -74,6 +74,14 @@ def main(mongo_db):
                     os.remove(os.path.join(parent, f))
 
     # run the other probe matchers
+    print('Running open world probe matcher')
     os.system('python june2025_probe_matcher.py -i tmp_uk_sim/openworld')
+    # move ph1 probe matcher to the right location for file access
+    os.system('mv PAST_EVALS/ph1_probe_matcher.py ph1_probe_matcher.py')
+    print('Running phase 1 probe matcher')
+    os.system('python ph1_probe_matcher.py -i tmp_uk_sim/phase1 -e 12')
+    # move ph1 probe matcher back to where it belongs
+    os.system('mv ph1_probe_matcher.py PAST_EVALS/ph1_probe_matcher.py')
     
+    # delete temporary directories
     os.system('rm -rf tmp_uk_sim')
