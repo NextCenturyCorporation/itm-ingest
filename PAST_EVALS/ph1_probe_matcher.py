@@ -627,13 +627,14 @@ class ProbeMatcher:
                     'vol-human-8478698-SplitLowMulti-ph1', 'vol-human-5032922-SplitLowMulti-ph1', 'vol-synth-LowExtreme-ph1', 'vol-synth-HighCluster-ph1',
                     'vol-synth-LowCluster-ph1'
                 ]
-                db_utils.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
-                for target in targets:
-                    if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
-                        continue
-                    st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
-                st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
-                st_align['sid'] = self.soartech_sid
+                if EVAL_NUM != 12:
+                    db_utils.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
+                    for target in targets:
+                        if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
+                            continue
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
+                    st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
+                    st_align['sid'] = self.soartech_sid
             except:
                 self.logger.log(LogLevel.WARN, "Session Alignment Get Request failed")
         match_data = {'alignment': st_align, 'data': match_data}
@@ -1004,7 +1005,7 @@ class ProbeMatcher:
                 writable.close()
 
         adms_vs_text = json_data.get('alignment').get('adms_vs_text', [])
-        if RECALCULATE_COMPARISON or not (adms_vs_text is not None and len(adms_vs_text) > 0 and not RUN_ALL):
+        if EVAL_NUM != 12 and (RECALCULATE_COMPARISON or not (adms_vs_text is not None and len(adms_vs_text) > 0 and not RUN_ALL)):
             comparison = self.get_adm_vr_comparisons(vr_sid)
             if comparison is not None:
                 json_data['alignment']['adms_vs_text'] = comparison
@@ -1038,11 +1039,12 @@ class ProbeMatcher:
                 query_param += f"&session1_probes={probe_id}"
             for probe_id in ST_PROBES['all'][text_scenario]:
                 query_param += f"&session2_probes={probe_id}"
-            res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-            if res is None or 'score' not in res:
-                self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
-                return
-            res = res['score']
+            if EVAL_NUM != 12:
+                res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                if res is None or 'score' not in res:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                    return
+                res = res['score']
         elif 'adept' in self.environment:
             # get text session id
             text_response = text_scenario_collection.find_one({"evalNumber": EVAL_NUM, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval", 'phase1-adept-eval-MJ2', 'phase1-adept-eval-MJ4', 'phase1-adept-eval-MJ5']}})
@@ -1092,19 +1094,20 @@ class ProbeMatcher:
                     for probe_id in ST_PROBES['delegation'][page_scenario]:
                         query_param += f"&session2_probes={probe_id}"
                     # get comparison score
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-                    if 'score' not in res:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
-                    else:
-                        results.append({
-                            "score": res['score'],
-                            "adm_author": survey['results'][page]['admAuthor'],
-                            "adm_alignment": survey['results'][page]['admAlignment'],
-                            'adm_name': survey['results'][page]['admName'],
-                            'adm_target': survey['results'][page]['admTarget'],
-                            'adm_scenario': page_scenario,
-                            'sim_scenario': vr_scenario
-                        })
+                    if EVAL_NUM != 12:
+                        res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                        if 'score' not in res:
+                            self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                        else:
+                            results.append({
+                                "score": res['score'],
+                                "adm_author": survey['results'][page]['admAuthor'],
+                                "adm_alignment": survey['results'][page]['admAlignment'],
+                                'adm_name': survey['results'][page]['admName'],
+                                'adm_target': survey['results'][page]['admTarget'],
+                                'adm_scenario': page_scenario,
+                                'sim_scenario': vr_scenario
+                            })
                 elif ('adept' in self.environment and 'DryRunEval' in page_scenario):
                     adm = db_utils.find_adm_from_medic(EVAL_NUM, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
@@ -1216,18 +1219,21 @@ if __name__ == '__main__':
                 if '.json' in f:
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
-                    try:
-                        adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+                    # try:
+                    adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+                    if EVAL_NUM != 12:
                         soartech_sid = requests.post(f'{ST_URL}api/v1/new_session?user_id=default_use').json()
-                        matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
-                        # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
-                        if matcher.environment != '' and matcher.analyze:
-                            matcher.match_probes()
-                        if matcher.environment != '' and RUN_COMPARISON:
-                            matcher.run_comparison()
-                        matcher.__del__()
-                    except Exception as e:
-                        print(e)
+                    else:
+                        soartech_sid = 123
+                    matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
+                    # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
+                    if matcher.environment != '' and matcher.analyze:
+                        matcher.match_probes()
+                    if matcher.environment != '' and RUN_COMPARISON:
+                        matcher.run_comparison()
+                    matcher.__del__()
+                    # except Exception as e:
+                    #     print(e)
                 elif '.html' in f or '.jpg' in f:
                     os.remove(os.path.join(parent, f))
     print()

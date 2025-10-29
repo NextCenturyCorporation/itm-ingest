@@ -21,7 +21,7 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
     dre_ph1_run is if we are running dre data through the phase 1 server
     ph1_dre_run is if we are running phase 1 data through the dre server
     '''
-    ADEPT_URL = config("ADEPT_DRE_URL") if ((evalNumber == 4 and not dre_ph1_run) or (evalNumber == 5 or evalNumber == 6) and ph1_dre_run) else config('ADEPT_URL')
+    ADEPT_URL = config("ADEPT_DRE_URL") if ((evalNumber == 4 and not dre_ph1_run) or (evalNumber == 5 or evalNumber == 6) and ph1_dre_run) else config("ADEPT_PH1_URL") if evalNumber == 12 else config('ADEPT_URL')
     adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', "").strip()
     scenario = None
     for x in probes:
@@ -35,7 +35,7 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
             "session_id": adept_sid
         })
         scenario = x['scenario_id']
-    if (evalNumber == 4 and not dre_ph1_run) or ((evalNumber == 5 or evalNumber == 6) and ph1_dre_run):
+    if (evalNumber == 4 and not dre_ph1_run) or ((evalNumber == 5 or evalNumber == 6 or evalNumber == 12) and ph1_dre_run):
         alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}&population=false').json()
     else:
         if 'Moral' in target:
@@ -65,16 +65,16 @@ def mini_adm_run(evalNumber, collection, probes, target, adm_name, dre_ph1_run=F
 
 
 def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, page_scenario, survey):
-    if eval_number == 5 or eval_number == 6:
+    if eval_number == 5 or eval_number == 6 or eval_number == 12:
         page_scenario = PH1_SCENARIO_MAP[page_scenario]
     ADM_SESSION_VAR_NAME = 'admSessionId' if eval_number >= 8 and eval_number != 12 else 'admSession'
     adm_session = medic_collection.find_one({'evalNumber': 5 if eval_number == 6 else eval_number, 'name': page})[ADM_SESSION_VAR_NAME]
     
     adms = []
     adm = None
-    if eval_number < 8:
+    if eval_number < 8 or eval_number == 12:
         adms = adm_collection.find({
-            'evalNumber': 5 if eval_number == 6 else eval_number,
+            'evalNumber': 5 if eval_number == 6 or eval_number == 12 else eval_number,
             'history': {
                 '$elemMatch': {
                     'command': 'Start Scenario',
@@ -89,7 +89,7 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
             if x['history'][len(x['history'])-1]['parameters']['target_id'] == survey['results'][page]['admTarget']:
                 adm = x
                 break
-    if eval_number >= 8:
+    elif eval_number >= 8:
         adms = adm_collection.find({
             'results.ta1_session_id': adm_session
         })
@@ -107,9 +107,9 @@ def find_adm_from_medic(eval_number, medic_collection, adm_collection, page, pag
 
 
 def find_most_least_adm(eval_number, adm_collection, scenario, target, adm_name):
-    if eval_number == 5 or eval_number == 6:
+    if eval_number == 5 or eval_number == 6 or eval_number == 12:
         scenario = PH1_SCENARIO_MAP[scenario]
-    adms = adm_collection.find({'evalNumber': 5 if eval_number == 6 else eval_number,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
+    adms = adm_collection.find({'evalNumber': 5 if eval_number == 6 or eval_number == 12 else eval_number,     '$or': [{'history.1.response.id': scenario}, {'history.0.response.id': scenario}], 'history.0.parameters.adm_name': adm_name})
     adm = None
     for x in adms:
         if x['history'][len(x['history'])-1]['parameters']['target_id'] == target:
