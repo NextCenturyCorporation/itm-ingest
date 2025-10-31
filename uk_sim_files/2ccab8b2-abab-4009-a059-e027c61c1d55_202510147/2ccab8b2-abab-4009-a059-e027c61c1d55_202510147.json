@@ -1,0 +1,2197 @@
+{
+    "configData": {
+        "scene": "sim-urban-sanitized",
+        "CACIUploadToS3": false,
+        "evacTimer": {
+            "maxTime": 0.0,
+            "audioMessages": [],
+            "timedGameObjectStateManagements": [],
+            "immediateEvac": {
+                "time": 0.0,
+                "audioClip": ""
+            }
+        },
+        "narrative": {
+            "narrativeDescription": "Urban Scenario Narrative",
+            "narrativeSections": [
+                {
+                    "sectionDescription": "TCCC Tutorial Intro",
+                    "additionalInfo": "Welcome! This guided tutorial will place you into an urban environment with four injured patients that require your medical care. This guided practice will help you understand the gameplay and controls for the simulation. Listen carefully and follow the prompts.",
+                    "triggeredOnStart": true,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Mission Briefing",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [
+                        {
+                            "mixer": "narrator",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "voice",
+                            "changeVolume": 4,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "environment",
+                            "changeVolume": 4,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        }
+                    ],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": false,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "Urban Tutorial",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Mission Briefing Room Fade",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": true,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 2,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Exit Mission Briefing Room",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": true
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [
+                        {
+                            "mixer": "narrator",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "voice",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "environment",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        }
+                    ],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Learn to strafe",
+                    "additionalInfo": "Let's begin by learning how to move. Feel around on your left controller for a thumb joystick. This left joystick is for strafing. Move the left joystick around to strafe at a walking pace. Now while moving, click in the left joystick to strafe twice as fast.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Lets Begin with Strafing",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "Strafe",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Waiting for more strafing experimentation",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": true,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Teleporting Instructions",
+                    "additionalInfo": "Now that you know how to strafe, let's try teleporting instead. Feel around on your right controller for a thumb joystick. The right joystick is for teleporting which is helpful for longer movements.  If you hold the right joystick forward, you will see a green beam of light that shows where you will move. When you release the right stick, you will teleport to the targeted area. Try moving to the unresponsive patient in the distance.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Teleport",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Move to unconscious patient",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "ApproachPatient",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Assess unconscious patient",
+                    "additionalInfo": "You need to first assess the vital signs of this unresponsive patient. Put your hand on their wrist or neck to take a pulse. Your hand pose will change and the controller will vibrate. Feel the patient's pulse now.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Pulse",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "AssessPatient",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Teach about breathing",
+                    "additionalInfo": "You also need to assess their breathing. You can do this asking the patient how their breathing is. If they are unresponsive, closely observe the movement of their chest. Their chest will rise and fall.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Breathing",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Teach opening the bag",
+                    "additionalInfo": "You assessed this patient's vitals and now it's time for you to treat them. You have a triage bag containing medical gear. It is located at your right hip. To open, look down and place your right hand down by the white bag at your right hip. It will highlight yellow. Pull and hold the controller's front trigger down. Keep holding your trigger and bring your hand up into view. Observe the open bag attached to your hand. The black open bag and its medical tools should now be visible.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Open Bag",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 3,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Learn to use the triage kit",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "OpenBag",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Teach releasing bag",
+                    "additionalInfo": "Release the trigger to let go of the bag. It will stay in place. Try that now.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Release Bag",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "ReleaseBag",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Teach grabbing tools/tags",
+                    "additionalInfo": "Notice the contents of the bag. On top are tools and gear to treat patients. On the bottom are triage tags. If you hover your hand over a tool it will highlight yellow. Information about its use and supply count will be displayed inside the bag. Now, hover over a tool then pull and hold the trigger down to grab it.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Grab Tool",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "PickToolOrTag",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Return Tool to Bag",
+                    "additionalInfo": "The tool is now attached to your hand. To return it to the bag, let go of the trigger. The tool will automatically return to the bag and your supply count will be reset.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Return Tool",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Additional Bag Information",
+                    "additionalInfo": "If you walk too far away from the bag it will automatically return to your hip. You can also strafe with the left joystick to have it return immediately.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Return Bag to Hip",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 4,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Wait for any additional bag exploration",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Treat/Tag Patient 1",
+                    "additionalInfo": "Treat the unresponsive patient by selecting the decompression needle from the bag and placing it on their chest.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Patient 1 - Needle",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "ApplyNeedle",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 2,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [
+                        6
+                    ],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Patient 2",
+                    "additionalInfo": "You need to move to the next victim. There is an alert patient sitting nearby. Approach them.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Patient 2 - Approach",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "ApproachPatient",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Approach Patient 3",
+                    "additionalInfo": "There is a US Marine crushed under concrete nearby. He needs to be dragged to safety. Move to his position and work with the uninjured Marine to help him.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Patient 3 - Move to Position",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Patient 3",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "ApproachPatient",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "Patient 4",
+                    "additionalInfo": "You are responsible for treating all patients. The other marine outside is uninjured but there is a young girl on the sidewalk that still needs your help. Move to her by strafing and teleporting then provide treatment.",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "Universal Tutorial Audio/Move to Patient 4",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "ApproachPatient",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                },
+                {
+                    "sectionDescription": "End of scenario",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioClip": "",
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": true,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [
+                        {
+                            "mixer": "narrator",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "voice",
+                            "changeVolume": 4,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "environment",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        }
+                    ],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "missionBriefingRoomImage": "",
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    }
+                }
+            ]
+        },
+        "levelSettings": {
+            "settingsFile": "Urban Settings",
+            "activations": [
+                "Daylight",
+                "No Ambient Lighting",
+                "Office Bus Car Swap",
+                "North Giftshop Door Closed"
+            ],
+            "lights": [],
+            "particles": [],
+            "audioMixers": [],
+            "skyboxMaterialName": "Urban Day Sky",
+            "optimizationGroups": [
+                "Garbage Room Closed",
+                "Nightclub Closed",
+                "Rooftop Bar Closed",
+                "Fish Restaurant Closed",
+                "Office Closed",
+                "East Background Cleared",
+                "West Background Cleared",
+                "Smokes Cleared",
+                "TCCC Trainer Cleared",
+                "Ambient Lighting Minimal Cleared"
+            ],
+            "shadowOptimizationGroups": [
+                "Office Lights No Shadows"
+            ]
+        },
+        "questions": [],
+        "teleportPointOverride": "Grid",
+        "scenarioData": {
+            "name": "Urban",
+            "description": "TCCC Tutorial",
+            "difficulty": 5,
+            "triageType": 1,
+            "scorecardEnabled": false,
+            "treatmentsHaveEffect": false,
+            "keepAppliedTreatments": false
+        },
+        "playerData": {
+            "startPosition": {
+                "x": 1.2300000190734864,
+                "y": 0.0,
+                "z": -28.530000686645509
+            },
+            "startAngle": -90.0
+        },
+        "availableInventory": {
+            "tourniquetCount": 999,
+            "gauzeWrapCount": 999,
+            "hemostaticGauzeCount": 999,
+            "decompressionNeedleCount": 999,
+            "nasopharyngealAirwayCount": 999,
+            "splintCount": 999,
+            "painMedsCount": 0,
+            "ivBloodCount": 999,
+            "ivSalineCount": 0,
+            "burnDressingCount": 999,
+            "epiPenCount": 0,
+            "chestSealCount": 999,
+            "blanketCount": 999,
+            "lollipopCount": 999,
+            "antibioticsCount": 999,
+            "foxShieldCount": 999,
+            "scalpelCount": 999,
+            "pulseOximeterAvailable": false,
+            "tabletAvailable": false,
+            "addToBag": false
+        },
+        "patientDataList": [
+            {
+                "name": "Patient 1",
+                "patient": "Mike",
+                "npc": false,
+                "draggable": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -8.579999923706055,
+                        "y": 0.0,
+                        "z": -30.0
+                    },
+                    "angle": 180.0
+                },
+                "vitals": {
+                    "pulse": "faint",
+                    "breath": "collapsedLeft",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "unresponsive",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "injuries": [
+                    {
+                        "type": "L Chest Collapse",
+                        "bloodEnabled": true,
+                        "bloodPool": "None",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Pacific Islander",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "file": "none",
+                    "pitch": "normal",
+                    "firstName": "Maurice",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "mute",
+                        "cry": false,
+                        "groan": false,
+                        "scream": false,
+                        "helpMe": false,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": -1.0,
+                        "maxCalloutTimeSeconds": -1.0
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "topTexture": 9,
+                    "bottomTexture": 6,
+                    "shoeTexture": 2,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "original",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "Patient 2",
+                "patient": "Lily",
+                "npc": false,
+                "draggable": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -11.5,
+                        "y": 0.0,
+                        "z": -27.260000228881837
+                    },
+                    "angle": 65.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "normal",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "delayed",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "sittingGround",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "injuries": [
+                    {
+                        "type": "R Forearm Puncture",
+                        "bloodEnabled": true,
+                        "bloodPool": "Large",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    },
+                    {
+                        "type": "L Forearm Burn",
+                        "bloodEnabled": true,
+                        "bloodPool": "None",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Asian 1",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "file": "Diane_Female",
+                    "pitch": "normal",
+                    "firstName": "Jessica",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": false,
+                        "cryWhenFullyTreated": true,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "topTexture": 0,
+                    "bottomTexture": 0,
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "original",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "Patient 4",
+                "patient": "Ellie",
+                "npc": false,
+                "draggable": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -9.329999923706055,
+                        "y": 0.0,
+                        "z": -22.3700008392334
+                    },
+                    "angle": 23.0
+                },
+                "vitals": {
+                    "pulse": "normal",
+                    "breath": "normal",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "calm",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "minimal",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "fetal",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "injuries": [
+                    {
+                        "type": "L Forearm Laceration",
+                        "bloodEnabled": true,
+                        "bloodPool": "Small",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Black 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "file": "Young_Female",
+                    "pitch": "normal",
+                    "firstName": "Sarah",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": true,
+                        "groan": false,
+                        "scream": false,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": true,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "topTexture": 0,
+                    "bottomTexture": 0,
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "original",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "Lifting NPC",
+                "patient": "Mike",
+                "npc": false,
+                "draggable": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -13.0,
+                        "y": 0.0,
+                        "z": -22.0
+                    },
+                    "angle": 0.0
+                },
+                "vitals": {
+                    "pulse": "normal",
+                    "breath": "normal",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "calm",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "delayed",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "standing",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "injuries": [],
+                "raceEthnicity": {
+                    "preset": "White 3",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "file": "LiftingNpc",
+                    "pitch": "normal",
+                    "firstName": "none",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": false,
+                        "scream": false,
+                        "helpMe": false,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 0.0,
+                        "maxCalloutTimeSeconds": 0.0
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "topTexture": 5,
+                    "bottomTexture": 5,
+                    "shoeTexture": 2,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "black",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [
+                        2,
+                        3
+                    ],
+                    "beltGear": [
+                        3,
+                        1
+                    ],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "Patient 3",
+                "patient": "Mike",
+                "npc": false,
+                "draggable": true,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -13.0,
+                        "y": 0.0,
+                        "z": -22.0
+                    },
+                    "angle": 0.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "injuries": [
+                    {
+                        "type": "L Thigh Amputation",
+                        "bloodEnabled": true,
+                        "bloodPool": "Largest",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    },
+                    {
+                        "type": "R Shoulder Puncture",
+                        "bloodEnabled": true,
+                        "bloodPool": "Medium",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    },
+                    {
+                        "type": "Forehead Scrape",
+                        "bloodEnabled": true,
+                        "bloodPool": "None",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "White 1",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "file": "Drew_Male",
+                    "pitch": "normal",
+                    "firstName": "Brian",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "topTexture": 5,
+                    "bottomTexture": 5,
+                    "shoeTexture": 2,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "black",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [
+                        2,
+                        3
+                    ],
+                    "beltGear": [
+                        3,
+                        1
+                    ],
+                    "legGear": [],
+                    "gunGear": [
+                        2
+                    ]
+                }
+            }
+        ],
+        "crushObjectList": [
+            {
+                "name": "Concrete Block 1",
+                "prefab": "Concrete Block",
+                "liftingNpc": "Lifting NPC",
+                "callOut": false,
+                "crushedPatient": "Patient 3",
+                "crushedMeshIsActive": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -13.0,
+                        "y": 0.0,
+                        "z": -22.559999465942384
+                    },
+                    "angle": 71.0
+                }
+            }
+        ]
+    },
+    "actionList": [],
+    "images": [
+        {
+            "name": "Patient 1",
+            "filename": "2ccab8b2-abab-4009-a059-e027c61c1d55_202510147_Patient 1.jpg"
+        },
+        {
+            "name": "Patient 2",
+            "filename": "2ccab8b2-abab-4009-a059-e027c61c1d55_202510147_Patient 2.jpg"
+        },
+        {
+            "name": "Patient 4",
+            "filename": "2ccab8b2-abab-4009-a059-e027c61c1d55_202510147_Patient 4.jpg"
+        },
+        {
+            "name": "Lifting NPC",
+            "filename": "2ccab8b2-abab-4009-a059-e027c61c1d55_202510147_Lifting NPC.jpg"
+        },
+        {
+            "name": "Patient 3",
+            "filename": "2ccab8b2-abab-4009-a059-e027c61c1d55_202510147_Patient 3.jpg"
+        }
+    ],
+    "sessionId": "2ccab8b2-abab-4009-a059-e027c61c1d55",
+    "participantId": "202510147",
+    "scenarioDuration": "00h:01m:37s"
+}
