@@ -1911,6 +1911,91 @@
     },
     "actionList": [
         {
+            "actionType": "Pulse",
+            "casualty": "Kicker",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:09:18.871Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Kicker",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:09:20.359Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Kicker",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:09:24.218Z"
+        },
+        {
+            "actionType": "Breathing",
+            "casualty": "Passerby",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "normal",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:09:38.999Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "Passerby",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:09:45.702Z"
+        },
+        {
             "actionType": "Breathing",
             "casualty": "Kicker",
             "treatment": "",
@@ -1925,7 +2010,24 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2025-10-22T04:20:39.693Z"
+            "timestamp": "2025-10-21T06:10:03.906Z"
+        },
+        {
+            "actionType": "SpO2",
+            "casualty": "Kicker",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "low",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:10:07.581Z"
         },
         {
             "actionType": "Treatment",
@@ -1942,24 +2044,41 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2025-10-22T04:20:52.003Z"
+            "timestamp": "2025-10-21T06:10:18.027Z"
         },
         {
-            "actionType": "Treatment",
+            "actionType": "SpO2",
             "casualty": "Kicker",
-            "treatment": "Hemostatic Gauze",
-            "treatmentLocation": "Right Shoulder",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
             "tagColor": "",
             "tagType": "",
             "pulse": "",
             "breathing": "",
-            "SpO2": "",
+            "SpO2": "low",
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2025-10-22T04:20:52.003Z"
+            "timestamp": "2025-10-21T06:10:33.954Z"
+        },
+        {
+            "actionType": "SpO2",
+            "casualty": "Passerby",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "normal",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:10:55.775Z"
         },
         {
             "actionType": "Question",
@@ -1978,8 +2097,8 @@
                 "Kicker",
                 "Passerby"
             ],
-            "answer": "Passerby",
-            "timestamp": "2025-10-22T04:21:44.809Z"
+            "answer": "Kicker",
+            "timestamp": "2025-10-21T06:11:14.948Z"
         },
         {
             "actionType": "Question",
@@ -1993,13 +2112,13 @@
             "pulse": "",
             "breathing": "",
             "SpO2": "",
-            "question": "Reason for Evacuating Passerby",
+            "question": "Reason for Evacuating Kicker",
             "answerChoices": [
-                "Passerby is Innocent",
-                "Kicker Carying other Weapon"
+                "Kicker is More Injured",
+                "Learn Plan of Kicker"
             ],
-            "answer": "Passerby is Innocent",
-            "timestamp": "2025-10-22T04:22:01.254Z"
+            "answer": "Kicker is More Injured",
+            "timestamp": "2025-10-21T06:11:37.338Z"
         },
         {
             "actionType": "Question",
@@ -2019,7 +2138,24 @@
                 "Stay with Civilians"
             ],
             "answer": "Treat US Soldier",
-            "timestamp": "2025-10-22T04:22:32.695Z"
+            "timestamp": "2025-10-21T06:11:58.996Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Soldier",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:12:13.523Z"
         },
         {
             "actionType": "Breathing",
@@ -2036,7 +2172,24 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2025-10-22T04:23:03.320Z"
+            "timestamp": "2025-10-21T06:12:19.500Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Soldier",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-21T06:12:20.830Z"
         },
         {
             "actionType": "Treatment",
@@ -2053,11 +2206,11 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2025-10-22T04:23:04.627Z"
+            "timestamp": "2025-10-21T06:12:27.790Z"
         },
         {
             "actionType": "Treatment",
-            "casualty": "US Soldier",
+            "casualty": "Kicker",
             "treatment": "IV - Blood",
             "treatmentLocation": "",
             "injuryType": "",
@@ -2070,7 +2223,7 @@
             "question": "",
             "answerChoices": [],
             "answer": "",
-            "timestamp": "2025-10-22T04:23:31.789Z"
+            "timestamp": "2025-10-21T06:13:01.347Z"
         },
         {
             "actionType": "Question",
@@ -2090,8 +2243,8 @@
                 "Passerby",
                 "US Soldier"
             ],
-            "answer": "Passerby",
-            "timestamp": "2025-10-22T04:24:00.318Z"
+            "answer": "Kicker",
+            "timestamp": "2025-10-21T06:13:22.829Z"
         },
         {
             "actionType": "Question",
@@ -2105,35 +2258,35 @@
             "pulse": "",
             "breathing": "",
             "SpO2": "",
-            "question": "Who do you want to transport?",
+            "question": "Who do you want transport?",
             "answerChoices": [
                 "Kicker",
                 "Passerby",
                 "US Soldier"
             ],
-            "answer": "Passerby",
-            "timestamp": "2025-10-22T04:24:15.405Z"
+            "answer": "US Soldier",
+            "timestamp": "2025-10-21T06:14:05.516Z"
         }
     ],
     "images": [
         {
             "name": "Kicker",
-            "filename": "d71bc87a-f94a-4002-9fcd-0de1bdd4640d_202510152_Kicker.jpg"
+            "filename": "74dee3f8-9a5e-4a5d-80ef-646755e7fb5a_202510145_Kicker.jpg"
         },
         {
             "name": "Passerby",
-            "filename": "d71bc87a-f94a-4002-9fcd-0de1bdd4640d_202510152_Passerby.jpg"
+            "filename": "74dee3f8-9a5e-4a5d-80ef-646755e7fb5a_202510145_Passerby.jpg"
         },
         {
             "name": "US Soldier",
-            "filename": "d71bc87a-f94a-4002-9fcd-0de1bdd4640d_202510152_US Soldier.jpg"
+            "filename": "74dee3f8-9a5e-4a5d-80ef-646755e7fb5a_202510145_US Soldier.jpg"
         },
         {
             "name": "NPC 1",
-            "filename": "d71bc87a-f94a-4002-9fcd-0de1bdd4640d_202510152_NPC 1.jpg"
+            "filename": "74dee3f8-9a5e-4a5d-80ef-646755e7fb5a_202510145_NPC 1.jpg"
         }
     ],
-    "runId": "d71bc87a-f94a-4002-9fcd-0de1bdd4640d",
-    "sessionId": "d71bc87a-f94a-4002-9fcd-0de1bdd4640d",
-    "participantId": "202510152"
+    "runId": "74dee3f8-9a5e-4a5d-80ef-646755e7fb5a",
+    "sessionId": "74dee3f8-9a5e-4a5d-80ef-646755e7fb5a",
+    "participantId": "202510145"
 }
