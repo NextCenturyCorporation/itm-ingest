@@ -72,10 +72,9 @@ def main(mongo_db):
                 'session_id': sid
             }}
         )
-
-    # re run st adms to be used in scoring 
+     # re run st adms to be used in scoring 
     for doc in target_runs_docs:
-        sid = requests.post(f"{ST_URL}api/v1/new_session").text.replace('"', "").strip()
+        sid = requests.post(f"{ST_URL}api/v1/new_session?user_id=default_user").text.replace('"', "").strip()
         probe_responses = []
         for x in doc['history']:
             if x['command'] == 'Respond to TA1 Probe':
@@ -88,7 +87,6 @@ def main(mongo_db):
                 }
                 probe_responses.append(probe_response)
         send_probes(f"{ST_URL}api/v1/response", probe_responses, sid, 'vol-ph1-eval-3')
-        kdma = requests.get(f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={sid}").json()
 
     for survey in survey_results:
         results = survey.get('results', {})
