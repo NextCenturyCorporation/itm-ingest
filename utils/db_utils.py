@@ -159,17 +159,3 @@ def send_probes(probe_url, probes, sid, scenario):
                 },
                 "session_id": sid
             })
-            if 'status' in send.json():
-                '''
-                Some YAML files changed after very first June collect so probes won't be found
-                in subset files, we can still grab them from the full file
-                '''
-                requests.post(probe_url, json={
-                    "response": {
-                        "choice": x['probe']['choice'],
-                        "justification": "justification",
-                        "probe_id": x['probe']['probe_id'],
-                        "scenario_id": giveFullScenario(scenario),
-                    },
-                    "session_id": sid
-                })

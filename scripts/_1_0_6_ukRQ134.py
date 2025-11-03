@@ -6,6 +6,7 @@ Iterate over participant results to generate comparison scores between the parti
 
 from decouple import config
 from utils.db_utils import send_probes
+from utils.soartech_utils import get_all_new_alignments  
 import requests
 ADEPT_URL = config('ADEPT_DRE_URL')
 ST_URL = config('ST_URL')
@@ -15,6 +16,8 @@ def main(mongo_db):
     comparison_collec = mongo_db['humanToADMComparison']
     adm_delegation_runs = mongo_db['delegationADMRuns']
     target_runs = mongo_db['admTargetRuns']
+
+    st_adm_session_mapping = {}
 
     target_runs_query = {
         'evalNumber': 5,
@@ -87,10 +90,78 @@ def main(mongo_db):
                 }
                 probe_responses.append(probe_response)
         send_probes(f"{ST_URL}api/v1/response", probe_responses, sid, 'vol-ph1-eval-3')
+        
+        st_adm_session_mapping[(doc['adm_name'], doc['alignment_target'])] = {
+            'new_session_id': sid,
+            'probe_responses': probe_responses
+        }
+
+        target_runs.update_one(
+            {'_id': doc['_id']},
+            {'$set': {'session_id': sid}}
+        )
 
     for survey in survey_results:
         results = survey.get('results', {})
         pid = results.get('pid')
+        
+        participant_vol_res = text_scenarios.find_one({
+            'participantID': pid,
+            'scenario_id': {'$regex': 'vol-ph1-eval'}
+        })
+        
+        if participant_vol_res:
+            text_probes = []
+            for k in participant_vol_res:
+                if isinstance(participant_vol_res[k], dict) and 'questions' in participant_vol_res[k]:
+                    if 'probe ' + k in participant_vol_res[k]['questions'] and 'response' in participant_vol_res[k]['questions']['probe ' + k]:
+                        if 'question_mapping' in participant_vol_res[k]['questions']['probe ' + k]:
+                            response = participant_vol_res[k]['questions']['probe ' + k]['response'].replace('.', '')
+                            mapping = participant_vol_res[k]['questions']['probe ' + k]['question_mapping']
+                            if response in mapping:
+                                text_probes.append({'probe': {'choice': mapping[response]['choice'], 
+                                                             'probe_id': mapping[response]['probe_id']}})
+            
+            for page_key, page_data in results.items():
+                if isinstance(page_data, dict) and page_data.get('scenarioIndex') and 'vol' in page_data.get('scenarioIndex', ''):
+                    if page_data.get('pageType') != 'comparison' and 'vs' not in page_key:
+                        adm_name = page_data.get('admName')
+                        adm_target = page_data.get('admTarget')
+                        adm_scenario = page_data.get('scenarioIndex')
+                        
+                        mapping_key = (adm_name, adm_target)
+                        if mapping_key in st_adm_session_mapping:
+                            adm_info = st_adm_session_mapping[mapping_key]
+                            
+                            # Calculate calibration scores
+                            calibration_scores = get_all_new_alignments(
+                                text_probes,
+                                participant_vol_res['scenario_id'],
+                                adm_info['probe_responses'],
+                                'vol-ph1-eval-3'
+                            )
+                            
+                            # Update existing comparison documents with calibration scores
+                            comparison_collec.update_many(
+                                {
+                                    'evalNumber': 12,
+                                    'pid': pid,
+                                    'text_scenario': participant_vol_res['scenario_id'],
+                                    'adm_scenario': adm_scenario,
+                                    'adm_alignment_target': adm_target
+                                },
+                                {
+                                    '$set': {
+                                        'calibration_scores': calibration_scores,
+                                        'adm_session_id': adm_info['new_session_id'],
+                                        'text_session_id': participant_vol_res['serverSessionId'],
+                                        'adm_type': page_data['admAlignment']
+                                    }
+                                },
+                                upsert=True
+                            )
+        
+    
     
         for page_key, page_data in results.items():
             if 'vs' in page_key and isinstance(page_data, dict):
@@ -153,7 +224,7 @@ def main(mongo_db):
                     if len(adms) != 3:
                         continue
                     
-                    # Find participant text scenario
+                    
                     scenario_pattern = 'IO' if filt == 'Ingroup%20Bias' else 'MJ'
                     participant_res = text_scenarios.find_one({
                         'participantID': pid,
@@ -166,7 +237,6 @@ def main(mongo_db):
 
                     participant_sid = participant_res['combinedSessionId']
                     
-                    # Create comparison documents
                     comparison_docs = []
                     for adm_type, adm in adms.items():
                         comp = requests.get(
