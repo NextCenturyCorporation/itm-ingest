@@ -8,7 +8,7 @@ from decouple import config
 from utils.db_utils import send_probes
 from utils.soartech_utils import get_all_new_alignments  
 import requests
-ADEPT_URL = config('ADEPT_DRE_URL')
+ADEPT_URL = config('ADEPT_PH1_URL')
 ST_URL = config('ST_URL')
 def main(mongo_db):
     survey_results = mongo_db['surveyResults'].find({'results.evalNumber': 12})
@@ -16,6 +16,7 @@ def main(mongo_db):
     comparison_collec = mongo_db['humanToADMComparison']
     adm_delegation_runs = mongo_db['delegationADMRuns']
     target_runs = mongo_db['admTargetRuns']
+    sim_results = mongo_db['humanSimulator']
 
     st_adm_session_mapping = {}
 
@@ -105,6 +106,42 @@ def main(mongo_db):
         results = survey.get('results', {})
         pid = results.get('pid')
         
+        for page_key, page_data in results.items():
+            if 'vs' in page_key and isinstance(page_data, dict):
+                scenario_index = page_data.get('scenarioIndex')
+                baseline_target = page_data.get('baselineTarget')
+                aligned_target = page_data.get('alignedTarget')
+                misaligned_target = page_data.get('misalignedTarget')
+
+                if scenario_index and baseline_target and aligned_target and misaligned_target:
+                    page_identifiers = [p.strip() for p in page_key.split(' vs ')]
+                
+                    if len(page_identifiers) == 3:
+                        # three previous pages need admAlignment and admTarget
+                        alignment_configs = [
+                            (page_identifiers[0], 'baseline', baseline_target),
+                            (page_identifiers[1], 'aligned', aligned_target),
+                            (page_identifiers[2], 'misaligned', misaligned_target)
+                        ]
+                        
+                        for page_id, alignment_type, target in alignment_configs:
+                            mongo_db['surveyResults'].update_one(
+                                {
+                                    '_id': survey['_id'],
+                                    f'results.{page_id}': {'$exists': True}
+                                },
+                                {
+                                    '$set': {
+                                        f'results.{page_id}.admAlignment': alignment_type,
+                                        f'results.{page_id}.admTarget': target
+                                    }
+                                }
+                            )
+        
+
+        survey = mongo_db['surveyResults'].find_one({'_id': survey['_id']})
+        results = survey.get('results', {})
+        
         participant_vol_res = text_scenarios.find_one({
             'participantID': pid,
             'scenario_id': {'$regex': 'vol-ph1-eval'}
@@ -161,8 +198,6 @@ def main(mongo_db):
                                 upsert=True
                             )
         
-    
-    
         for page_key, page_data in results.items():
             if 'vs' in page_key and isinstance(page_data, dict):
                 scenario_index = page_data.get('scenarioIndex')
@@ -171,30 +206,6 @@ def main(mongo_db):
                 misaligned_target = page_data.get('misalignedTarget')
 
                 if scenario_index and baseline_target and aligned_target and misaligned_target:
-                    page_identifiers = [p.strip() for p in page_key.split(' vs ')]
-                
-                    if len(page_identifiers) == 3:
-                        # Update the three previous pages with admAlignment and admTarget
-                        alignment_configs = [
-                            (page_identifiers[0], 'baseline', baseline_target),
-                            (page_identifiers[1], 'aligned', aligned_target),
-                            (page_identifiers[2], 'misaligned', misaligned_target)
-                        ]
-                        
-                        for page_id, alignment_type, target in alignment_configs:
-                            mongo_db['surveyResults'].update_one(
-                                {
-                                    '_id': survey['_id'],
-                                    f'results.{page_id}': {'$exists': True}
-                                },
-                                {
-                                    '$set': {
-                                        f'results.{page_id}.admAlignment': alignment_type,
-                                        f'results.{page_id}.admTarget': target
-                                    }
-                                }
-                            )
-                    
                     if 'vol' in baseline_target:
                         continue
                     
@@ -258,3 +269,39 @@ def main(mongo_db):
                         })
                     
                     comparison_collec.insert_many(comparison_docs)
+                    
+                    sim_doc = sim_results.find_one({
+                        'pid': pid,
+                        'evalNumber': 12,
+                        'scenario_id': "DryRunEval-MJ4-eval"
+                    })
+                    
+                    if sim_doc:
+                        sim_sid = sim_doc['data']['alignment']['sid']
+                        
+                        sim_comparison_docs = []
+                        for adm_type, adm in adms.items():
+                            sim_comp = requests.get(
+                                f'{ADEPT_URL}api/v1/alignment/compare_sessions?'
+                                f'session_id_1={adm["session_id"]}&session_id_2={sim_sid}&kdma_filter={filt}'
+                            ).json()
+
+                            score = sim_comp.get('score') if isinstance(sim_comp, dict) else None
+                            
+                            sim_comparison_docs.append({
+                                'evalNumber': 12,
+                                'pid': pid,
+                                'adm_type': adm_type,
+                                'adm_alignment_target': adm['target'],
+                                'distance_based_score': score,
+                                'adm_author': 'kitware',
+                                'adm_scenario': adm['scenario'],
+                                'sim_session_id': sim_sid,
+                                'adm_session_id': adm['session_id'],
+                                'sim_scenario': sim_doc['scenario_id'],
+                                'source': 'humanSimulator'
+                            })
+                        
+                        comparison_collec.insert_many(sim_comparison_docs)
+                    else:
+                        print(f"No humanSimulator document found for pid: {pid}")
