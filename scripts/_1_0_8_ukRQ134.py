@@ -1,22 +1,82 @@
-'''
+"""
 This script will generate the scores needed to populate the RQ134 data for the UK experiment.
 Re-run the necessary phase 1 Observed ADMs since they do not appear to be present in the ADEPT production server
 Iterate over participant results to generate comparison scores between the participants and their observed ADMs
-'''
+"""
 
 from decouple import config
 from utils.db_utils import send_probes
-from utils.soartech_utils import get_all_new_alignments  
+from utils.soartech_utils import get_all_new_alignments
+from scripts._0_9_7_fix_test_log import main as fix_log
 import requests
-ADEPT_URL = config('ADEPT_PH1_URL')
-ST_URL = config('ST_URL')
+
+ADEPT_URL = config("ADEPT_PH1_URL")
+ST_URL = config("ST_URL")
+
+
 def main(mongo_db):
-    survey_results = mongo_db['surveyResults'].find({'results.evalNumber': 12})
-    text_scenarios = mongo_db['userScenarioResults']
-    comparison_collec = mongo_db['humanToADMComparison']
-    adm_delegation_runs = mongo_db['delegationADMRuns']
-    target_runs = mongo_db['admTargetRuns']
-    sim_results = mongo_db['humanSimulator']
+    survey_results = mongo_db["surveyResults"].find({"results.evalNumber": 12})
+    text_scenarios = mongo_db["userScenarioResults"]
+    comparison_collec = mongo_db["humanToADMComparison"]
+    adm_delegation_runs = mongo_db["delegationADMRuns"]
+    target_runs = mongo_db["admTargetRuns"]
+    sim_results = mongo_db["humanSimulator"]
+
+    # pids where text scenarios do no match survey
+    special_case_pids = {
+        "202510153": "202510155",
+        "202510152": "202510131",
+        "202510127": "202510129",
+    }
+
+    for key, value in special_case_pids.items():
+        # fix participant log collection to have pid not marked as test
+        fix_log(mongo_db, value)
+        # delete the text scenarios that were NOT from the participant, these were from Jennifer
+        text_scenarios.delete_many({"participantID": value})
+        # update text scenario pids from participants to match survey the took
+        text_scenarios.update_many(
+            {"participantID": key}, {"$set": {"participantID": value}}
+        )
+
+        vol_scenario = text_scenarios.find_one({
+            "participantID": value,
+            "scenario_id": {"$regex": "vol"}
+        })
+
+        # run st scenario through server (2/3 have an unscored doc)
+        if vol_scenario:
+            st_sid = requests.post(f"{ST_URL}api/v1/new_session?user_id=default_user").text.replace('"', "").strip()
+            probes = []
+            for k in vol_scenario:
+                if k.startswith('id-') and isinstance(vol_scenario[k], dict):
+                    questions = vol_scenario[k].get('questions', {})
+                    probe_key = f"probe {k}"
+                    
+                    if probe_key in questions:
+                        probe_data = questions[probe_key]
+                        response = probe_data.get('response', '').replace('.', '')
+                        mapping = probe_data.get('question_mapping', {})
+                        
+                        if response in mapping:
+                            probes.append({
+                                'probe': {
+                                    'choice': mapping[response]['choice'],
+                                    'probe_id': mapping[response]['probe_id']
+                                }
+                            })
+            send_probes(f"{ST_URL}api/v1/response", probes, st_sid, 'vol-ph1-eval-2')
+            mostLeast = requests.get(f"{ST_URL}api/v1/get_ordered_alignment?session_id={st_sid}&kdma_id=PerceivedQuantityOfLivesSaved").json()
+            kdma = requests.get(f"{ST_URL}api/v1/api/v1/computed_kdma_profile?session_id={st_sid}").json()
+
+            text_scenarios.update_one(
+                {"_id": vol_scenario["_id"]},
+                {"$set": {
+                    "serverSessionId": st_sid,
+                    "mostLeastAligned": mostLeast,
+                    "kdmas": kdma
+                }}
+            )
 
     st_adm_session_mapping = {}
 
@@ -228,7 +288,6 @@ def main(mongo_db):
                             'adm_name': adm_name
                         })
                         if not adm:
-                            print(f"No {adm_type} match for {page_key}, target: {target}")
                             break
                         adms[adm_type] = adm
                     
@@ -305,3 +364,4 @@ def main(mongo_db):
                         comparison_collec.insert_many(sim_comparison_docs)
                     else:
                         print(f"No humanSimulator document found for pid: {pid}")
+                        
