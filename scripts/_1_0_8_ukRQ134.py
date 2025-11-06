@@ -77,7 +77,7 @@ def main(mongo_db):
 
     for key, value in special_case_pids.items():
         # fix participant log collection to have pid not marked as test
-        fix_log(mongo_db, value)
+        fix_log(mongo_db, int(value))
         # delete the text scenarios that were NOT from the participant, these were from Jennifer
         text_scenarios.delete_many({"participantID": value})
         # update text scenario pids from participants to match survey the took
