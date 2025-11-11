@@ -85,6 +85,10 @@ def main(mongo_db):
             {"participantID": key}, {"$set": {"participantID": value}}
         )
 
+        sim_results.update_many(
+            {'pid': key}, {'$set': {'pid': value}}
+        )
+
         vol_scenario = text_scenarios.find_one(
             {"participantID": value, "scenario_id": {"$regex": "vol"}}
         )
