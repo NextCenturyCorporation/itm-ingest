@@ -764,15 +764,20 @@ class ProbeMatcher:
                         matched = cur_scene['action_mapping'][2] if 'Assess' in action_taken['answer'] else cur_scene['action_mapping'][0]
                         break   
                     elif 'Justify' in actions and looking_for_justify:
-                        if action_taken['question'] in JUSTIFY_MAPPING:
-                            last_action_ind_used += ind
-                            found_match = True
-                            probe_choice = JUSTIFY_MAPPING[action_taken['question']][action_taken['answer'].strip()]
-                            for x in cur_scene['action_mapping']:
-                                if x['choice'] == probe_choice:
-                                    matched = x
-                                    break
-                            break
+                        question = action_taken['question']
+                        answer = action_taken['answer'].strip()
+
+                        if question in JUSTIFY_MAPPING:
+                            probe_choice = JUSTIFY_MAPPING[question].get(answer)
+                            if probe_choice:
+                                last_action_ind_used += ind
+                                found_match = True
+                                for x in cur_scene['action_mapping']:
+                                    if x['choice'] == probe_choice:
+                                        matched = x
+                                        break
+                                break
+
                     elif answer in actions.get('Intend', []):
                         last_action_ind_used += ind
                         found_match = True
