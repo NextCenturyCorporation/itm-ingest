@@ -679,12 +679,17 @@ class ProbeMatcher:
         looking_for_justify = False
         repeating_gauze = False
         stored_next_id = None
+        if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+            self.logger.log(LogLevel.INFO, f"Starting MJ4 probe matching for participant {self.participantId}")
         # Adept has branching, which makes things a little more difficult
         first_scene_id = self.adept_yaml.get('first_scene', self.adept_yaml['scenes'][0]['id'])
         cur_scene = self.get_scene_by_id(adept_scenes, first_scene_id)
         while True:
+            if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                self.logger.log(LogLevel.INFO, f"Processing scene: {cur_scene['id']}")
             actions = {} # {"Treatment": {"v": probe, "x": probe}, "Vitals": {"v": probe, "x": probe}, "Intent": {"v": probe, "x": probe}, etc}
             # get all available actions for the scene
+            
             for probe_action in cur_scene['action_mapping']:
                 action_label = None
                 if probe_action.get('intent_action', False):
@@ -709,11 +714,15 @@ class ProbeMatcher:
                             actions[action_label][probe_action['character_id']] = probe_action
                     else:
                         actions[action_label].append(probe_action)
+            if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                self.logger.log(LogLevel.INFO, f"Available actions for scene {cur_scene['id']}: {list(actions.keys())}")
             # go through actions taken until a match is found
             found_match = False
             total += 1
             matched = None
             for (ind, action_taken) in enumerate(self.json_data['actionList'][last_action_ind_used:]):
+                if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                    self.logger.log(LogLevel.INFO, f"Checking action: {action_taken['actionType']} on {action_taken.get('casualty', 'N/A')}")
                 if action_taken['casualty'] == 'US Soldier' and self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
                     action_taken['casualty'] = 'US soldier'
                 # handles first probes of MJ2, which are "intent" probes, but we have actual actions
@@ -746,6 +755,7 @@ class ProbeMatcher:
                         last_action_ind_used += ind
                         found_match = True
                         matched = cur_scene['action_mapping'][0] if 'Treat' in action_taken['answer'] else cur_scene['action_mapping'][1]
+                        self.logger.log(LogLevel.INFO, f"MJ4 Scene 2 decision - Answer: {action_taken['answer']}, Matched probe: {matched.get('probe_id', 'N/A')}")
                         break   
                     # special mapping for move/stay urban questions
                     elif "Treat Soldier" in action_taken['answerChoices'] and 'Go Back to Shooter/Victim' in action_taken['answerChoices'] and cur_scene['id'] == 'Probe 4-B.1' and self.adept_yaml['id'] == 'DryRunEval-MJ2-eval':
@@ -793,11 +803,38 @@ class ProbeMatcher:
                         found_match = True
                         matched = actions['DragPatient'][answer]
                         break
-                elif action_taken['actionType'] in VITALS_ACTIONS and 'Vitals' in actions:
-                    if action_taken['casualty'] in actions['Vitals']:
+                elif action_taken['actionType'] in VITALS_ACTIONS:
+                    # Priority 1: Strict Vitals Match
+                    if 'Vitals' in actions and action_taken['casualty'] in actions['Vitals']:
                         last_action_ind_used += ind
                         found_match = True
                         matched = actions['Vitals'][action_taken['casualty']]
+                        if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                            self.logger.log(LogLevel.INFO, f"Vitals action matched for {action_taken['casualty']}")
+                        break
+                    # Priority 2: Loose Rule - Map Vitals action to Treatment probe
+                    elif 'Treatment' in actions and action_taken['casualty'] in actions['Treatment']:
+                        last_action_ind_used += ind
+                        found_match = True
+                        # Get all treatment options for this casualty
+                        char_actions = actions['Treatment'][action_taken['casualty']]
+                        
+                        # Logic to select the best treatment probe 
+                        # (Prefer generic treatments since Vitals don't imply blood/gauze)
+                        if len(char_actions) == 1:
+                            matched = char_actions[0]
+                        else:
+                            default = None
+                            for x in char_actions:
+                                # Look for generic treatment or specific generic marker
+                                if x.get('parameters', {}).get('treatment', None) is None or x.get('action_id') == "treat_kicker_but_dont_give_blood":
+                                    default = x
+                                    break
+                            # Use generic if found, otherwise default to first available treatment
+                            matched = default if default is not None else char_actions[0]
+                            
+                        if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                            self.logger.log(LogLevel.INFO, f"Vitals action LOOSELY matched as Treatment for {action_taken['casualty']}")
                         break
                 elif action_taken['actionType'] in actions:
                     if action_taken['casualty'] in actions[action_taken['actionType']]:
@@ -820,13 +857,21 @@ class ProbeMatcher:
                                     matched = default
                         else:
                             matched = actions[action_taken['actionType']][action_taken['casualty']]
+                        if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                            self.logger.log(LogLevel.INFO, f"Treatment action matched: {action_taken['treatment']} on {action_taken['casualty']}")
                         break
+            if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval' and found_match:
+                self.logger.log(LogLevel.INFO, f"MATCH FOUND - Scene: {cur_scene['id']}, Probe: {matched.get('probe_id', 'N/A')}, Action: {action_taken['actionType']}")
             if found_match or len(cur_scene['action_mapping']) == 1 or 'None' in actions:
                 if len(cur_scene['action_mapping']) == 1:
                     # some adept scenes are just there for transitions and don't really require action
                     matched = cur_scene['action_mapping'][0]
+                    if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                        self.logger.log(LogLevel.INFO, f"Single-action scene: {cur_scene['id']}, Auto-matched probe: {matched.get('probe_id', 'N/A')}")
                 elif not found_match and 'None' in actions:
                     matched = actions['None'][0]
+                    if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                        self.logger.log(LogLevel.INFO, f"None-action scene: {cur_scene['id']}, Auto-matched probe: {matched.get('probe_id', 'N/A')}")
                 else:
                     # need to start looking at _next_ index, not this index!
                     last_action_ind_used += 1
@@ -837,7 +882,10 @@ class ProbeMatcher:
                     "found_match": True,
                     "probe": matched,
                     "user_action": action_taken if found_match else None
-                })            
+                })   
+                if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                    next_scene = matched.get('next_scene', cur_scene.get('next_scene'))
+                    self.logger.log(LogLevel.INFO, f"Transitioning from {cur_scene['id']} to {next_scene}")         
                 if self.adept_yaml['id'] == 'DryRunEval-MJ2-eval' and matched.get('next_scene', cur_scene.get('next_scene')) == 'Probe 4-B.1-B.1':
                     # if intend to treat US soldier, mark the next probe as "treat US soldier"
                     found += 1
@@ -903,6 +951,8 @@ class ProbeMatcher:
                     if cur_scene is None:
                         break
             else:
+                if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                    self.logger.log(LogLevel.WARN, f"NO MATCH FOUND for scene: {cur_scene['id']}")
                 if looking_for_justify or repeating_gauze:
                     looking_for_justify = False
                     repeating_gauze = False
