@@ -17,7 +17,7 @@ EVAL_NUM = 5
 EVAL_NAME = 'Phase 1 Evaluation'
 
 
-ADEPT_URL = config("ADEPT_URL")
+ADEPT_URL = config("ADEPT_PH1_URL")
 ST_URL = config("ST_URL")
 
 SCENE_MAP = {
@@ -627,13 +627,14 @@ class ProbeMatcher:
                     'vol-human-8478698-SplitLowMulti-ph1', 'vol-human-5032922-SplitLowMulti-ph1', 'vol-synth-LowExtreme-ph1', 'vol-synth-HighCluster-ph1',
                     'vol-synth-LowCluster-ph1'
                 ]
-                db_utils.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
-                for target in targets:
-                    if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
-                        continue
-                    st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
-                st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
-                st_align['sid'] = self.soartech_sid
+                if EVAL_NUM != 12:
+                    db_utils.send_probes(f'{ST_URL}api/v1/response', match_data, self.soartech_sid, self.soartech_yaml['id'])
+                    for target in targets:
+                        if ('vol' in target and 'vol' not in self.soartech_yaml['id']) or ('qol' in target and 'qol' not in self.soartech_yaml['id']):
+                            continue
+                        st_align[target] = self.get_session_alignment(f'{ST_URL}api/v1/alignment/session?session_id={self.soartech_sid}&target_id={target}')
+                    st_align['kdmas'] = self.get_session_alignment(f'{ST_URL}api/v1/computed_kdma_profile?session_id={self.soartech_sid}')
+                    st_align['sid'] = self.soartech_sid
             except:
                 self.logger.log(LogLevel.WARN, "Session Alignment Get Request failed")
         match_data = {'alignment': st_align, 'data': match_data}
@@ -684,6 +685,7 @@ class ProbeMatcher:
         while True:
             actions = {} # {"Treatment": {"v": probe, "x": probe}, "Vitals": {"v": probe, "x": probe}, "Intent": {"v": probe, "x": probe}, etc}
             # get all available actions for the scene
+            
             for probe_action in cur_scene['action_mapping']:
                 action_label = None
                 if probe_action.get('intent_action', False):
@@ -745,6 +747,7 @@ class ProbeMatcher:
                         last_action_ind_used += ind
                         found_match = True
                         matched = cur_scene['action_mapping'][0] if 'Treat' in action_taken['answer'] else cur_scene['action_mapping'][1]
+                        self.logger.log(LogLevel.INFO, f"MJ4 Scene 2 decision - Answer: {action_taken['answer']}, Matched probe: {matched.get('probe_id', 'N/A')}")
                         break   
                     # special mapping for move/stay urban questions
                     elif "Treat Soldier" in action_taken['answerChoices'] and 'Go Back to Shooter/Victim' in action_taken['answerChoices'] and cur_scene['id'] == 'Probe 4-B.1' and self.adept_yaml['id'] == 'DryRunEval-MJ2-eval':
@@ -763,15 +766,20 @@ class ProbeMatcher:
                         matched = cur_scene['action_mapping'][2] if 'Assess' in action_taken['answer'] else cur_scene['action_mapping'][0]
                         break   
                     elif 'Justify' in actions and looking_for_justify:
-                        if action_taken['question'] in JUSTIFY_MAPPING:
-                            last_action_ind_used += ind
-                            found_match = True
-                            probe_choice = JUSTIFY_MAPPING[action_taken['question']][action_taken['answer'].strip()]
-                            for x in cur_scene['action_mapping']:
-                                if x['choice'] == probe_choice:
-                                    matched = x
-                                    break
-                            break
+                        question = action_taken['question']
+                        answer = action_taken['answer'].strip()
+
+                        if question in JUSTIFY_MAPPING:
+                            probe_choice = JUSTIFY_MAPPING[question].get(answer)
+                            if probe_choice:
+                                last_action_ind_used += ind
+                                found_match = True
+                                for x in cur_scene['action_mapping']:
+                                    if x['choice'] == probe_choice:
+                                        matched = x
+                                        break
+                                break
+
                     elif answer in actions.get('Intend', []):
                         last_action_ind_used += ind
                         found_match = True
@@ -787,11 +795,29 @@ class ProbeMatcher:
                         found_match = True
                         matched = actions['DragPatient'][answer]
                         break
-                elif action_taken['actionType'] in VITALS_ACTIONS and 'Vitals' in actions:
-                    if action_taken['casualty'] in actions['Vitals']:
+                elif action_taken['actionType'] in VITALS_ACTIONS:
+                    if 'Vitals' in actions and action_taken['casualty'] in actions['Vitals']:
                         last_action_ind_used += ind
                         found_match = True
                         matched = actions['Vitals'][action_taken['casualty']]
+                        break
+                    elif 'Treatment' in actions and action_taken['casualty'] in actions['Treatment']:
+                        last_action_ind_used += ind
+                        found_match = True
+                        char_actions = actions['Treatment'][action_taken['casualty']]
+                        
+                        if len(char_actions) == 1:
+                            matched = char_actions[0]
+                        else:
+                            default = None
+                            for x in char_actions:
+                                # Look for generic treatment or specific generic marker
+                                if x.get('parameters', {}).get('treatment', None) is None or x.get('action_id') == "treat_kicker_but_dont_give_blood":
+                                    default = x
+                                    break
+                            # Use generic if found, otherwise default to first available treatment
+                            matched = default if default is not None else char_actions[0]
+                            
                         break
                 elif action_taken['actionType'] in actions:
                     if action_taken['casualty'] in actions[action_taken['actionType']]:
@@ -831,7 +857,9 @@ class ProbeMatcher:
                     "found_match": True,
                     "probe": matched,
                     "user_action": action_taken if found_match else None
-                })            
+                })   
+                if self.adept_yaml['id'] == 'DryRunEval-MJ4-eval':
+                    next_scene = matched.get('next_scene', cur_scene.get('next_scene'))      
                 if self.adept_yaml['id'] == 'DryRunEval-MJ2-eval' and matched.get('next_scene', cur_scene.get('next_scene')) == 'Probe 4-B.1-B.1':
                     # if intend to treat US soldier, mark the next probe as "treat US soldier"
                     found += 1
@@ -1004,7 +1032,7 @@ class ProbeMatcher:
                 writable.close()
 
         adms_vs_text = json_data.get('alignment').get('adms_vs_text', [])
-        if RECALCULATE_COMPARISON or not (adms_vs_text is not None and len(adms_vs_text) > 0 and not RUN_ALL):
+        if EVAL_NUM != 12 and (RECALCULATE_COMPARISON or not (adms_vs_text is not None and len(adms_vs_text) > 0 and not RUN_ALL)):
             comparison = self.get_adm_vr_comparisons(vr_sid)
             if comparison is not None:
                 json_data['alignment']['adms_vs_text'] = comparison
@@ -1038,11 +1066,12 @@ class ProbeMatcher:
                 query_param += f"&session1_probes={probe_id}"
             for probe_id in ST_PROBES['all'][text_scenario]:
                 query_param += f"&session2_probes={probe_id}"
-            res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-            if res is None or 'score' not in res:
-                self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
-                return
-            res = res['score']
+            if EVAL_NUM != 12:
+                res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                if res is None or 'score' not in res:
+                    self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                    return
+                res = res['score']
         elif 'adept' in self.environment:
             # get text session id
             text_response = text_scenario_collection.find_one({"evalNumber": EVAL_NUM, 'participantID': self.participantId, 'scenario_id': {"$in": ["DryRunEval-MJ2-eval", "DryRunEval-MJ4-eval", "DryRunEval-MJ5-eval", 'phase1-adept-eval-MJ2', 'phase1-adept-eval-MJ4', 'phase1-adept-eval-MJ5']}})
@@ -1092,19 +1121,20 @@ class ProbeMatcher:
                     for probe_id in ST_PROBES['delegation'][page_scenario]:
                         query_param += f"&session2_probes={probe_id}"
                     # get comparison score
-                    res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
-                    if 'score' not in res:
-                        self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
-                    else:
-                        results.append({
-                            "score": res['score'],
-                            "adm_author": survey['results'][page]['admAuthor'],
-                            "adm_alignment": survey['results'][page]['admAlignment'],
-                            'adm_name': survey['results'][page]['admName'],
-                            'adm_target': survey['results'][page]['admTarget'],
-                            'adm_scenario': page_scenario,
-                            'sim_scenario': vr_scenario
-                        })
+                    if EVAL_NUM != 12:
+                        res = requests.get(f'{ST_URL}api/v1/alignment/session/subset?{query_param}').json()
+                        if 'score' not in res:
+                            self.logger.log(LogLevel.WARN, "Error getting comparison score (soartech). Perhaps not all probes have been completed in the sim?")
+                        else:
+                            results.append({
+                                "score": res['score'],
+                                "adm_author": survey['results'][page]['admAuthor'],
+                                "adm_alignment": survey['results'][page]['admAlignment'],
+                                'adm_name': survey['results'][page]['admName'],
+                                'adm_target': survey['results'][page]['admTarget'],
+                                'adm_scenario': page_scenario,
+                                'sim_scenario': vr_scenario
+                            })
                 elif ('adept' in self.environment and 'DryRunEval' in page_scenario):
                     adm = db_utils.find_adm_from_medic(EVAL_NUM, medic_collection, adm_collection, page, page_scenario.replace('IO', 'MJ'), survey)
                     if adm is None:
@@ -1165,6 +1195,9 @@ if __name__ == '__main__':
         if args.eval_num == 6:
             EVAL_NAME = 'Jan 2025 Eval'
             EVAL_NUM = 6
+        if args.eval_num == 12:
+            EVAL_NAME = 'Eval 12 UK Phase 1'
+            EVAL_NUM = 12
     # instantiate mongo client
     client = MongoClient(config('MONGO_URL'))
     db = client.dashboard
@@ -1213,18 +1246,21 @@ if __name__ == '__main__':
                 if '.json' in f:
                     print(f"\n** Processing {f} **")
                     # json found! grab matching csv and send to the probe matcher
-                    try:
-                        adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+                    # try:
+                    adept_sid = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+                    if EVAL_NUM != 12:
                         soartech_sid = requests.post(f'{ST_URL}api/v1/new_session?user_id=default_use').json()
-                        matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
-                        # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
-                        if matcher.environment != '' and matcher.analyze:
-                            matcher.match_probes()
-                        if matcher.environment != '' and RUN_COMPARISON:
-                            matcher.run_comparison()
-                        matcher.__del__()
-                    except Exception as e:
-                        print(e)
+                    else:
+                        soartech_sid = 123
+                    matcher = ProbeMatcher(os.path.join(parent, f), adept_sid, soartech_sid)
+                    # matcher = ProbeMatcher(os.path.join(parent, f), None, None) # use this for basic matching testing when SSL is not working
+                    if matcher.environment != '' and matcher.analyze:
+                        matcher.match_probes()
+                    if matcher.environment != '' and RUN_COMPARISON:
+                        matcher.run_comparison()
+                    matcher.__del__()
+                    # except Exception as e:
+                    #     print(e)
                 elif '.html' in f or '.jpg' in f:
                     os.remove(os.path.join(parent, f))
     print()
