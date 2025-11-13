@@ -1911,23 +1911,6 @@
     },
     "actionList": [
         {
-            "actionType": "Treatment",
-            "casualty": "Kicker",
-            "treatment": "Gauze Dressing",
-            "treatmentLocation": "Right Calf",
-            "injuryType": "Shrapnel",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "answerChoices": [],
-            "answer": "",
-            "timestamp": "2025-10-20T11:26:49.226Z"
-        },
-        {
             "actionType": "Breathing",
             "casualty": "Kicker",
             "treatment": "",
@@ -1943,6 +1926,23 @@
             "answerChoices": [],
             "answer": "",
             "timestamp": "2025-10-20T11:27:11.020Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Kicker",
+            "treatment": "Gauze Dressing",
+            "treatmentLocation": "Right Calf",
+            "injuryType": "Shrapnel",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "answerChoices": [],
+            "answer": "",
+            "timestamp": "2025-10-20T11:26:49.226Z"
         },
         {
             "actionType": "Treatment",
