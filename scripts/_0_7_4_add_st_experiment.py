@@ -17,7 +17,7 @@ Store these three sets of alignment values (once for each seen ADM, four KDMAs p
 
 """
 UPDATE_DATABASE = True
-VERBOSE_OUTPUT = False
+VERBOSE_OUTPUT = True
 
 @dataclass
 class Pid_data:
@@ -30,7 +30,7 @@ class Pid_data:
 
 def collect_text_probe_responses(mongo_db):
     text_scenario_collection = mongo_db['userScenarioResults']
-    phase1_text_results = text_scenario_collection.find({'evalNumber': {'$in': [5, 6]}})
+    phase1_text_results = text_scenario_collection.find({'evalNumber': {'$in': [12]}})
 
     # For each vol scenario in the userScenarioResults collection (evalNumber 5-6), collect the probe responses, scenario id, and the pid.
     comparison_data = {} # maps a pid to a collection of data for that pid required to calculate all alignments
@@ -63,7 +63,7 @@ def main(mongo_db):
         'results.pid': '202501702',
         'results.Post-Scenario Measures': {'$exists': False}
     })
-    compare_probes(mongo_db, 6, True)
+    compare_probes(mongo_db, 12, True)
 
     # Collect probe responses
     comparison_data = collect_text_probe_responses(mongo_db)
