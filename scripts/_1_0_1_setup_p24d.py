@@ -136,19 +136,18 @@ def main(mongo_db):
                     sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count} - get adm kdmas")
                     kdma_name = adm['results']['kdmas'][0]['kdma']
                     kdma_value = adm['results']['kdmas'][0]['value']
-                    match kdma_name:
-                        case 'affiliation':
-                            af_align_sum += kdma_value
-                            af_align_count += 1
-                        case 'merit':
-                            mf_align_sum += kdma_value
-                            mf_align_count += 1
-                        case 'personal_safety':
-                            ps_align_sum += kdma_value
-                            ps_align_count += 1
-                        case 'search':
-                            ss_align_sum += kdma_value
-                            ss_align_count += 1
+                    if kdma_name == 'affiliation':
+                        af_align_sum += kdma_value
+                        af_align_count += 1
+                    elif kdma_name == 'merit':
+                        mf_align_sum += kdma_value
+                        mf_align_count += 1
+                    elif kdma_name == 'personal_safety':
+                        ps_align_sum += kdma_value
+                        ps_align_count += 1
+                    elif kdma_name == 'search':
+                        ss_align_sum += kdma_value
+                        ss_align_count += 1
 
                     sys.stdout.flush()
                     sys.stdout.write(f"\rAnalyzing ADM group {completed_groups+1} of {group_count}                                          ")
@@ -233,19 +232,18 @@ def main(mongo_db):
             kdma_name = adm['results']['kdmas'][0]['kdma']
             kdma_value = adm['results']['kdmas'][0]['value']
             # TBD:  Only have to do this once for baseline as the kdmas shouldn't vary.  If it saved us a trip to TA1, we'd cache.
-            match kdma_name:
-                case 'affiliation':
-                    af_base_sum += kdma_value
-                    af_base_count += 1
-                case 'merit':
-                    mf_base_sum += kdma_value
-                    mf_base_count += 1
-                case 'personal_safety':
-                    ps_base_sum += kdma_value
-                    ps_base_count += 1
-                case 'search':
-                    ss_base_sum += kdma_value
-                    ss_base_count += 1
+            if kdma_name == 'affiliation':
+                af_base_sum += kdma_value
+                af_base_count += 1
+            elif kdma_name == 'merit':
+                mf_base_sum += kdma_value
+                mf_base_count += 1
+            elif kdma_name == 'personal_safety':
+                ps_base_sum += kdma_value
+                ps_base_count += 1
+            elif kdma_name == 'search':
+                ss_base_sum += kdma_value
+                ss_base_count += 1
             adm_session_id = adm['results']['ta1_session_id']
             human_session_id = adm['evaluation']['alignment_target_id']
             res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={human_session_id}&session_id_2={adm_session_id}').json() \
