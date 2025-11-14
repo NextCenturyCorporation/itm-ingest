@@ -56,6 +56,7 @@ def main(mongo_db):
         new_run["evaluation"]["evalNumber"] = 14
         new_run["evalName"] = "October 2025 ADM re-run"
         new_run["evaluation"]["evalName"] = "October 2025 ADM re-run"
+        new_run["evaluation"]["adm_name"] = run["adm_name"]
 
         duplicate_runs.append(new_run)
 
