@@ -88,7 +88,8 @@ new_probe_bins: dict = {}
 # Maps a kdma to a list of Adm_data for that attribute
 # Each entry in the list contains the probe responses for an ADM run (one per target, each of baseline and aligned)
 all_adm_data: dict = {}
-# e.g., {'AF': [{'name': 'baseline', 'alignment_target_id': 'ADEPT-July2025-affiliation-0.3', 'probe_responses': {'Probe 1': "Response 1-A", ... }], ...}
+# e.g., {'AF': [{'adm_name': 'baseline', 'alignment_target_id': 'ADEPT-July2025-affiliation-0.3', 'scenario_id': 'July2025-AFr12-eval',
+#                'probe_responses': {'Probe 1': "Response 1-A", ... }], ...}
 
 
 @dataclass
@@ -232,7 +233,7 @@ def get_ta1_calculations(adm_data: Adm_data, probe_ids: list) -> Tuple[str, floa
   for each kdma
     for as many configurable subsets are desired
         select a set of probes (probe_ids) according to behavior encapsulated in the specified randomizer
-        foreach adm_data[acronym] (n=22 or 8)
+        foreach adm_data[acronym] (n=22)
             Get alignment and kdmas from TA1 based on ADM choices to random probes
             create synthetic scenario id and name, e.g. "July2025-AFr23-eval" and "Affiliation Focus Random Set 23"
             create synthetic row in admTargetRuns populating it with content from adm_data[target], calculated session alignment, kdmas, and scenario id/name
