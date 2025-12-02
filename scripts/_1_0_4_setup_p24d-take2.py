@@ -105,10 +105,16 @@ def main(mongo_db):
             'ss_kdma_baseline_set2':   -1,
             'ss_kdma_baseline_set3':   -1,
             'ss_kdma_baseline_avg':    -1,
+            'set1_aligned_probe_responses': '',
+            'set2_aligned_probe_responses': '',
+            'set3_aligned_probe_responses': '',
             'set1_aligned_alignment':  -1,
             'set2_aligned_alignment':  -1,
             'set3_aligned_alignment':  -1,
             'avg_aligned_alignment':   -1,
+            'set1_baseline_probe_responses': '',
+            'set2_baseline_probe_responses': '',
+            'set3_baseline_probe_responses': '',
             'set1_baseline_alignment': -1,
             'set2_baseline_alignment': -1,
             'set3_baseline_alignment': -1,
@@ -197,6 +203,18 @@ def main(mongo_db):
                     new_doc[alignment_field] = alignment_value
                 else:
                     print(f"Warning: could not get comparison score for text session {human_session_id} and adm session {combinedADMsessionId}.")
+
+                # Save probe responses
+                probeset_responses: list = []
+                num_probes_per_bin = len(comboProbeList) / len(KDMA_MAP)
+                probe_counter = 0
+                kdma_names: list = list(KDMA_MAP.values())
+                for probe in comboProbeList:
+                    acronym: str = kdma_names[int(probe_counter / num_probes_per_bin)]
+                    probe_counter += 1
+                    probeset_responses.append(f"{acronym.upper()} {probe['probe_id']}, {probe['choice']}")
+
+                new_doc[f"set{setnum}_{adm_type}_probe_responses"] = probeset_responses
 
             # Calculate averages across sets and store in the document
             for kdma_name in kdma_sums:
