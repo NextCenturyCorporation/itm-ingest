@@ -10,7 +10,7 @@ WRITE_TO_DB = True     # Useful for testing or experimentation, without clobberi
 VERBOSE = False        # Useful for testing and debugging
 PYTHON_CMD = 'python3' # System-dependent, default to production server
 FOUR_D_COLLECTION = 'multiKdmaData4Dtake2' # Change this is you don't want to clobber the old collection
-
+TAKE_1_COLLECTION = 'multiKdmaData4D'
 # Maps scenario ID to the probes in that subset.
 # This could be accomplished by getting them from the subset yaml files in ingest.
 PROBE_MAP: dict = {'July2025-AF1-eval' : ['Probe 5', 'Probe 9', 'Probe 15', 'Probe 18', 'Probe 29', 'Probe 101'],
@@ -42,6 +42,7 @@ def main(mongo_db):
     multi_kdmas_4d = mongo_db[FOUR_D_COLLECTION]
     adm_collection = mongo_db['admTargetRuns']
     userCollection = mongo_db['userScenarioResults']
+    take1_collection = mongo_db[TAKE_1_COLLECTION]
     if WRITE_TO_DB:
         multi_kdmas_4d.drop()
 
@@ -118,7 +119,9 @@ def main(mongo_db):
             'set1_baseline_alignment': -1,
             'set2_baseline_alignment': -1,
             'set3_baseline_alignment': -1,
-            'avg_baseline_alignment':  -1
+            'avg_baseline_alignment':  -1,
+            '4D_Alignment_Aligned_30_Random_Sets': -1,
+            '4D_Alignment_Baseline_30_Random_Sets': -1
         }
 
         text_scenario = userCollection.find_one({'evalNumber': JULY_EVAL_NUM, 'participantID': pid}) # Any one will do
@@ -228,6 +231,16 @@ def main(mongo_db):
             if VERBOSE:
                 print(f"      Calculating average alignment and storing in {avg_align_field}.")
             new_doc[avg_align_field] = alignment_avg
+        
+        take1_doc = take1_collection.find_one({'pid': pid})
+        if take1_doc:
+            if '4D_Alignment_Aligned_30_Random_Sets' in take1_doc:
+                new_doc['4D_Alignment_Aligned_30_Random_Sets'] = take1_doc['4D_Alignment_Aligned_30_Random_Sets']
+            if '4D_Alignment_Baseline_30_Random_Sets' in take1_doc:
+                new_doc['4D_Alignment_Baseline_30_Random_Sets'] = take1_doc['4D_Alignment_Baseline_30_Random_Sets']
+        else:
+            print(f"  Warning: Could not find take1 document for pid {pid}")
+
 
         if WRITE_TO_DB:
             multi_kdmas_4d.insert_one(new_doc)
