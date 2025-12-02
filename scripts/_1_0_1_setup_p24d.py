@@ -213,12 +213,12 @@ def main(mongo_db):
                     1, aligned_alignment_count
                 )
                 # euclidean distance
-                new_doc["4D_Alignment_Aligned_30_Random_Sets"] = 1 - math.sqrt(
+                new_doc["4D_Alignment_Aligned_30_Random_Sets"] = abs(1 - math.sqrt(
                     (new_doc["af_align_ave"] - new_doc["afTarget"]) ** 2
                     + (new_doc["mf_align_ave"] - new_doc["mfTarget"]) ** 2
                     + (new_doc["ps_align_ave"] - new_doc["psTarget"]) ** 2
                     + (new_doc["ss_align_ave"] - new_doc["ssTarget"]) ** 2
-                )
+                ))
                 multi_kdmas_4d.insert_one(new_doc)
             completed_groups += 1
             sys.stdout.flush()
@@ -341,12 +341,12 @@ def main(mongo_db):
         ave_baseline_alignment = baseline_alignment_sum / max(1, baseline_alignment_count)
         
         # Calculate baseline euclidean distance alignment
-        baseline_4d_alignment = 1 - math.sqrt(
+        baseline_4d_alignment = abs(1 - math.sqrt(
             (af_base_ave - target_af) ** 2
             + (mf_base_ave - target_mf) ** 2
             + (ps_base_ave - target_ps) ** 2
             + (ss_base_ave - target_ss) ** 2
-        )
+        ))
 
         # Update the multi-kdma record with baseline data
         multi_kdmas_4d.update_one(
