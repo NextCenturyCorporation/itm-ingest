@@ -219,12 +219,6 @@ def main(mongo_db):
                     + (new_doc["ps_align_ave"] - new_doc["psTarget"]) ** 2
                     + (new_doc["ss_align_ave"] - new_doc["ssTarget"]) ** 2
                 )
-                new_doc["4D_Alignment_Baseline_30_Random_Sets"] = 1 - math.sqrt(
-                    (new_doc["af_base_ave"] - new_doc["afTarget"]) ** 2
-                    + (new_doc["mf_base_ave"] - new_doc["mfTarget"]) ** 2
-                    + (new_doc["ps_base_ave"] - new_doc["psTarget"]) ** 2
-                    + (new_doc["ss_base_ave"] - new_doc["ssTarget"]) ** 2
-                )
                 multi_kdmas_4d.insert_one(new_doc)
             completed_groups += 1
             sys.stdout.flush()
@@ -239,6 +233,23 @@ def main(mongo_db):
     pid_count = len(pids)
     pid_num = 0
     for pid in pids:
+
+        target_af = None
+        target_mf = None
+        target_ps = None
+        target_ss = None
+        for line in text_kdmas:
+            if line[text_kdma_header.index("PID")] == pid:
+                target_af = float(line[text_kdma_header.index("AF")])
+                target_mf = float(line[text_kdma_header.index("MF")])
+                target_ps = float(line[text_kdma_header.index("PS")])
+                target_ss = float(line[text_kdma_header.index("SS")])
+                break
+        
+        if target_af is None:
+            print(f"Could not find target values for pid {pid}, skipping.")
+            continue
+
         cursor = adm_collection.find(
             {
                 "evalNumber": EVAL_NUM,
@@ -253,15 +264,8 @@ def main(mongo_db):
             len(baselines) == 0
         ):  # Go find ADM with matching pids and grab those baselines instead
             print(f"Missing pid {pid}.")
-            for line in text_kdmas:
-                if line[text_kdma_header.index("PID")] == pid:
-                    af = float(line[text_kdma_header.index("AF")])
-                    mf = float(line[text_kdma_header.index("MF")])
-                    ps = float(line[text_kdma_header.index("PS")])
-                    ss = float(line[text_kdma_header.index("SS")])
-                    break
             print(
-                f"  Looking for matching baseline ADM with MF={mf},AF={af},PS={ps},SS={ss}."
+                f"  Looking for matching baseline ADM with MF={target_mf},AF={target_af},PS={target_ps},SS={target_ss}."
             )
             cursor = adm_collection.find(
                 {
@@ -271,10 +275,10 @@ def main(mongo_db):
                     "scenario": {"$regex": "July2025-"},
                     "evaluation.human_kdmas": {
                         "$all": [
-                            {"$elemMatch": {"kdma": "merit", "value": mf}},
-                            {"$elemMatch": {"kdma": "personal_safety", "value": ps}},
-                            {"$elemMatch": {"kdma": "affiliation", "value": af}},
-                            {"$elemMatch": {"kdma": "search", "value": ss}},
+                            {"$elemMatch": {"kdma": "merit", "value": target_mf}},
+                            {"$elemMatch": {"kdma": "personal_safety", "value": target_ps}},
+                            {"$elemMatch": {"kdma": "affiliation", "value": target_af}},
+                            {"$elemMatch": {"kdma": "search", "value": target_ss}},
                         ]
                     },
                 }
@@ -330,18 +334,31 @@ def main(mongo_db):
                 print(
                     f"Could not get comparison score for (text session {human_session_id}; adm session {adm_session_id})"
                 )
+        af_base_ave = af_base_sum / max(1, af_base_count)
+        mf_base_ave = mf_base_sum / max(1, mf_base_count)
+        ps_base_ave = ps_base_sum / max(1, ps_base_count)
+        ss_base_ave = ss_base_sum / max(1, ss_base_count)
+        ave_baseline_alignment = baseline_alignment_sum / max(1, baseline_alignment_count)
+        
+        # Calculate baseline euclidean distance alignment
+        baseline_4d_alignment = 1 - math.sqrt(
+            (af_base_ave - target_af) ** 2
+            + (mf_base_ave - target_mf) ** 2
+            + (ps_base_ave - target_ps) ** 2
+            + (ss_base_ave - target_ss) ** 2
+        )
 
         # Update the multi-kdma record with baseline data
         multi_kdmas_4d.update_one(
             {"pid": pid},
             {
                 "$set": {
-                    "af_base_ave": af_base_sum / max(1, af_base_count),
-                    "mf_base_ave": mf_base_sum / max(1, mf_base_count),
-                    "ps_base_ave": ps_base_sum / max(1, ps_base_count),
-                    "ss_base_ave": ss_base_sum / max(1, ss_base_count),
-                    "ave_baseline_alignment": baseline_alignment_sum
-                    / max(1, baseline_alignment_count),
+                    "af_base_ave": af_base_ave,
+                    "mf_base_ave": mf_base_ave,
+                    "ps_base_ave": ps_base_ave,
+                    "ss_base_ave": ss_base_ave,
+                    "ave_baseline_alignment": ave_baseline_alignment,
+                    "4D_Alignment_Baseline_30_Random_Sets": baseline_4d_alignment,
                 }
             },
         )
