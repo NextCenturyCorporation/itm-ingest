@@ -24,8 +24,8 @@ def parse_probe_responses(probe_responses, target_type):
 
 
 def main(mongo_db):
-    take1(mongo_db)
-    take2(mongo_db)
+    #take1(mongo_db)
+    #take2(mongo_db)
 
     take2_collection = mongo_db["multiKdmaData4Dtake2"]
     adm_target_runs = mongo_db["admTargetRuns"]
@@ -196,7 +196,6 @@ def main(mongo_db):
                 ],  
                 "probe_responses": aligned_probes_parsed,
                 "results": {
-                    "ta1_session_id": pid,
                     "kdmas": [
                         {
                             "kdma": (
@@ -235,7 +234,6 @@ def main(mongo_db):
                 "probe_responses": baseline_probes_parsed,
                 # Add results structure like eval 14
                 "results": {
-                    "ta1_session_id": pid,
                     "kdmas": [
                         {
                             "kdma": (
