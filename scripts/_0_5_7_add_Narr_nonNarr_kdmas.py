@@ -78,11 +78,11 @@ def process_adept_scenario(doc):
         "kdmas": kdmas
     }
 
-def main(mongo_db):
+def main(mongo_db, evalNumber= 4):
     text_based = mongo_db['userScenarioResults']
     
     query = {
-        "evalNumber": {"$gte": 4},
+        "evalNumber": {"$gte": evalNumber},
         "scenario_id": {"$regex": "DryRun|adept"}
     }
     
@@ -104,7 +104,8 @@ def main(mongo_db):
         text_based.update_one(
             {"_id": doc["_id"]},
             {"$set": {
-                "individual_kdma": adept_results["kdmas"]
+                "individual_kdma": adept_results["kdmas"],
+                "individual_session_id": adept_results["session_id"]
             }}
         )
         
