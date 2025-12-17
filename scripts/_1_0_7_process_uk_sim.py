@@ -82,3 +82,4 @@ def main(mongo_db):
     if os.path.exists(tmp_ph1):
         shutil.move(tmp_ph1, src_ph1)
     shutil.rmtree('tmp_uk_sim', ignore_errors=True)
+    
