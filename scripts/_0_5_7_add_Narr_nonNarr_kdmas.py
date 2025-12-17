@@ -1,7 +1,7 @@
 import requests
 from decouple import config
 
-ADEPT_URL = config("ADEPT_URL")
+ADEPT_URL = config("ADEPT_PH1_URL")
 
 edge_case_map = {
     'Probe 4-B.1-B.1-A': 'Response 4-B.1-B.1-A',
@@ -40,20 +40,43 @@ def submit_responses(scenario_data, scenario_id, session_id, url_base):
                     },
                     "session_id": session_id
                 }
-                requests.post(response_url, json=response_payload)
+                try:
+                    resp = requests.post(response_url, json=response_payload)
+                    if not resp.ok:
+                        print(f"Warning: Response submission failed with status {resp.status_code}")
+                except requests.exceptions.RequestException as e:
+                    print(f"Error submitting response: {e}")
 
 def get_kdma_value(session_id, url):
     endpoint = '/api/v1/computed_kdma_profile'
-    response = requests.get(f"{url}{endpoint}", params={"session_id": session_id})
-    data = response.json()
-    
-    if isinstance(data, dict) and data.get('status') == 500:
+    try:
+        response = requests.get(f"{url}{endpoint}", params={"session_id": session_id})
+        
+        if not response.text or response.text.strip() == '':
+            print(f"Empty response for session {session_id}, status code: {response.status_code}")
+            return None
+            
+        data = response.json()
+        
+        if isinstance(data, dict) and data.get('status') == 500:
+            return None
+        return data
+        
+    except requests.exceptions.JSONDecodeError as e:
+        print(f"JSON decode error for session {session_id}: {e}")
         return None
-    return data
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed for session {session_id}: {e}")
+        return None
 
 def start_session(url):
-    response = requests.post(f"{url}/api/v1/new_session")
-    return response.text
+    try:
+        response = requests.post(f"{url}/api/v1/new_session")
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error starting session: {e}")
+        return None
 
 def process_adept_scenario(doc):
     adept_scenario_map = {
@@ -67,6 +90,10 @@ def process_adept_scenario(doc):
     scenario_id = adept_scenario_map.get(doc['scenario_id'], doc['scenario_id'])
     
     session_id = start_session(ADEPT_URL)
+    if not session_id:
+        print("Failed to start session")
+        return None
+        
     submit_responses(doc, scenario_id, session_id, ADEPT_URL)
     kdmas = get_kdma_value(session_id, ADEPT_URL)
     
@@ -78,11 +105,11 @@ def process_adept_scenario(doc):
         "kdmas": kdmas
     }
 
-def main(mongo_db):
+def main(mongo_db, evalNumber= 4):
     text_based = mongo_db['userScenarioResults']
     
     query = {
-        "evalNumber": {"$gte": 4},
+        "evalNumber": {"$eq": evalNumber},
         "scenario_id": {"$regex": "DryRun|adept"}
     }
     
@@ -104,7 +131,8 @@ def main(mongo_db):
         text_based.update_one(
             {"_id": doc["_id"]},
             {"$set": {
-                "individual_kdma": adept_results["kdmas"]
+                "individual_kdma": adept_results["kdmas"],
+                "individual_session_id": adept_results["session_id"]
             }}
         )
         
