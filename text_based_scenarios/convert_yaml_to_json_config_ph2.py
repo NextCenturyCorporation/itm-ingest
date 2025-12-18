@@ -69,7 +69,7 @@ def create_page(scene, doc):
 def process_scenario(scenario):
     doc = {
         'scenario_id': scenario['id'], 
-        'eval': 'Phase 2 September 2025 Collaboration',
+        'eval': 'Phase 2 February 2026 Evaluation',
         'name': scenario['name'],
         'pages': []
         }
@@ -116,7 +116,7 @@ def main(mongo_db):
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # go up one level to root to find scenarios
-    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/september2025')
+    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/feb2026')
 
     all_docs = []
 
