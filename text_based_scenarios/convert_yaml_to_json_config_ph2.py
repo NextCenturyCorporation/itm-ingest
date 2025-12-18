@@ -71,6 +71,7 @@ def process_scenario(scenario):
         'scenario_id': scenario['id'], 
         'eval': 'Phase 2 February 2026 Evaluation',
         'name': scenario['name'],
+        'author': 'ADEPT',
         'pages': []
         }
     doc = add_surveyjs_configs(doc)
