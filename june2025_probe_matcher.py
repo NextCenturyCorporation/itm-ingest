@@ -237,8 +237,8 @@ class ProbeMatcher:
             f'{env} Triage_time': 0,
             f'{env} Triage_time_patient': 0,
             f'{env} Engage_patient': 0,
-            f'{env} Tag_acc': 0,
-            f'{env} Tag_expectant': False,
+            f'{env} Tag_ACC': 0,
+            f'{env} Tag_Expectant': False,
             f'{env} Hemorrhage control': 0,
             f'{env} Hemorrhage control_time': None,
             f'{env} Triage Performance': 0
