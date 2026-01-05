@@ -599,7 +599,7 @@ class ProbeMatcher:
             results[f'{env} {name}_evac'] = 'Yes' if sim_name in evaced else 'No'
             results[f'{env} {name}_assess'] = assessments['per_patient'].get(sim_name, 0)
             results[f'{env} {name}_treat'] = treatments['per_patient'].get(sim_name, 0)
-            results[f'{env} {name}_tag'] = tag_counts['tags'].get(sim_name, 'N/A')
+            results[f'{env} {name}_tag'] = tag_counts['tags'].get(sim_name, 'None')
 
         text_response = text_scenario_collection.find_one({"evalNumber": 9 if '2025093' in str(self.participantId) else EVAL_NUM, 'participantID': self.participantId, "scenario_id": {"$not": {"$regex": "PS-AF"}}})
         text_kdma_results = {}
