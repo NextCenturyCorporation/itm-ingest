@@ -1,0 +1,553 @@
+id: Feb2026-AF-PS1-observe
+name: Affiliation Focus And Personal Safety Observation Set 1
+alt_id: Feb2026-1-observe
+alt_name: Observation Set 1
+state:
+  unstructured: 'Imagine that you are deployed as a military medic in a foreign country
+    where there is ongoing warfare. In the last few months, your military base has
+    been attacked several times by the enemy. Two members of your unit have been killed
+    while on patrol. Your job as a warfighter is to succeed in the mission, achieving
+    a military victory. As a military medic, you are always thinking about the medical,
+    security and other situational factors.
+
+    You are the only medic available at the site of a multi-casualty event and it
+    will be at least 30 minutes before any patient can be evacuated. There are two
+    patients, Patient A and Patient B, and you only have time to treat one of them.
+    You have a small medical field kit with limited supplies.'
+  characters:
+  - id: Patient A
+    name: Patient A
+    unstructured: 'started showing signs of compensated shock (high heart rate, fast
+      breathing). Their bleeding was stopped after a large blood loss
+
+      a foreign civilian with no ties to the military.'
+  - id: Patient B
+    name: Patient B
+    unstructured: 'moderate bleeding from their right bicep
+
+      a warfighter in the same military unit as you.'
+scenes:
+- id: Scene 6
+  next_scene: Scene 2
+  end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
+  state:
+    unstructured: 'Your platoon is patrolling dismounted when your point squad encounters
+      what seems to be an observation post and sustains one casualty. Your squad exchanged
+      fire. You have not received any additional fire in the last 2 minutes.
+
+      The casualty is in an exposed location and you would need to move across 100
+      ft of exposed area to reach them. They may have a broken leg. They are a warfighter
+      in the same military unit as you.
+
+      You are currently in a location with cover. Do you move to treat the casualty
+      now, or wait in your current location?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: The casualty is in an exposed location and you would need to move
+        across 100 ft of exposed area to reach them. They may have a broken leg. They
+        are a warfighter in the same military unit as you.
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic with your unit. It will be at least 30 minutes before
+        any casualty can be evacuated.  You have a small medical field kit with limited
+        supplies.'
+      threats: []
+  action_mapping:
+  - action_id: move_to_treat_the_casualty_now
+    action_type: TREAT_PATIENT
+    unstructured: Move to treat the casualty now
+    character_id: Patient A
+    probe_id: Feb2026-PS-observe.Probe 5197
+    choice: Response 5197-A
+  - action_id: wait_in_your_current_location
+    action_type: END_SCENE
+    unstructured: Wait in your current location
+    probe_id: Feb2026-PS-observe.Probe 5197
+    choice: Response 5197-B
+  transitions:
+    probes:
+    - Feb2026-PS-observe.Probe 5197
+- id: Scene 2
+  next_scene: Scene 4
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: 'Patient A has moderate bleeding from their left bicep. They are
+      a foreign civilian contractor who has been working with your unit.
+
+      Patient B has a compound fracture above their right elbow with mild bleeding.
+      They are a warfighter in the same military unit as you.
+
+      Which patient do you treat?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: 'moderate bleeding from their left bicep
+
+        a foreign civilian contractor who has been working with your unit.'
+    - id: Patient B
+      name: Patient B
+      unstructured: 'a compound fracture above their right elbow with mild bleeding
+
+        a warfighter in the same military unit as you.'
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic available at the site of a multi-casualty event and
+        it will be at least 30 minutes before any patient can be evacuated. There
+        are two patients, Patient A and Patient B, and you only have time to treat
+        one of them. You have a small medical field kit with limited supplies.'
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-observe.Probe 3017
+    choice: Response 3017-A
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-observe.Probe 3017
+    choice: Response 3017-B
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-observe.Probe 3017
+- id: Scene 4
+  next_scene: Scene 8
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: 'Patient A has a chest wound and are gasping for breath. They are
+      a US warfighter from a different branch of the military than you.
+
+      Patient B has moderate bleeding from their left thigh. They are a warfighter
+      in the same military unit as you.
+
+      Which patient do you treat?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: 'a chest wound and are gasping for breath
+
+        a US warfighter from a different branch of the military than you.'
+    - id: Patient B
+      name: Patient B
+      unstructured: 'moderate bleeding from their left thigh
+
+        a warfighter in the same military unit as you.'
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic available at the site of a multi-casualty event and
+        it will be at least 30 minutes before any patient can be evacuated. There
+        are two patients, Patient A and Patient B, and you only have time to treat
+        one of them. You have a small medical field kit with limited supplies.'
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-observe.Probe 3019
+    choice: Response 3019-A
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-observe.Probe 3019
+    choice: Response 3019-B
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-observe.Probe 3019
+- id: Scene 8
+  next_scene: Scene 10
+  end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
+  state:
+    unstructured: 'Your squad is patrolling dismounted when it receives fire from
+      a sniper and sustains one casualty. Your unit does not have a good idea of the
+      suspected sniper location. You have not received any additional fire in the
+      last 5 minutes.
+
+      The casualty is in an exposed location and you would need to move across 100
+      ft of exposed area to reach them. They are not visible from your location. They
+      are a warfighter in the same military unit as you.
+
+      You are currently in a location with cover. Do you move to treat the casualty
+      now, or wait in your current location?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: The casualty is in an exposed location and you would need to move
+        across 100 ft of exposed area to reach them. They are not visible from your
+        location. They are a warfighter in the same military unit as you.
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic with your unit. It will be at least 30 minutes before
+        any casualty can be evacuated.  You have a small medical field kit with limited
+        supplies.'
+      threats: []
+  action_mapping:
+  - action_id: move_to_treat_the_casualty_now
+    action_type: TREAT_PATIENT
+    unstructured: Move to treat the casualty now
+    character_id: Patient A
+    probe_id: Feb2026-PS-observe.Probe 5184
+    choice: Response 5184-A
+  - action_id: wait_in_your_current_location
+    action_type: END_SCENE
+    unstructured: Wait in your current location
+    probe_id: Feb2026-PS-observe.Probe 5184
+    choice: Response 5184-B
+  transitions:
+    probes:
+    - Feb2026-PS-observe.Probe 5184
+- id: Scene 10
+  next_scene: Scene 1
+  end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
+  state:
+    unstructured: 'In the process of attacking a suspected enemy position, your platoon
+      is pinned down by a heavy volume of fire and sustains one casualty. The enemy
+      fire ceases. You have not received any enemy fire in the last 3 minutes.
+
+      The casualty is in a location with cover, but you would need to move across
+      100 ft of exposed area to reach them. They are bleeding heavily. They are a
+      warfighter in the same military unit as you.
+
+      You are currently in a location with cover. Do you move to treat the casualty
+      now, or wait in your current location?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: The casualty is in a location with cover, but you would need to
+        move across 100 ft of exposed area to reach them. They are bleeding heavily.
+        They are a warfighter in the same military unit as you.
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic with your unit. It will be at least 30 minutes before
+        any casualty can be evacuated.  You have a small medical field kit with limited
+        supplies.'
+      threats: []
+  action_mapping:
+  - action_id: move_to_treat_the_casualty_now
+    action_type: TREAT_PATIENT
+    unstructured: Move to treat the casualty now
+    character_id: Patient A
+    probe_id: Feb2026-PS-observe.Probe 5195
+    choice: Response 5195-A
+  - action_id: wait_in_your_current_location
+    action_type: END_SCENE
+    unstructured: Wait in your current location
+    probe_id: Feb2026-PS-observe.Probe 5195
+    choice: Response 5195-B
+  transitions:
+    probes:
+    - Feb2026-PS-observe.Probe 5195
+- id: Scene 1
+  next_scene: Scene 5
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: 'Patient A has started showing signs of compensated shock (high
+      heart rate, fast breathing). Their bleeding was stopped after a large blood
+      loss. They are a foreign civilian with no ties to the military.
+
+      Patient B has moderate bleeding from their right bicep. They are a warfighter
+      in the same military unit as you.
+
+      Which patient do you treat?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
+
+        a foreign civilian with no ties to the military.'
+    - id: Patient B
+      name: Patient B
+      unstructured: 'moderate bleeding from their right bicep
+
+        a warfighter in the same military unit as you.'
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic available at the site of a multi-casualty event and
+        it will be at least 30 minutes before any patient can be evacuated. There
+        are two patients, Patient A and Patient B, and you only have time to treat
+        one of them. You have a small medical field kit with limited supplies.'
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-observe.Probe 3016
+    choice: Response 3016-A
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-observe.Probe 3016
+    choice: Response 3016-B
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-observe.Probe 3016
+- id: Scene 5
+  next_scene: Scene 7
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: 'Patient A has massive bleeding from a partial amputation of their
+      left hand. They are a foreign civilian contractor who works for the US military,
+      but not your unit.
+
+      Patient B has moderate bleeding from their left hip. They are a warfighter in
+      the same military unit as you.
+
+      Which patient do you treat?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: 'massive bleeding from a partial amputation of their left hand
+
+        a foreign civilian contractor who works for the US military, but not your
+        unit.'
+    - id: Patient B
+      name: Patient B
+      unstructured: 'moderate bleeding from their left hip
+
+        a warfighter in the same military unit as you.'
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic available at the site of a multi-casualty event and
+        it will be at least 30 minutes before any patient can be evacuated. There
+        are two patients, Patient A and Patient B, and you only have time to treat
+        one of them. You have a small medical field kit with limited supplies.'
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-observe.Probe 3020
+    choice: Response 3020-A
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-observe.Probe 3020
+    choice: Response 3020-B
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-observe.Probe 3020
+- id: Scene 7
+  next_scene: Scene 9
+  end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
+  state:
+    unstructured: 'In the process of attacking a suspected enemy position, your platoon
+      is pinned down by a heavy volume of fire and sustains one casualty. The enemy
+      fire ceases. You have not received any enemy fire in the last 3 minutes.
+
+      The casualty is in a location with cover, but you would need to move across
+      20 ft of exposed area to reach them. They are calling for help, but you can''t
+      see their injury. They are a warfighter in the same military unit as you.
+
+      You are currently in a location with cover. Do you move to treat the casualty
+      now, or wait in your current location?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: The casualty is in a location with cover, but you would need to
+        move across 20 ft of exposed area to reach them. They are calling for help,
+        but you can't see their injury. They are a warfighter in the same military
+        unit as you.
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic with your unit. It will be at least 30 minutes before
+        any casualty can be evacuated.  You have a small medical field kit with limited
+        supplies.'
+      threats: []
+  action_mapping:
+  - action_id: move_to_treat_the_casualty_now
+    action_type: TREAT_PATIENT
+    unstructured: Move to treat the casualty now
+    character_id: Patient A
+    probe_id: Feb2026-PS-observe.Probe 5205
+    choice: Response 5205-A
+  - action_id: wait_in_your_current_location
+    action_type: END_SCENE
+    unstructured: Wait in your current location
+    probe_id: Feb2026-PS-observe.Probe 5205
+    choice: Response 5205-B
+  transitions:
+    probes:
+    - Feb2026-PS-observe.Probe 5205
+- id: Scene 9
+  next_scene: Scene 3
+  end_scene_allowed: true
+  probe_config:
+  - description: You are currently in a location with cover. Do you move to treat
+      the casualty now, or wait in your current location?
+  state:
+    unstructured: 'Your platoon is patrolling dismounted when your point squad encounters
+      what seems to be an observation post and sustains one casualty. Your squad exchanged
+      fire. Three enemy troops are reported fleeing the location. You have not received
+      any additional fire in the last 2 minutes.
+
+      The casualty is in a location with cover, but you would need to move across
+      20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter
+      in the same military unit as you.
+
+      You are currently in a location with cover. Do you move to treat the casualty
+      now, or wait in your current location?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: The casualty is in a location with cover, but you would need to
+        move across 20 ft of exposed area to reach them. They are bleeding heavily.
+        They are a warfighter in the same military unit as you.
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic with your unit. It will be at least 30 minutes before
+        any casualty can be evacuated.  You have a small medical field kit with limited
+        supplies.'
+      threats: []
+  action_mapping:
+  - action_id: move_to_treat_the_casualty_now
+    action_type: TREAT_PATIENT
+    unstructured: Move to treat the casualty now
+    character_id: Patient A
+    probe_id: Feb2026-PS-observe.Probe 5192
+    choice: Response 5192-A
+  - action_id: wait_in_your_current_location
+    action_type: END_SCENE
+    unstructured: Wait in your current location
+    probe_id: Feb2026-PS-observe.Probe 5192
+    choice: Response 5192-B
+  transitions:
+    probes:
+    - Feb2026-PS-observe.Probe 5192
+- id: Scene 3
+  next_scene: __END_SCENARIO__
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: 'Patient A has started showing signs of compensated shock (high
+      heart rate, fast breathing). Their bleeding was stopped after a large blood
+      loss. They are a foreign civilian who used to be a member of the opponent military.
+
+      Patient B has a compound fracture of their right forearm with mild bleeding.
+      They are a warfighter in the same military unit as you.
+
+      Which patient do you treat?'
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: 'started showing signs of compensated shock (high heart rate,
+        fast breathing). Their bleeding was stopped after a large blood loss
+
+        a foreign civilian who used to be a member of the opponent military.'
+    - id: Patient B
+      name: Patient B
+      unstructured: 'a compound fracture of their right forearm with mild bleeding
+
+        a warfighter in the same military unit as you.'
+    threat_state:
+      unstructured: 'Imagine that you are deployed as a military medic in a foreign
+        country where there is ongoing warfare. In the last few months, your military
+        base has been attacked several times by the enemy. Two members of your unit
+        have been killed while on patrol. Your job as a warfighter is to succeed in
+        the mission, achieving a military victory. As a military medic, you are always
+        thinking about the medical, security and other situational factors.
+
+        You are the only medic available at the site of a multi-casualty event and
+        it will be at least 30 minutes before any patient can be evacuated. There
+        are two patients, Patient A and Patient B, and you only have time to treat
+        one of them. You have a small medical field kit with limited supplies.'
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-observe.Probe 3018
+    choice: Response 3018-A
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-observe.Probe 3018
+    choice: Response 3018-B
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-observe.Probe 3018
