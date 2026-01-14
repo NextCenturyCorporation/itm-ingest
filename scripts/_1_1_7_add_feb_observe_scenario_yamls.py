@@ -9,6 +9,14 @@ KEEP_BASELINE_ADMS = {
     'ALIGN-ADM-OutlinesBaseline-spectrum-Qwen3-14B-v1__353ae8ef-b2a7-4a54-b890-031858b8c9ce'
 }
 
+KEEP_ALIGNED_ADMS = {
+    'ALIGN-ADM-Ph2-ComparativeRegression-BertRelevance-DeepSeek-R1-Distill-Llama-8B__7f71beec-af02-41cf-9ddc-94616769750f',
+    'ALIGN-ADM-Ph2-ComparativeRegression-BertRelevance-Mistral-7B-Instruct-v0.3__bf7d613c-f38c-42de-8eef-cec5868cccb1',
+    'ALIGN-ADM-Ph2-ComparativeRegression-BertRelevance-spectrum-Llama-3.1-8B-v1__f3e4cce5-933f-4a49-a27b-c15a08b76492',
+    'ALIGN-ADM-Ph2-ComparativeRegression-BertRelevance-spectrum-Qwen3-14B-v1__783573b5-96c9-485b-a4f6-eb81ddc550d5',
+    'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__596c459d-b735-4a7a-8bf6-815d804e4092'
+}
+
 def main(mongo_db):
     files = [f for f in os.listdir(SCENARIOS_FOLDER)]
     files.sort()
@@ -39,16 +47,28 @@ def main(mongo_db):
 
     adms = mongo_db['admTargetRuns'].find({'evalNumber': 15})
     
-    deleted_count = 0
+    deleted_baseline_count = 0
+    deleted_regression_count = 0
+    
     for adm in adms:
         adm_name = adm.get('adm_name', '')
         
+        # Delete baseline runs that were before TA1 fix
         if 'Baseline' in adm_name:
-            # delete baseline runs that were before ta1 fix
             if adm_name not in KEEP_BASELINE_ADMS:
                 result = mongo_db['admTargetRuns'].delete_one({'_id': adm['_id']})
                 if result.deleted_count > 0:
-                    print(f"Deleted: {adm_name}")
-                    deleted_count += 1
+                    print(f"Deleted Baseline: {adm_name}")
+                    deleted_baseline_count += 1
+        
+        # Delete regression runs that were before TA1 fix
+        elif 'Regression' in adm_name:
+            if adm_name not in KEEP_ALIGNED_ADMS:
+                result = mongo_db['admTargetRuns'].delete_one({'_id': adm['_id']})
+                if result.deleted_count > 0:
+                    print(f"Deleted Regression: {adm_name}")
+                    deleted_regression_count += 1
     
-    print(f"Finished deleting unwanted baseline ADMs. Total deleted: {deleted_count}")
+    print(f"Finished deleting unwanted ADMs.")
+    print(f"Total Baseline ADMs deleted: {deleted_baseline_count}")
+    print(f"Total Regression ADMs deleted: {deleted_regression_count}")
