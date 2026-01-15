@@ -73,10 +73,27 @@ def main(mongo_db):
     deleted_regression = 0
 
     for adm in adms:
-        adm_name = adm.get('adm_name', '')
+        original_adm_name = adm.get('adm_name', '')
+
+        should_delete = False
+
+        if 'Baseline' in original_adm_name:
+            if original_adm_name not in KEEP_BASELINE_ADMS:
+                should_delete = True
+                deleted_baseline += 1
+
+        elif 'Regression' in original_adm_name:
+            if original_adm_name not in KEEP_ALIGNED_ADMS:
+                should_delete = True
+                deleted_regression += 1
+
+        if should_delete:
+            mongo_db['admTargetRuns'].delete_one({'_id': adm['_id']})
+            print(f"Deleted ADM: {original_adm_name}")
+            continue
 
         new_name = rename_adm(adm)
-        if new_name:
+        if new_name and new_name != original_adm_name:
             mongo_db['admTargetRuns'].update_one(
                 {'_id': adm['_id']},
                 {'$set': {
@@ -84,20 +101,7 @@ def main(mongo_db):
                     'evaluation.adm_name': new_name
                 }}
             )
-            print(f"Renamed ADM: {adm_name} -> {new_name}")
-            adm_name = new_name
-
-        if 'Baseline' in adm_name:
-            if adm_name not in KEEP_BASELINE_ADMS:
-                if mongo_db['admTargetRuns'].delete_one({'_id': adm['_id']}).deleted_count:
-                    print(f"Deleted Baseline: {adm_name}")
-                    deleted_baseline += 1
-
-        elif 'Regression' in adm_name:
-            if adm_name not in KEEP_ALIGNED_ADMS:
-                if mongo_db['admTargetRuns'].delete_one({'_id': adm['_id']}).deleted_count:
-                    print(f"Deleted Regression: {adm_name}")
-                    deleted_regression += 1
+            print(f"Renamed ADM: {original_adm_name} -> {new_name}")
 
     print("Finished deleting unwanted ADMs.")
     print(f"Total Baseline ADMs deleted: {deleted_baseline}")
