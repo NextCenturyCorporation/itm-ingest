@@ -28,19 +28,6 @@ KEEP_ALIGNED_ADMS = {
     'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__89d49877-0eb0-4919-aac1-92860615d131'
 }
 
-def rename_adm(adm_doc):
-    old_name = adm_doc.get('adm_name', '')
-    evaluation = adm_doc.get('evaluation', {})
-    start_time = evaluation.get('start_time')
-
-    if not old_name or '__' not in old_name or not start_time:
-        return None
-
-    base = old_name.split('__')[0]
-    dt = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
-    suffix = f"{dt.month:02d}_{dt.day:02d}"
-    return f"{base}_{suffix}"
-
 def main(mongo_db):
     files = sorted(os.listdir(SCENARIOS_FOLDER))
 
@@ -67,12 +54,14 @@ def main(mongo_db):
 
     print("Finished ingesting Feb 2026 observation scenarios.")
 
-    adms = mongo_db['admTargetRuns'].find({'evalNumber': 15})
+    adms = list(mongo_db['admTargetRuns'].find({'evalNumber': 15}))
 
     deleted_baseline = 0
     deleted_regression = 0
     deleted_no_underscore = 0
 
+    # delete bad adm runs
+    adms_to_keep = []
     for adm in adms:
         original_adm_name = adm.get('adm_name', '')
 
@@ -99,18 +88,50 @@ def main(mongo_db):
             print(f"Deleted ADM: {original_adm_name}")
             continue
 
-        new_name = rename_adm(adm)
-        if new_name and new_name != original_adm_name:
-            mongo_db['admTargetRuns'].update_one(
-                {'_id': adm['_id']},
-                {'$set': {
-                    'adm_name': new_name,
-                    'evaluation.adm_name': new_name
-                }}
-            )
-            print(f"Renamed ADM: {original_adm_name} -> {new_name}")
+        adms_to_keep.append(adm)
 
     print("Finished deleting unwanted ADMs.")
     print(f"Total Baseline ADMs deleted: {deleted_baseline}")
     print(f"Total Regression ADMs deleted: {deleted_regression}")
     print(f"Deleted test runs: {deleted_no_underscore}")
+
+    # find earliest date for each ADM base name + scenario combination
+    earliest_dates = {}
+    for adm in adms_to_keep:
+        original_adm_name = adm.get('adm_name', '')
+        base = original_adm_name.split('__')[0]
+        scenario = adm.get('scenario', '')
+        evaluation = adm.get('evaluation', {})
+        start_time = evaluation.get('start_time')
+        
+        group_key = (base, scenario)
+        
+        if start_time:
+            dt = datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S.%f")
+            if group_key not in earliest_dates or dt < earliest_dates[group_key]:
+                earliest_dates[group_key] = dt
+
+    # rename
+    for adm in adms_to_keep:
+        original_adm_name = adm.get('adm_name', '')
+        base = original_adm_name.split('__')[0]
+        scenario = adm.get('scenario', '')
+        
+        group_key = (base, scenario)
+        
+        if group_key in earliest_dates:
+            dt = earliest_dates[group_key]
+            suffix = f"{dt.month:02d}_{dt.day:02d}"
+            new_name = f"{base}_{suffix}"
+            
+            if new_name != original_adm_name:
+                mongo_db['admTargetRuns'].update_one(
+                    {'_id': adm['_id']},
+                    {'$set': {
+                        'adm_name': new_name,
+                        'evaluation.adm_name': new_name
+                    }}
+                )
+                print(f"Renamed ADM: {original_adm_name} -> {new_name}")
+
+    print("Finished renaming ADMs.")
