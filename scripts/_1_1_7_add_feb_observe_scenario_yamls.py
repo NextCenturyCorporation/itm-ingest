@@ -71,9 +71,16 @@ def main(mongo_db):
 
     deleted_baseline = 0
     deleted_regression = 0
+    deleted_no_underscore = 0
 
     for adm in adms:
         original_adm_name = adm.get('adm_name', '')
+
+        if '__' not in original_adm_name:
+            mongo_db['admTargetRuns'].delete_one({'_id': adm['_id']})
+            deleted_no_underscore += 1
+            print(f"Deleted ADM (no '__'): {original_adm_name}")
+            continue
 
         should_delete = False
 
@@ -106,3 +113,4 @@ def main(mongo_db):
     print("Finished deleting unwanted ADMs.")
     print(f"Total Baseline ADMs deleted: {deleted_baseline}")
     print(f"Total Regression ADMs deleted: {deleted_regression}")
+    print(f"Deleted test runs: {deleted_no_underscore}")
