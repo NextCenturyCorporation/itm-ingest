@@ -117,7 +117,7 @@ def main(mongo_db):
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # go up one level to root to find scenarios
-    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/feb2026')
+    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/feb2026/assess')
 
     all_docs = []
 
