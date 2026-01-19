@@ -34,7 +34,7 @@ def find_action_by_choice(scene, choice_id):
             return action
     return None
 
-def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber):
+def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber, extension):
     # start building document to be uploaded
     doc = copy.deepcopy(template)
     
@@ -68,16 +68,11 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber)
         if 'title' in element and 'Test medic 1' in element['title']:
             doc['elements'][i]['title'] = element['title'].replace('Test medic 1', medic_name)
 
-    for el in adm['history']:
-        # grab scenario name
-        if el['command'] == 'Start Scenario':
-            scenario_name = el['response']['name']
-            doc['scenarioName'] = scenario_name
-            break
+    scenario_name = adm['scenario']
+    doc['scenarioName'] = scenario_name
     
     # Load the corresponding YAML file
     if scenario_name:
-        extension = 'june2025' if evalNumber == 8 else 'july2025'
         yaml_dir = os.path.join('phase2', extension)
         yaml_data = None
         
@@ -87,7 +82,7 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber)
                 try:
                     with open(yaml_path, 'r', encoding='utf-8') as f:
                         data = yaml.safe_load(f)
-                        if data.get('name') == scenario_name:
+                        if data.get('id') == scenario_name:
                             yaml_data = data
                             break
                 except Exception as e:
@@ -134,19 +129,31 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber)
     print(f"Creating medic document with name: {medic_name}")
     medic_collec.insert_one(doc)
 
-def main(mongo_db, evalNumber):
+def main(mongo_db, evalNumber, extension, included_adms=None):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     template_path = os.path.join(script_dir, 'templates', 'phase2_single_medic_template.json')
     f = open(template_path, 'r', encoding='utf-8')
     template = json.load(f)
-    adm_runs = mongo_db['admTargetRuns'].find({"evalNumber": evalNumber})
     medic_collec = mongo_db['admMedics']
 
-    for adm in adm_runs:
-        scenario = adm['scenario']
-        target = adm['alignment_target']
-        name = adm['adm_name']
+    # providing the adms to include already
+    if included_adms is not None and len(included_adms) > 0:
+        print(f"Processing {len(included_adms)} pre-filtered ADM runs")
+        for adm in included_adms:
+            scenario = adm['scenario']
+            target = adm['alignment_target']
+            name = adm['adm_name']
+            convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber, extension)
+    else:
+        # fallback - query all ADM runs
+        print(f"No pre-filtered ADM runs provided, querying all ADM runs for evalNumber {evalNumber}")
+        adm_runs = mongo_db['admTargetRuns'].find({"evalNumber": evalNumber})
         
-        # don't process tests and failed runs
-        if 'test' not in name and 'Random' not in name and '6d0829ad-4e3c-4a03-8f3d-472cc549888f' not in name:
-            convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber)
+        for adm in adm_runs:
+            scenario = adm['scenario']
+            target = adm['alignment_target']
+            name = adm['adm_name']
+            
+            # don't process tests and failed runs
+            if 'test' not in name and 'Random' not in name and '6d0829ad-4e3c-4a03-8f3d-472cc549888f' not in name:
+                convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber, extension)
