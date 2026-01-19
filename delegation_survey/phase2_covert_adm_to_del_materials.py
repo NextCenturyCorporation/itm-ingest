@@ -24,8 +24,9 @@ def get_unique_medic_name(medic_collec):
 
 def find_scene_by_probe_id(yaml_data, probe_id):
     for scene in yaml_data['scenes']:
-        if scene['id'] == probe_id:
-            return scene
+        for action in scene.get('action_mapping', []):
+            if action.get('probe_id') == probe_id:
+                return scene
     return None
 
 def find_action_by_choice(scene, choice_id):
