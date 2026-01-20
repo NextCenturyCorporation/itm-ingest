@@ -102,7 +102,7 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber,
             print(f"Warning: No YAML file found with name matching scenario: {scenario_name}")
             return
         
-        # grab the two choices for the probes in the scenario
+        # grab the two choices for the probes in the scenario (used as fallback/default)
         choices = [action['unstructured'] for action in yaml_data['scenes'][0]['action_mapping']]
         doc['elements'][0]['options'] = choices
         
@@ -128,9 +128,16 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber,
                     print(f"Error: did not find matching action for choice {choice_id} in probe {probe_id}")
                     continue
 
+                # Get the options specific to this scene/probe
+                action_options = [action['unstructured'] for action in matching_scene['action_mapping']]
+
                 row_data = {
                     'choice': matching_action['unstructured'],
-                    'probe_unstructured': matching_scene['state']['unstructured']
+                    'probe_unstructured': matching_scene['state']['unstructured'],
+                    'options': action_options,
+                    'probe_id': probe_id,
+                    'choice_id': choice_id,
+                    'scenario_id': scenario_name
                 }
 
                 doc['elements'][0]['rows'].append(row_data)
