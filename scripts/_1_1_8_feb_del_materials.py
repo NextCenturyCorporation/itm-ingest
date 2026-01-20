@@ -1,5 +1,5 @@
 from delegation_survey.phase2_covert_adm_to_del_materials import main as convert_adms
-
+from delegation_survey.update_survey_config import version10_setup
 def main(mongo_db):
     adm_runs = mongo_db['admTargetRuns'].find({'evalNumber': 15})
     
@@ -73,3 +73,5 @@ def main(mongo_db):
     
     print(f"Total ADM runs found: {len(list(mongo_db['admTargetRuns'].find({'evalNumber': 15})))}")
     print(f"Included ADM runs: {len(included_adms)}")
+
+    version10_setup(auto_confirm=True)

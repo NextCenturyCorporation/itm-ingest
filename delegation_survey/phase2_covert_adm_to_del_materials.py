@@ -1,11 +1,14 @@
 import os, json, copy, yaml
 
 # grabs a medic name, makes sure no duplicate in admMedics collection
-def get_unique_medic_name(medic_collec):
+def get_unique_medic_name(medic_collec, evalNumber):
     names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 
              'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     existing_medics = medic_collec.find(
-        {"name": {"$regex": "^Medic-[A-Z]\\d{1,2}$"}}, 
+        {
+            "name": {"$regex": "^Medic-[A-Z]\\d{1,2}$"},
+            "evalNumber": evalNumber 
+        }, 
         {"name": 1}
     )
     
@@ -21,6 +24,7 @@ def get_unique_medic_name(medic_collec):
             if candidate_name not in used_names:
                 return candidate_name
     
+    raise ValueError(f"Exhausted all possible medic names for evalNumber {evalNumber}")
 
 def find_scene_by_probe_id(yaml_data, probe_id):
     for scene in yaml_data['scenes']:
@@ -40,7 +44,7 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber,
     doc = copy.deepcopy(template)
     
     # Get a unique medic name
-    medic_name = get_unique_medic_name(medic_collec)
+    medic_name = get_unique_medic_name(medic_collec, evalNumber)
     
     doc.update({
         'name': medic_name,
@@ -64,10 +68,14 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber,
     
     # Update all the question titles and names that reference placeholder
     for i, element in enumerate(doc['elements']):
-        if 'name' in element and 'Test medic 1' in element['name']:
-            doc['elements'][i]['name'] = element['name'].replace('Test medic 1', medic_name)
-        if 'title' in element and 'Test medic 1' in element['title']:
-            doc['elements'][i]['title'] = element['title'].replace('Test medic 1', medic_name)
+        try:
+            if 'name' in element and 'Test medic 1' in element['name']:
+                doc['elements'][i]['name'] = element['name'].replace('Test medic 1', medic_name)
+            if 'title' in element and 'Test medic 1' in element['title']:
+                doc['elements'][i]['title'] = element['title'].replace('Test medic 1', medic_name)
+        except TypeError as e:
+            print('unexpected none type when replacing template')
+            raise
 
     scenario_name = adm['scenario']
     doc['scenarioName'] = scenario_name
