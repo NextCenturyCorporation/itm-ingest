@@ -2037,7 +2037,7 @@ def version10_setup(auto_confirm=False):
             f"Added Phase 2 medic '{medic_copy['name']}' to survey"
         )
     
-    LOGGER.log(LogLevel.INFO, f"Added {medic_count} Phase 2 medics to survey version 8.0")
+    LOGGER.log(LogLevel.INFO, f"Added {medic_count} Phase 2 medics to survey version 10.0")
 
 
     # Add final page - post-scenario measures
