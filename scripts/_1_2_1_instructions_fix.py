@@ -1,0 +1,8 @@
+def main(mongo_db):
+    
+    new_html = 'Welcome to the <strong>Military Triage Delegation Experiment</strong>. Here you will have the chance to review the decisions of other medical professionals in difficult triage scenarios to assess whether you would delegate a triage situation in the future to those decision makers.<br/><br/>Each scenario is presented followed by how different medics carried out their assessment and treatment separately for that situation.\n<br/>\n<br/>\nEach list of a medic\'s decisions is then followed by a few questions to assess how you perceived the medic\'s decision-making style. <br/><br/>While you work your way through each list of a medic\'s decisions, imagine you have seen a lot of other observations of this medic, and the behavior you see here is typical for how they behave.<br/><br/> Some of the scenarios will seem familiar to you. Please note that there may be differences in the details of the situation you saw and the one you will be evaluating. Specifically, please pay careful attention to what information is revealed to the decision maker, and consider their actions only with respect to the information they were given. Do not consider any information from your experience that might be different or contradictory. <br/><br/>The survey should take about 30 minutes to complete. Thank you for your participation.'
+    
+    mongo_db['delegationConfig'].update_one(
+        {'_id': 'delegation_v10.0'},
+        {'$set': {'survey.pages.3.elements.0.html': new_html}}
+    )
