@@ -1,4 +1,4 @@
-import argparse
+import argparse, os
 import numpy as np
 import pandas as pd
 import random
@@ -6,16 +6,17 @@ from scipy.stats import pearsonr
 
 """
 For RQ2, ADMs will be run on evaluation (hold-out) probes at a variety of alignment targets to collect probe responses.
-We post-construct 25 probe sets (of 8 probes per set) based on Latin square selection.
+We post-construct N probe sets of 32 probes (8 probes per attribute) based on Latin square selection.
 This PR just creates the probe sets, and outputs a csv file with the set information as input to the ingest script
-that will collect the ADM responses from the database and run alignment comparisons.
+that will collect the ADM responses from the database and run aligned vs. baseline alignment comparison across targets
+and probe sets.
 
 This is the high-level algorithm:
 Import bucket (bin) data from Excel.
 Import probe data from Excel.
 For each attribute:
-  Repeat until you have generated NUM_SETS valid probe sets:
-    Generate an nxn Latin square where the order of the square is the number of probes in each set (PROBES_PER_SET).
+  Repeat until you have generated NUM_SETS valid 8-probe attribute-specific probe sets:
+    Generate an NxN Latin square where the order of the square is the number of probes in each set (PROBES_PER_SET).
     For each set number (i.e., condition) in the Latin square:
       Generate a coordinate set, i.e., a (row, column) coordinate of the specified condition.
       For each coordinate in the set:
@@ -23,17 +24,18 @@ For each attribute:
         Select a random probe ID from the list of probe IDs from the specified buckets, replacing those already in the set if possible, and add it to the set.
       If this probe set doesn't have PROBES_PER_SET probes (because there weren't enough probe IDs in a given medical/attribute pair),
         then supplement with a probe ID from another bucket until you have PROBES_PER_SET probes in the set.
-      If this probe set is already in the list of valid probe sets, then throw out this probe set.
-      If the medical deltas and attribute deltas are correlated, then throw out this probe set.
+      If this probe set is already in the list of valid attribute probe sets, then throw out this attribute probe set.
+      If the medical deltas and attribute deltas are correlated, then throw out this attribute probe set.
   Display the list of probes sets for this attribute to stdout (plus some accounting data).
-If requested, save the list of probe sets for all attributes to a csv file.
+If requested, combine the attribute probe sets into NUM_SETS master 4D probe sets, and save it to a csv file.
 """
 
 # These are constants that cannot be overridden via the command line
 PROBES_PER_SET = 8
-BUCKET_FILENAME = 'RQ2-buckets.xlsx'
-PROBEDATA_FILENAME = 'RQ2-probes.xlsx'
-OUTPUT_CSV_FILENAME = 'R2_generated_probesets.csv'
+EVAL_NAME = 'feb2026'
+BUCKET_FILENAME = os.path.join('phase2', EVAL_NAME, 'RQ2-buckets.xlsx')
+PROBEDATA_FILENAME = os.path.join('phase2', EVAL_NAME, 'RQ2-probes.xlsx')
+OUTPUT_CSV_FILENAME = os.path.join('phase2', EVAL_NAME, 'RQ2-probesets.csv')
 
 # These are default values that can be overridden via the command line
 NUM_SETS = 25
@@ -279,7 +281,7 @@ def generate_probe_sets(bucket_data, probe_data, attribute):
                     print(f"Warning: Discarded correlated set for setnum {setnum}: {probe_set} because {set_med_deltas} is correlated with {set_attr_deltas}")
             else:
                 probe_sets.add(probe_set)
-                print(f"Saving valid {'supplemented ' if is_supplemented else ''}probe set #{len(probe_sets)}.")
+                print(f"Saving valid {'supplemented ' if is_supplemented else ''}{attribute} probe set #{len(probe_sets)}.")
                 if VERBOSE:
                     print(f"  {probe_set}")
                 if is_supplemented:
@@ -291,18 +293,20 @@ def generate_probe_sets(bucket_data, probe_data, attribute):
 
 
 # Save probe sets for all attributes to a csv file.
-def save_probe_sets_to_csv(probe_sets, file_path):
-    headers = ['attribute'] + [f'probe{i+1}' for i in range(PROBES_PER_SET)]
-
-    # Create a list of dictionaries with the correct structure
+def save_probe_sets_to_csv(all_probe_sets, file_path):
     data = []
-    for item in probe_sets:
-        attribute = item['attribute']
-        probe_set = item['probe_set']
-        row = {'attribute': attribute}
-        for i, probe_id in enumerate(probe_set):
-            row[f'probe{i+1}'] = probe_id
-        data.append(row)
+    headers = []
+    for setnum in range(NUM_SETS):
+        data.append({})
+        for item in all_probe_sets:
+            attribute = item['attribute']
+            probe_sets = item['probe_sets']
+            probe_set = probe_sets[setnum]
+            for i, probe_id in enumerate(probe_set):
+                column_name = f'Probe-{attribute}{i+1}'
+                data[setnum][column_name] = probe_id
+                if setnum == 0: # Only write headers once
+                    headers.append(column_name)
 
     # Create a DataFrame from the list of dictionaries
     df = pd.DataFrame(data)
@@ -313,7 +317,7 @@ def save_probe_sets_to_csv(probe_sets, file_path):
 
 
 """
-Construct N probe sets (8 probes each) based on Latin square selection, for each attribute.
+Construct N probe sets of 32 probes (8 probes per attribute) based on Latin square selection.
 Displays the probe set info to stdout and outputs it to a csv file as input to a future ingest script.
 """
 def main(attribute: str):
@@ -363,15 +367,16 @@ def main(attribute: str):
         print(f"Total correlated sets: {correlated_set_count}")
         print(f"Total supplemented sets: {supplemented_set_count}")
 
-        # Convert probe sets to a list of lists for CSV writing
+        # Add attribute probe sets to the master list of probe sets
         attr_probe_sets = [[probe_id for probe_id in probe_set] for probe_set in probe_sets]
-        for probe_set in attr_probe_sets:
-            all_probe_sets.append({'attribute': attr, 'probe_set': probe_set})
+        all_probe_sets.append({'attribute': attr, 'probe_sets': attr_probe_sets})
 
+    print()
+    print(f"Recombining attribute probe sets into master list of {NUM_SETS} probe sets.")
     # Save all probe sets to a CSV file, if requested
     if WRITE_FILES:
         save_probe_sets_to_csv(all_probe_sets, OUTPUT_CSV_FILENAME)
-        print(f"Probe sets saved to {OUTPUT_CSV_FILENAME}")
+        print(f"Saving R2 probe sets to {OUTPUT_CSV_FILENAME}")
 
     print("Done!")
 
