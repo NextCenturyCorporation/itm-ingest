@@ -21,6 +21,7 @@ For each attribute:
       Generate a coordinate set, i.e., a (row, column) coordinate of the specified condition.
       For each coordinate in the set:
         Look up the list of medical and attribute deltas for the given medical/attribute bucket specified by the coordinate.
+          If a bucket is empty, choose from the previous bucket; if the first bucket is empty, choose from the next bucket.
         Select a random probe ID from the list of probe IDs from the specified buckets, replacing those already in the set if possible, and add it to the set.
       If this probe set doesn't have PROBES_PER_SET probes (because there weren't enough probe IDs in a given medical/attribute pair),
         then supplement with a probe ID from another bucket until you have PROBES_PER_SET probes in the set.
@@ -322,7 +323,7 @@ Displays the probe set info to stdout and outputs it to a csv file as input to a
 """
 def main(attribute: str):
     attributes = [attribute] if attribute else ATTRIBUTES  # Make a set of attribute(s)
-    print(f"Generating {NUM_SETS} uncorrelated probe sets for R2 for {attributes}.")
+    print(f"Generating {NUM_SETS} uncorrelated probe sets for RQ2 for {attributes}.")
 
     bucket_data = {}
     # Load medical and attribute delta bucket data
@@ -376,13 +377,13 @@ def main(attribute: str):
     # Save all probe sets to a CSV file, if requested
     if WRITE_FILES:
         save_probe_sets_to_csv(all_probe_sets, OUTPUT_CSV_FILENAME)
-        print(f"Saving R2 probe sets to {OUTPUT_CSV_FILENAME}")
+        print(f"Saving RQ2 probe sets to {OUTPUT_CSV_FILENAME}")
 
     print("Done!")
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate R2 probe sets')
+    parser = argparse.ArgumentParser(description='Generate RQ2 probe sets')
     parser.add_argument('-n', '--numsets', type=int, required=False, default=NUM_SETS,
                         help=f"Number of sets (default {NUM_SETS})")
     parser.add_argument('-a', '--attribute', required=False, default=None,
