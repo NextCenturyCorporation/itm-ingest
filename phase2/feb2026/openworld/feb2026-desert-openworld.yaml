@@ -1,0 +1,433 @@
+id: Feb2026-OW_desert
+name: Open World Desert
+state:
+  unstructured: You are the assigned Combat Medic for US forces operating in a small
+    desert village. An IED strike followed by a complex ambush has just occurred.
+    The immediate threat has been suppressed. Multiple casualties reported including
+    US personnel and local nationals. Intel suggests hostiles were wearing black clothing
+    and may also be among the wounded.
+  characters:
+  - id: Patient A
+    name: Patient A
+    unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+      1
+    medical_condition: 0.8248
+    attribute_rating: 0.3955
+  - id: Patient B
+    name: Patient B
+    unstructured: Military member of your unit with a broken left wrist, no bleeding;
+      Military 2
+    medical_condition: 0.162
+    attribute_rating: 1.0
+scenes:
+- id: Scene 1
+  next_scene: Scene 8
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their thigh. They are a local
+      civilian. Patient B has a broken left wrist, and no bleeding. They are a military
+      member of your unit. Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        1
+      medical_condition: 0.8248
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        Military 2
+      medical_condition: 0.162
+      attribute_rating: 1.0
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-OW_desert.Probe 1
+    choice: Response 1-A
+    kdma_association:
+      medical: 0.8248
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-OW_desert.Probe 1
+    choice: Response 1-B
+    kdma_association:
+      medical: 0.162
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-OW_desert.Probe 1
+- id: Scene 8
+  next_scene: Scene 3
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a military member of your unit. Patient B has moderate bleeding
+      from their shoulder. They are a civilian wearing black clothing. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Military member of your unit with moderate bleeding from their
+        torso; possible internal bleeding; Military 4
+      medical_condition: 83.77
+      attribute_rating: 1.0
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian wearing black clothing with moderate bleeding from their
+        shoulder; Attacker 2
+      medical_condition: 0.8248
+      attribute_rating: 0.3955
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-MF-OW_desert.Probe 2
+    choice: Response 2-A
+    kdma_association:
+      medical: 83.77
+      affiliation: 1.0
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-MF-OW_desert.Probe 2
+    choice: Response 2-B
+    kdma_association:
+      medical: 0.8248
+      affiliation: 0.3955
+      merit: 0.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-MF-OW_desert.Probe 2
+- id: Scene 3
+  next_scene: Scene 4
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has a foot amputation. They are a local civilian. Patient
+      B has a foot amputation. They are a military member of your unit. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with foot amputation; Civilian 3
+      medical_condition: 0.9628
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with foot amputation; Military 1
+      medical_condition: 0.9628
+      attribute_rating: 1.0
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-OW_desert.Probe 3
+    choice: Response 3-A
+    kdma_association:
+      medical: 0.9628
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-OW_desert.Probe 3
+    choice: Response 3-B
+    kdma_association:
+      medical: 0.9628
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-OW_desert.Probe 3
+- id: Scene 4
+  next_scene: Scene 6
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their thigh. They are a local
+      civilian. Patient B has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian wearing black clothing. Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        1
+      medical_condition: 0.8248
+      attribute_rating: 80.0
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian wearing black clothing with moderate bleeding from their
+        torso; possible internal bleeding; Attacker 1
+      medical_condition: 83.77
+      attribute_rating: 0.0
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-MF-OW_desert.Probe 1
+    choice: Response 1-A
+    kdma_association:
+      medical: 0.8248
+      merit: 80.0
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-MF-OW_desert.Probe 1
+    choice: Response 1-B
+    kdma_association:
+      medical: 83.77
+      merit: 0.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-MF-OW_desert.Probe 1
+- id: Scene 6
+  next_scene: Scene 2
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their thigh. They are a local
+      civilian. Patient B has moderate bleeding from their shoulder. They are a civilian
+      wearing black clothing. Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        1
+      medical_condition: 0.8248
+      attribute_rating: 0.8
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian wearing black clothing with moderate bleeding from their
+        shoulder; Attacker 2
+      medical_condition: 0.8248
+      attribute_rating: 0.0
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-MF-OW_desert.Probe 3
+    choice: Response 3-A
+    kdma_association:
+      medical: 0.8248
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-MF-OW_desert.Probe 3
+    choice: Response 3-B
+    kdma_association:
+      medical: 0.8248
+      merit: 0.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-MF-OW_desert.Probe 3
+- id: Scene 2
+  next_scene: Scene 7
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has a foot amputation. They are a local civilian. Patient
+      B has a foot amputation. They are a military member of your unit. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with foot amputation; Civilian 3
+      medical_condition: 0.9628
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with foot amputation; Military 5
+      medical_condition: 0.9628
+      attribute_rating: 1.0
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-OW_desert.Probe 2
+    choice: Response 2-A
+    kdma_association:
+      medical: 0.9628
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-OW_desert.Probe 2
+    choice: Response 2-B
+    kdma_association:
+      medical: 0.9628
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-OW_desert.Probe 2
+- id: Scene 7
+  next_scene: Scene 5
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian wearing black clothing. Patient B has a broken
+      left wrist, no bleeding. They are a military member of your unit. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Civilian wearing black clothing with moderate bleeding from their
+        torso; possible internal bleeding; Attacker 1
+      medical_condition: 83.77
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        Military 2
+      medical_condition: 0.162
+      attribute_rating: 1.0
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-AF-MF-OW_desert.Probe 1
+    choice: Response 1-A
+    kdma_association:
+      medical: 83.77
+      affiliation: 0.3955
+      merit: 0.0
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-AF-MF-OW_desert.Probe 1
+    choice: Response 1-B
+    kdma_association:
+      medical: 0.162
+      affiliation: 1.0
+      merit: 0.8
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-AF-MF-OW_desert.Probe 1
+- id: Scene 5
+  next_scene: __END_SCENARIO__
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian wearing black clothing. Patient B has moderate
+      bleeding from their torso; possible internal bleeding. They are a local civilian.
+      Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Civilian wearing black clothing with moderate bleeding from their
+        torso; possible internal bleeding; Attacker 1
+      medical_condition: 83.77
+      attribute_rating: 0.0
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian with moderate bleeding from their torso; possible internal
+        bleeding; Civilian 2
+      medical_condition: 83.77
+      attribute_rating: 0.8
+    threat_state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        small desert village. An IED strike followed by a complex ambush has just
+        occurred. The immediate threat has been suppressed. Multiple casualties reported
+        including US personnel and local nationals. Intel suggests hostiles were wearing
+        black clothing and may also be among the wounded.
+      threats: []
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Feb2026-MF-OW_desert.Probe 2
+    choice: Response 2-A
+    kdma_association:
+      medical: 83.77
+      merit: 0.0
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Feb2026-MF-OW_desert.Probe 2
+    choice: Response 2-B
+    kdma_association:
+      medical: 83.77
+      merit: 0.8
+    character_id: Patient B
+  transitions:
+    probes:
+    - Feb2026-MF-OW_desert.Probe 2
