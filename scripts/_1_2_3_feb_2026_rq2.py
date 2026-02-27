@@ -27,7 +27,7 @@ TA1_NAME = 'adept'
 ADEPT_URL = config("ADEPT_URL")
 HIT_TA1_SERVER = True # Useful for testing or if you can't reach the TA1 server
 PROBES_PER_SET = 8
-PROBESET_CSV_FILE = os.path.join('phase2', EVALUATION_TYPE, 'RQ2-probesets.csv')
+PROBESET_CSV_FILE = os.path.join('phase2', EVALUATION_TYPE.lower(), 'RQ2-probesets.csv')
 
 # These are default values that can be overridden via the command line
 NUM_SUBSETS = 25
