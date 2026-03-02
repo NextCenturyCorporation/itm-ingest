@@ -259,6 +259,7 @@ def create_4D_adm(mongo_db, probe_sets: list, alignment_target: str):
         print(f"Adding Fake ADM: {fake_adm_run}")
     if (WRITE_TO_DB):
         adm_collection = mongo_db['admTargetRuns']
+        adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': "Fake ADM"})
         adm_collection.insert_one(fake_adm_run)
 
 
