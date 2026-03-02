@@ -16,9 +16,8 @@ ADEPT_URL = config("ADEPT_URL")
 
 
 def main(mongo_db):
-   text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 8}})
-   comparison_collec = mongo_db["humanToADMComparison"].find({"evalNumber": {"$gte": 8}})
-   adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": {"$gte": 8}})
+   text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 15}})
+   adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": {"$gte": 15}})
 
    # group text scenarios by pid
    participant_groups = defaultdict(list)
@@ -26,51 +25,82 @@ def main(mongo_db):
        participant_groups[result["participantID"]].append(result)
 
    for participant_id, documents in participant_groups.items():
-       if len(documents) != 4:
+       if len(documents) < 4:
            print(
                f"Warning: Participant {participant_id} has {len(documents)} documents instead of 4"
            )
            continue
 
-       # creates new session id and responds to all probes using it
-       sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
-       for idx, document in enumerate(documents, 1):
-           old_sid = document.get("combinedSessionId")
-           probes = []
-           for key, value in document.items():
-               if isinstance(value, dict) and "questions" in value:
-                   probe = value["questions"].get(f"probe {key}", {})
-                   response = probe.get("response", "").replace(".", "")
-                   mapping = probe.get("question_mapping", {})
-                   if response in mapping:
-                       probes.append(
-                           {
-                               "probe": {
-                                   "choice": mapping[response]["choice"],
-                                   "probe_id": mapping[response]["probe_id"],
-                               }
-                           }
-                       )
-           
-           db_utils.send_probes(
-               f"{ADEPT_URL}api/v1/response", probes, sid, document["scenario_id"]
-           )
-           
-           # update the session id on the text based documents
-           mongo_db["userScenarioResults"].update_one(
-               {"_id": document["_id"]}, {"$set": {"combinedSessionId": sid}}
-           )
+       # Separate documents into eval 15 groups: PS+AF share one session, MF+SS share another
+       ps_af_docs = [d for d in documents if any(x in d.get("scenario_id", "") for x in ["PS", "AF"])]
+       mf_ss_docs = [d for d in documents if any(x in d.get("scenario_id", "") for x in ["MF", "SS"])]
+       mf_docs = [d for d in documents if "MF" in d.get("scenario_id", "")]
 
+       if len(ps_af_docs) != 2 or len(mf_ss_docs) != 2:
+           print(
+               f"Warning: Participant {participant_id} does not have expected PS/AF and MF/SS groupings. "
+               f"PS/AF: {len(ps_af_docs)}, MF/SS: {len(mf_ss_docs)}"
+           )
+           continue
+
+       # --- PS+AF combined session ---
+       ps_af_sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
+       for document in ps_af_docs:
+           old_sid = document.get("combinedSessionId")
+           probes = extract_probes(document)
+           db_utils.send_probes(
+               f"{ADEPT_URL}api/v1/response", probes, ps_af_sid, document["scenario_id"]
+           )
+           mongo_db["userScenarioResults"].update_one(
+               {"_id": document["_id"]}, {"$set": {"combinedSessionId": ps_af_sid}}
+           )
            if old_sid:
-               # update the text session id in humanToADMComparison
                mongo_db["humanToADMComparison"].update_many(
-                    {"text_session_id": old_sid},
-                    {"$set": {"text_session_id": sid}}
-                )
+                   {"text_session_id": old_sid},
+                   {"$set": {"text_session_id": ps_af_sid}}
+               )
+
+       # --- MF+SS combined session ---
+       mf_ss_sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
+       for document in mf_ss_docs:
+           old_sid = document.get("combinedSessionId")
+           probes = extract_probes(document)
+           db_utils.send_probes(
+               f"{ADEPT_URL}api/v1/response", probes, mf_ss_sid, document["scenario_id"]
+           )
+           mongo_db["userScenarioResults"].update_one(
+               {"_id": document["_id"]}, {"$set": {"combinedSessionId": mf_ss_sid}}
+           )
+           if old_sid:
+               mongo_db["humanToADMComparison"].update_many(
+                   {"text_session_id": old_sid},
+                   {"$set": {"text_session_id": mf_ss_sid}}
+               )
+
+       # --- MF individual session ---
+       for document in mf_docs:
+           old_individual_sid = document.get("individualSessionId")
+           mf_individual_sid = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
+           probes = extract_probes(document)
+           db_utils.send_probes(
+               f"{ADEPT_URL}api/v1/response", probes, mf_individual_sid, document["scenario_id"]
+           )
+           mongo_db["userScenarioResults"].update_one(
+               {"_id": document["_id"]}, {"$set": {"individualSessionId": mf_individual_sid}}
+           )
+           if old_individual_sid:
+               mongo_db["humanToADMComparison"].update_many(
+                   {"text_session_id": old_individual_sid},
+                   {"$set": {"text_session_id": mf_individual_sid}}
+               )
 
    for adm_run in adm_runs:
         # skip over the synthetic runs
         if 'history' not in adm_run:
+            continue
+
+        # delegation adm runs
+        if 'observe' not in adm_run.get("scenario", "").lower():
             continue
 
         old_session_id = adm_run.get("results", {}).get("ta1_session_id", "")
@@ -127,6 +157,25 @@ def main(mongo_db):
                 {"adm_session_id": old_session_id},
                 {"$set": {"adm_session_id": sid}}
             )
+
+
+def extract_probes(document):
+    probes = []
+    for key, value in document.items():
+        if isinstance(value, dict) and "questions" in value:
+            probe = value["questions"].get(f"probe {key}", {})
+            response = probe.get("response", "").replace(".", "")
+            mapping = probe.get("question_mapping", {})
+            if response in mapping:
+                probes.append(
+                    {
+                        "probe": {
+                            "choice": mapping[response]["choice"],
+                            "probe_id": mapping[response]["probe_id"],
+                        }
+                    }
+                )
+    return probes
 
 
 if __name__ == "__main__":
