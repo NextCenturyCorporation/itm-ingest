@@ -30,7 +30,11 @@ def main(mongoDB, EVAL_NUMBER=8):
         current_text_scenario += 1
 
         scenario_id = entry.get('scenario_id')
-        session_id = entry.get('combinedSessionId')
+        if EVAL_NUMBER == 15:
+            is_individual_mf = 'MF' in scenario_id and 'SS' not in scenario_id
+            session_id = entry.get('individualSessionId') if is_individual_mf else entry.get('combinedSessionId')
+        else:
+            session_id = entry.get('combinedSessionId')
         pid = entry.get('participantID')
         survey = list(delegation_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid}))
         if len(survey) == 0:
