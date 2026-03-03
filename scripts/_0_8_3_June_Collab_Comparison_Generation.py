@@ -46,8 +46,19 @@ def main(mongoDB, EVAL_NUMBER=8):
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
                 scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
-                if scenario_attribute is None or scenario_attribute not in page_scenario:
+
+                if EVAL_NUMBER == 15:
+                    if is_individual_mf:
+                        if 'MF' not in page_scenario or 'SS' in page_scenario:
+                            continue
+                    else:
+                        if scenario_attribute is None or scenario_attribute not in page_scenario:
+                            continue
+                        if 'MF' in page_scenario and 'SS' not in page_scenario:
+                            continue
+                elif scenario_attribute is None or scenario_attribute not in page_scenario:
                     continue
+
                 if EVAL_NUMBER != 10:
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
