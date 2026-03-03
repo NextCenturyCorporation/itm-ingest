@@ -47,7 +47,6 @@ def main(mongoDB, EVAL_NUMBER=8):
                 page_scenario = survey['results'][page]['scenarioIndex']
                 scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
                 if scenario_attribute is None or scenario_attribute not in page_scenario:
-                    print(f'Skipping comparison between {scenario_attribute} text file and {page_scenario} survey page')
                     continue
                 if EVAL_NUMBER != 10:
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
