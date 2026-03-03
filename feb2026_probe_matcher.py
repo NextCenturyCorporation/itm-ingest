@@ -3,7 +3,6 @@
 # Feb 2026 Probe Matcher (Open World)
 # - Handles Feb 2026 OW Desert/Urban files
 # - Robust to participantId being non-numeric (e.g., "test"), while still treating numeric PIDs as ints when needed
-# - Fixes InjuryTreatmentComplete parsing bug (string "False" previously evaluated truthy)
 # - Derives required procedures + triage ground truth from CSV (PATIENT_RECORD / INJURY_RECORD) instead of hardcoding
 # - Adds --testdata mode so repo fixtures can be processed without Mongo participantLog/date gating
 #
