@@ -42,4 +42,4 @@ def main(mongo_db):
     print(f"Updated PID to {correct_pid} and set admChoiceProcess to 'exempt' on {len(choice_process_updates)} pages for document {wrong_pid_doc_id}")
 
 
-    #gen_comp(mongo_db, 15)
+    gen_comp(mongo_db, 15)
