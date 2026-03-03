@@ -86,7 +86,7 @@ scenes:
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
         torso; possible internal bleeding; Military 4
-      medical_condition: 83.77
+      medical_condition: 0.8377
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
@@ -109,7 +109,7 @@ scenes:
     probe_id: Feb2026-AF-MF-OW_desert.Probe 2
     choice: Response 2-A
     kdma_association:
-      medical: 83.77
+      medical: 0.8377
       affiliation: 1.0
       merit: 0.8
   - action_id: treat_patient_b
@@ -189,12 +189,12 @@ scenes:
       unstructured: Local civilian with moderate bleeding from their thigh; Civilian
         1
       medical_condition: 0.8248
-      attribute_rating: 80.0
+      attribute_rating: 0.8
     - id: Patient B
       name: Patient B
       unstructured: Civilian wearing black clothing with moderate bleeding from their
         torso; possible internal bleeding; Attacker 1
-      medical_condition: 83.77
+      medical_condition: 0.8377
       attribute_rating: 0.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -212,14 +212,14 @@ scenes:
     choice: Response 1-A
     kdma_association:
       medical: 0.8248
-      merit: 80.0
+      merit: 0.8
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
     probe_id: Feb2026-MF-OW_desert.Probe 1
     choice: Response 1-B
     kdma_association:
-      medical: 83.77
+      medical: 0.8377
       merit: 0.0
     character_id: Patient B
   transitions:
@@ -340,7 +340,7 @@ scenes:
       name: Patient A
       unstructured: Civilian wearing black clothing with moderate bleeding from their
         torso; possible internal bleeding; Attacker 1
-      medical_condition: 83.77
+      medical_condition: 0.8377
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
@@ -363,7 +363,7 @@ scenes:
     probe_id: Feb2026-AF-MF-OW_desert.Probe 1
     choice: Response 1-A
     kdma_association:
-      medical: 83.77
+      medical: 0.8377
       affiliation: 0.3955
       merit: 0.0
   - action_id: treat_patient_b
@@ -394,13 +394,13 @@ scenes:
       name: Patient A
       unstructured: Civilian wearing black clothing with moderate bleeding from their
         torso; possible internal bleeding; Attacker 1
-      medical_condition: 83.77
+      medical_condition: 0.8377
       attribute_rating: 0.0
     - id: Patient B
       name: Patient B
       unstructured: Civilian with moderate bleeding from their torso; possible internal
         bleeding; Civilian 2
-      medical_condition: 83.77
+      medical_condition: 0.8377
       attribute_rating: 0.8
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -417,7 +417,7 @@ scenes:
     probe_id: Feb2026-MF-OW_desert.Probe 2
     choice: Response 2-A
     kdma_association:
-      medical: 83.77
+      medical: 0.8377
       merit: 0.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -425,7 +425,7 @@ scenes:
     probe_id: Feb2026-MF-OW_desert.Probe 2
     choice: Response 2-B
     kdma_association:
-      medical: 83.77
+      medical: 0.8377
       merit: 0.8
     character_id: Patient B
   transitions:
