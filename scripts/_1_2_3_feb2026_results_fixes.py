@@ -24,14 +24,22 @@ def main(mongo_db):
     wrong_pid_doc_id = '6999f2f7b2fa81755e9c25e0'
     correct_pid = '202602123'
 
+    # mark exempt
+    doc = survey_collection.find_one({'_id': ObjectId(wrong_pid_doc_id)})
+    choice_process_updates = {}
+    for page_key, page_val in doc['results'].items():
+        if isinstance(page_val, dict) and 'admChoiceProcess' in page_val:
+            choice_process_updates[f'results.{page_key}.admChoiceProcess'] = 'exempt'
+
     survey_collection.update_one(
         {'_id': ObjectId(wrong_pid_doc_id)},
         {'$set': {
             'results.pid': correct_pid,
-            'results.Participant ID Page.questions.Participant ID.response': correct_pid
+            'results.Participant ID Page.questions.Participant ID.response': correct_pid,
+            **choice_process_updates
         }}
     )
-    print(f"Updated PID to {correct_pid} for document {wrong_pid_doc_id}")
+    print(f"Updated PID to {correct_pid} and set admChoiceProcess to 'exempt' on {len(choice_process_updates)} pages for document {wrong_pid_doc_id}")
 
 
     #gen_comp(mongo_db, 15)
