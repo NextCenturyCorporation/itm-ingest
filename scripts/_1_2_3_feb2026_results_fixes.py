@@ -1,4 +1,5 @@
 from scripts._0_8_3_June_Collab_Comparison_Generation import main as gen_comp
+from ph2_repop import main as ph2_repop_main
 from bson import ObjectId
 def main(mongo_db):
     # spurious incomplete/empty survey documents messing with results
@@ -41,5 +42,10 @@ def main(mongo_db):
     )
     print(f"Updated PID to {correct_pid} and set admChoiceProcess to 'exempt' on {len(choice_process_updates)} pages for document {wrong_pid_doc_id}")
 
+    extra_docs = ['6997a28bb5badd0c859fb76a', '6997a28bb5badd7aa49fb768', '699b01ff5952a61ff2f6bdf1', '699b01ff5952a62e2cf6bdef']
+    result = text_scenario_collection.delete_many({
+        '_id': {'$in': [ObjectId(id) for id in extra_docs]}
+    })
 
+    ph2_repop_main(mongo_db)
     gen_comp(mongo_db, 15)
