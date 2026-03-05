@@ -35,7 +35,7 @@ CALC_KDMAS = True
 VERBOSE = False
 
 DEFAULT_EVAL_PREFIX = "feb2026"
-DEFAULT_EVAL_NAME = "Phase II February 2026 Evaluation"
+DEFAULT_EVAL_NAME = "February 2026 Evaluation"
 DEFAULT_EVAL_NUM = 15  # You can override via CLI; keep numeric for dashboards if needed.
 
 ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
