@@ -144,13 +144,15 @@ def giveFullScenario(scenario):
     
     return scenario
 
+session = requests.Session()
+
 def send_probes(probe_url, probes, sid, scenario):
     '''
     Sends the probes to the server
     '''
     for x in probes:
         if 'probe' in x and 'choice' in x['probe']:
-            send = requests.post(probe_url, json={
+            session.post(probe_url, json={
                 "response": {
                     "choice": x['probe']['choice'],
                     "justification": "justification",
