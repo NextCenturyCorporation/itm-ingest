@@ -47,5 +47,4 @@ def main(mongo_db):
         '_id': {'$in': [ObjectId(id) for id in extra_docs]}
     })
 
-    ph2_repop_main(mongo_db)
     gen_comp(mongo_db, 15)
