@@ -414,12 +414,33 @@ class ProbeMatcher:
         engagement_actions = {"Pulse", "Treatment", "Tag"}
         action_list: list = [a for a in self.json_data.get("actionList", []) if a.get("actionType") in engagement_actions]
 
+        def _norm_casualty_name(name: str) -> str:
+            if not name:
+                return ""
+            n = str(name).strip()
+
+            # YAML tends to be "Military 2" / "Attacker 1"
+            # JSON often prefixes with "US " (e.g., "US Military 2")
+            if n.lower().startswith("us "):
+                n = n[3:].lstrip()
+
+            # If any logs include this suffix in some pipelines
+            n = n.split(" Root")[0].strip()
+
+            return n
+
         def first_engaged(characters: List[str]) -> Optional[str]:
+            # Normalize YAML candidate names once
+            candidates = {_norm_casualty_name(ch) for ch in characters}
+
             for a in action_list:
-                casualty = a.get("casualty")
-                for ch in characters:
-                    if casualty == ch:
-                        return ch
+                casualty = _norm_casualty_name(a.get("casualty", ""))
+                if casualty in candidates:
+                    # return the *original* character label from `characters`
+                    # (so response_map lookup still works)
+                    for ch in characters:
+                        if _norm_casualty_name(ch) == casualty:
+                            return ch
             return None
 
         probes: list = []
