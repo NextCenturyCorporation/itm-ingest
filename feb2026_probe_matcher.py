@@ -923,7 +923,7 @@ class ProbeMatcher:
                 text_response = None
 
             if text_response is None:
-                self.logger.log(LogLevel.WARN, f"Error getting text KDMAs for pid {self.participant_id}.")
+                self.logger.log(LogLevel.WARN, f"Error getting text KDMAs from database for pid {self.participant_id}.")
                 for kdma in KDMA_MAP.values():
                     text_kdma_results[f"Participant Text {kdma} KDMA"] = ""
             else:
