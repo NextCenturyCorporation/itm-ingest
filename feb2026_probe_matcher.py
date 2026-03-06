@@ -409,7 +409,7 @@ class ProbeMatcher:
                     probe_map[probe_id] = response_map
 
         # Engagement actions in Feb JSON are Pulse/Treatment/Tag
-        engagement_actions = {"Pulse", "Treatment", "Tag"}
+        engagement_actions = {"Pulse", "Treatment", "Tag", "DisarmPatientWeapon", "Question"}
         action_list: list = [a for a in self.json_data.get("actionList", []) if a.get("actionType") in engagement_actions]
 
         def _norm_casualty_name(name: str) -> str:
