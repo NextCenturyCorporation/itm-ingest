@@ -280,7 +280,7 @@ def main(mongo_db):
         for adm_name in BAD_ADMS:
             adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': adm_name})
         adm_collection.update_one(
-                {'_id': ORPHAN_ADM['old_name']},
+                {'adm_name': ORPHAN_ADM['old_name']},
                 {'$set': {
                     'adm_name': ORPHAN_ADM['new_name'],
                     'evaluation.adm_name': ORPHAN_ADM['new_name']
