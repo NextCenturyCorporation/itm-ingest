@@ -233,43 +233,6 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
         print(f"{total_synthetic_adm_runs} synthetic ADM runs NOT uploaded to database.")
 
 
-def create_4D_adm(mongo_db, probe_sets: list, alignment_target: str):
-    all_history = []
-    sent_probes = []
-    # Iterate through probe sets, adding a probe_id/choice pair to sent_probes for each probe and Respond to TA1 command to history
-    for probe_set in probe_sets:
-        for probe_id in probe_set:
-            patient = random.choice(['A', 'B'])
-            response = f"Response {probe_id.split()[-1]}-{patient}"
-            sent_probes.append({'probe_id': probe_id, 'choice': response})
-            params = {'session_id': 'my_ta1_id', 'scenario_id': 'Feb2026-eval', 'probe_id': probe_id,
-                      'choice': response, 'action_id': f"treat_patient_{patient.lower()}", 'justification': 'Fake ADM Justification'}
-            history = {'command': 'Respond to TA1 Probe', 'parameters': params, 'response': None}
-            all_history.append(history)
-
-    evaluation: dict = {'evalName': EVALUATION_NAME,
-                        'evalNumber': EVAL_NUM,
-                        'scenario_name': 'Full Evaluation Set',
-                        'scenario_id': 'Feb2026-eval',
-                        'alignment_target_id': alignment_target,
-                        'adm_name': "Fake ADM",
-                        'adm_profile': 'aligned',
-                        'domain': DOMAIN,
-                        'start_time': 'yesterday',
-                        'end_time': 'today',
-                        'ta1_name': TA1_NAME,
-                        'ta3_session_id': 'aligned_ta3_id'}
-    results: dict = {'ta1_session_id': 'aligned_ta1_id', 'alignment_score': 'Not requested', 'kdmas': None}
-    fake_adm_run: dict = {'evaluation': evaluation, 'results': results, 'history': all_history, 'adm_name': "Fake ADM",
-                     'scenario': 'Feb2026-eval', 'alignment_target': alignment_target, 'evalNumber': EVAL_NUM,
-                     'probes': sent_probes, 'evalName': EVALUATION_NAME}
-
-    if VERBOSE:
-        print(f"Adding Fake ADM: {fake_adm_run}")
-    if WRITE_TO_DB:
-        mongo_db['admTargetRuns'].insert_one(fake_adm_run)
-
-
 def main(mongo_db):
     print('\nReading probe sets from csv...')
     probe_sets: list = read_probe_sets()
@@ -288,11 +251,6 @@ def main(mongo_db):
             )
 
     print('Getting ADM data from full Evaluation run...')
-    if WRITE_TO_DB:
-        adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': "Fake ADM"})
-    create_4D_adm(mongo_db, probe_sets, 'Feb2026-AF1-MF1-PS1-SS1')
-    create_4D_adm(mongo_db, probe_sets, 'Feb2026-AF2-MF2-PS2-SS2')
-    create_4D_adm(mongo_db, probe_sets, 'Feb2026-AF3-MF3-PS3-SS3')
     load_adm_data(mongo_db)
 
     # Clear out any previous run
