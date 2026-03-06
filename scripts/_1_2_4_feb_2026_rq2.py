@@ -42,6 +42,12 @@ all_adm_data: list = []
 # e.g., [{'adm_name': 'baseline', 'alignment_target_id': 'ADEPT-July2025-affiliation-0.3', 'scenario_id': 'July2025-AFr12-eval',
 #                'probe_responses': {'Probe 1': "Response 1-A", ... }, {'adm_name': 'aligned', ... }]
 
+BAD_ADMS = ['ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__6a3e924b-967d-4498-bcb7-48f0b7dd24d2',
+            'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__abfac2e1-3dba-44c7-8241-b32cce5e2280',
+            'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-spectrum-Llama-3.1-8B-v1__c23e5b3a-806c-4237-a24c-f73ee2090911',
+            'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-spectrum-Qwen3-14B-v1__8da2a3ca-85a6-4a76-ac17-aac19409a7b5',
+            'ALIGN-ADM-Ph2-ComparativeRegression-BertRelevance-spectrum-Qwen3-14B-v1__af9cc020-e0ea-4346-a8ee-dd60241b3327'
+            ]
 
 @dataclass
 class Adm_data:
@@ -216,7 +222,7 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
             total_synthetic_adm_runs += 1
             all_synthethic_adm_runs.append(synthethic_adm_run)
 
-    if (WRITE_TO_DB):
+    if WRITE_TO_DB:
         result = adm_collection.insert_many(all_synthethic_adm_runs)
         if total_synthetic_adm_runs != len(result.inserted_ids):
             print(f'Total runs mismatch: expected {total_synthetic_adm_runs} but wrote {len(result.inserted_ids)} documents to database instead.')
@@ -257,18 +263,23 @@ def create_4D_adm(mongo_db, probe_sets: list, alignment_target: str):
 
     if VERBOSE:
         print(f"Adding Fake ADM: {fake_adm_run}")
-    if (WRITE_TO_DB):
-        adm_collection = mongo_db['admTargetRuns']
-        adm_collection.insert_one(fake_adm_run)
+    if WRITE_TO_DB:
+        mongo_db['admTargetRuns'].insert_one(fake_adm_run)
 
 
 def main(mongo_db):
     print('\nReading probe sets from csv...')
     probe_sets: list = read_probe_sets()
 
+    adm_collection = mongo_db['admTargetRuns']
+    if WRITE_TO_DB:
+        print('Deleting some bad/aborted ADMs.')
+        for adm_name in BAD_ADMS:
+            adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': adm_name})
+
     print('Getting ADM data from full Evaluation run...')
-    if (WRITE_TO_DB):
-        mongo_db['admTargetRuns'].delete_many({'evalNumber': EVAL_NUM, 'adm_name': "Fake ADM"})
+    if WRITE_TO_DB:
+        adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': "Fake ADM"})
     create_4D_adm(mongo_db, probe_sets, 'Feb2026-AF1-MF1-PS1-SS1')
     create_4D_adm(mongo_db, probe_sets, 'Feb2026-AF2-MF2-PS2-SS2')
     create_4D_adm(mongo_db, probe_sets, 'Feb2026-AF3-MF3-PS3-SS3')
@@ -276,7 +287,7 @@ def main(mongo_db):
 
     # Clear out any previous run
     if WRITE_TO_DB:
-        mongo_db['admTargetRuns'].delete_many({'evalNumber': EVAL_NUM, 'synthetic': True})
+        adm_collection.delete_many({'evalNumber': EVAL_NUM, 'synthetic': True})
 
     print(f"\nCreating synthetic ADM runs.")
     create_synthetic_adm_runs(mongo_db, probe_sets)
