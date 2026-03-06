@@ -45,8 +45,6 @@ KDMA_MAP = {
     "merit": "MF",
     "personal_safety": "PS",
     "search": "SS",
-    "Moral judgement": "MJ",
-    "Ingroup Bias": "IO",
 }
 
 # These are used to derive expected tag colors (ground truth) from PATIENT_RECORD triage level.
