@@ -36,7 +36,9 @@ VERBOSE = False
 
 DEFAULT_EVAL_PREFIX = "feb2026"
 DEFAULT_EVAL_NAME = "February 2026 Evaluation"
-DEFAULT_EVAL_NUM = 15  # You can override via CLI; keep numeric for dashboards if needed.
+DEFAULT_EVAL_NUM = (
+    15  # You can override via CLI; keep numeric for dashboards if needed.
+)
 
 ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
 
@@ -59,6 +61,30 @@ TRIAGE_LEVEL_TO_TAG_COLOR = {
 # Procedures considered "hemorrhage control" for the hemorrhage metric.
 HEMORRHAGE_CONTROL_PROCS = {"tourniquet", "woundpack", "israeliWrap"}
 
+EVAC_ANSWER_TO_PATIENT = {
+    "desert": {
+        "Mil Amputation Big Building": "US Military 1",
+        "Mil Amputation Small Building": "US Military 5",
+        "Mil Wrist Broken": "US Military 2",
+        "Mil Chest Puncture": "US Military 3",
+        "Mil Stomach Puncture": "US Military 4",
+        "Civilian Thigh Laceration": "Civilian 1",
+        "Civilian Stomach Puncture": "Civilian 2",
+        "Civilian Amputation": "Civilian 3",
+        "Attacker Stomach Puncture": "Attacker 1",
+        "Attacker Shoulder Puncture": "Attacker 2",
+    },
+    "urban": {
+        "Mil Bicep Puncture": "US Military 1",
+        "Mil Discharged Weapon Stomach Puncture": "US Military 2",
+        "Civilian Broken Wrist": "Civilian 1",
+        "Shooter Shoulder Puncture": "Shooter 1",
+        "Mil Thigh Puncture": "US Military 3",
+        "Civilian Chest Puncture": "Civilian 2",
+        "Civilian Stomach Puncture": "Civilian 3",
+        "Mil Stomach Puncture": "US Military 4",
+    },
+}
 
 # -------------------------
 # Mongo Globals (set in main)
@@ -94,7 +120,9 @@ def _parse_action_iso_to_epoch_ms(iso_str: str) -> Optional[int]:
     JSON actionList timestamp is commonly ISO Zulu, e.g. 2026-02-19T16:42:39.123Z
     """
     try:
-        return int(datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp() * 1000)
+        return int(
+            datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp() * 1000
+        )
     except Exception:
         try:
             return int(dateparser.parse(iso_str).timestamp() * 1000)
@@ -139,7 +167,11 @@ def _find_csv_for_run(json_path: str) -> Optional[str]:
         if os.path.isfile(c):
             return c
 
-    csvs = [os.path.join(run_dir, f) for f in os.listdir(run_dir) if f.lower().endswith(".csv")]
+    csvs = [
+        os.path.join(run_dir, f)
+        for f in os.listdir(run_dir)
+        if f.lower().endswith(".csv")
+    ]
     if len(csvs) == 1:
         return csvs[0]
     return None
@@ -174,8 +206,14 @@ def _infer_env_from_json(json_data: dict) -> Optional[str]:
     Returns "desert" / "urban" if it can infer it, else None.
     """
     # Prefer scenario name / narrative description
-    name = str(json_data.get("configData", {}).get("scenarioData", {}).get("name", "")).lower()
-    narrative = str(json_data.get("configData", {}).get("narrative", {}).get("narrativeDescription", "")).lower()
+    name = str(
+        json_data.get("configData", {}).get("scenarioData", {}).get("name", "")
+    ).lower()
+    narrative = str(
+        json_data.get("configData", {})
+        .get("narrative", {})
+        .get("narrativeDescription", "")
+    ).lower()
 
     blob = f"{name} {narrative}"
     if "desert" in blob:
@@ -242,7 +280,9 @@ class ProbeMatcher:
 
         # Filter tutorial / no-actions
         if _is_tutorial(self.json_data):
-            self.logger.log(LogLevel.CRITICAL_INFO, "Tutorial level, not processing data")
+            self.logger.log(
+                LogLevel.CRITICAL_INFO, "Tutorial level, not processing data"
+            )
             return
         if len(self.json_data.get("actionList", [])) <= 1:
             self.logger.log(LogLevel.WARN, "No actions taken")
@@ -250,7 +290,9 @@ class ProbeMatcher:
 
         # Timestamp from first action
         first_ts = self.json_data["actionList"][0].get("timestamp")
-        self.timestamp_ms = _parse_action_iso_to_epoch_ms(first_ts) if first_ts else None
+        self.timestamp_ms = (
+            _parse_action_iso_to_epoch_ms(first_ts) if first_ts else None
+        )
         if self.timestamp_ms is None and first_ts:
             self.logger.log(
                 LogLevel.WARN,
@@ -267,15 +309,27 @@ class ProbeMatcher:
         self.participant_id_int = int(pid) if _is_numeric_pid(pid) else None
 
         # Participant log gating (skip in testdata mode)
-        if not self.testdata_mode and participant_log_collection is not None and self.participant_id_int is not None:
-            self.pid_in_log = participant_log_collection.count_documents({"ParticipantID": self.participant_id_int}) > 0
+        if (
+            not self.testdata_mode
+            and participant_log_collection is not None
+            and self.participant_id_int is not None
+        ):
+            self.pid_in_log = (
+                participant_log_collection.count_documents(
+                    {"ParticipantID": self.participant_id_int}
+                )
+                > 0
+            )
         else:
             self.pid_in_log = False
 
         # Determine environment
         env = _infer_env_from_json(self.json_data)
         if env is None:
-            self.logger.log(LogLevel.WARN, "Unable to infer environment (desert/urban) from JSON; skipping.")
+            self.logger.log(
+                LogLevel.WARN,
+                "Unable to infer environment (desert/urban) from JSON; skipping.",
+            )
             return
 
         self.environment_short = "Desert" if env == "desert" else "Urban"
@@ -286,7 +340,10 @@ class ProbeMatcher:
         try:
             os.makedirs(f"output_{self.eval_prefix}", exist_ok=True)
         except Exception:
-            self.logger.log(LogLevel.ERROR, f"Could not create output directory output_{self.eval_prefix}")
+            self.logger.log(
+                LogLevel.ERROR,
+                f"Could not create output directory output_{self.eval_prefix}",
+            )
 
         out_name = os.path.join(
             f"output_{self.eval_prefix}",
@@ -297,7 +354,9 @@ class ProbeMatcher:
         self.output_ow = open(out_name, "w", encoding="utf-8")
 
         # Load YAML
-        yaml_filename = os.path.join("phase2", self.eval_prefix, "openworld", self.environment_yaml)
+        yaml_filename = os.path.join(
+            "phase2", self.eval_prefix, "openworld", self.environment_yaml
+        )
         try:
             if VERBOSE:
                 self.logger.log(LogLevel.INFO, f"Opening {yaml_filename}")
@@ -306,7 +365,9 @@ class ProbeMatcher:
         except Exception as e:
             self.logger.log(
                 LogLevel.ERROR,
-                "Error loading open world yaml file. Ensure it's valid YAML and exists.\n\n" + str(e) + "\n",
+                "Error loading open world yaml file. Ensure it's valid YAML and exists.\n\n"
+                + str(e)
+                + "\n",
             )
             self.ow_yaml = None
 
@@ -321,7 +382,11 @@ class ProbeMatcher:
                 pass
 
     def is_ready(self) -> bool:
-        return bool(self.environment_yaml) and self.json_data is not None and self.ow_yaml is not None
+        return (
+            bool(self.environment_yaml)
+            and self.json_data is not None
+            and self.ow_yaml is not None
+        )
 
     def clean_json(self):
         actions = self.json_data.get("actionList", [])
@@ -332,7 +397,9 @@ class ProbeMatcher:
             a = actions[i]
             b = actions[i + 1]
             if a.get("actionType") in ["Breathing", "Pulse"]:
-                if b.get("actionType") == a.get("actionType") and b.get("casualty") == a.get("casualty"):
+                if b.get("actionType") == a.get("actionType") and b.get(
+                    "casualty"
+                ) == a.get("casualty"):
                     continue
             new_actions.append(a)
         new_actions.append(actions[-1])
@@ -341,14 +408,22 @@ class ProbeMatcher:
     # -------------------------
     # TA1 / ADEPT KDMA calls
     # -------------------------
-    def get_ta1_calculations(self, scenario_id: str, probes: list) -> Tuple[Optional[str], Optional[list]]:
+    def get_ta1_calculations(
+        self, scenario_id: str, probes: list
+    ) -> Tuple[Optional[str], Optional[list]]:
         if not probes:
             return None, None
         if not ADEPT_URL or ADEPT_URL == "/":
-            self.logger.log(LogLevel.WARN, "ADEPT_URL not set; skipping KDMA computation.")
+            self.logger.log(
+                LogLevel.WARN, "ADEPT_URL not set; skipping KDMA computation."
+            )
             return None, None
         try:
-            session_id = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', "").strip()
+            session_id = (
+                requests.post(f"{ADEPT_URL}api/v1/new_session")
+                .text.replace('"', "")
+                .strip()
+            )
             if VERBOSE:
                 self.logger.log(LogLevel.INFO, f"--> Sending probes: {probes}")
             for probe in probes:
@@ -370,7 +445,9 @@ class ProbeMatcher:
                 timeout=30,
             ).json()
         except Exception:
-            self.logger.log(LogLevel.WARN, "TA1 Server request failed; no KDMAs generated.")
+            self.logger.log(
+                LogLevel.WARN, "TA1 Server request failed; no KDMAs generated."
+            )
             return None, None
         return session_id, kdmas
 
@@ -409,8 +486,18 @@ class ProbeMatcher:
                     probe_map[probe_id] = response_map
 
         # Engagement actions in Feb JSON are Pulse/Treatment/Tag
-        engagement_actions = {"Pulse", "Treatment", "Tag", "DisarmPatientWeapon", "Question"}
-        action_list: list = [a for a in self.json_data.get("actionList", []) if a.get("actionType") in engagement_actions]
+        engagement_actions = {
+            "Pulse",
+            "Treatment",
+            "Tag",
+            "DisarmPatientWeapon",
+            "Question",
+        }
+        action_list: list = [
+            a
+            for a in self.json_data.get("actionList", [])
+            if a.get("actionType") in engagement_actions
+        ]
 
         def _norm_casualty_name(name: str) -> str:
             if not name:
@@ -446,7 +533,9 @@ class ProbeMatcher:
         for probe_id, response_map in probe_map.items():
             first_char = first_engaged(list(response_map.keys()))
             if first_char:
-                probes.append({"probe_id": probe_id, "choice": response_map[first_char]})
+                probes.append(
+                    {"probe_id": probe_id, "choice": response_map[first_char]}
+                )
                 match_rows.append(
                     {
                         "scene_id": probe_id,
@@ -459,20 +548,32 @@ class ProbeMatcher:
             else:
                 self.logger.log(LogLevel.WARN, f"Unmatched probe {probe_id}.")
                 match_rows.append(
-                    {"scene_id": probe_id, "probe_id": probe_id, "found_match": False, "response": "", "user_action": {}}
+                    {
+                        "scene_id": probe_id,
+                        "probe_id": probe_id,
+                        "found_match": False,
+                        "response": "",
+                        "user_action": {},
+                    }
                 )
 
-        self.logger.log(LogLevel.INFO, f"Found {len(probes)} out of {len(probe_map)} probes.")
+        self.logger.log(
+            LogLevel.INFO, f"Found {len(probes)} out of {len(probe_map)} probes."
+        )
 
         ow_align = {}
         if CALC_KDMAS:
-            ow_align["sid"], ow_align["kdmas"] = self.get_ta1_calculations(self.ow_yaml.get("id", ""), probes)
+            ow_align["sid"], ow_align["kdmas"] = self.get_ta1_calculations(
+                self.ow_yaml.get("id", ""), probes
+            )
 
         match_data = {"alignment": ow_align, "data": match_rows}
 
         # Save match data
         if SEND_TO_MONGO and mongo_collection_matches is not None:
-            mongo_id = f"{self.participant_id}_ow_{self.environment_yaml.split('.yaml')[0]}"
+            mongo_id = (
+                f"{self.participant_id}_ow_{self.environment_yaml.split('.yaml')[0]}"
+            )
             doc = {
                 "scenario_id": self.ow_yaml.get("id", ""),
                 "timestamp": self.timestamp_ms,
@@ -488,7 +589,9 @@ class ProbeMatcher:
             try:
                 mongo_collection_matches.insert_one(doc)
             except Exception:
-                mongo_collection_matches.update_one({"_id": mongo_id}, {"$set": doc}, upsert=True)
+                mongo_collection_matches.update_one(
+                    {"_id": mongo_id}, {"$set": doc}, upsert=True
+                )
 
         json.dump(match_data, self.output_ow, indent=4)
 
@@ -526,7 +629,9 @@ class ProbeMatcher:
         for row in data:
             if _get_cell(row, idx, "EventName") == "PATIENT_RECORD":
                 pid = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
-                triage_level = str(_get_cell(row, idx, "PatientTriageLevel", "")).strip().upper()
+                triage_level = (
+                    str(_get_cell(row, idx, "PatientTriageLevel", "")).strip().upper()
+                )
                 if triage_level in TRIAGE_LEVEL_TO_TAG_COLOR:
                     expected_tag_color[pid] = TRIAGE_LEVEL_TO_TAG_COLOR[triage_level]
 
@@ -536,7 +641,9 @@ class ProbeMatcher:
         # injury -> required procedure (tool category)
         # -------------------------
         required_injuries: Dict[str, List[str]] = {}
-        required_proc_for_injury: Dict[Tuple[str, str], str] = {}  # (patient, injuryname) -> required proc
+        required_proc_for_injury: Dict[Tuple[str, str], str] = (
+            {}
+        )  # (patient, injuryname) -> required proc
         for row in data:
             if _get_cell(row, idx, "EventName") == "INJURY_RECORD":
                 patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
@@ -550,14 +657,22 @@ class ProbeMatcher:
         # Utility: engagement metrics
         # -------------------------
         def find_patients_engaged():
-            engagement_events = {"TOOL_APPLIED", "TAG_APPLIED", "PULSE_TAKEN", "SP_O2_TAKEN", "BREATHING_CHECKED"}
+            engagement_events = {
+                "TOOL_APPLIED",
+                "TAG_APPLIED",
+                "PULSE_TAKEN",
+                "SP_O2_TAKEN",
+                "BREATHING_CHECKED",
+            }
             engagement_order = []
             treated = []
             for row in data:
                 ev = _get_cell(row, idx, "EventName")
                 if ev in engagement_events:
                     patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
-                    if not patient or any(x in patient for x in ["Level Core", "Simulation", "Player"]):
+                    if not patient or any(
+                        x in patient for x in ["Level Core", "Simulation", "Player"]
+                    ):
                         continue
                     engagement_order.append(patient)
                     if ev == "TOOL_APPLIED":
@@ -571,14 +686,24 @@ class ProbeMatcher:
 
             engaged_unique = len(set(engagement_order))
             treated_unique = len(set(treated))
-            return {"engaged": engaged_unique, "treated": treated_unique, "order": simple_order}
+            return {
+                "engaged": engaged_unique,
+                "treated": treated_unique,
+                "order": simple_order,
+            }
 
         engaged_counts = find_patients_engaged()
         patients_engaged = engaged_counts["engaged"]
         patients_treated = engaged_counts["treated"]
         patient_order_engaged = engaged_counts["order"]
-        engagement_times = list({p: patient_order_engaged.count(p) for p in set(patient_order_engaged)}.values())
-        results[f"{env} Engage_patient"] = sum(engagement_times) / max(1, len(engagement_times))
+        engagement_times = list(
+            {
+                p: patient_order_engaged.count(p) for p in set(patient_order_engaged)
+            }.values()
+        )
+        results[f"{env} Engage_patient"] = sum(engagement_times) / max(
+            1, len(engagement_times)
+        )
 
         # -------------------------
         # Assessments (Feb: pulse is the main one; keep others if present)
@@ -599,13 +724,17 @@ class ProbeMatcher:
                     if ev not in last_done or (ts_sec - last_done[ev]) > 5:
                         last_done[ev] = ts_sec
                         count += 1
-                        patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
+                        patient = _clean_patient_name(
+                            _get_cell(row, idx, "PatientID", "")
+                        )
                         per_patient[patient] = per_patient.get(patient, 0) + 1
             return {"count": count, "per_patient": per_patient}
 
         assessments = count_assessment_actions()
         results[f"{env} Assess_total"] = assessments["count"]
-        results[f"{env} Assess_patient"] = results[f"{env} Assess_total"] / max(1, patients_engaged)
+        results[f"{env} Assess_patient"] = results[f"{env} Assess_total"] / max(
+            1, patients_engaged
+        )
 
         # -------------------------
         # Treatments
@@ -626,7 +755,9 @@ class ProbeMatcher:
 
         treatments = count_treatment_actions()
         results[f"{env} Treat_total"] = treatments["count"]
-        results[f"{env} Treat_patient"] = results[f"{env} Treat_total"] / max(1, patients_treated)
+        results[f"{env} Treat_patient"] = results[f"{env} Treat_total"] / max(
+            1, patients_treated
+        )
 
         # -------------------------
         # Triage time
@@ -670,16 +801,25 @@ class ProbeMatcher:
                 if expected == applied:
                     correct += 1
             acc = correct / max(1, count) if count > 0 else None
-            return {"correct": correct, "count": count, "tags": tags_applied, "acc": acc}
+            return {
+                "correct": correct,
+                "count": count,
+                "tags": tags_applied,
+                "acc": acc,
+            }
 
         tag_counts = get_tags()
         results[f"{env} Tag_ACC"] = tag_counts["acc"]
 
         # Expectant tagging: did any EXPECTANT patient receive the gray tag?
-        expectant_patients = [p for p, col in expected_tag_color.items() if col == "gray"]
+        expectant_patients = [
+            p for p, col in expected_tag_color.items() if col == "gray"
+        ]
         results[f"{env} Tag_Expectant"] = None
         if expectant_patients:
-            any_gray = any(tag_counts["tags"].get(p) == "gray" for p in expectant_patients)
+            any_gray = any(
+                tag_counts["tags"].get(p) == "gray" for p in expectant_patients
+            )
             results[f"{env} Tag_Expectant"] = "Yes" if any_gray else "No"
 
         # -------------------------
@@ -691,13 +831,21 @@ class ProbeMatcher:
             start_time = 0.0
             last_time = 0.0
 
-            engagement_events = {"TOOL_APPLIED", "TAG_APPLIED", "PULSE_TAKEN", "SP_O2_TAKEN", "BREATHING_CHECKED"}
+            engagement_events = {
+                "TOOL_APPLIED",
+                "TAG_APPLIED",
+                "PULSE_TAKEN",
+                "SP_O2_TAKEN",
+                "BREATHING_CHECKED",
+            }
             for row in data:
                 ev = _get_cell(row, idx, "EventName")
                 if ev not in engagement_events:
                     continue
                 patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
-                if not patient or any(x in patient for x in ["Level Core", "Simulation", "Player"]):
+                if not patient or any(
+                    x in patient for x in ["Level Core", "Simulation", "Player"]
+                ):
                     continue
                 try:
                     t = float(_get_cell(row, idx, "ElapsedTime", 0))
@@ -714,7 +862,9 @@ class ProbeMatcher:
 
                 if cur_p != patient:
                     # close previous segment
-                    interactions[cur_p].append((start_time, last_time if last_time != 0 else t))
+                    interactions[cur_p].append(
+                        (start_time, last_time if last_time != 0 else t)
+                    )
                     cur_p = patient
                     start_time = t
                     last_time = t
@@ -733,10 +883,15 @@ class ProbeMatcher:
                 total_time_ms += patient_ms
                 per_patient_seconds[patient] = patient_ms / 1000.0
 
-            return {"interactions": per_patient_seconds, "total": total_time_ms / 1000.0}
+            return {
+                "interactions": per_patient_seconds,
+                "total": total_time_ms / 1000.0,
+            }
 
         triage_times = find_time_per_patient()
-        results[f"{env} Triage_time_patient"] = triage_times["total"] / max(1, patients_engaged)
+        results[f"{env} Triage_time_patient"] = triage_times["total"] / max(
+            1, patients_engaged
+        )
 
         # -------------------------
         # Evacuation answers (Feb JSON questions)
@@ -756,6 +911,11 @@ class ProbeMatcher:
             return answers
 
         evaced_answers = get_evaced_patients_from_json()
+        env_key = self.environment_short.lower()
+        answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
+        evaced_patient_names = {
+            answer_map[ans] for ans in evaced_answers if ans in answer_map
+        }
 
         # -------------------------
         # Personal Safety
@@ -796,7 +956,9 @@ class ProbeMatcher:
                 if ev == "INJURY_TREATED":
                     patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
                     injury = str(_get_cell(row, idx, "InjuryName", "")).strip()
-                    completed = _safe_bool_from_csv(_get_cell(row, idx, "InjuryTreatmentComplete"))
+                    completed = _safe_bool_from_csv(
+                        _get_cell(row, idx, "InjuryTreatmentComplete")
+                    )
                     if not completed:
                         continue
 
@@ -811,7 +973,7 @@ class ProbeMatcher:
             res = 1 if len(to_complete) == 0 else 0
             time_to = None
             if res == 1 and start_time_sec is not None and end_time_sec is not None:
-                time_to = (end_time_sec - start_time_sec)
+                time_to = end_time_sec - start_time_sec
             return {"completed": res, "time": time_to}
 
         hem = get_hemorrhage_control()
@@ -836,8 +998,14 @@ class ProbeMatcher:
                 if ev == "INJURY_TREATED":
                     patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
                     injury = str(_get_cell(row, idx, "InjuryName", "")).strip()
-                    completed = _safe_bool_from_csv(_get_cell(row, idx, "InjuryTreatmentComplete"))
-                    if completed and patient in remaining and injury in remaining[patient]:
+                    completed = _safe_bool_from_csv(
+                        _get_cell(row, idx, "InjuryTreatmentComplete")
+                    )
+                    if (
+                        completed
+                        and patient in remaining
+                        and injury in remaining[patient]
+                    ):
                         remaining[patient].remove(injury)
                         correct_completed += 1
                         if len(remaining[patient]) == 0:
@@ -878,18 +1046,30 @@ class ProbeMatcher:
 
         for i, sim_name in enumerate(patients_in_order):
             name = f"Patient{i+1}"
-            results[f"{env} {name}_time"] = triage_times["interactions"].get(sim_name, 0)
+            results[f"{env} {name}_time"] = triage_times["interactions"].get(
+                sim_name, 0
+            )
             try:
-                results[f"{env} {name}_order"] = clean_patient_order_engaged.index(sim_name) + 1
+                results[f"{env} {name}_order"] = (
+                    clean_patient_order_engaged.index(sim_name) + 1
+                )
             except Exception:
                 results[f"{env} {name}_order"] = "N/A"
-            # We don't have a stable answer->patient mapping here yet, so store raw evac answers
-            results[f"{env} {name}_evac"] = "Unknown"
-            results[f"{env} {name}_assess"] = assessments["per_patient"].get(sim_name, 0)
+
+            results[f"{env} {name}_evac"] = (
+                "Yes" if sim_name in evaced_patient_names else "No"
+            )
+            results[f"{env} {name}_assess"] = assessments["per_patient"].get(
+                sim_name, 0
+            )
             results[f"{env} {name}_treat"] = treatments["per_patient"].get(sim_name, 0)
             results[f"{env} {name}_tag"] = tag_counts["tags"].get(sim_name, "None")
-            results[f"{env} {name}_triage_truth"] = expected_tag_color.get(sim_name, None)
-            results[f"{env} {name}_required_injuries"] = required_injuries.get(sim_name, [])
+            results[f"{env} {name}_triage_truth"] = expected_tag_color.get(
+                sim_name, None
+            )
+            results[f"{env} {name}_required_injuries"] = required_injuries.get(
+                sim_name, []
+            )
 
         # -------------------------
         # Text KDMAs join (keep old behavior; safe if Mongo not present)
@@ -911,7 +1091,10 @@ class ProbeMatcher:
                 text_response = None
 
             if text_response is None:
-                self.logger.log(LogLevel.WARN, f"Error getting text KDMAs from database for pid {self.participant_id}.")
+                self.logger.log(
+                    LogLevel.WARN,
+                    f"Error getting text KDMAs from database for pid {self.participant_id}.",
+                )
                 for kdma in KDMA_MAP.values():
                     text_kdma_results[f"Participant Text {kdma} KDMA"] = ""
             else:
@@ -929,8 +1112,14 @@ class ProbeMatcher:
         # -------------------------
         # Save to Mongo
         # -------------------------
-        self.logger.log(LogLevel.INFO, f"{'' if SEND_TO_MONGO else 'NOT '}Saving to database.")
-        if SEND_TO_MONGO and mongo_collection_raw is not None and mongo_collection_matches is not None:
+        self.logger.log(
+            LogLevel.INFO, f"{'' if SEND_TO_MONGO else 'NOT '}Saving to database."
+        )
+        if (
+            SEND_TO_MONGO
+            and mongo_collection_raw is not None
+            and mongo_collection_matches is not None
+        ):
             env_id = self.environment_yaml.split(".yaml")[0]
             raw_id = f"{self.participant_id}_{env_id}"
             match_id = f"{self.participant_id}_ow_{env_id}"
@@ -947,7 +1136,9 @@ class ProbeMatcher:
             try:
                 mongo_collection_raw.insert_one(raw_doc)
             except Exception:
-                mongo_collection_raw.update_one({"_id": raw_id}, {"$set": raw_doc}, upsert=True)
+                mongo_collection_raw.update_one(
+                    {"_id": raw_id}, {"$set": raw_doc}, upsert=True
+                )
 
             # analysis
             match_doc = {
@@ -965,13 +1156,22 @@ class ProbeMatcher:
             try:
                 mongo_collection_matches.insert_one(match_doc)
             except Exception:
-                mongo_collection_matches.update_one({"_id": match_id}, {"$set": match_doc}, upsert=True)
+                mongo_collection_matches.update_one(
+                    {"_id": match_id}, {"$set": match_doc}, upsert=True
+                )
 
             # participant log update (only if numeric PID)
-            if participant_log_collection is not None and self.participant_id_int is not None:
+            if (
+                participant_log_collection is not None
+                and self.participant_id_int is not None
+            ):
                 try:
-                    num_sim_found = mongo_collection_raw.count_documents({"pid": str(self.participant_id)})
-                    log_entry = participant_log_collection.find_one({"ParticipantID": self.participant_id_int})
+                    num_sim_found = mongo_collection_raw.count_documents(
+                        {"pid": str(self.participant_id)}
+                    )
+                    log_entry = participant_log_collection.find_one(
+                        {"ParticipantID": self.participant_id_int}
+                    )
                     if log_entry:
                         participant_log_collection.update_one(
                             {"_id": log_entry["_id"]},
@@ -992,15 +1192,62 @@ def main():
         description="ITM - Feb 2026 Probe Matcher",
         usage="feb2026_probe_matcher.py [-h] -i PATH [-n] [-v] [--testdata] [--eval_prefix PREFIX] [--eval_name NAME] [--eval_num N]",
     )
-    parser.add_argument("-i", "--input_dir", dest="input_dir", type=str, required=True, help="Directory containing run folders/files.")
-    parser.add_argument("-n", "--no_output", action="store_true", dest="no_output", help="Do not send to mongo.")
-    parser.add_argument("-v", "--verbose", action="store_true", dest="is_verbose", help="Verbose output.")
-    parser.add_argument("--no_kdmas", action="store_true", dest="no_kdmas", help="Do not compute KDMAs via ADEPT/TA1.")
-    parser.add_argument("--testdata", action="store_true", dest="testdata", help="Testdata mode (skip participantLog/date gating).")
+    parser.add_argument(
+        "-i",
+        "--input_dir",
+        dest="input_dir",
+        type=str,
+        required=True,
+        help="Directory containing run folders/files.",
+    )
+    parser.add_argument(
+        "-n",
+        "--no_output",
+        action="store_true",
+        dest="no_output",
+        help="Do not send to mongo.",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="is_verbose",
+        help="Verbose output.",
+    )
+    parser.add_argument(
+        "--no_kdmas",
+        action="store_true",
+        dest="no_kdmas",
+        help="Do not compute KDMAs via ADEPT/TA1.",
+    )
+    parser.add_argument(
+        "--testdata",
+        action="store_true",
+        dest="testdata",
+        help="Testdata mode (skip participantLog/date gating).",
+    )
 
-    parser.add_argument("--eval_prefix", dest="eval_prefix", type=str, default=DEFAULT_EVAL_PREFIX, help="Eval prefix folder under phase2/")
-    parser.add_argument("--eval_name", dest="eval_name", type=str, default=DEFAULT_EVAL_NAME, help="Eval name stored in Mongo")
-    parser.add_argument("--eval_num", dest="eval_num", type=int, default=DEFAULT_EVAL_NUM, help="Eval number stored in Mongo")
+    parser.add_argument(
+        "--eval_prefix",
+        dest="eval_prefix",
+        type=str,
+        default=DEFAULT_EVAL_PREFIX,
+        help="Eval prefix folder under phase2/",
+    )
+    parser.add_argument(
+        "--eval_name",
+        dest="eval_name",
+        type=str,
+        default=DEFAULT_EVAL_NAME,
+        help="Eval name stored in Mongo",
+    )
+    parser.add_argument(
+        "--eval_num",
+        dest="eval_num",
+        type=int,
+        default=DEFAULT_EVAL_NUM,
+        help="Eval number stored in Mongo",
+    )
 
     args = parser.parse_args()
 
@@ -1037,7 +1284,9 @@ def main():
         csv_path = _find_csv_for_run(json_path)
         if not csv_path:
             if VERBOSE:
-                print(f"Skipping {json_path}: could not find matching .csv in the same folder.")
+                print(
+                    f"Skipping {json_path}: could not find matching .csv in the same folder."
+                )
             continue
 
         # Optional: in non-testdata mode, replicate old gating: require numeric pid in participantLog and date threshold.
@@ -1059,7 +1308,11 @@ def main():
                 header, rows = _read_csv_rows(csv_path)
                 if rows:
                     idx = _index_map(header)
-                    ts = _get_cell(rows[1], idx, "Timestamp") if len(rows) > 1 else _get_cell(rows[0], idx, "Timestamp")
+                    ts = (
+                        _get_cell(rows[1], idx, "Timestamp")
+                        if len(rows) > 1
+                        else _get_cell(rows[0], idx, "Timestamp")
+                    )
                     sim_date = dateparser.parse(ts) if ts else None
                     # Use Jan 1 2026 as minimum for feb2026 runs
                     min_date = datetime(2026, 1, 1)
@@ -1072,7 +1325,12 @@ def main():
             pid = str(j.get("participantId") or j.get("sessionId") or "").strip()
             pid_int = int(pid) if _is_numeric_pid(pid) else None
             if participant_log_collection is not None and pid_int is not None:
-                pid_in_log = participant_log_collection.count_documents({"ParticipantID": pid_int}) > 0
+                pid_in_log = (
+                    participant_log_collection.count_documents(
+                        {"ParticipantID": pid_int}
+                    )
+                    > 0
+                )
                 if not pid_in_log:
                     removed.append(os.path.dirname(json_path))
                     continue
