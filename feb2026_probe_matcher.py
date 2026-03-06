@@ -758,32 +758,20 @@ class ProbeMatcher:
         evaced_answers = get_evaced_patients_from_json()
 
         # -------------------------
-        # Search + Personal Safety
+        # Personal Safety
         # -------------------------
-        def get_ps_ss():
-            search_answers = []
-            answer_map = {"Stay": 0, "Search": 1}
+        def get_personal_safety():
             ps1 = 0
 
             for action in self.json_data.get("actionList", []):
-                if action.get("actionType") == "Question":
-                    q = str(action.get("question", "")).lower()
-                    if "search" in q:
-                        ans = action.get("answer")
-                        if ans in answer_map:
-                            search_answers.append(answer_map[ans])
-                elif action.get("actionType") == "MovedBeforeClearedByCommand":
+                if action.get("actionType") == "MovedBeforeClearedByCommand":
                     if action.get("movedBeforeClearedByCommand") is True:
                         ps1 = 1
+                        break
 
-            # Keep compatibility with old output keys (Search1/Search2)
-            search1 = search_answers[0] if len(search_answers) >= 1 else None
-            search2 = search_answers[1] if len(search_answers) >= 2 else None
-            return search1, search2, ps1
+            return ps1
 
-        search1, search2, ps1 = get_ps_ss()
-        results[f"{env} Search1"] = search1
-        results[f"{env} Search2"] = search2
+        ps1 = get_personal_safety()
         results[f"{env} Personal_safety"] = ps1
 
         # -------------------------
