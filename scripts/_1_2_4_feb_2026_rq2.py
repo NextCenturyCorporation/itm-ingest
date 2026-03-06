@@ -49,6 +49,9 @@ BAD_ADMS = ['ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0
             'ALIGN-ADM-Ph2-ComparativeRegression-BertRelevance-spectrum-Qwen3-14B-v1__af9cc020-e0ea-4346-a8ee-dd60241b3327'
             ]
 
+ORPHAN_ADM = {'old_name': 'ALIGN-ADM-OutlinesBaseline-DeepSeek-R1-Distill-Llama-8B__6d9ffe7b-a882-4846-9d8d-95a1644c76c2',
+              'new_name': 'ALIGN-ADM-OutlinesBaseline-DeepSeek-R1-Distill-Llama-8B_01_12'}
+
 @dataclass
 class Adm_data:
     adm_name: str
@@ -276,6 +279,13 @@ def main(mongo_db):
         print('Deleting some bad/aborted ADMs.')
         for adm_name in BAD_ADMS:
             adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': adm_name})
+        adm_collection.update_one(
+                {'_id': ORPHAN_ADM['old_name']},
+                {'$set': {
+                    'adm_name': ORPHAN_ADM['new_name'],
+                    'evaluation.adm_name': ORPHAN_ADM['new_name']
+                }}
+            )
 
     print('Getting ADM data from full Evaluation run...')
     if WRITE_TO_DB:
