@@ -931,7 +931,9 @@ class ProbeMatcher:
                 for kdma in kdmas:
                     name = kdma.get("kdma")
                     if name in KDMA_MAP:
-                        text_kdma_results[f"Participant Text {KDMA_MAP[name]} KDMA"] = kdma.get("value", "")
+                        for param in kdma.get("parameters", []):
+                            key = f"Participant Text {KDMA_MAP[name]} {param['name']} KDMA"
+                            text_kdma_results[key] = param.get("value", "")
 
         if VERBOSE:
             self.logger.log(LogLevel.INFO, f"\n{env} Results: {results}")
