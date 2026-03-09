@@ -405,6 +405,16 @@ class ProbeMatcher:
         new_actions.append(actions[-1])
         self.json_data["actionList"] = new_actions
 
+    def get_spawn_location_value(self) -> Optional[str]:
+        """
+        Even numeric PID -> 0
+        Odd numeric PID  -> 1
+        Non-numeric PID  -> None
+        """
+        if self.participant_id_int is None:
+            return None
+        return 0 if self.participant_id_int % 2 == 0 else 1
+
     # -------------------------
     # TA1 / ADEPT KDMA calls
     # -------------------------
@@ -603,6 +613,9 @@ class ProbeMatcher:
           - Derive required procedures from INJURY_RECORD
           - Fix InjuryTreatmentComplete string->bool parsing
         """
+
+        spawn_location_value = self.get_spawn_location_value()
+
         results = {
             "pid": self.participant_id,
             f"{env} Assess_patient": 0,
@@ -618,6 +631,11 @@ class ProbeMatcher:
             f"{env} Hemorrhage control_time": None,
             f"{env} Triage Performance": None,
         }
+
+        if env == "Desert":
+            results["Desert Spawn_location"] = spawn_location_value
+        elif env == "Urban":
+            results["Urban Spawn_location"] = spawn_location_value
 
         header, data = _read_csv_rows(self.csv_path)
         idx = _index_map(header)
