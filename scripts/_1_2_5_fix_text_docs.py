@@ -8,6 +8,11 @@ def get_kdma_profile(session_id):
     resp.raise_for_status()
     return resp.json()
 
+def get_ordered_alignment(session_id):
+    resp = requests.get(f"{ADEPT_URL}api/v1/get_ordered_alignment?session_id={session_id}")
+    resp.raise_for_status()
+    return resp.json()
+
 def kdmas_differ(stored, fetched):
     def to_dict(kdma_list):
         return {e['kdma']: {p['name']: p['value'] for p in e['parameters']} for e in kdma_list}
@@ -28,6 +33,7 @@ def main(mongo_db):
 
     updated = 0
     errors = 0
+
     for doc in docs:
         pid = doc.get("participantID", "unknown")
         scenario_id = doc.get("scenario_id", "unknown")
@@ -37,24 +43,26 @@ def main(mongo_db):
         print(f"{'='*60}")
         print(f"Participant: {pid} | Scenario: {scenario_id}")
 
+        # Combined (all docs)
         combined_session_id = doc.get("combinedSessionId")
         stored_kdmas = doc.get("kdmas", [])
         if combined_session_id and stored_kdmas:
             try:
                 fetched_kdmas = get_kdma_profile(combined_session_id)
                 if kdmas_differ(stored_kdmas, fetched_kdmas):
-                    print(f"  ✗ Combined KDMAs differ — updating")
+                    print(f"  ✗ Combined KDMAs differ — updating kdmas and mostLeastAligned")
                     updates["kdmas"] = fetched_kdmas
+                    updates["mostLeastAligned"] = get_ordered_alignment(combined_session_id)
                 else:
                     print(f"  ✓ Combined KDMAs match")
             except Exception as e:
-                print(f"  ✗ Failed to fetch combined KDMA profile: {e}")
+                print(f"  ✗ Failed to fetch combined profile: {e}")
                 errors += 1
         else:
             print(f"  ⚠ Missing combinedSessionId or kdmas, skipping combined check")
             errors += 1
 
-        # MF only. 
+        # Individual (MF docs only)
         if individual:
             individual_session_id = doc.get("individualSessionId")
             stored_individual_kdmas = doc.get("individualKdmas", [])
@@ -62,20 +70,21 @@ def main(mongo_db):
                 try:
                     fetched_individual_kdmas = get_kdma_profile(individual_session_id)
                     if kdmas_differ(stored_individual_kdmas, fetched_individual_kdmas):
-                        print(f"✗ Individual KDMAs differ — updating")
+                        print(f"  ✗ Individual KDMAs differ — updating individualKdmas and individualMostLeastAligned")
                         updates["individualKdmas"] = fetched_individual_kdmas
+                        updates["individualMostLeastAligned"] = get_ordered_alignment(individual_session_id)
                     else:
                         print(f"  ✓ Individual KDMAs match")
                 except Exception as e:
-                    print(f"  ✗ Failed to fetch individual KDMA profile: {e}")
+                    print(f"  ✗ Failed to fetch individual profile: {e}")
                     errors += 1
             else:
-                print(f"Missing individualSessionId or individualKdmas, skipping individual check")
+                print(f"  ⚠ Missing individualSessionId or individualKdmas, skipping individual check")
                 errors += 1
 
         if updates:
             collection.update_one({"_id": doc["_id"]}, {"$set": updates})
             updated += 1
-    
+
     print(f"\n{'='*60}")
     print(f"Summary: {len(docs)} docs | {updated} updated | {errors} errors")
