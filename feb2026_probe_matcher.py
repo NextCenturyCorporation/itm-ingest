@@ -86,6 +86,57 @@ EVAC_ANSWER_TO_PATIENT = {
     },
 }
 
+# Maps single-answer Personal Safety responses to their numeric research variable score
+PERSONAL_SAFETY_ANSWER_MAPS = {
+    "PS2": {
+        "Run to house stop treating": 5,
+        "Stop and stare": 4,
+        "Drag patients to house": 3,
+        "Verbal concern": 2,
+        "No reaction": 1,
+    },
+}
+
+# Maps multi-button Personal Safety action combinations to their numeric research variable score
+PERSONAL_SAFETY_MULTI_ACTION_SCORE_MAPS = {
+    "PS1": {
+        frozenset(["Remain in place"]): 5,
+        frozenset(["Verbal Response / Ask for clarification", "Remain in place"]): 4,
+        frozenset(["Drag patient inside"]): 3,
+        frozenset(["Ignore warning and approach patient", "Verbal Response / Ask for clarification"]): 2,
+        frozenset(["Ignore warning and approach patient"]): 1,
+    },
+}
+
+# Defines which Personal Safety variables apply per environment and where to store their values
+PERSONAL_SAFETY_CONFIG = {
+    "desert": {
+        "PS1": {
+            "question_contains": "warning to remain in place",
+            "result_key": "Desert Probe_PS1",
+            "actions_key": "Desert Probe_PS1_Actions",
+            "multi_action": True,
+            "score_map_key": "PS1",
+        },
+        "PS2": {
+            "question_contains": "what did the participant do when the drones flew over",
+            "result_key": "Desert Probe_PS2",
+            "actions_key": "Desert Probe_PS2_Actions",
+            "multi_action": False,
+            "answer_map_key": "PS2",
+        },
+    },
+    "urban": {
+        "PS1": {
+            "question_contains": "warning to remain in place",
+            "result_key": "Urban Probe_PS1",
+            "actions_key": "Urban Probe_PS1_Actions",
+            "multi_action": True,
+            "score_map_key": "PS1",
+        },
+    },
+}
+
 # -------------------------
 # Mongo Globals (set in main)
 # -------------------------
@@ -938,19 +989,53 @@ class ProbeMatcher:
         # -------------------------
         # Personal Safety
         # -------------------------
-        def get_personal_safety():
-            ps1 = 0
+
+        # Extract the Personal Safety score and selected moderator actions from Question events
+        def get_personal_safety_value(env_key: str, ps_key: str):
+            env_cfg = PERSONAL_SAFETY_CONFIG.get(env_key, {})
+            ps_cfg = env_cfg.get(ps_key)
+            if not ps_cfg:
+                return None, None
+
+            question_contains = ps_cfg["question_contains"].lower()
+            matched_answers = []
 
             for action in self.json_data.get("actionList", []):
-                if action.get("actionType") == "MovedBeforeClearedByCommand":
-                    if action.get("movedBeforeClearedByCommand") is True:
-                        ps1 = 1
-                        break
+                if action.get("actionType") != "Question":
+                    continue
 
-            return ps1
+                question = str(action.get("question", "")).strip().lower()
+                answer = str(action.get("answer", "")).strip()
 
-        ps1 = get_personal_safety()
-        results[f"{env} Personal_safety"] = ps1
+                if question_contains in question and answer:
+                    if answer not in matched_answers:
+                        matched_answers.append(answer)
+
+            if not matched_answers:
+                return None, None
+
+            if ps_cfg.get("multi_action"):
+                score_map = PERSONAL_SAFETY_MULTI_ACTION_SCORE_MAPS[ps_cfg["score_map_key"]]
+                matched_value = score_map.get(frozenset(matched_answers))
+            else:
+                answer_map = PERSONAL_SAFETY_ANSWER_MAPS[ps_cfg["answer_map_key"]]
+                matched_value = answer_map.get(matched_answers[-1])
+
+            matched_actions = " | ".join(matched_answers)
+
+            return matched_value, matched_actions
+
+
+        # Determine the current environment key ("desert" or "urban") for config lookup
+        env_key = self.environment_short.lower()
+
+
+        # Populate the applicable Personal Safety result fields for this environment
+        for ps_key, ps_cfg in PERSONAL_SAFETY_CONFIG.get(env_key, {}).items():
+            value, actions = get_personal_safety_value(env_key, ps_key)
+
+            results[ps_cfg["result_key"]] = value
+            results[ps_cfg["actions_key"]] = actions
 
         # -------------------------
         # Hemorrhage control (derived): all injuries whose required procedure is hemorrhage control must be complete
