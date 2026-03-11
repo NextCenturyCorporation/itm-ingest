@@ -33,6 +33,7 @@ def main(mongo_db):
 
     updated = 0
     errors = 0
+    error_docs = []
 
     for doc in docs:
         pid = doc.get("participantID", "unknown")
@@ -58,9 +59,11 @@ def main(mongo_db):
             except Exception as e:
                 print(f"  ✗ Failed to fetch combined profile: {e}")
                 errors += 1
+                error_docs.append({"pid": pid, "scenario_id": scenario_id, "session_id": combined_session_id, "error": str(e)})
         else:
-            print(f"  ⚠ Missing combinedSessionId or kdmas, skipping combined check")
+            print(f"    Missing combinedSessionId or kdmas, skipping combined check")
             errors += 1
+            error_docs.append({"pid": pid, "scenario_id": scenario_id, "session_id": combined_session_id, "error": "Missing combinedSessionId or kdmas"})
 
         # Individual (MF docs only)
         if individual:
@@ -78,9 +81,11 @@ def main(mongo_db):
                 except Exception as e:
                     print(f"  ✗ Failed to fetch individual profile: {e}")
                     errors += 1
+                    error_docs.append({"pid": pid, "scenario_id": scenario_id, "session_id": individual_session_id, "error": str(e)})
             else:
-                print(f"  ⚠ Missing individualSessionId or individualKdmas, skipping individual check")
+                print(f"    Missing individualSessionId or individualKdmas, skipping individual check")
                 errors += 1
+                error_docs.append({"pid": pid, "scenario_id": scenario_id, "session_id": individual_session_id, "error": "Missing individualSessionId or individualKdmas"})
 
         if updates:
             collection.update_one({"_id": doc["_id"]}, {"$set": updates})
@@ -88,3 +93,7 @@ def main(mongo_db):
 
     print(f"\n{'='*60}")
     print(f"Summary: {len(docs)} docs | {updated} updated | {errors} errors")
+    if error_docs:
+        print("\nError Documents:")
+        for e in error_docs:
+            print(f"  PID: {e['pid']} | Scenario: {e['scenario_id']} | Session ID: {e['session_id']} | Reason: {e['error']}")
