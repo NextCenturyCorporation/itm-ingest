@@ -15,7 +15,7 @@ def get_alignment_score(session_id, target_id):
 
 def kdmas_differ(stored, fetched):
     def to_dict(kdma_list):
-        return {e['kdma']: {p['name']: p['value'] for p in e['parameters']} for e in kdma_list}
+        return {kdma['kdma']: {param['name']: param['value'] for param in kdma['parameters']} for kdma in kdma_list}
 
     stored_d, fetched_d = to_dict(stored), to_dict(fetched)
     if set(stored_d) != set(fetched_d):
