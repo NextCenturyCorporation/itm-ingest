@@ -26,30 +26,45 @@ def kdmas_differ(stored, fetched):
                 return True
     return False
 
+def update_adm_target_runs(mongo_db, adm_name, target, scenario, fetched_kdmas, fetched_alignment):
+    collection = mongo_db['admTargetRuns']
+    result = collection.update_one(
+        {
+            "evaluation.adm_name": adm_name,
+            "evaluation.alignment_target_id": target,
+            "evaluation.scenario_id": scenario,
+        },
+        {"$set": {
+            "results.kdmas": fetched_kdmas,
+            "results.alignment_score": fetched_alignment["score"],
+        }}
+    )
+    return result.matched_count, result.modified_count
+
 def main(mongo_db):
     medic_collec = mongo_db['admMedics']
-
-    medics = list(medic_collec.find({'evalNumber': 15}))
-    print(f"Found {len(medics)} medic documents with evalNumber=15\n")
+    docs = list(medic_collec.find({'evalNumber': 15}))
+    print(f"Found {len(docs)} admMedics documents with evalNumber=15\n")
 
     updated = 0
     errors = 0
     error_docs = []
 
-    for medic in medics:
-        sid = medic.get('admSessionId')
-        target = medic.get('target')
-        stored_kdmas = medic.get('kdmas', [])
-        adm_name = medic.get('admName', 'unknown')
+    for doc in docs:
+        sid = doc.get('admSessionId')
+        target = doc.get('target')
+        scenario = doc.get('scenarioName')
+        adm_name = doc.get('admName', 'unknown')
+        stored_kdmas = doc.get('kdmas', [])
 
         print(f"{'='*60}")
-        print(f"ADM: {adm_name} | Target: {target} | Session: {sid}")
+        print(f"ADM: {adm_name} | Target: {target} | Scenario: {scenario}")
 
-        if not sid or not target or not stored_kdmas:
-            msg = "Missing admSessionId, target, or kdmas"
-            print(f"  {msg}, skipping")
+        if not sid or not target or not scenario or not stored_kdmas:
+            msg = "Missing admSessionId, target, scenarioName, or kdmas"
+            print(f"   {msg}, skipping")
             errors += 1
-            error_docs.append({"adm": adm_name, "target": target, "session_id": sid, "error": msg})
+            error_docs.append({"adm": adm_name, "target": target, "scenario": scenario, "session_id": sid, "error": msg})
             continue
 
         updates = {}
@@ -57,25 +72,31 @@ def main(mongo_db):
         try:
             fetched_kdmas = get_kdma_profile(sid)
             if kdmas_differ(stored_kdmas, fetched_kdmas):
-                print(f"  ✗ KDMAs differ — updating kdmas and alignmentScore")
+                print(f"  ✗ KDMAs differ — updating admMedics and admTargetRuns")
                 updates["kdmas"] = fetched_kdmas
-                alignment = get_alignment_score(sid, target)
-                updates["alignmentScore"] = alignment
+
+                fetched_alignment = get_alignment_score(sid, target)
+                updates["alignmentScore"] = fetched_alignment["score"]
+
+                matched, modified = update_adm_target_runs(
+                    mongo_db, adm_name, target, scenario, fetched_kdmas, fetched_alignment
+                )
+                print(f"    admTargetRuns: matched={matched}, modified={modified}")
             else:
                 print(f"  ✓ KDMAs match")
         except Exception as e:
             print(f"  ✗ Failed: {e}")
             errors += 1
-            error_docs.append({"adm": adm_name, "target": target, "session_id": sid, "error": str(e)})
+            error_docs.append({"adm": adm_name, "target": target, "scenario": scenario, "session_id": sid, "error": str(e)})
             continue
 
         if updates:
-            medic_collec.update_one({"_id": medic["_id"]}, {"$set": updates})
+            medic_collec.update_one({"_id": doc["_id"]}, {"$set": updates})
             updated += 1
 
     print(f"\n{'='*60}")
-    print(f"Summary: {len(medics)} docs | {updated} updated | {errors} errors")
+    print(f"Summary: {len(docs)} docs | {updated} updated | {errors} errors")
     if error_docs:
         print("\nError Documents:")
         for e in error_docs:
-            print(f"  ADM: {e['adm']} | Target: {e['target']} | Session ID: {e['session_id']} | Reason: {e['error']}")
+            print(f"  ADM: {e['adm']} | Target: {e['target']} | Scenario: {e['scenario']} | Session: {e['session_id']} | Reason: {e['error']}")
