@@ -1,6 +1,11 @@
 import requests
 from decouple import config
-
+'''
+This will check if the KDMA stored in the DB is different than what we get back from prod. 
+If it is, we will replace the KDMA and alignment score to the target they are aligned to. 
+All of the observed ADMs are in the admMedics collection, so that is what I am iterating over. 
+However, if an update needs to made, I am also updating the corresponding ADM in admTargetRuns so that these changes are propagated to the admProbeResponses etc
+'''
 ADEPT_URL = config("ADEPT_URL")
 
 def get_kdma_profile(session_id):
