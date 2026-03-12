@@ -323,6 +323,7 @@ class ProbeMatcher:
         self.environment_yaml: str = ""  # e.g., feb2026-desert-openworld.yaml
         self.environment_short: str = ""  # "Desert" or "Urban"
         self.timestamp_ms: Optional[int] = None
+        self.ow_session_id: Optional[str] = None
 
         # Load JSON
         with open(json_path, "r", encoding="utf-8") as jf:
@@ -512,6 +513,124 @@ class ProbeMatcher:
             return None, None
         return session_id, kdmas
 
+    def _find_text_session_for_alignment(self, alignment_type: str) -> Optional[str]:
+        """
+        alignment_type: "MF" or "AF"
+        Finds the matching text scenario session for this participant.
+        """
+        if text_scenario_collection is None:
+            return None
+
+        scenario_regex = f"{alignment_type}"
+        pid_candidates = [self.participant_id]
+        if self.participant_id_int is not None:
+            pid_candidates.append(self.participant_id_int)
+
+        queries = [
+            {
+                "evalNumber": self.eval_num,
+                "participantID": pid_val,
+                "scenario_id": {"$regex": scenario_regex, "$options": "i"},
+            }
+            for pid_val in pid_candidates
+        ]
+        # Fallback if evalNumber is missing or inconsistent in older docs.
+        queries.extend(
+            [
+                {
+                    "participantID": pid_val,
+                    "scenario_id": {"$regex": scenario_regex, "$options": "i"},
+                }
+                for pid_val in pid_candidates
+            ]
+        )
+
+        for query in queries:
+            try:
+                text_doc = text_scenario_collection.find_one(query, sort=[("timestamp", -1)])
+            except TypeError:
+                text_doc = text_scenario_collection.find_one(query)
+            except Exception:
+                text_doc = None
+
+            if not text_doc:
+                continue
+
+            session_id = (
+                text_doc.get("combinedSessionId")
+                or text_doc.get("combined_session_id")
+                or text_doc.get("session_id")
+                or text_doc.get("sessionId")
+                or text_doc.get("individualSessionId")
+            )
+            if session_id:
+                if VERBOSE:
+                    self.logger.log(
+                        LogLevel.INFO,
+                        f"Matched {alignment_type} text scenario {text_doc.get('scenario_id')} for pid {self.participant_id} using session {session_id}.",
+                    )
+                return str(session_id)
+
+            self.logger.log(
+                LogLevel.WARN,
+                f"Found {alignment_type} text document for pid {self.participant_id}, but no combinedSessionId/session id field was present.",
+            )
+            return None
+
+        self.logger.log(
+            LogLevel.WARN,
+            f"Could not find {alignment_type} text session for pid {self.participant_id}.",
+        )
+        return None
+
+    def get_alignment_compare_score(
+        self, human_session_id: Optional[str], alignment_type: str
+    ) -> Optional[float]:
+        """
+        alignment_type: "MF" or "AF"
+        Uses /api/v1/alignment/compare_sessions to compare the current human
+        session against the matching text session.
+        """
+
+        if not human_session_id:
+            self.logger.log(
+                LogLevel.WARN,
+                f"No human session_id available for {alignment_type} alignment.",
+            )
+            return None
+        if not ADEPT_URL or ADEPT_URL == "/":
+            self.logger.log(
+                LogLevel.WARN,
+                "ADEPT_URL not set; skipping alignment compare calculation.",
+            )
+            return None
+
+        text_session_id = self._find_text_session_for_alignment(alignment_type)
+        if not text_session_id:
+            return None
+
+        kdma_filter = "merit" if alignment_type == "MF" else "affiliation"
+        try:
+            response = requests.get(
+                f"{ADEPT_URL}api/v1/alignment/compare_sessions",
+                params={
+                    "session_id_1": str(human_session_id),
+                    "session_id_2": str(text_session_id),
+                    "kdma_filter": kdma_filter,
+                },
+                timeout=30,
+            )
+            response.raise_for_status()
+            payload = response.json()
+            score = payload.get("score")
+            return float(score) if score is not None else None
+        except Exception as e:
+            self.logger.log(
+                LogLevel.WARN,
+                f"Alignment compare request failed for {alignment_type} / pid {self.participant_id}: {e}",
+            )
+            return None
+
     # -------------------------
     # Probe matching + analysis
     # -------------------------
@@ -627,6 +746,7 @@ class ProbeMatcher:
             ow_align["sid"], ow_align["kdmas"] = self.get_ta1_calculations(
                 self.ow_yaml.get("id", ""), probes
             )
+            self.ow_session_id = ow_align.get("sid")
 
         match_data = {"alignment": ow_align, "data": match_rows}
 
@@ -1175,6 +1295,35 @@ class ProbeMatcher:
             )
 
         # -------------------------
+        # Alignment compare scores (human sim vs matching text scenario sessions)
+        # -------------------------
+        try:
+            human_alignment_session_id = self.ow_session_id
+            match_doc = None
+            if not human_alignment_session_id and mongo_collection_matches is not None:
+                env_id = self.environment_yaml.split(".yaml")[0]
+                match_id = f"{self.participant_id}_ow_{env_id}"
+                match_doc = mongo_collection_matches.find_one({"_id": match_id})
+            if match_doc and not human_alignment_session_id:
+                human_alignment_session_id = (
+                    match_doc.get("data", {})
+                    .get("alignment", {})
+                    .get("sid")
+                )
+            mf_alignment_score = self.get_alignment_compare_score(
+                human_alignment_session_id, "MF"
+            )
+            af_alignment_score = self.get_alignment_compare_score(
+                human_alignment_session_id, "AF"
+            )
+        except Exception:
+            mf_alignment_score = None
+            af_alignment_score = None
+
+        results[f"MF Alignment_{env}"] = mf_alignment_score
+        results[f"AF Alignment_{env}"] = af_alignment_score
+
+        # -------------------------
         # Text KDMAs join (keep old behavior; safe if Mongo not present)
         # -------------------------
         text_kdma_results = {}
@@ -1186,7 +1335,7 @@ class ProbeMatcher:
                 text_response = text_scenario_collection.find_one(
                     {
                         "evalNumber": self.eval_num,
-                        "participantID": self.participant_id,
+                        "participantID": {"$in": [self.participant_id, self.participant_id_int]},
                         "scenario_id": {"$not": {"$regex": "PS-AF"}},
                     }
                 )
