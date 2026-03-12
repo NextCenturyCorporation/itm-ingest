@@ -1324,39 +1324,100 @@ class ProbeMatcher:
         results[f"AF Alignment_{env}"] = af_alignment_score
 
         # -------------------------
-        # Text KDMAs join (keep old behavior; safe if Mongo not present)
+        # Text KDMAs join from all matching text scenario docs for this participant
         # -------------------------
-        text_kdma_results = {}
-        if text_scenario_collection is None:
-            for kdma in KDMA_MAP.values():
-                text_kdma_results[f"Participant Text {kdma} KDMA"] = ""
-        else:
-            try:
-                text_response = text_scenario_collection.find_one(
-                    {
-                        "evalNumber": self.eval_num,
-                        "participantID": {"$in": [self.participant_id, self.participant_id_int]},
-                        "scenario_id": {"$not": {"$regex": "PS-AF"}},
-                    }
-                )
-            except Exception:
-                text_response = None
+        text_kdma_results = {
+            f"Participant Text {short_name} {param_name} KDMA": ""
+            for short_name in KDMA_MAP.values()
+            for param_name in ["intercept", "attr_weight", "medical_weight"]
+        }
 
-            if text_response is None:
+        if text_scenario_collection is not None:
+            text_docs = []
+            seen_ids = set()
+
+            pid_candidates = [self.participant_id]
+            if getattr(self, "participant_id_int", None) is not None:
+                pid_candidates.append(self.participant_id_int)
+
+            queries = []
+            for pid_val in pid_candidates:
+                queries.append({
+                    "evalNumber": self.eval_num,
+                    "participantID": pid_val,
+                })
+                # fallback in case evalNumber is missing/inconsistent on some docs
+                queries.append({
+                    "participantID": pid_val,
+                })
+
+            try:
+                for query in queries:
+                    for doc in text_scenario_collection.find(query):
+                        doc_id = str(doc.get("_id", ""))
+                        if doc_id not in seen_ids:
+                            seen_ids.add(doc_id)
+                            text_docs.append(doc)
+            except Exception as e:
                 self.logger.log(
                     LogLevel.WARN,
-                    f"Error getting text KDMAs from database for pid {self.participant_id}.",
+                    f"Error getting text KDMAs from database for pid {self.participant_id}: {e}",
                 )
-                for kdma in KDMA_MAP.values():
-                    text_kdma_results[f"Participant Text {kdma} KDMA"] = ""
+                text_docs = []
+
+            if not text_docs:
+                self.logger.log(
+                    LogLevel.WARN,
+                    f"No text scenario documents found for pid {self.participant_id}.",
+                )
             else:
-                kdmas = text_response.get("kdmas", [])
-                for kdma in kdmas:
-                    name = kdma.get("kdma")
-                    if name in KDMA_MAP:
+                if VERBOSE:
+                    self.logger.log(
+                        LogLevel.INFO,
+                        f"Found {len(text_docs)} text scenario docs for pid {self.participant_id}.",
+                    )
+
+                for doc in text_docs:
+                    scenario_id = doc.get("scenario_id", "")
+
+                    # Prefer top-level kdmas because that is where the full pairs
+                    # (MF+SS or AF+PS) are consistently stored in these docs.
+                    kdmas = doc.get("kdmas", [])
+
+                    # Fallback only if kdmas is missing/empty
+                    if not kdmas:
+                        kdmas = doc.get("individualKdmas", [])
+
+                    if VERBOSE:
+                        self.logger.log(
+                            LogLevel.INFO,
+                            f"Reading text KDMAs from scenario {scenario_id} for pid {self.participant_id}.",
+                        )
+
+                    for kdma in kdmas:
+                        kdma_name = kdma.get("kdma")
+                        if kdma_name not in KDMA_MAP:
+                            continue
+
+                        short_name = KDMA_MAP[kdma_name]
+
                         for param in kdma.get("parameters", []):
-                            key = f"Participant Text {KDMA_MAP[name]} {param['name']} KDMA"
-                            text_kdma_results[key] = param.get("value", "")
+                            param_name = param.get("name")
+                            param_value = param.get("value", "")
+
+                            if not param_name:
+                                continue
+
+                            key = f"Participant Text {short_name} {param_name} KDMA"
+
+                            if key in text_kdma_results and text_kdma_results[key] not in ("", param_value):
+                                self.logger.log(
+                                    LogLevel.WARN,
+                                    f"Duplicate text KDMA value for {key} on pid {self.participant_id}; "
+                                    f"overwriting {text_kdma_results[key]} with {param_value} from {scenario_id}.",
+                                )
+
+                            text_kdma_results[key] = param_value
 
         if VERBOSE:
             self.logger.log(LogLevel.INFO, f"\n{env} Results: {results}")
