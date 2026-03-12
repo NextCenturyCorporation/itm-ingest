@@ -1,5 +1,9 @@
 import re
-
+'''
+Now that we have corrected the mostLeastAligned array of targets for participants, 
+we need to go back and determine which survey blocks did not actually load in the most aligned target. 
+If there is a mismatch, I mark the exemption, and this will be reflected in both the participant progress table and the RQ1 table.
+'''
 
 def get_scenario_types(scenario_index):
     known_types = ["AF", "PS", "MF", "SS"]
