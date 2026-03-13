@@ -500,11 +500,11 @@ class ProbeMatcher:
                         },
                         "session_id": session_id,
                     },
-                    timeout=30,
+                    timeout=120,
                 )
             kdmas = requests.get(
                 f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}",
-                timeout=30,
+                timeout=120,
             ).json()
         except Exception:
             self.logger.log(
@@ -618,7 +618,7 @@ class ProbeMatcher:
                     "session_id_2": str(text_session_id),
                     "kdma_filter": kdma_filter,
                 },
-                timeout=30,
+                timeout=120,
             )
             response.raise_for_status()
             payload = response.json()
