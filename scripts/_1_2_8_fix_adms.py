@@ -1,8 +1,8 @@
 import requests
 from decouple import config
 '''
-This will check if the KDMA stored in the DB is different than what we get back from prod. 
-If it is, we will replace the KDMA and alignment score to the target they are aligned to. 
+This will check if the KDMA stored in the DB is different than what we get back from prod.
+If it is, we will replace the KDMA and alignment score to the target they are aligned to.
 We check all of the observed ADMs and the synthetic evaluation ADMs, because non-synthetic evaluation
 ADMs don't have kdmas/alignment (it wasn't requested). We also only check MF targets, because only
 MF needs to be rescored.
@@ -21,6 +21,7 @@ def get_alignment_score(req_session, session_id, target_id):
     return resp.json()
 
 def kdmas_differ(stored, fetched):
+    return True
     def to_dict(kdma_list):
         return {kdma['kdma']: {param['name']: param['value'] for param in kdma['parameters']} for kdma in kdma_list}
 
@@ -50,10 +51,11 @@ def update_adm_target_runs(adm_collec, adm_name, target, scenario, fetched_kdmas
 def main(mongo_db):
     adm_collec = mongo_db['admTargetRuns']
     docs = list(adm_collec.find({'evalNumber': EVAL_NUM,
-                                 '$or': [
-                                     {'synthetic': True},
-                                     {'scenario': {'$regex': '-observe'}}
-                                     ],
+                                 'synthetic': True,
+#                                 '$or': [
+#                                     {'synthetic': True},
+#                                     {'scenario': {'$regex': '-observe'}}
+#                                     ],
                                 'alignment_target': {'$regex': 'MF'}}))
     total_docs = len(docs)
     print(f"Found {total_docs} evaluation MF adm documents with evalNumber={EVAL_NUM}\n")
@@ -66,7 +68,7 @@ def main(mongo_db):
 
     for doc in docs:
         doc_num += 1
-        sid = doc.get('results', {}).get('ta1_session_id'),
+        sid = doc.get('results', {}).get('ta1_session_id')
         target = doc.get('alignment_target')
         scenario = doc.get('scenario')
         adm_name = doc.get('adm_name', 'unknown')
@@ -92,9 +94,14 @@ def main(mongo_db):
 
         try:
             fetched_kdmas = get_kdma_profile(req_session, sid)
+            if not fetched_kdmas:
+                print(f"  ✗ Failed: Got empty KDMAs")
+                errors += 1
+                error_docs.append({"adm": adm_name, "target": target, "scenario": scenario, "session_id": sid, "error": "Got empty KDMAs"})
+                continue
             if kdmas_differ(stored_kdmas, fetched_kdmas):
                 print(f"  ✗ KDMAs differ — updating admTargetRuns")
-                fetched_alignment = get_alignment_score(req_session, id, target)
+                fetched_alignment = get_alignment_score(req_session, sid, target)
 
                 matched, modified = update_adm_target_runs(
                     adm_collec, adm_name, target, scenario, fetched_kdmas, fetched_alignment
