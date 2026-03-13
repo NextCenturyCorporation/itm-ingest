@@ -1,5 +1,6 @@
 import argparse
 import random
+import requests
 from pymongo import MongoClient
 from decouple import config 
 from dataclasses import dataclass
@@ -19,6 +20,7 @@ EVALUATION_NAME = 'Phase 2 February 2026 Evaluation'
 EVAL_NUM = 15
 DOMAIN = 'p2triage'
 TA1_NAME = 'adept'
+HIT_TA1_SERVER = True # Useful for testing or if you can't reach the TA1 server
 
 # These are default values that can be overridden via the command line
 NUM_SUBSETS = 25
@@ -86,6 +88,11 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
     adm_collection = mongo_db['admTargetRuns']
     total_synthetic_adm_runs = 0
     all_synthethic_adm_runs = []
+    error_count = 0
+    req_session = None
+
+    if HIT_TA1_SERVER:
+        req_session = requests.Session()
 
     for adm_data in all_adm_data:
         adm_name = adm_data.adm_name
@@ -100,7 +107,9 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
             if VERBOSE:
                 print(f"Processing probe subset #{subset_num}: {probe_set}")
             probe_set = [probe_id for probe_id in probe_set if any(kdma in probe_id for kdma in kdma_abbreviations)]
-            sent_probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(adm_data, probe_set)
+            sent_probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(req_session, adm_data, probe_set)
+            if not alignment_score or not kdmas:
+                error_count += 1
             synth_scenario_id = f"{EVALUATION_TYPE}-{attribute}r{subset_num}-eval" # e.g., "Feb2026-AF-MF-PS-SSr23-eval"
             synth_scenario_name = adm_data.scenario_name.replace('Set', 'Random Set ' + str(subset_num)) # e.g., "Full Evaluation Set 23"
             if VERBOSE:
@@ -119,12 +128,15 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
                                 'ta1_name': TA1_NAME,
                                 'ta3_session_id': 'N/A'}
             results: dict = {'ta1_session_id': ta1_id, 'alignment_score': alignment_score, 'kdmas': kdmas}
-            add_1D_scores(adm_data, probe_set, results)
+            error_count += add_1D_scores(req_session, adm_data, probe_set, results)
             synthethic_adm_run: dict = {'evaluation': evaluation, 'results': results, 'evalNumber': EVAL_NUM, 'scenario': synth_scenario_id,
                                         'evalName': EVALUATION_NAME, 'adm_name': adm_name, 'synthetic': True,
                                         'probes': sent_probes, 'alignment_target': target}
             total_synthetic_adm_runs += 1
             all_synthethic_adm_runs.append(synthethic_adm_run)
+
+    if HIT_TA1_SERVER:
+        req_session.close()
 
     if WRITE_TO_DB:
         result = adm_collection.insert_many(all_synthethic_adm_runs)
@@ -132,6 +144,8 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
             print(f'Total runs mismatch: expected {total_synthetic_adm_runs} but wrote {len(result.inserted_ids)} documents to database instead.')
     else:
         print(f"{total_synthetic_adm_runs} synthetic ADM runs NOT uploaded to database.")
+
+    print(f"Finished with a total of {error_count} error(s).  See logs for affected ADM runs.")
 
 
 def create_4D_adm(mongo_db, probe_sets: list, profile: str, alignment_target: str):
