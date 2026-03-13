@@ -17,9 +17,9 @@ def main(mongoDB, EVAL_NUMBER=8):
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["admTargetRuns"]
 
-    data_to_use = text_scenario_collection.find(
+    data_to_use = list(text_scenario_collection.find(
         {"evalNumber": EVAL_NUMBER}
-    )
+    ))
 
     total_text_scenarios = text_scenario_collection.count_documents(
         {"evalNumber": EVAL_NUMBER}
