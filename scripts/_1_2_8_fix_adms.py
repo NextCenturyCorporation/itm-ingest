@@ -82,14 +82,6 @@ def main(mongo_db):
             error_docs.append({"adm": adm_name, "target": target, "scenario": scenario, "session_id": sid, "error": msg})
             continue
 
-        # Remove prior to merging
-        if doc.get('synthetic') is not None:
-            msg = "Skipping synthetic ADMs for now until they have TA1 data"
-            print(f"   {msg}, skipping")
-            errors += 1
-            error_docs.append({"adm": adm_name, "target": target, "scenario": scenario, "session_id": sid, "error": msg})
-            continue
-
         try:
             fetched_kdmas = get_kdma_profile(req_session, sid)
             if not fetched_kdmas:
