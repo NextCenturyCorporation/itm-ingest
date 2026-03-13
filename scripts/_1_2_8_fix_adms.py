@@ -21,7 +21,6 @@ def get_alignment_score(req_session, session_id, target_id):
     return resp.json()
 
 def kdmas_differ(stored, fetched):
-    return True
     def to_dict(kdma_list):
         return {kdma['kdma']: {param['name']: param['value'] for param in kdma['parameters']} for kdma in kdma_list}
 
@@ -51,11 +50,10 @@ def update_adm_target_runs(adm_collec, adm_name, target, scenario, fetched_kdmas
 def main(mongo_db):
     adm_collec = mongo_db['admTargetRuns']
     docs = list(adm_collec.find({'evalNumber': EVAL_NUM,
-                                 'synthetic': True,
-#                                 '$or': [
-#                                     {'synthetic': True},
-#                                     {'scenario': {'$regex': '-observe'}}
-#                                     ],
+                                 '$or': [
+                                     {'synthetic': True},
+                                     {'scenario': {'$regex': '-observe'}}
+                                     ],
                                 'alignment_target': {'$regex': 'MF'}}))
     total_docs = len(docs)
     print(f"Found {total_docs} evaluation MF adm documents with evalNumber={EVAL_NUM}\n")
