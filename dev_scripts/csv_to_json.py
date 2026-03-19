@@ -29,6 +29,45 @@ def convert_timestamp(timestamp_str):
         print(f"Warning: Could not parse timestamp '{timestamp_str}': {e}")
         return timestamp_str  # Return original if parsing fails
 
+def parse_probes(config_data):
+    probes = []
+    narrative = config_data.get("narrative", {})
+    narrative_sections = narrative.get("narrativeSections", [])
+
+    for section in narrative_sections:
+        probe = section.get("probe")
+        if probe: 
+            probes.append(probe)
+
+    return probes
+
+def convert_probe(probe):
+    choices = [c.get("choice", "") for c in probe.get("answerChoices", [])]
+    answers_needed = probe.get("answersNeeded", 1)
+
+    results = []
+
+    for i in range(answers_needed):
+        results.append({
+            "actionType": "Question",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": False,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": probe.get("question", ""),
+            "answerChoices": choices,
+            "answer": "",
+            "movedBeforeClearedByCommand": False,
+            "timestamp": ""
+        })
+
+    return results
 
 def parse_csv(csv_file_path, ctx):
     """Parse CSV file and return list of dictionaries"""
@@ -136,7 +175,7 @@ def Tag_To_Type(tag_color):
     return tag_mapping[tag_color]
 
 
-def create_action_list(csv_data):
+def create_action_list(csv_data, probe_data):
     """Create action list from pulse and treatment data"""
     action_list = []
 
@@ -383,7 +422,9 @@ def create_action_list(csv_data):
             }
             action_list.append(disarm_action)
             print(f"DEBUG: Added disarm action to list")
-
+    for probe in probe_data:
+        action_list.append(convert_probe(probe))
+        print(convert_probe(probe))
     print(f"DEBUG: Processed {len(csv_data)} rows")
     print(f"DEBUG: Found {pulse_events_found} PULSE_TAKEN events")
     print(f"DEBUG: Found {treatment_events_found} INJURY_TREATED events")
@@ -450,11 +491,13 @@ def main(config_file_path=None, csv_file_path=None):
     # Load config data
     config_data = load_config_data(config_file_path)
 
+    probe_data = parse_probes(config_data)
+    
     # Parse CSV data
     csv_data = parse_csv(csv_file_path, ctx)
 
     # Create action list
-    action_list = create_action_list(csv_data)
+    action_list = create_action_list(csv_data, probe_data)
 
     # Create output JSON file
     create_output_json(config_data, action_list, ctx, output_file_path)
