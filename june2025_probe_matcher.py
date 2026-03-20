@@ -7,7 +7,7 @@ from typing import Tuple
 from dateutil import parser as dateparser
 
 SEND_TO_MONGO = True # send all raw and calculated data to the mongo db if true
-CALC_KDMAS = True # send data to servers to calculate KDMA values if true
+CALC_KDMAS = False # send data to servers to calculate KDMA values if true
 RUN_ALL = True  # run all files in the input directory, even if they have already been run/analyzed, if true
 DEFAULT_EVAL_NUM = 8
 EVAL_NUM = None
@@ -241,7 +241,14 @@ class ProbeMatcher:
             f'{env} Tag_Expectant': False,
             f'{env} Hemorrhage control': 0,
             f'{env} Hemorrhage control_time': None,
-            f'{env} Triage Performance': 0
+            f"{env} Treat_hits_required": 0,
+            f"{env} Treat_false_alarms_required": 0,
+            f"{env} Treat_repeat_hits_required": 0,
+            f"{env} Treat_repeat_false_alarms_required": 0,
+            f"{env} Treat_hits_w_supp": 0,
+            f"{env} Treat_false_alarms_w_supp": 0,
+            f"{env} Treat_repeat_hits_w_supp": 0,
+            f"{env} Treat_repeat_false_alarms_w_supp": 0
         }
 
         ow_csv = open(self.json_filename.replace('.json', '.csv'), 'r', encoding='utf-8')
@@ -322,6 +329,156 @@ class ProbeMatcher:
         treatments = count_treatment_actions()
         results[f'{env} Treat_total'] = treatments['count']
         results[f'{env} Treat_patient'] = results[f'{env} Treat_total'] / max(1, patients_treated)
+
+        def get_treatment_submetrics_w_supp():
+            """
+            Scores completed INJURY_TREATED events against required injuries (ALL_REQ_PROCEDURES) and TOOL_APPLIED events against supplemental procedures (SUPPLEMENTAL_PROCEDURES).
+
+            Returns a dict with total and per-patient counts of:
+                - hits: required injury treated correctly (first time) or supplemental tool applied (first time)
+                - repeat_hits: required injury treated again after healed, or supplemental tool applied more than once
+                - false_alarms: non-required injury treated or non-supplemental tool applied when nothing left to treat, first occurrence
+                - repeat_false_alarms: same as false_alarm, after prior occurrence
+            """
+            to_complete = copy.deepcopy(ALL_REQ_PROCEDURES[env.lower()])
+            supplemental = copy.deepcopy(SUPPLEMENTAL_PROCEDURES[env.lower()])
+            hits, false_alarms, repeat_hits, repeat_false_alarms = {}, {}, {}, {}
+            supplemental_tracker, false_alarm_tracker = {}, {}
+            just_completed = None
+
+            for x in data:
+                if x[0] == 'INJURY_TREATED':
+                    patient = x[header.index("PatientID")]
+                    where = x[header.index("InjuryName")]
+                    completed = x[header.index("InjuryTreatmentComplete")]
+                    if completed == 'True':
+                        if patient in ALL_REQ_PROCEDURES[env.lower()]: # patient has required injuries
+                            if where in ALL_REQ_PROCEDURES[env.lower()][patient]: # correct injury treated
+                                if patient in to_complete and where in to_complete[patient]:  # not yet healed
+                                    to_complete[patient].remove(where)
+                                    just_completed = patient
+                                    hits[patient] = hits.get(patient, 0) + 1 # hit
+                                    if len(to_complete[patient]) == 0:
+                                        del to_complete[patient]
+                                else:
+                                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1  # repeat hit — already healed
+                            else: # wrong injury treated
+                                if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1  # repeat false alarm
+                                else:
+                                    false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                                if patient not in false_alarm_tracker:
+                                    false_alarm_tracker[patient] = {}
+                                false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+                        else:  # patient has no required injuries in this scenario
+                            if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                            else:
+                                false_alarms[patient] = false_alarms.get(patient, 0) + 1  # false alarm — first occurrence
+                            if patient not in false_alarm_tracker:
+                                false_alarm_tracker[patient] = {}
+                            false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+                
+                if x[0] == 'TOOL_APPLIED' and 'Pulse Oximeter' not in x:
+                    patient = x[header.index("PatientID")]
+                    tool = x[header.index('ToolType')]
+                    if tool in supplemental.get(patient, {}):
+                        if supplemental_tracker.get(patient, {}).get(tool, 0) > 0:
+                            repeat_hits[patient] = repeat_hits.get(patient, 0) + 1 # repeat hit — already applied
+                        else:
+                            hits[patient] = hits.get(patient, 0) + 1  # hit
+                        if patient not in supplemental_tracker:
+                            supplemental_tracker[patient] = {}
+                        supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
+                    
+                    else:  # non-supplemental tool
+                        if patient not in to_complete and patient != just_completed: # nothing left to treat
+                            if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
+                                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1  # repeat false alarm
+                            else:
+                                false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                            if patient not in false_alarm_tracker:
+                                false_alarm_tracker[patient] = {}
+                            false_alarm_tracker[patient][tool] = false_alarm_tracker[patient].get(tool, 0) + 1
+                    just_completed = None
+
+            return {'total_hits': sum(hits.values()), 
+            'total_false_alarms': sum(false_alarms.values()), 
+            'total_repeat_hits': sum(repeat_hits.values()), 
+            'total_repeat_false_alarms': sum(repeat_false_alarms.values()),
+            'per_patient_hits': hits,
+            'per_patient_false_alarms': false_alarms,
+            'per_patient_repeat_hits': repeat_hits,
+            'per_patient_repeat_false_alarms': repeat_false_alarms
+            }
+
+        submetrics_supp = get_treatment_submetrics_w_supp()
+        results[f'{env} Treat_hits_w_supp'] = submetrics_supp['total_hits']
+        results[f'{env} Treat_false_alarms_w_supp'] = submetrics_supp['total_false_alarms']
+        results[f'{env} Treat_repeat_hits_w_supp'] = submetrics_supp['total_repeat_hits']
+        results[f'{env} Treat_repeat_false_alarms_w_supp'] = submetrics_supp['total_repeat_false_alarms']
+
+        def get_treatment_submetrics_required():
+            """
+            Scores completed INJURY_TREATED events against required injuries (ALL_REQ_PROCEDURES).
+
+            Returns a dict with total and per-patient counts of:
+                - hits: required injury treated correctly, first time
+                - repeat_hits: required injury treated again after already healed
+                - false_alarms: injury not on required list treated, first occurrence
+                - repeat_false_alarms: injury not on required list treated again, after prior occurrence
+            """
+            to_complete = copy.deepcopy(ALL_REQ_PROCEDURES[env.lower()])
+            hits, false_alarms, repeat_hits, repeat_false_alarms = {}, {}, {}, {}
+            false_alarm_tracker = {}
+
+            for x in data:
+                if x[0] == 'INJURY_TREATED':
+                    patient = x[header.index("PatientID")]
+                    where = x[header.index("InjuryName")]
+                    completed = x[header.index("InjuryTreatmentComplete")]
+                    if completed == 'True':
+                        if patient in ALL_REQ_PROCEDURES[env.lower()]: # patient has required injuries
+                            if where in ALL_REQ_PROCEDURES[env.lower()][patient]: # correct injury treated
+                                if patient in to_complete and where in to_complete[patient]: # not yet healed
+                                    to_complete[patient].remove(where)
+                                    hits[patient] = hits.get(patient, 0) + 1 # hit
+                                    if len(to_complete[patient]) == 0:
+                                        del to_complete[patient]
+                                else:
+                                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1 # repeat hit — already healed
+                            else: # wrong injury treated
+                                if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                                else:
+                                    false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                                if patient not in false_alarm_tracker:
+                                    false_alarm_tracker[patient] = {}
+                                false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+                        else: # patient has no required injuries in this scenario
+                            if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                            else:
+                                false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                            if patient not in false_alarm_tracker:
+                                false_alarm_tracker[patient] = {}
+                            false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+
+            return {'total_hits': sum(hits.values()), 
+            'total_false_alarms': sum(false_alarms.values()), 
+            'total_repeat_hits': sum(repeat_hits.values()), 
+            'total_repeat_false_alarms': sum(repeat_false_alarms.values()),
+            'per_patient_hits': hits,
+            'per_patient_false_alarms': false_alarms,
+            'per_patient_repeat_hits': repeat_hits,
+            'per_patient_repeat_false_alarms': repeat_false_alarms
+            }
+
+        submetrics_required = get_treatment_submetrics_required()
+        results[f'{env} Treat_hits_required'] = submetrics_required['total_hits']
+        results[f'{env} Treat_false_alarms_required'] = submetrics_required['total_false_alarms']
+        results[f'{env} Treat_repeat_hits_required'] = submetrics_required['total_repeat_hits']
+        results[f'{env} Treat_repeat_false_alarms_required'] = submetrics_required['total_repeat_false_alarms']
 
         def get_triage_time():
             '''gets the time from start to finish (in seconds) to complete the scenario'''
@@ -599,6 +756,14 @@ class ProbeMatcher:
             results[f'{env} {name}_evac'] = 'Yes' if sim_name in evaced else 'No'
             results[f'{env} {name}_assess'] = assessments['per_patient'].get(sim_name, 0)
             results[f'{env} {name}_treat'] = treatments['per_patient'].get(sim_name, 0)
+            results[f'{env} {name}_treat_hits_required'] = submetrics_required['per_patient_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_false_alarms_required'] = submetrics_required['per_patient_false_alarms'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_hits_required'] = submetrics_required['per_patient_repeat_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_false_alarms_required'] = submetrics_required['per_patient_repeat_false_alarms'].get(sim_name, 0)
+            results[f'{env} {name}_treat_hits_w_supp'] = submetrics_supp['per_patient_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_false_alarms_w_supp'] = submetrics_supp['per_patient_false_alarms'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_hits_w_supp'] = submetrics_supp['per_patient_repeat_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_false_alarms_w_supp'] = submetrics_supp['per_patient_repeat_false_alarms'].get(sim_name, 0)
             results[f'{env} {name}_tag'] = tag_counts['tags'].get(sim_name, 'None')
 
         text_response = text_scenario_collection.find_one({"evalNumber": 9 if '2025093' in str(self.participantId) else EVAL_NUM, 'participantID': self.participantId, "scenario_id": {"$not": {"$regex": "PS-AF"}}})
