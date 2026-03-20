@@ -1135,7 +1135,16 @@ class ProbeMatcher:
         results[f'{env} Treat_false_alarms_w_supp'] = submetrics_supp['total_false_alarms']
         results[f'{env} Treat_repeat_hits_w_supp'] = submetrics_supp['total_repeat_hits']
         results[f'{env} Treat_repeat_false_alarms_w_supp'] = submetrics_supp['total_repeat_false_alarms']
-        
+
+        treat_keys = [
+        'Treat_hits_required', 'Treat_false_alarms_required',
+        'Treat_repeat_hits_required', 'Treat_repeat_false_alarms_required',
+        'Treat_hits_w_supp', 'Treat_false_alarms_w_supp',
+        'Treat_repeat_hits_w_supp', 'Treat_repeat_false_alarms_w_supp',
+        ]
+        print(f"\nTreatment submetrics ({env}):")
+        print({k: results[f'{env} {k}'] for k in treat_keys
+
         # -------------------------
         # Triage time
         # -------------------------
