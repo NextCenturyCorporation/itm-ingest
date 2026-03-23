@@ -86,20 +86,18 @@ def upload_configs(docs, collection):
     if not docs:
         print("No documents to upload")
         return
-    
+
     uploaded_count = 0
     replaced_count = 0
-    
+
     for doc in docs:
         scenario_id = doc['scenario_id']
-        
+
         # Replace document with matching scenario_id, or insert if it doesn't exist
         result = collection.replace_one(
-            {'scenario_id': scenario_id}, 
-            doc, 
-            upsert=True
+            {"scenario_id": scenario_id, "eval": doc["eval"]}, doc, upsert=True
         )
-        
+
         if result.upserted_id:
             print(f"Uploaded new text scenario: {scenario_id}")
             uploaded_count += 1
@@ -108,7 +106,7 @@ def upload_configs(docs, collection):
             replaced_count += 1
         else:
             print(f"No changes made to scenario: {scenario_id}")
-    
+
     print(f"\nSummary: {uploaded_count} new uploads, {replaced_count} replacements")
 
 
