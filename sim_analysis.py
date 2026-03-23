@@ -2,6 +2,7 @@ import os
 import json
 import csv
 import argparse
+import re
 from datetime import datetime
 
 # ============================================================
@@ -51,6 +52,21 @@ EVAC_ANSWER_TO_PATIENT = {
         "Civilian Stomach Puncture": "Civilian 3",
         "Mil Stomach Puncture": "US Military 4",
     },
+}
+
+MONTH_MAP = {
+    "january": "jan",
+    "february": "feb",
+    "march": "mar",
+    "april": "apr",
+    "may": "may",
+    "june": "jun",
+    "july": "jul",
+    "august": "aug",
+    "september": "sept",
+    "october": "oct",
+    "november": "nov",
+    "december": "dec",
 }
 
 # ============================================================
@@ -174,6 +190,55 @@ def build_probe_matcher_style_id(pid, env):
 # METADATA EXTRACTION
 # ============================================================
 
+def extract_month_year_label(*texts):
+    """
+    Look for strings like:
+      - February 2026
+      - Feb 2026
+      - June 2025
+    Return:
+      - short_label: feb2026 / jun2025 / etc.
+      - pretty_label: Feb2026 / Jun2025 / etc.
+    """
+    combined = " ".join(str(t or "") for t in texts)
+
+    pattern = re.compile(
+        r"\b("
+        r"january|jan|february|feb|march|mar|april|apr|may|june|jun|"
+        r"july|jul|august|aug|september|sept|sep|october|oct|"
+        r"november|nov|december|dec"
+        r")\s+(\d{4})\b",
+        re.IGNORECASE,
+    )
+
+    match = pattern.search(combined)
+    if not match:
+        return None, None
+
+    month_raw = match.group(1).lower()
+    year = match.group(2)
+
+    normalized = {
+        "jan": "january",
+        "feb": "february",
+        "mar": "march",
+        "apr": "april",
+        "jun": "june",
+        "jul": "july",
+        "aug": "august",
+        "sep": "september",
+        "sept": "september",
+        "oct": "october",
+        "nov": "november",
+        "dec": "december",
+    }.get(month_raw, month_raw)
+
+    short_month = MONTH_MAP[normalized]
+    pretty_month = short_month.capitalize()
+
+    return f"{short_month}{year}", f"{pretty_month}{year}"
+
+
 def extract_run_metadata(sim_json, filename):
     """
     Extract:
@@ -195,23 +260,35 @@ def extract_run_metadata(sim_json, filename):
 
     text_blob = " ".join([scene, narrative_desc, scenario_name, bucket]).lower()
 
-    env = "unknown"
-    if "desert" in text_blob and ("ow" in text_blob or "open world" in text_blob):
-        env = "feb2026-desert-openworld"
-    elif "urban" in text_blob and ("ow" in text_blob or "open world" in text_blob):
-        env = "feb2026-urban-openworld"
-    elif "desert" in text_blob:
-        env = "desert"
-    elif "urban" in text_blob:
-        env = "urban"
-
-    scenario_id = "unknown"
-    if env == "feb2026-desert-openworld":
-        scenario_id = "Feb2026-OW_desert"
-    elif env == "feb2026-urban-openworld":
-        scenario_id = "Feb2026-OW_urban"
-
     open_world = ("ow" in text_blob or "open world" in text_blob)
+
+    terrain = "unknown"
+    if "desert" in text_blob:
+        terrain = "desert"
+    elif "urban" in text_blob:
+        terrain = "urban"
+
+    short_label, pretty_label = extract_month_year_label(
+        narrative_desc, bucket, scenario_name
+    )
+
+    if open_world and terrain != "unknown":
+        if short_label:
+            env = f"{short_label}-{terrain}-openworld"
+        else:
+            env = f"{terrain}-openworld"
+    elif terrain != "unknown":
+        env = terrain
+    else:
+        env = "unknown"
+
+    if open_world and terrain != "unknown":
+        if pretty_label:
+            scenario_id = f"{pretty_label}-OW_{terrain}"
+        else:
+            scenario_id = f"OW_{terrain}"
+    else:
+        scenario_id = "unknown"
 
     return {
         "pid": pid,
