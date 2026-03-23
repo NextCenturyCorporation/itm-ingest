@@ -124,7 +124,7 @@ def main(mongo_db):
     for filename in os.listdir(phase2_folder):
         file_path = os.path.join(phase2_folder, filename)
         # don't gen multi kdma. also skip files that don't trail with a number (non subset files)
-        if "AF-MF" in filename or not re.match(r'.*\d+\.yaml$', filename):
+        if "AF-MF" in filename or not re.match(r'.*\d*\.yaml$', filename):
             continue
         try:
             with open(file_path, 'r') as file:
