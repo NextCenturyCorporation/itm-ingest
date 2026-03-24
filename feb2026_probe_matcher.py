@@ -1143,7 +1143,7 @@ class ProbeMatcher:
         'Treat_repeat_hits_w_supp', 'Treat_repeat_false_alarms_w_supp',
         ]
         print(f"\nTreatment submetrics ({env}):")
-        print({k: results[f'{env} {k}'] for k in treat_keys
+        print({k: results[f'{env} {k}'] for k in treat_keys})
 
         # -------------------------
         # Triage time
