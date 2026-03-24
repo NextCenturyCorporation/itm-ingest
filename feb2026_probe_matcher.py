@@ -1287,6 +1287,62 @@ class ProbeMatcher:
         results[f"{env} Triage Performance"] = get_triage_performance()
 
         # -------------------------
+        # Dragged patients
+        # Yes/No per patient based on meaningful CSV drag movement
+        # -------------------------
+        def _parse_vec3(pos_str):
+            if not pos_str:
+                return None
+            s = str(pos_str).strip().strip("()")
+            parts = [p.strip() for p in s.split(",")]
+            if len(parts) != 3:
+                return None
+            try:
+                return tuple(float(p) for p in parts)
+            except Exception:
+                return None
+
+        def _distance(a, b):
+            if not a or not b:
+                return 0.0
+            dx = a[0] - b[0]
+            dy = a[1] - b[1]
+            dz = a[2] - b[2]
+            return (dx * dx + dy * dy + dz * dz) ** 0.5
+
+        def get_dragged_patients(min_drag_distance=1.0):
+            dragged_patients = set()
+            active_drag_start = {}
+
+            for row in data:
+                ev = _get_cell(row, idx, "EventName")
+                patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
+
+                if not patient or any(
+                    x in patient for x in ["Level Core", "Simulation", "Player"]
+                ):
+                    continue
+
+                if ev == "DRAG_START":
+                    active_drag_start[patient] = _parse_vec3(
+                        _get_cell(row, idx, "DragStartPosition", "")
+                    )
+
+                elif ev == "DRAG_STOP":
+                    if patient not in active_drag_start:
+                        continue
+
+                    start_pos = active_drag_start.pop(patient, None)
+                    stop_pos = _parse_vec3(_get_cell(row, idx, "DragStopPosition", ""))
+
+                    if _distance(start_pos, stop_pos) > min_drag_distance:
+                        dragged_patients.add(patient)
+
+            return dragged_patients
+
+        dragged_patients = get_dragged_patients(min_drag_distance=1.0)
+
+        # -------------------------
         # Per-patient breakout
         # Use PATIENT_RECORD order if available; else engagement order
         # -------------------------
@@ -1320,6 +1376,9 @@ class ProbeMatcher:
                 results[f"{env} {name}_order"] = "N/A"
 
             results[f"{env} {name}_evac"] = evac_value_by_patient.get(sim_name, 0)
+            results[f"{env} {name}_dragged"] = (
+                "Yes" if sim_name in dragged_patients else "No"
+            )
             results[f"{env} {name}_assess"] = assessments["per_patient"].get(
                 sim_name, 0
             )
