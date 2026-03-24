@@ -1084,27 +1084,67 @@ class ProbeMatcher:
 
         # -------------------------
         # Evacuation answers (Feb JSON questions)
+        # Desert:
+        #   0 = not evacuated
+        #   1 = selected in first evac round
+        #   2 = selected in second evac round
+        #
+        # Urban:
+        #   0 = not evacuated
+        #   1 = selected in the only evac round
         # -------------------------
-        def get_evaced_patients_from_json():
-            answers = []
-            # Map answer label -> patient ID is scenario-specific; keep a hook.
-            # If your Feb scenarios keep consistent answer strings, put the mapping here.
-            # If you don't have a mapping yet, we store raw answer text instead.
-            for action in self.json_data.get("actionList", []):
-                if action.get("actionType") == "Question":
-                    q = str(action.get("question", "")).lower()
-                    if "evacuate" in q:
-                        ans = action.get("answer")
-                        if ans:
-                            answers.append(str(ans).strip())
-            return answers
+        def get_evac_value_by_patient():
+            evac_value_by_patient = {}
+            env_key = self.environment_short.lower()
+            answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
 
-        evaced_answers = get_evaced_patients_from_json()
-        env_key = self.environment_short.lower()
-        answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
-        evaced_patient_names = {
-            answer_map[ans] for ans in evaced_answers if ans in answer_map
-        }
+            for action in self.json_data.get("actionList", []):
+                if action.get("actionType") != "Question":
+                    continue
+
+                question = str(action.get("question", "")).strip().lower()
+                answer = str(action.get("answer", "")).strip()
+
+                if "evacuate" not in question or not answer:
+                    continue
+
+                patient_name = answer_map.get(answer)
+                if not patient_name:
+                    continue
+
+                evac_value = None
+
+                if env_key == "desert":
+                    # Desert round 1
+                    if (
+                        "which casualty do you want to evacuate" in question
+                        or "which one casualty do you want to evacuate" in question
+                    ):
+                        evac_value = 1
+
+                    # Desert round 2
+                    elif "which two casualties do you want to evacuate" in question:
+                        evac_value = 2
+
+                elif env_key == "urban":
+                    # Urban has one evac round
+                    if "which three casualties do you want to evacuate" in question:
+                        evac_value = 1
+
+                if evac_value is None:
+                    continue
+
+                # Keep the earliest/lowest evac code if somehow duplicated
+                if patient_name not in evac_value_by_patient:
+                    evac_value_by_patient[patient_name] = evac_value
+                else:
+                    evac_value_by_patient[patient_name] = min(
+                        evac_value_by_patient[patient_name], evac_value
+                    )
+
+            return evac_value_by_patient
+
+        evac_value_by_patient = get_evac_value_by_patient()
 
         # -------------------------
         # Personal Safety
@@ -1279,9 +1319,7 @@ class ProbeMatcher:
             except Exception:
                 results[f"{env} {name}_order"] = "N/A"
 
-            results[f"{env} {name}_evac"] = (
-                "Yes" if sim_name in evaced_patient_names else "No"
-            )
+            results[f"{env} {name}_evac"] = evac_value_by_patient.get(sim_name, 0)
             results[f"{env} {name}_assess"] = assessments["per_patient"].get(
                 sim_name, 0
             )
