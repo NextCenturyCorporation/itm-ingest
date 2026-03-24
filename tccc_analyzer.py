@@ -80,9 +80,6 @@ class SimAnalyzer:
                         self.all_req_procedures[pid].append(inj)
 
         f.close()
-        print('correct_triage:', self.correct_triage)
-        print('req_hemorrhage:', self.req_hemorrhage)
-        print('salt_order:', self.salt_order)
 
     def load_json_data(self, file_loc):
         with open(file_loc, 'r', encoding='utf-8') as f:
