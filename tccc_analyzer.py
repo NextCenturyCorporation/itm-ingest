@@ -3,7 +3,7 @@ import os, csv, copy, argparse, json
 class SimAnalyzer:
     def __init__(self, output_dir):
         '''
-        Initialize the new16 analyzer
+        Initialize the tccc analyzer
         '''
         try:
             os.mkdir(output_dir)
@@ -37,7 +37,7 @@ class SimAnalyzer:
         f = open(file_loc, 'r')
         reader = csv.reader(f)
         data = []
-        next(reader) # Skip header
+        next(reader)
         for line in reader:
             if line[0][0] == '#':
                 continue # skip "comments"
@@ -267,7 +267,6 @@ class SimAnalyzer:
         for x in tags_applied:
             if x not in self.tagging_data:
                 self.tagging_data[x] = {'correct': translations[tags[x]], 'red': 0, 'yellow': 0, 'gray': 0, 'green': 0, 'black': 0, 'kim_yellow': 0}
-            # required for new metro chaotic format
             if tags_applied[x] == 'yellow_orange':
                 tags_applied[x] = 'yellow'
             if tags_applied[x] == 'green_blue':
@@ -471,21 +470,10 @@ class SimAnalyzer:
         Add parameter to participant data noting if they evaluated patients by:
         still, able to wave, able to walk
         '''
-        # original list from Nick June/July 2024
-        # still = ['Helga_13', 'Gary_3', 'Lily_2', 'Bob_0', 'Gary_1', 'Mike_5', 'Lily_4', 'Mike_11', 'Mike_7']
-        # wave = ['Gloria_6']
-        # walk = ['Gary_12', 'Gary_9', 'Gloria_8', 'Helga_10']
-
-        # updated list 3/19/25
         still = copy.deepcopy(self.salt_order['still'])
         wave = copy.deepcopy(self.salt_order['wave'])
         walk = copy.deepcopy(self.salt_order['walk'])
 
-
-        # This is what is in the configuration file (and still makes the most sense to me...and gives better accuracy...but whatever)
-        # still = ['Helga_13', 'Gary_3', 'Bob_0', 'Gary_1']
-        # wave = ['Gloria_6', 'Mike_7', 'Lily_2', 'Lily_4', 'Mike_5', 'Mike_11']
-        # walk = ['Gary_9', 'Gloria_8', 'Helga_10', 'Gary_12']
         followed_rules = True
         captured = []
         errors = 0
@@ -793,10 +781,10 @@ class SimAnalyzer:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='New 16 Analyzer', usage='new_16_analysis.py [-h] [-i INPUT_DIR] [-o OUTPUT_DIR]')
+    parser = argparse.ArgumentParser(description='TCCC Analyzer', usage='tccc_analyzer.py [-h] [-i INPUT_DIR] [-o OUTPUT_DIR]')
 
-    parser.add_argument('-i', '--input_directory', dest='input_directory', default='input_tccc', type=str, help='The path to the directory that holds all input files. Default input16.')
-    parser.add_argument('-o', '--output_directory', dest='output_directory', default='output_tccc', type=str, help='The requested path to the new directory that will hold output csv files. Default output16.')
+    parser.add_argument('-i', '--input_directory', dest='input_directory', default='input_tccc', type=str, help='The path to the directory that holds all input files. Default input_tccc.')
+    parser.add_argument('-o', '--output_directory', dest='output_directory', default='output_tccc', type=str, help='The requested path to the new directory that will hold output csv files. Default output_tccc.')
     args = parser.parse_args()
 
     analyzer = SimAnalyzer(args.output_directory)
