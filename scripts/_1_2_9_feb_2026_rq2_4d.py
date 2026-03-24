@@ -28,7 +28,8 @@ VERBOSE = False
 WRITE_TO_DB = True
 
 
-BAD_ADMS = ['ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__6a3e924b-967d-4498-bcb7-48f0b7dd24d2']
+BAD_ADMS = ['ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__6a3e924b-967d-4498-bcb7-48f0b7dd24d2',
+            'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__114a4f1c-9223-461c-b0b1-d52e7596179e']
 
 kdma_abbreviations: list = ['AF', 'MF', 'PS', 'SS']
 
