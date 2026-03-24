@@ -392,7 +392,7 @@ class ProbeMatcher:
                         supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
                     
                     else:  # non-supplemental tool
-                        if patient not in to_complete and patient != just_completed: # nothing left to treat
+                        if patient != just_completed: # nothing left to treat
                             if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
                                 repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1  # repeat false alarm
                             else:
