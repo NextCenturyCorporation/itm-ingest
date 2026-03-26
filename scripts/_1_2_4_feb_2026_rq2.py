@@ -114,9 +114,9 @@ def read_probe_sets():
 
 
 # Adapted from dbutils.send_probes
-def send_probes(probe_url, session_id, probes: dict, scenario)-> None:
+def send_probes(req_session, probe_url, session_id, probes: dict, scenario)-> None:
     for probe in probes:
-        requests.post(probe_url, json={
+        req_session.post(probe_url, json={
             "response": {
                 "probe_id": probe['probe_id'],
                 "choice": probe['choice'],
@@ -132,39 +132,47 @@ def send_probes(probe_url, session_id, probes: dict, scenario)-> None:
     Respond to the random probes based on the adm_run's probe_responses
     Calculate session alignment against adm_data[target] and get kdma values
 """
-def get_ta1_calculations(adm_data: Adm_data, probe_ids: list) -> Tuple[list, str, float, list]:
+def get_ta1_calculations(req_session, adm_data: Adm_data, probe_ids: list) -> Tuple[list, str, float, list]:
     probes = []
+    session_id = None
     for probe_id in probe_ids:
         probes.append({'probe_id': probe_id, 'choice': adm_data.probe_responses[probe_id]})
     if HIT_TA1_SERVER:
-        session_id = requests.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
-        send_probes(f'{ADEPT_URL}api/v1/response', session_id, probes, adm_data.scenario_id)
-        session_alignment = requests.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={session_id}&target_id={adm_data.alignment_target_id}&population=false').json()
-        kdmas = requests.get(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
-        return probes, session_id, session_alignment['score'], kdmas
+        try:
+            session_id = req_session.post(f'{ADEPT_URL}api/v1/new_session').text.replace('"', '').strip()
+            send_probes(req_session, f'{ADEPT_URL}api/v1/response', session_id, probes, adm_data.scenario_id)
+            session_alignment = req_session.get(f'{ADEPT_URL}api/v1/alignment/session?session_id={session_id}&target_id={adm_data.alignment_target_id}&population=false').json()
+            kdmas = req_session.get(f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}').json()
+            return probes, session_id, session_alignment['score'], kdmas
+        except Exception:
+            print(f"--> Error: could not get alignment/kdmas for {adm_data.adm_name} in scenario {adm_data.scenario_id} at target {adm_data.alignment_target_id}.")
+            return probes, session_id, None, None
     else:
-        return probes, 'foobar', random.uniform(-3.0, 3.0), \
+        return probes, 'random_ta1_id', random.uniform(-3.0, 3.0), \
             [{'kdma': 'affiliation', 'value': random.random()}, {'kdma': 'merit', 'value': random.random()},
              {'kdma': 'personal_safety', 'value': random.random()}, {'kdma': 'search', 'value': random.random()}
              ]
 
 
 # Create attribute-specific 1D mini-probesets and add attribute-specific alignment score and TA1 session ID to the synthetic ADM's results
-def add_1D_scores(adm_data: Adm_data, probe_ids: list, results: dict):
+def add_1D_scores(req_session, adm_data: Adm_data, probe_ids: list, results: dict) -> int:
     all_attribute_data = []
+    error_count = 0
     for kdma in kdma_abbreviations:
         attribute_data = {}
         mini_probeset = [probe_id for probe_id in probe_ids if kdma in probe_id]
-        probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(adm_data, mini_probeset)
+        probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(req_session, adm_data, mini_probeset)
         attribute_data[kdma] = {'ta1_session_id': ta1_id, 'alignment_score': alignment_score, 'kdmas': kdmas, 'probes': probes}
+        if not alignment_score or not kdmas:
+            error_count += 1
         all_attribute_data.append(attribute_data)
 
     results['attribute_data'] = all_attribute_data
+    return error_count
 
 
 """
   Create synthetic ADM run for random assessment set:
-  clear out previous synthetic runs for this evaluation
   For every ADM run
     Determine attribute from scenario ID (e.g., Feb2026-AF-eval, Feb2026-AF-PS-eval, or Feb2026-eval)
     For every probeset (n=NUM_SUBSETS)
@@ -175,10 +183,15 @@ def add_1D_scores(adm_data: Adm_data, probe_ids: list, results: dict):
       If it's a 4D target/scenario, then for each attribute
         Create attribute-specific 1D mini-probesets and add attribute-specific alignment score and TA1 session ID to the synthetic ADM's results
 """
-def create_synthetic_adm_runs(mongo_db, probe_sets: list):
+def create_synthetic_adm_runs(mongo_db, probe_sets: list) -> int:
     adm_collection = mongo_db['admTargetRuns']
     total_synthetic_adm_runs = 0
     all_synthethic_adm_runs = []
+    error_count = 0
+    req_session = None
+
+    if HIT_TA1_SERVER:
+        req_session = requests.Session()
 
     for adm_data in all_adm_data:
         adm_name = adm_data.adm_name
@@ -198,7 +211,9 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
             probe_set = [probe_id for probe_id in probe_set if any(kdma in probe_id for kdma in acronyms)]
             if set_construction == '1D': # Need to convert 2D-style probe IDs to 1D
                 probe_set = [probe_id.split('.')[1] for probe_id in probe_set]
-            sent_probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(adm_data, probe_set)
+            sent_probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(req_session, adm_data, probe_set)
+            if not alignment_score or not kdmas:
+                error_count += 1
             synth_scenario_id = f"{EVALUATION_TYPE}-{attribute}r{subset_num}-eval" # e.g., "July2025-AFr23-eval"
             synth_scenario_name = adm_data.scenario_name.replace('Set', 'Random Set ' + str(subset_num)) # e.g., "Search vs Stay Random Set 23"
             if VERBOSE:
@@ -218,12 +233,15 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
                                 'ta3_session_id': 'N/A'}
             results: dict = {'ta1_session_id': ta1_id, 'alignment_score': alignment_score, 'kdmas': kdmas}
             if set_construction == '4D':
-                add_1D_scores(adm_data, probe_set, results)
+                error_count += add_1D_scores(req_session, adm_data, probe_set, results)
             synthethic_adm_run: dict = {'evaluation': evaluation, 'results': results, 'evalNumber': EVAL_NUM, 'scenario': synth_scenario_id,
                                         'evalName': EVALUATION_NAME, 'adm_name': adm_data.adm_name, 'synthetic': True,
                                         'probes': sent_probes, 'alignment_target': adm_data.alignment_target_id}
             total_synthetic_adm_runs += 1
             all_synthethic_adm_runs.append(synthethic_adm_run)
+
+    if HIT_TA1_SERVER:
+        req_session.close()
 
     if WRITE_TO_DB:
         result = adm_collection.insert_many(all_synthethic_adm_runs)
@@ -231,6 +249,8 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
             print(f'Total runs mismatch: expected {total_synthetic_adm_runs} but wrote {len(result.inserted_ids)} documents to database instead.')
     else:
         print(f"{total_synthetic_adm_runs} synthetic ADM runs NOT uploaded to database.")
+
+    print(f"Finished with a total of {error_count} error(s).  See logs for affected ADM runs.")
 
 
 def main(mongo_db):
