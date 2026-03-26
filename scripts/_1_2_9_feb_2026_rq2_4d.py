@@ -107,7 +107,6 @@ def create_synthetic_adm_runs(mongo_db, probe_sets: list):
             probe_set: list = probe_sets[subset_num-1]
             if VERBOSE:
                 print(f"Processing probe subset #{subset_num}: {probe_set}")
-            probe_set = [probe_id for probe_id in probe_set if any(kdma in probe_id for kdma in kdma_abbreviations)]
             sent_probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(req_session, adm_data, probe_set)
             if not alignment_score or not kdmas:
                 error_count += 1
