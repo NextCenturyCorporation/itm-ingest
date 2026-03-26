@@ -45,29 +45,26 @@ def convert_probe(probe):
     choices = [c.get("choice", "") for c in probe.get("answerChoices", [])]
     answers_needed = probe.get("answersNeeded", 1)
 
-    results = []
+    probe_question = {
+        "actionType": "Question",
+        "casualty": "",
+        "treatment": "",
+        "treatmentLocation": "",
+        "injuryType": "",
+        "successfulTreatment": False,
+        "tagColor": "",
+        "tagType": "",
+        "pulse": "",
+        "breathing": "",
+        "SpO2": "",
+        "question": probe.get("question", ""),
+        "answerChoices": choices,
+        "answer": "",
+        "movedBeforeClearedByCommand": False,
+        "timestamp": ""
+    }
 
-    for i in range(answers_needed):
-        results.append({
-            "actionType": "Question",
-            "casualty": "",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": False,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": probe.get("question", ""),
-            "answerChoices": choices,
-            "answer": "",
-            "movedBeforeClearedByCommand": False,
-            "timestamp": ""
-        })
-
-    return results
+    return probe_question, answers_needed
 
 def parse_csv(csv_file_path, ctx):
     """Parse CSV file and return list of dictionaries"""
@@ -422,9 +419,12 @@ def create_action_list(csv_data, probe_data):
             }
             action_list.append(disarm_action)
             print(f"DEBUG: Added disarm action to list")
+            
     for probe in probe_data:
-        action_list.append(convert_probe(probe))
-        print(convert_probe(probe))
+        converted_probe, probe_num = convert_probe(probe)
+        for i in range(probe_num):
+            action_list.append(converted_probe)
+   
     print(f"DEBUG: Processed {len(csv_data)} rows")
     print(f"DEBUG: Found {pulse_events_found} PULSE_TAKEN events")
     print(f"DEBUG: Found {treatment_events_found} INJURY_TREATED events")
