@@ -69,7 +69,7 @@ def create_page(scene, doc):
 def process_scenario(scenario):
     doc = {
         'scenario_id': scenario['id'], 
-        'eval': 'Phase 2 February 2026 Evaluation',
+        'eval': 'Phase 2 April 2026 Evaluation',
         'name': scenario['name'],
         'author': 'ADEPT',
         'pages': []
@@ -86,20 +86,18 @@ def upload_configs(docs, collection):
     if not docs:
         print("No documents to upload")
         return
-    
+
     uploaded_count = 0
     replaced_count = 0
-    
+
     for doc in docs:
         scenario_id = doc['scenario_id']
-        
+
         # Replace document with matching scenario_id, or insert if it doesn't exist
         result = collection.replace_one(
-            {'scenario_id': scenario_id}, 
-            doc, 
-            upsert=True
+            {"scenario_id": scenario_id, "eval": doc["eval"]}, doc, upsert=True
         )
-        
+
         if result.upserted_id:
             print(f"Uploaded new text scenario: {scenario_id}")
             uploaded_count += 1
@@ -108,7 +106,7 @@ def upload_configs(docs, collection):
             replaced_count += 1
         else:
             print(f"No changes made to scenario: {scenario_id}")
-    
+
     print(f"\nSummary: {uploaded_count} new uploads, {replaced_count} replacements")
 
 
@@ -117,14 +115,14 @@ def main(mongo_db):
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # go up one level to root to find scenarios
-    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/feb2026/assess')
+    phase2_folder = os.path.join(os.path.dirname(current_dir), 'phase2/april2026/assess')
 
     all_docs = []
 
     for filename in os.listdir(phase2_folder):
         file_path = os.path.join(phase2_folder, filename)
         # don't gen multi kdma. also skip files that don't trail with a number (non subset files)
-        if "AF-MF" in filename or not re.match(r'.*\d+\.yaml$', filename):
+        if "AF-MF" in filename or not re.match(r'.*\d*\.yaml$', filename):
             continue
         try:
             with open(file_path, 'r') as file:
