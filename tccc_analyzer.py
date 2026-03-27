@@ -160,7 +160,7 @@ class SimAnalyzer:
         # --- tag expectant ---
         expectant_patients = [p for p, t in self.correct_triage.items() if t == 'expectant']
         tag_colors = self.by_file_data[filename]['tag_colors']
-        tag_expectant = 'Yes' if any(tag_colors.get(p) == 'gray' for p in expectant_patients) else 'No'
+        tag_expectant = 'Yes' if any(tag_colors.get(p) == 'black' for p in expectant_patients) else 'No'
 
         # --- evac ---
         evaced = []
@@ -241,7 +241,7 @@ class SimAnalyzer:
         translations = {
             'immediate': 'red',
             'delayed': 'yellow',
-            'expectant': 'gray',
+            'expectant': 'black',
             'minimal': 'green',
             'dead': 'black'
         }
@@ -280,10 +280,6 @@ class SimAnalyzer:
                     over_triage += 1
                 elif guess == 'black':
                     critical_triage += 1                    
-                elif truth == 'gray':
-                    over_triage += 1
-                elif guess == 'gray':
-                    critical_triage += 1
                 elif truth == 'red':
                     under_triage += 1
                 elif guess == 'red':
