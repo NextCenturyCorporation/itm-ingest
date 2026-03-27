@@ -1084,27 +1084,67 @@ class ProbeMatcher:
 
         # -------------------------
         # Evacuation answers (Feb JSON questions)
+        # Desert:
+        #   0 = not evacuated
+        #   1 = selected in first evac round
+        #   2 = selected in second evac round
+        #
+        # Urban:
+        #   0 = not evacuated
+        #   1 = selected in the only evac round
         # -------------------------
-        def get_evaced_patients_from_json():
-            answers = []
-            # Map answer label -> patient ID is scenario-specific; keep a hook.
-            # If your Feb scenarios keep consistent answer strings, put the mapping here.
-            # If you don't have a mapping yet, we store raw answer text instead.
-            for action in self.json_data.get("actionList", []):
-                if action.get("actionType") == "Question":
-                    q = str(action.get("question", "")).lower()
-                    if "evacuate" in q:
-                        ans = action.get("answer")
-                        if ans:
-                            answers.append(str(ans).strip())
-            return answers
+        def get_evac_value_by_patient():
+            evac_value_by_patient = {}
+            env_key = self.environment_short.lower()
+            answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
 
-        evaced_answers = get_evaced_patients_from_json()
-        env_key = self.environment_short.lower()
-        answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
-        evaced_patient_names = {
-            answer_map[ans] for ans in evaced_answers if ans in answer_map
-        }
+            for action in self.json_data.get("actionList", []):
+                if action.get("actionType") != "Question":
+                    continue
+
+                question = str(action.get("question", "")).strip().lower()
+                answer = str(action.get("answer", "")).strip()
+
+                if "evacuate" not in question or not answer:
+                    continue
+
+                patient_name = answer_map.get(answer)
+                if not patient_name:
+                    continue
+
+                evac_value = None
+
+                if env_key == "desert":
+                    # Desert round 1
+                    if (
+                        "which casualty do you want to evacuate" in question
+                        or "which one casualty do you want to evacuate" in question
+                    ):
+                        evac_value = 1
+
+                    # Desert round 2
+                    elif "which two casualties do you want to evacuate" in question:
+                        evac_value = 2
+
+                elif env_key == "urban":
+                    # Urban has one evac round
+                    if "which three casualties do you want to evacuate" in question:
+                        evac_value = 1
+
+                if evac_value is None:
+                    continue
+
+                # Keep the earliest/lowest evac code if somehow duplicated
+                if patient_name not in evac_value_by_patient:
+                    evac_value_by_patient[patient_name] = evac_value
+                else:
+                    evac_value_by_patient[patient_name] = min(
+                        evac_value_by_patient[patient_name], evac_value
+                    )
+
+            return evac_value_by_patient
+
+        evac_value_by_patient = get_evac_value_by_patient()
 
         # -------------------------
         # Personal Safety
@@ -1247,6 +1287,62 @@ class ProbeMatcher:
         results[f"{env} Triage Performance"] = get_triage_performance()
 
         # -------------------------
+        # Dragged patients
+        # Yes/No per patient based on meaningful CSV drag movement
+        # -------------------------
+        def _parse_vec3(pos_str):
+            if not pos_str:
+                return None
+            s = str(pos_str).strip().strip("()")
+            parts = [p.strip() for p in s.split(",")]
+            if len(parts) != 3:
+                return None
+            try:
+                return tuple(float(p) for p in parts)
+            except Exception:
+                return None
+
+        def _distance(a, b):
+            if not a or not b:
+                return 0.0
+            dx = a[0] - b[0]
+            dy = a[1] - b[1]
+            dz = a[2] - b[2]
+            return (dx * dx + dy * dy + dz * dz) ** 0.5
+
+        def get_dragged_patients(min_drag_distance=1.0):
+            dragged_patients = set()
+            active_drag_start = {}
+
+            for row in data:
+                ev = _get_cell(row, idx, "EventName")
+                patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
+
+                if not patient or any(
+                    x in patient for x in ["Level Core", "Simulation", "Player"]
+                ):
+                    continue
+
+                if ev == "DRAG_START":
+                    active_drag_start[patient] = _parse_vec3(
+                        _get_cell(row, idx, "DragStartPosition", "")
+                    )
+
+                elif ev == "DRAG_STOP":
+                    if patient not in active_drag_start:
+                        continue
+
+                    start_pos = active_drag_start.pop(patient, None)
+                    stop_pos = _parse_vec3(_get_cell(row, idx, "DragStopPosition", ""))
+
+                    if _distance(start_pos, stop_pos) > min_drag_distance:
+                        dragged_patients.add(patient)
+
+            return dragged_patients
+
+        dragged_patients = get_dragged_patients(min_drag_distance=1.0)
+
+        # -------------------------
         # Per-patient breakout
         # Use PATIENT_RECORD order if available; else engagement order
         # -------------------------
@@ -1279,8 +1375,9 @@ class ProbeMatcher:
             except Exception:
                 results[f"{env} {name}_order"] = "N/A"
 
-            results[f"{env} {name}_evac"] = (
-                "Yes" if sim_name in evaced_patient_names else "No"
+            results[f"{env} {name}_evac"] = evac_value_by_patient.get(sim_name, 0)
+            results[f"{env} {name}_dragged"] = (
+                "Yes" if sim_name in dragged_patients else "No"
             )
             results[f"{env} {name}_assess"] = assessments["per_patient"].get(
                 sim_name, 0
