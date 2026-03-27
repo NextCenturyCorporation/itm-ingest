@@ -268,6 +268,8 @@ class SimAnalyzer:
                 tags_applied[x] = 'yellow'
             if tags_applied[x] == 'green_blue':
                 tags_applied[x] = 'green'
+            if tags_applied[x] == 'gray':
+                tags_applied[x] = 'black'
             self.tagging_data[x][tags_applied[x]] += 1
             if translations[tags[x]] == tags_applied[x]:
                 correct += 1
@@ -549,7 +551,7 @@ class SimAnalyzer:
         f = open(f'{self.output_dir}/analyzed.csv', 'w')
         writer = csv.writer(f)
         patient_list = sorted(self.correct_triage.keys())
-        header = ['File Name', 'PID', 'Time to Triage Scene (s)', 'Tags Applied', 'Triage Tag Accuracy', 'Over-Triage Errors', 'Under-Triage Errors', 'Critical Triage Errors', 'Total Hemorrhage Control Time (s)', 'Followed SALT', 'SALT Errors', 'Total Errors']
+        header = ['File Name', 'PID', 'Time to Triage Scene (s)', 'Tags Applied', 'Triage Tag Accuracy', 'Over-Triage Errors', 'Under-Triage Errors', 'Critical Triage Errors', 'Total Hemorrhage Control Time (s)', 'Total Errors']
         header += ['TCCC Triage Performance', 'TCCC Assess_total', 'TCCC Assess_patient', 'TCCC Treat_total', 'TCCC Treat_patient', 'TCCC Triage_time', 'TCCC Triage_time_patient', 'TCCC Engage_patient', 'TCCC Tag_ACC', 'TCCC Tag_Expectant', 'TCCC Hemorrhage control', 'TCCC Hemorrhage control_time']
         for p in patient_list:
             header += [f'{p} Time', f'{p} Order', f'{p} Evac', f'{p} Assess', f'{p} Treat', f'{p} Tag']
@@ -591,7 +593,7 @@ class SimAnalyzer:
             pp = m.get('per_patient', {})
             row = [filename, filename.split('_')[1] if '_' in filename else filename.split('-')[-1], x['triage_time'],
                 x['correct_tags']['total'], correct_tag_perc, over_tag_perc, under_tag_perc, critical_tag_perc,
-                x['total_hc_time'], x['salt'], x['salt_errors'], x['errors_made'],
+                x['total_hc_time'], x['errors_made'],
                 m.get('TCCC Triage Performance', ''), m.get('TCCC Assess_total', ''), m.get('TCCC Assess_patient', ''),
                 m.get('TCCC Treat_total', ''), m.get('TCCC Treat_patient', ''), m.get('TCCC Triage_time', ''),
                 m.get('TCCC Triage_time_patient', ''), m.get('TCCC Engage_patient', ''), m.get('TCCC Tag_ACC', ''),
@@ -617,13 +619,13 @@ class SimAnalyzer:
         '''
         f = open(f'{self.output_dir}/tag_distribution.csv', 'w')
         writer = csv.writer(f)
-        header = ['Patient', 'Correct Tag Color', 'Percent Correct', '# Red', '# Yellow', '# Green', '# Gray', '# Black']
+        header = ['Patient', 'Correct Tag Color', 'Percent Correct', '# Red', '# Yellow', '# Green', '# Black']
         writer.writerow(header)
         for p in self.tagging_data:
             data = self.tagging_data[p]
-            total_tags = data['red'] + data['yellow'] + data['green'] + data['gray'] + data['black']
+            total_tags = data['red'] + data['yellow'] + data['green'] + data['black']
             correct_tags = data[data['correct']] + data['kim_yellow']
-            writer.writerow([p, data['correct'], self.round_to(correct_tags/max(1,total_tags), 4), data['red'], data['yellow'], data['green'], data['gray'], data['black']])
+            writer.writerow([p, data['correct'], self.round_to(correct_tags/max(1,total_tags), 4), data['red'], data['yellow'], data['green'], data['black']])
         f.close()
          
 
