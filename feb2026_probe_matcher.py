@@ -137,6 +137,31 @@ PERSONAL_SAFETY_CONFIG = {
     },
 }
 
+SUPPLEMENTAL_PROCEDURES = {
+    'desert': {
+        'US Military 1': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics'],
+        'Civilian 1': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'Attacker 1': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'US Military 2': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'Civilian 2': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'US Military 3': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'US Military 4': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'Attacker 2': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'Civilian 3': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics'],
+        'US Military 5': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+    },
+    'urban': {
+        'US Military 1': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'US Military 2': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'Civilian 1': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'Shooter 1': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'US Military 3': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'Civilian 2': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap'],
+        'Civilian 3': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+        'US Military 4': ['Nasal Airway', 'Blanket', 'Fentanyl Lollipop', 'IV Blood', 'Antibiotics', 'Gauze Wrap', 'Israeli Wrap', 'Chest Seal'],
+    },
+}
+
 # -------------------------
 # Mongo Globals (set in main)
 # -------------------------
@@ -801,6 +826,14 @@ class ProbeMatcher:
             f"{env} Hemorrhage control": None,
             f"{env} Hemorrhage control_time": None,
             f"{env} Triage Performance": None,
+            f"{env} Treat_hits_required": 0,
+            f"{env} Treat_false_alarms_required": 0,
+            f"{env} Treat_repeat_hits_required": 0,
+            f"{env} Treat_repeat_false_alarms_required": 0,
+            f"{env} Treat_hits_w_supp": 0,
+            f"{env} Treat_false_alarms_w_supp": 0,
+            f"{env} Treat_repeat_hits_w_supp": 0,
+            f"{env} Treat_repeat_false_alarms_w_supp": 0
         }
 
         if env == "Desert":
@@ -947,6 +980,161 @@ class ProbeMatcher:
         results[f"{env} Treat_patient"] = results[f"{env} Treat_total"] / max(
             1, patients_treated
         )
+
+        # -------------------------
+        # Treatments (Submetrics)
+        # -------------------------
+
+        def get_treatment_submetrics_required():
+            """
+            Scores completed INJURY_TREATED events against required injuries (derived from INJURY_RECORD events).
+
+            Returns a dict with total and per-patient counts of:
+                - hits: required injury treated correctly, first time
+                - repeat_hits: required injury treated again after already healed
+                - false_alarms: injury not on required list treated, first occurrence
+                - repeat_false_alarms: injury not on required list treated again, after prior occurrence
+            """
+            to_complete = copy.deepcopy(required_injuries)
+            hits, false_alarms, repeat_hits, repeat_false_alarms = {}, {}, {}, {}
+            false_alarm_tracker = {}
+
+            for row in data:
+                if _get_cell(row, idx, "EventName") == 'INJURY_TREATED':
+                    patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
+                    where = _get_cell(row, idx, "InjuryName")
+                    completed = _get_cell(row, idx, "InjuryTreatmentComplete")
+                    if _safe_bool_from_csv(completed):
+                        if patient in required_injuries: # patient has required injuries
+                            if where in required_injuries[patient]: # correct injury treated
+                                if patient in to_complete and where in to_complete[patient]: # not yet healed
+                                    to_complete[patient].remove(where)
+                                    hits[patient] = hits.get(patient, 0) + 1 # hit
+                                    if len(to_complete[patient]) == 0:
+                                        del to_complete[patient]
+                                else:
+                                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1 # repeat hit — already healed
+                            else: # wrong injury treated
+                                if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                                else:
+                                    false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                                if patient not in false_alarm_tracker:
+                                    false_alarm_tracker[patient] = {}
+                                false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+                        else: # patient has no required injuries in this scenario
+                            if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                            else:
+                                false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                            if patient not in false_alarm_tracker:
+                                false_alarm_tracker[patient] = {}
+                            false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+
+            return {'total_hits': sum(hits.values()), 
+            'total_false_alarms': sum(false_alarms.values()), 
+            'total_repeat_hits': sum(repeat_hits.values()), 
+            'total_repeat_false_alarms': sum(repeat_false_alarms.values()),
+            'per_patient_hits': hits,
+            'per_patient_false_alarms': false_alarms,
+            'per_patient_repeat_hits': repeat_hits,
+            'per_patient_repeat_false_alarms': repeat_false_alarms
+            }
+
+        submetrics_required = get_treatment_submetrics_required()
+        results[f'{env} Treat_hits_required'] = submetrics_required['total_hits']
+        results[f'{env} Treat_false_alarms_required'] = submetrics_required['total_false_alarms']
+        results[f'{env} Treat_repeat_hits_required'] = submetrics_required['total_repeat_hits']
+        results[f'{env} Treat_repeat_false_alarms_required'] = submetrics_required['total_repeat_false_alarms']
+
+        def get_treatment_submetrics_w_supp():
+            """
+            Scores completed INJURY_TREATED events against required injuries (derived from INJURY_RECORD events)
+            and TOOL_APPLIED events against supplemental procedures (SUPPLEMENTAL_PROCEDURES).
+
+            Returns a dict with total and per-patient counts of:
+                - hits: required injury treated correctly (first time) or supplemental tool applied (first time)
+                - repeat_hits: required injury treated again after healed, or supplemental tool applied more than once
+                - false_alarms: non-required injury treated or non-supplemental tool applied when nothing left to treat, first occurrence
+                - repeat_false_alarms: same as false_alarm, after prior occurrence
+            """
+            to_complete = copy.deepcopy(required_injuries)
+            supplemental = copy.deepcopy(SUPPLEMENTAL_PROCEDURES[env.lower()])
+            hits, false_alarms, repeat_hits, repeat_false_alarms = {}, {}, {}, {}
+            supplemental_tracker, false_alarm_tracker = {}, {}
+            just_completed = None
+
+            for row in data:
+                if _get_cell(row, idx, "EventName") == 'INJURY_TREATED':
+                    patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
+                    where = _get_cell(row, idx, "InjuryName")
+                    completed = _get_cell(row, idx, "InjuryTreatmentComplete")
+                    if _safe_bool_from_csv(completed):
+                        if patient in required_injuries: # patient has required injuries,
+                            if where in required_injuries[patient]: # correct injury treated
+                                if patient in to_complete and where in to_complete[patient]: # not yet healed
+                                    to_complete[patient].remove(where)
+                                    just_completed = patient
+                                    hits[patient] = hits.get(patient, 0) + 1 # hit
+                                    if len(to_complete[patient]) == 0:
+                                        del to_complete[patient]
+                                else:
+                                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1 # repeat hit — already healed
+                            else: # wrong injury treated
+                                if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                                else:
+                                    false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                                if patient not in false_alarm_tracker:
+                                    false_alarm_tracker[patient] = {}
+                                false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+                        else: # patient has no required injuries in this scenario
+                            if false_alarm_tracker.get(patient, {}).get(where, 0) > 0:
+                                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                            else:
+                                false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                            if patient not in false_alarm_tracker:
+                                false_alarm_tracker[patient] = {}
+                            false_alarm_tracker[patient][where] = false_alarm_tracker[patient].get(where, 0) + 1
+                
+                if _get_cell(row, idx, "EventName") == 'TOOL_APPLIED' and "Pulse Oximeter" not in _get_cell(row, idx, "ToolType", ""):
+                    patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
+                    tool = _get_cell(row, idx, "ToolType", "")
+                    if tool in supplemental.get(patient, {}): # approved supplemental tool
+                        if supplemental_tracker.get(patient, {}).get(tool, 0) > 0: # already applied before
+                            repeat_hits[patient] = repeat_hits.get(patient, 0) + 1 # repeat hit
+                        else: 
+                            hits[patient] = hits.get(patient, 0) + 1 # hit
+                        if patient not in supplemental_tracker:
+                            supplemental_tracker[patient] = {}
+                        supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
+                    
+                    else: # non-supplemental tool
+                        if patient != just_completed: # nothing left to treat
+                            if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
+                                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1 # repeat false alarm
+                            else:
+                                false_alarms[patient] = false_alarms.get(patient, 0) + 1 # false alarm — first occurrence
+                            if patient not in false_alarm_tracker:
+                                false_alarm_tracker[patient] = {}
+                            false_alarm_tracker[patient][tool] = false_alarm_tracker[patient].get(tool, 0) + 1
+                    just_completed = None
+
+            return {'total_hits': sum(hits.values()), 
+            'total_false_alarms': sum(false_alarms.values()), 
+            'total_repeat_hits': sum(repeat_hits.values()), 
+            'total_repeat_false_alarms': sum(repeat_false_alarms.values()),
+            'per_patient_hits': hits,
+            'per_patient_false_alarms': false_alarms,
+            'per_patient_repeat_hits': repeat_hits,
+            'per_patient_repeat_false_alarms': repeat_false_alarms
+            }
+
+        submetrics_supp = get_treatment_submetrics_w_supp()
+        results[f'{env} Treat_hits_w_supp'] = submetrics_supp['total_hits']
+        results[f'{env} Treat_false_alarms_w_supp'] = submetrics_supp['total_false_alarms']
+        results[f'{env} Treat_repeat_hits_w_supp'] = submetrics_supp['total_repeat_hits']
+        results[f'{env} Treat_repeat_false_alarms_w_supp'] = submetrics_supp['total_repeat_false_alarms']
 
         # -------------------------
         # Triage time
@@ -1390,7 +1578,14 @@ class ProbeMatcher:
             results[f"{env} {name}_required_injuries"] = required_injuries.get(
                 sim_name, []
             )
-
+            results[f'{env} {name}_treat_hits_required'] = submetrics_required['per_patient_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_false_alarms_required'] = submetrics_required['per_patient_false_alarms'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_hits_required'] = submetrics_required['per_patient_repeat_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_false_alarms_required'] = submetrics_required['per_patient_repeat_false_alarms'].get(sim_name, 0)
+            results[f'{env} {name}_treat_hits_w_supp'] = submetrics_supp['per_patient_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_false_alarms_w_supp'] = submetrics_supp['per_patient_false_alarms'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_hits_w_supp'] = submetrics_supp['per_patient_repeat_hits'].get(sim_name, 0)
+            results[f'{env} {name}_treat_repeat_false_alarms_w_supp'] = submetrics_supp['per_patient_repeat_false_alarms'].get(sim_name, 0)
         # -------------------------
         # Alignment compare scores (human sim vs matching text scenario sessions)
         # -------------------------
