@@ -1,7 +1,7 @@
 import os, yaml, json, csv, copy
 from delegation_survey.phase2_covert_adm_to_del_materials import get_unique_medic_name
 from delegation_survey.phase2_covert_adm_to_del_materials import find_scene_by_probe_id
-
+from delegation_survey.phase2_covert_adm_to_del_materials import convert_adm
 
 # only grab the files once, pass to create_adm
 def load_scenario_yamls(yaml_dir):
@@ -90,6 +90,7 @@ def main(mongo_db):
     medic_collection = mongo_db["admMedics"]
     medic_collection.delete_many({"evalNumber": 16})
 
+
     template_path = os.path.join(script_dir, "templates", "phase2_april_template.json")
     with open(template_path, "r", encoding="utf-8") as f:
         template = json.load(f)
@@ -97,7 +98,6 @@ def main(mongo_db):
     csv_path = os.path.join(script_dir, "oracle_table_example.csv")
     with open(csv_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        adms = []
         yaml_dir = os.path.join("phase2", "april2026", "observe")
         scenario_map = load_scenario_yamls(yaml_dir)
         for row in reader:
@@ -108,7 +108,7 @@ def main(mongo_db):
                 if col.startswith("Probe ") and value.strip()
             ]
             yaml_data = scenario_map[row["scenario_id"]]
-            adm = create_adm(
+            create_adm(
                 template,
                 medic_collection,
                 row["scenario_id"],
@@ -117,6 +117,27 @@ def main(mongo_db):
                 probe_responses,
                 yaml_data,
             )
-            adms.append(adm)
 
-    medic_collection.insert_many(adms)
+
+    mf_ps_runs = list(mongo_db["admTargetRuns"].find({"scenario": "Feb2026-MF-PS2-observe"}))
+    for adm in mf_ps_runs:
+        convert_adm(
+            adm,
+            adm["scenario"],
+            adm["alignment_target"],
+            adm["adm_name"],
+            template,
+            medic_collection,
+            16,
+            os.path.join("april2026", "observe")
+        )
+
+    # reuse feb af-ps2
+    af_ps_runs = list(medic_collection.find({"evalNumber": 15, "scenarioIndex": "Feb2026-AF-PS2-observe"}))
+    for doc in af_ps_runs:
+        new_doc = copy.deepcopy(doc)
+        del new_doc["_id"]  # need to gen new _id or else mongo error
+        new_doc["evalNumber"] = 16
+        medic_collection.insert_one(new_doc)
+
+
