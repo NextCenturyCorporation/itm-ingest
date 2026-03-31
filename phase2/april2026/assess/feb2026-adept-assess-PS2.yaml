@@ -33,7 +33,7 @@ scenes:
 
       The casualty is in a location with cover, but you would need to move across
       100 ft of exposed area to reach them. They are calling for help, but you can''t
-      see their injury. They are a warfighter in the same military unit as you.
+      see their injury. 
 
       You are currently in a location with cover. Do you move to treat the casualty
       now, or wait in your current location?'
@@ -94,7 +94,7 @@ scenes:
 
       The casualty is in a location with cover, but you would need to move across
       20 ft of exposed area to reach them. They are screaming, but you can''t see
-      their injury. They are a warfighter in the same military unit as you.
+      their injury. 
 
       You are currently in a location with cover. Do you move to treat the casualty
       now, or wait in your current location?'
@@ -154,8 +154,7 @@ scenes:
 
       The casualty is in a location with cover, but you would need to move across
       100 ft of exposed area to reach them. They are not visible from your location,
-      but you are told they are bleeding a lot. They are a warfighter in the same
-      military unit as you.
+      but you are told they are bleeding a lot.
 
       You are currently in a location with cover. Do you move to treat the casualty
       now, or wait in your current location?'
@@ -164,8 +163,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 100 ft of exposed area to reach them. They are not visible from
-        your location, but you are told they are bleeding a lot. They are a warfighter
-        in the same military unit as you.
+        your location, but you are told they are bleeding a lot.
       medical_condition: 0.767555556
       attribute_rating: 0.273130796
     threat_state:
@@ -214,8 +212,7 @@ scenes:
       not received any additional fire in the last 5 minutes.
 
       The casualty is in an exposed location and you would need to move across 100
-      ft of exposed area to reach them. They may have a broken leg. They are a warfighter
-      in the same military unit as you.
+      ft of exposed area to reach them. They may have a broken leg.
 
       You are currently in a location with cover. Do you move to treat the casualty
       now, or wait in your current location?'
@@ -273,8 +270,7 @@ scenes:
       not received any additional fire in the last 5 minutes.
 
       The casualty is in a location with cover, but you would need to move across
-      20 ft of exposed area to reach them. They are bleeding heavily. They are a warfighter
-      in the same military unit as you.
+      20 ft of exposed area to reach them. They are bleeding heavily.
 
       You are currently in a location with cover. Do you move to treat the casualty
       now, or wait in your current location?'
@@ -283,7 +279,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in a location with cover, but you would need to
         move across 20 ft of exposed area to reach them. They are bleeding heavily.
-        They are a warfighter in the same military unit as you.
+        
       medical_condition: 0.781777778
       attribute_rating: 0.819202357
     threat_state:
@@ -460,7 +456,7 @@ scenes:
       name: Patient A
       unstructured: The casualty is in an exposed location and you would need to move
         across 100 ft of exposed area to reach them. They are not visible from your
-        location. They are a warfighter in the same military unit as you.
+        location. 
       medical_condition: 0.589333333
       attribute_rating: 0.502424559
     threat_state:
