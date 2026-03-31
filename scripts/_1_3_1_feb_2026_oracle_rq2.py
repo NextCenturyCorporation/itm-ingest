@@ -5,8 +5,8 @@ from datetime import datetime
 from math import isnan
 from pymongo import MongoClient
 from decouple import config 
-from _1_2_4_feb_2026_rq2 import read_probe_sets
-from _1_2_4_feb_2026_rq2 import send_probes
+from scripts._1_2_4_feb_2026_rq2 import read_probe_sets
+from scripts._1_2_4_feb_2026_rq2 import send_probes
 
 """
 This script serves as a postscript for scripts 124 and 129 to add a field to RQ2 for the oracle alignment.
