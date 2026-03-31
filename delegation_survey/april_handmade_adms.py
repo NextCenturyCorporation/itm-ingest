@@ -133,7 +133,7 @@ def main(mongo_db):
         )
 
     # reuse feb af-ps2
-    af_ps_runs = list(medic_collection.find({"evalNumber": 15, "scenarioIndex": "Feb2026-AF-PS2-observe"}))
+    af_ps_runs = list(medic_collection.find({"evalNumber": 15, "scenarioIndex": "Feb2026-AF-PS2-observe", "admName": {"$regex": "Mistral"}}))
     for doc in af_ps_runs:
         new_doc = copy.deepcopy(doc)
         del new_doc["_id"]  # need to gen new _id or else mongo error
