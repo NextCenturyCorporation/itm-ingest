@@ -138,6 +138,17 @@ def main(mongo_db):
         new_doc = copy.deepcopy(doc)
         del new_doc["_id"]  # need to gen new _id or else mongo error
         new_doc["evalNumber"] = 16
+
+        # add two new questions
+        medic_name = new_doc["name"]
+        for el in template["elements"][-2:]:
+            new_el = copy.deepcopy(el)
+            if "name" in new_el:
+                new_el["name"] = new_el["name"].replace("Test medic 1", medic_name)
+            if "title" in new_el:
+                new_el["title"] = new_el["title"].replace("Test medic 1", medic_name)
+            new_doc["elements"].append(new_el)
+
         medic_collection.insert_one(new_doc)
 
 
