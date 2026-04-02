@@ -129,8 +129,8 @@
         },
         {
             "type": "radiogroup",
-            "name": "Test medic 1: This medic’s actions and behaviors are not very consistent.",
-            "title": "This medic’s actions and behaviors are not very consistent.",
+            "name": "Test medic 1: This medic really looks out for what is important to me.",
+            "title": "This medic really looks out for what is important to me.",
             "choices": [
                 "Strongly disagree",
                 "Disagree",
