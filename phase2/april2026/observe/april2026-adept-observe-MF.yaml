@@ -36,7 +36,7 @@ scenes:
   - description: Which patient do you treat first?
   state:
     unstructured: 'Patient A has moderate bleeding from their right forearm. They
-      detonated a large IED, killing 1 person and seriously injuring 5 people.
+      deliberately detonated a large IED, killing 1 person and seriously injuring 5 people.
 
       Patient B has a broken left arm with no bleeding. They are a bystander who was
       injured.

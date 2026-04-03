@@ -103,7 +103,7 @@ scenes:
   - description: Which patient do you treat first?
   state:
     unstructured: 'Patient A has severe burns on their left arm and torso, covering
-      20% of their body. They detonated a small IED, seriously injuring 2 people.
+      20% of their body. They deliberately detonated a small IED, seriously injuring 2 people.
 
       Patient B has a broken right ankle with no bleeding. They are a bystander who
       was injured.
