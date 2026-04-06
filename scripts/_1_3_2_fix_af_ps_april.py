@@ -1,4 +1,4 @@
-import json
+import json, copy
 def main(mongo_db):
     with open("delegation_survey/templates/phase2_april_template.json", "r", encoding="utf-8") as f:
         template = json.load(f) 
@@ -9,7 +9,7 @@ def main(mongo_db):
 
     for medic in af_ps_medics:
         del medic["elements"][1:5]
-        medic["elements"][1:1] = template["elements"][1:5]
+        medic["elements"][1:1] = copy.deepcopy(template["elements"][1:5])
         medic_name = medic["name"]
 
         for el in medic["elements"][1:5]:
