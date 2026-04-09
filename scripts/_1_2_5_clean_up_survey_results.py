@@ -2,10 +2,11 @@ import pymongo
 
 '''
 This script cleans up all the entries in surveyResults and scenarioResults collections 
-that do not have a participantID in participantLogs OR its participantID field value is null or does not exist
+that do not have a participantID in participantLogs OR its participantID field value is null, does not exist, or has junk test data
 
 Next Steps
-** DEBUG SCRIPT BY ONLY QUERYING WHAT NEEDS TO BE DELETED AND PRINT THAT TOO CONSOLE 
+** TEST SCRIPT && HAVE IT REVIEWED 
+** 271 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS 
 
 '''
 DELETE = False # only delete documents after EVERYTHING is checked
@@ -35,7 +36,7 @@ def log_and_delete(collection, query, label):
         result = collection.delete_many(query)
         print(f"[{label}] Deleted:", result.deleted_count)
     else:
-        print(f"[{label}] DRY RUN - nothing deleted")
+        print(f"{label} DRY RUN - NOTHING DELETED")
 
 def delete_null_pids(collection, pid_field, label):
     # delete all entries where pid has a null value or does not exist
@@ -82,12 +83,12 @@ def main(mongo_db):
 
 # -------- SURVEY CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
-    delete_null_pids(survey_collection, "results.pid", "NULL: surveyResults__results.pid")
-    delete_invalid_pids(survey_collection, "results.pid", "results.evalNumber", valid_pids, "INVALID: surveyResults__results.pid")
+    delete_null_pids(survey_collection, "results.pid", "NULL-- surveyResults__results.pid")
+    delete_invalid_pids(survey_collection, "results.pid", "results.evalNumber", valid_pids, "INVALID-- surveyResults__results.pid")
    
 # -------- SCENARIO CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
-    delete_null_pids(scenario_collection, "participantID", "NULL: ScenarioResults__participantID")
-    delete_invalid_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "INVALID: ScenarioResults__participantID")
+    delete_null_pids(scenario_collection, "participantID", "NULL-- ScenarioResults__participantID")
+    delete_invalid_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "INVALID-- ScenarioResults__participantID")
     
    
