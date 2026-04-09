@@ -6,7 +6,12 @@ that do not have a participantID in participantLogs OR its participantID field v
 
 Next Steps
 ** TEST SCRIPT && HAVE IT REVIEWED 
-** 271 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS 
+** 271 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
+    * 46 NULL PIDS in surveyResults
+    * 133 TEST DATA PIDS in surveyResults
+    * 62 INVALID PIDS in surveyResults
+    * 8 TEST DATA in scenarioResults
+    * 29 INVALID PIDS in scenarioResults
 
 '''
 DELETE = False # only delete documents after EVERYTHING is checked
