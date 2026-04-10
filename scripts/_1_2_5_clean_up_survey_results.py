@@ -6,10 +6,10 @@ that do not have a participantID in participantLogs OR its participantID field v
 
 Next Steps
 ** TEST SCRIPT && HAVE IT REVIEWED 
-** 271 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
-    * 46 NULL PIDS in surveyResults
-    * 133 TEST DATA PIDS in surveyResults
-    * 62 INVALID PIDS in surveyResults
+** 266 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
+    * 46 NULL/DNE PIDS in surveyResults (ALL FACT CHECKED W/ DB)
+    * 133 TEST DATA PIDS in surveyResults 
+    * 50 INVALID PIDS in surveyResults
     * 8 TEST DATA in scenarioResults
     * 29 INVALID PIDS in scenarioResults
 
@@ -61,11 +61,19 @@ def delete_invalid_pids(collection, pid_field, eval_field, valid_pids, label):
     # AND if evalNumber >= 4 where Participant Logs exist post DRE 4
     query = {
         "$or": [
-            { # invalid PIDs after eval 4 
-                pid_field: {"$exists": True, "$nin": valid_pids},
+             # invalid PIDs after eval 4 
+            {
+                "$expr": {
+                    "$not": {
+                        "$in": [
+                            {"$toString": f"${pid_field}"},
+                            valid_pids
+                        ]
+                    }
+                },
                 eval_field: {"$gte": 4}
             },
-            { # obvious test data
+            { # obvious test data regardless of eval
                 pid_field: {"$regex": "test", "$options": "i"},
             }
         ]
