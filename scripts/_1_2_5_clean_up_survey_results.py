@@ -9,7 +9,7 @@ Next Steps
 ** 266 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
     * 46 NULL/DNE PIDS in surveyResults (ALL FACT CHECKED W/ DB)
     * 133 TEST DATA PIDS in surveyResults 
-    * 50 INVALID PIDS in surveyResults
+    * 47 INVALID PIDS in surveyResults
     * 8 TEST DATA in scenarioResults
     * 29 INVALID PIDS in scenarioResults
 
@@ -71,7 +71,8 @@ def delete_invalid_pids(collection, pid_field, eval_field, valid_pids, label):
                         ]
                     }
                 },
-                eval_field: {"$gte": 4}
+                eval_field: {"$gte": 4},
+                pid_field: {"$ne": None, "$exists": True}
             },
             { # obvious test data regardless of eval
                 pid_field: {"$regex": "test", "$options": "i"},
