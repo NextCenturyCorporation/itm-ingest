@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-import boto3, os, csv, calendar
+import os, csv, calendar
+# import boto3
 from tccc_analyzer import SimAnalyzer
 from decouple import config
 # from botocore.exceptions import ClientError
