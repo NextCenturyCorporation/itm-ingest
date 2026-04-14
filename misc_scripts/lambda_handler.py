@@ -5,6 +5,11 @@ from tccc_analyzer import SimAnalyzer
 from decouple import config
 # from botocore.exceptions import ClientError
 
+# NOTE: This file is not run from this repo in production.
+# It is deployed to AWS Lambda via the Lambda console.
+# The S3 download logic below is commented out for local testing only.
+
+
 def lambda_handler(event, context):
     bucket = event["Records"][0]["s3"]["bucket"]["name"]
     key = event["Records"][0]["s3"]["object"]["key"]
