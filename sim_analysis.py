@@ -18,6 +18,7 @@ ENGAGEMENT_EVENTS = {
     "PULSE_TAKEN",
     "SP_O2_TAKEN",
     "BREATHING_CHECKED",
+    "PATIENT_ENGAGED",
 }
 
 TRIAGE_LEVEL_TO_TAG_COLOR = {
@@ -423,9 +424,18 @@ def find_patients_engaged(csv_rows):
 
 def find_time_per_patient(csv_rows):
     """
-    Match Feb probe matcher logic.
+    Match the legacy new_14/new_16 patient interaction logic as closely as possible
+    while working on the newer event-log CSV format.
+
+    Returns:
+      - interactions: {patient: total_seconds}
+      - total: total seconds across all patient interaction segments
+      - patient_interactions: rich interaction structure
+      - interaction_time: flattened {patient: total_seconds}
+      - interaction_visits: flattened {patient: visit_count}
+      - patient_order: unique patient visit order, matching the interaction pass
     """
-    interactions = {}
+    raw_interactions = {}
     cur_p = None
     start_time = 0.0
     last_time = 0.0
@@ -444,7 +454,7 @@ def find_time_per_patient(csv_rows):
         except Exception:
             continue
 
-        interactions.setdefault(patient, [])
+        raw_interactions.setdefault(patient, [])
 
         if cur_p is None:
             cur_p = patient
@@ -453,7 +463,7 @@ def find_time_per_patient(csv_rows):
             continue
 
         if cur_p != patient:
-            interactions[cur_p].append((start_time, last_time if last_time != 0 else t))
+            raw_interactions[cur_p].append((start_time, last_time if last_time != 0 else t))
             cur_p = patient
             start_time = t
             last_time = t
@@ -461,21 +471,70 @@ def find_time_per_patient(csv_rows):
             last_time = t
 
     if cur_p is not None:
-        interactions[cur_p].append((start_time, last_time))
+        raw_interactions.setdefault(cur_p, [])
+        raw_interactions[cur_p].append((start_time, last_time))
 
     total_time_ms = 0.0
     per_patient_seconds = {}
+    patient_interactions = {}
+    interaction_time = {}
+    interaction_visits = {}
 
-    for patient, segs in interactions.items():
+    ordered_patients = []
+    for row in csv_rows:
+        ev = row.get("EventName")
+        if ev not in ENGAGEMENT_EVENTS:
+            continue
+
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if not is_valid_patient(patient):
+            continue
+
+        if not ordered_patients or ordered_patients[-1] != patient:
+            ordered_patients.append(patient)
+
+    patient_visit_indices = {}
+    for idx, patient in enumerate(ordered_patients):
+        patient_visit_indices.setdefault(patient, []).append(idx)
+
+    for patient, segs in raw_interactions.items():
         patient_ms = 0.0
+        clean_segments = []
+
         for start, end in segs:
-            patient_ms += max(0.0, end - start)
+            start_ms = float(start)
+            end_ms = float(end)
+            if end_ms < start_ms:
+                end_ms = start_ms
+            clean_segments.append([start_ms, end_ms])
+            patient_ms += max(0.0, end_ms - start_ms)
+
         total_time_ms += patient_ms
-        per_patient_seconds[patient] = patient_ms / 1000.0
+        total_seconds = round(patient_ms / 1000.0, 3)
+
+        per_patient_seconds[patient] = total_seconds
+        interaction_time[patient] = total_seconds
+        interaction_visits[patient] = len(clean_segments)
+
+        patient_interactions[patient] = {
+            "total_time": total_seconds,
+            "indices_visited": patient_visit_indices.get(patient, []),
+            "times_visited": len(clean_segments),
+            "all_data": clean_segments,
+        }
+
+    patient_order = []
+    for patient in ordered_patients:
+        if patient not in patient_order:
+            patient_order.append(patient)
 
     return {
         "interactions": per_patient_seconds,
         "total": total_time_ms / 1000.0,
+        "patient_interactions": patient_interactions,
+        "interaction_time": interaction_time,
+        "interaction_visits": interaction_visits,
+        "patient_order": patient_order,
     }
 
 
@@ -793,7 +852,16 @@ def extract_action_analysis(csv_rows, sim_json, env):
 # OUTPUT DOCUMENT BUILDERS
 # ============================================================
 
-def build_output_documents(metadata, event_totals, action_analysis, sim_json):
+def build_output_documents(
+    metadata,
+    event_totals,
+    action_analysis,
+    sim_json,
+    patient_interactions=None,
+    interaction_time=None,
+    interaction_visits=None,
+    patient_order=None,
+):
     pid = metadata["pid"]
     env = metadata["env"]
     doc_id = build_probe_matcher_style_id(pid, env)
@@ -817,6 +885,15 @@ def build_output_documents(metadata, event_totals, action_analysis, sim_json):
         "eventTotals": event_totals,
         "actionAnalysis": action_analysis
     }
+
+    if patient_interactions is not None:
+        analysis_doc["patient_interactions"] = patient_interactions
+    if interaction_time is not None:
+        analysis_doc["interaction_time"] = interaction_time
+    if interaction_visits is not None:
+        analysis_doc["interaction_visits"] = interaction_visits
+    if patient_order is not None:
+        analysis_doc["patient_order"] = patient_order
 
     return raw_doc, analysis_doc
 
@@ -847,6 +924,7 @@ def process_file(json_path, output_dir):
     metadata = extract_run_metadata(sim_json, filename)
     event_totals = extract_event_totals(csv_rows, metadata["env"])
     action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"])
+    triage_times = find_time_per_patient(csv_rows)
 
     print("\n=== METADATA ===")
     print(json.dumps(metadata, indent=2))
@@ -854,9 +932,24 @@ def process_file(json_path, output_dir):
     print(json.dumps(event_totals, indent=2))
     print("=== ACTION ANALYSIS ===")
     print(json.dumps(action_analysis, indent=2))
+    print("=== PATIENT INTERACTIONS ===")
+    print(json.dumps(triage_times["patient_interactions"], indent=2))
+    print("=== INTERACTION TIME ===")
+    print(json.dumps(triage_times["interaction_time"], indent=2))
+    print("=== INTERACTION VISITS ===")
+    print(json.dumps(triage_times["interaction_visits"], indent=2))
+    print("=== PATIENT ORDER ===")
+    print(json.dumps(triage_times["patient_order"], indent=2))
 
     raw_doc, analysis_doc = build_output_documents(
-        metadata, event_totals, action_analysis, sim_json
+        metadata,
+        event_totals,
+        action_analysis,
+        sim_json,
+        patient_interactions=triage_times["patient_interactions"],
+        interaction_time=triage_times["interaction_time"],
+        interaction_visits=triage_times["interaction_visits"],
+        patient_order=triage_times["patient_order"],
     )
 
     save_output(output_dir, filename, analysis_doc)
