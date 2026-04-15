@@ -773,10 +773,81 @@ def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
     if completed == 1 and start_time_sec is not None and end_time_sec is not None:
         time_to = end_time_sec - start_time_sec
 
+    # Match legacy missed_hemorrhage_control semantics:
+    # count remaining hemorrhage-control-required injuries, not patients.
+    missed_hemorrhage_control = sum(len(v) for v in to_complete.values())
+
     return {
         "hemorrhage_control": completed,
         "hemorrhage_control_time": time_to,
+        "missed_hemorrhage_control": missed_hemorrhage_control,
     }
+
+
+def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_injury):
+    """
+    Match legacy new_14/new_16 per-patient hemorrhage-control timing pattern.
+
+    For each completed hemorrhage-control treatment that matches a required
+    hemorrhage procedure, find the interaction visit segment that contains that
+    treatment event and record the time from the start of that visit segment
+    until the treatment completion.
+    """
+    times_controlled = {}
+
+    for row in csv_rows:
+        if row.get("EventName") != "INJURY_TREATED":
+            continue
+
+        patient = clean_patient_name(row.get("PatientID", ""))
+        injury = str(row.get("InjuryName", "")).strip()
+        completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+        if not completed:
+            continue
+
+        req_proc = required_proc_for_injury.get((patient, injury))
+        if req_proc not in HEMORRHAGE_CONTROL_PROCS:
+            continue
+
+        # CSV ElapsedTime is already in milliseconds for these OW event logs.
+        # patient_interactions[...]["all_data"] is also stored in milliseconds,
+        # so do NOT multiply by 1000 here or the times will never match a visit segment.
+        try:
+            tx = safe_float(row.get("ElapsedTime"), 0.0)
+        except Exception:
+            tx = 0.0
+
+        req = [patient, req_proc, injury]
+        times_controlled.setdefault(patient, []).append({
+            "procedure": req,
+            "time": tx,
+        })
+
+    control_times = {}
+
+    for patient, controlled_list in times_controlled.items():
+        interaction_times = patient_interactions.get(patient, {}).get("all_data", [])
+        last_t2 = 0.0
+        last_t1 = 0.0
+
+        for controlled in controlled_list:
+            tx = float(controlled["time"])
+            for (t1, t2) in interaction_times:
+                if t1 == last_t2:
+                    # Match the defensive logic in the legacy analyzers.
+                    t1 = last_t1
+                last_t1 = t1
+                last_t2 = t2
+
+                if tx >= t1 and tx <= t2:
+                    time_to_control = (tx - t1) / 1000.0
+                    control_times.setdefault(patient, []).append({
+                        "procedure": controlled["procedure"],
+                        "time": round(time_to_control, 3),
+                    })
+                    break
+
+    return control_times
 
 
 def compute_triage_performance(csv_rows, required_injuries):
@@ -931,6 +1002,8 @@ def build_output_documents(
     patient_order=None,
     tag_colors=None,
     correct_tag_breakdown=None,
+    patient_hc_time=None,
+    missed_hemorrhage_control=None,
 ):
     pid = metadata["pid"]
     env = metadata["env"]
@@ -968,6 +1041,10 @@ def build_output_documents(
         analysis_doc["tag_colors"] = tag_colors
     if correct_tag_breakdown is not None:
         analysis_doc.update(correct_tag_breakdown)
+    if patient_hc_time is not None:
+        analysis_doc["patient_hc_time"] = patient_hc_time
+    if missed_hemorrhage_control is not None:
+        analysis_doc["missed_hemorrhage_control"] = missed_hemorrhage_control
 
     return raw_doc, analysis_doc
 
@@ -1002,6 +1079,14 @@ def process_file(json_path, output_dir):
     tag_colors = get_last_applied_tags(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
+    required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
+    hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
+    patient_hc_time = compute_patient_hc_time(
+        csv_rows,
+        triage_times["patient_interactions"],
+        required_proc_for_injury,
+    )
+    missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
 
     print("\n=== METADATA ===")
     print(json.dumps(metadata, indent=2))
@@ -1021,6 +1106,10 @@ def process_file(json_path, output_dir):
     print(json.dumps(tag_colors, indent=2))
     print("=== CORRECT TAG BREAKDOWN ===")
     print(json.dumps(correct_tag_breakdown, indent=2))
+    print("=== PATIENT HC TIME ===")
+    print(json.dumps(patient_hc_time, indent=2))
+    print("=== MISSED HEMORRHAGE CONTROL ===")
+    print(json.dumps(missed_hemorrhage_control, indent=2))
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -1033,6 +1122,8 @@ def process_file(json_path, output_dir):
         patient_order=triage_times["patient_order"],
         tag_colors=tag_colors,
         correct_tag_breakdown=correct_tag_breakdown,
+        patient_hc_time=patient_hc_time,
+        missed_hemorrhage_control=missed_hemorrhage_control,
     )
 
     save_output(output_dir, filename, analysis_doc)
