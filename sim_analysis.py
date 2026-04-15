@@ -923,39 +923,6 @@ def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_in
     return control_times
 
 
-def compute_triage_performance(csv_rows, required_injuries):
-    """
-    Match Feb probe matcher:
-      score = correct_completed / (total_tools_applied + misses) * 100
-    """
-    remaining = {p: set(inj_list) for p, inj_list in required_injuries.items()}
-    correct_completed = 0
-    total_tools_applied = 0
-
-    for row in csv_rows:
-        ev = row.get("EventName")
-
-        if ev == "INJURY_TREATED":
-            patient = clean_patient_name(row.get("PatientID", ""))
-            injury = str(row.get("InjuryName", "")).strip()
-            completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-
-            if completed and patient in remaining and injury in remaining[patient]:
-                remaining[patient].remove(injury)
-                correct_completed += 1
-                if len(remaining[patient]) == 0:
-                    del remaining[patient]
-
-        if ev == "TOOL_APPLIED":
-            tool = str(row.get("ToolType", "") or "")
-            if "Pulse Oximeter" in tool:
-                continue
-            total_tools_applied += 1
-
-    misses = sum(len(s) for s in remaining.values())
-    denom = max(1, total_tools_applied + misses)
-    return (correct_completed / denom) * 100.0
-
 
 def compute_patient_averages(csv_rows, assessments, treatments, triage_times):
     """
@@ -1016,7 +983,6 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
     tag_metrics = compute_tag_metrics(expected_tag_color, tags_applied)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
-    triage_performance = compute_triage_performance(csv_rows, required_injuries)
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
@@ -1029,7 +995,6 @@ def extract_action_analysis(csv_rows, sim_json, env):
     action_analysis[f"{prefix}Hemorrhage control"] = hem_metrics["hemorrhage_control"]
     action_analysis[f"{prefix}Hemorrhage control_time"] = hem_metrics["hemorrhage_control_time"]
 
-    action_analysis[f"{prefix}Triage Performance"] = triage_performance
 
     patients_in_order = get_patients_in_order(csv_rows, patient_order_engaged)
 
