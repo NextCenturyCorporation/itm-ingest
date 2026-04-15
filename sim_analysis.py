@@ -616,6 +616,79 @@ def normalize_tag_color(tag):
     return tag
 
 
+def compute_tag_distribution(csv_rows, expected_tag_color):
+    """
+    Match the legacy tag_distribution.csv concept:
+      - count every TAG_APPLIED color per patient
+      - compute percent correct per patient from full tag history
+
+    The legacy analyzers also had a special-case 'kim_yellow' bump for one
+    metro-chaotic patient. That legacy exception is not applied here because
+    open-world runs use the standard patient IDs and CSV-derived truth labels.
+    """
+    tag_distribution_red = {}
+    tag_distribution_yellow = {}
+    tag_distribution_green = {}
+    tag_distribution_gray = {}
+    tag_distribution_black = {}
+    percent_correct_per_patient = {}
+
+    counts_by_patient = {}
+
+    for row in csv_rows:
+        if row.get("EventName") != "TAG_APPLIED":
+            continue
+
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if not is_valid_patient(patient):
+            continue
+
+        raw_tag = str(row.get("TagType", "")).strip().lower()
+        tag = normalize_tag_color(raw_tag)
+
+        if tag not in {"red", "yellow", "green", "gray", "black"}:
+            continue
+
+        if patient not in counts_by_patient:
+            counts_by_patient[patient] = {
+                "red": 0,
+                "yellow": 0,
+                "green": 0,
+                "gray": 0,
+                "black": 0,
+            }
+        counts_by_patient[patient][tag] += 1
+
+    for patient, counts in counts_by_patient.items():
+        total_tags = (
+            counts["red"]
+            + counts["yellow"]
+            + counts["green"]
+            + counts["gray"]
+            + counts["black"]
+        )
+
+        expected = normalize_tag_color(expected_tag_color.get(patient))
+        correct_tags = counts.get(expected, 0) if expected else 0
+        percent_correct = round(correct_tags / max(1, total_tags), 4)
+
+        tag_distribution_red[patient] = counts["red"]
+        tag_distribution_yellow[patient] = counts["yellow"]
+        tag_distribution_green[patient] = counts["green"]
+        tag_distribution_gray[patient] = counts["gray"]
+        tag_distribution_black[patient] = counts["black"]
+        percent_correct_per_patient[patient] = percent_correct
+
+    return {
+        "tag_distribution_red": tag_distribution_red,
+        "tag_distribution_yellow": tag_distribution_yellow,
+        "tag_distribution_green": tag_distribution_green,
+        "tag_distribution_gray": tag_distribution_gray,
+        "tag_distribution_black": tag_distribution_black,
+        "percent_correct_per_patient": percent_correct_per_patient,
+    }
+
+
 def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
     """
     Legacy-style correct tag breakdown adapted to CSV-derived triage truth.
@@ -1004,6 +1077,7 @@ def build_output_documents(
     correct_tag_breakdown=None,
     patient_hc_time=None,
     missed_hemorrhage_control=None,
+    tag_distribution=None,
 ):
     pid = metadata["pid"]
     env = metadata["env"]
@@ -1045,6 +1119,8 @@ def build_output_documents(
         analysis_doc["patient_hc_time"] = patient_hc_time
     if missed_hemorrhage_control is not None:
         analysis_doc["missed_hemorrhage_control"] = missed_hemorrhage_control
+    if tag_distribution is not None:
+        analysis_doc.update(tag_distribution)
 
     return raw_doc, analysis_doc
 
@@ -1079,6 +1155,7 @@ def process_file(json_path, output_dir):
     tag_colors = get_last_applied_tags(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
+    tag_distribution = compute_tag_distribution(csv_rows, expected_tag_color)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
     patient_hc_time = compute_patient_hc_time(
@@ -1106,6 +1183,8 @@ def process_file(json_path, output_dir):
     print(json.dumps(tag_colors, indent=2))
     print("=== CORRECT TAG BREAKDOWN ===")
     print(json.dumps(correct_tag_breakdown, indent=2))
+    print("=== TAG DISTRIBUTION ===")
+    print(json.dumps(tag_distribution, indent=2))
     print("=== PATIENT HC TIME ===")
     print(json.dumps(patient_hc_time, indent=2))
     print("=== MISSED HEMORRHAGE CONTROL ===")
@@ -1124,6 +1203,7 @@ def process_file(json_path, output_dir):
         correct_tag_breakdown=correct_tag_breakdown,
         patient_hc_time=patient_hc_time,
         missed_hemorrhage_control=missed_hemorrhage_control,
+        tag_distribution=tag_distribution,
     )
 
     save_output(output_dir, filename, analysis_doc)
