@@ -607,6 +607,74 @@ def get_last_applied_tags(csv_rows):
     return tags_applied
 
 
+def normalize_tag_color(tag):
+    tag = str(tag or "").strip().lower()
+    if tag == "yellow_orange":
+        return "yellow"
+    if tag == "green_blue":
+        return "green"
+    return tag
+
+
+def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
+    """
+    Legacy-style correct tag breakdown adapted to CSV-derived triage truth.
+
+    Returns flattened fields:
+      - correct_tags_total
+      - correct_tags_correct
+      - correct_tags_over
+      - correct_tags_under
+      - correct_tags_critical
+    """
+    correct = 0
+    total = 0
+    over_triage = 0
+    under_triage = 0
+    critical_triage = 0
+
+    for patient, applied_raw in tags_applied.items():
+        expected = expected_tag_color.get(patient)
+        if expected is None:
+            continue
+
+        applied = normalize_tag_color(applied_raw)
+        expected = normalize_tag_color(expected)
+
+        if applied == expected:
+            correct += 1
+        else:
+            truth = expected
+            guess = applied
+
+            if truth == "black":
+                over_triage += 1
+            elif guess == "black":
+                critical_triage += 1
+            elif truth == "gray":
+                over_triage += 1
+            elif guess == "gray":
+                critical_triage += 1
+            elif truth == "red":
+                under_triage += 1
+            elif guess == "red":
+                over_triage += 1
+            elif truth == "yellow":
+                under_triage += 1
+            elif guess == "yellow":
+                over_triage += 1
+
+        total += 1
+
+    return {
+        "correct_tags_total": total,
+        "correct_tags_correct": correct,
+        "correct_tags_over": over_triage,
+        "correct_tags_under": under_triage,
+        "correct_tags_critical": critical_triage,
+    }
+
+
 def get_evaced_patient_names(sim_json, env):
     env_key = get_env_key(env)
     answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
@@ -861,6 +929,8 @@ def build_output_documents(
     interaction_time=None,
     interaction_visits=None,
     patient_order=None,
+    tag_colors=None,
+    correct_tag_breakdown=None,
 ):
     pid = metadata["pid"]
     env = metadata["env"]
@@ -894,6 +964,10 @@ def build_output_documents(
         analysis_doc["interaction_visits"] = interaction_visits
     if patient_order is not None:
         analysis_doc["patient_order"] = patient_order
+    if tag_colors is not None:
+        analysis_doc["tag_colors"] = tag_colors
+    if correct_tag_breakdown is not None:
+        analysis_doc.update(correct_tag_breakdown)
 
     return raw_doc, analysis_doc
 
@@ -925,6 +999,9 @@ def process_file(json_path, output_dir):
     event_totals = extract_event_totals(csv_rows, metadata["env"])
     action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"])
     triage_times = find_time_per_patient(csv_rows)
+    tag_colors = get_last_applied_tags(csv_rows)
+    expected_tag_color = derive_expected_tag_color(csv_rows)
+    correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
 
     print("\n=== METADATA ===")
     print(json.dumps(metadata, indent=2))
@@ -940,6 +1017,10 @@ def process_file(json_path, output_dir):
     print(json.dumps(triage_times["interaction_visits"], indent=2))
     print("=== PATIENT ORDER ===")
     print(json.dumps(triage_times["patient_order"], indent=2))
+    print("=== TAG COLORS ===")
+    print(json.dumps(tag_colors, indent=2))
+    print("=== CORRECT TAG BREAKDOWN ===")
+    print(json.dumps(correct_tag_breakdown, indent=2))
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -950,6 +1031,8 @@ def process_file(json_path, output_dir):
         interaction_time=triage_times["interaction_time"],
         interaction_visits=triage_times["interaction_visits"],
         patient_order=triage_times["patient_order"],
+        tag_colors=tag_colors,
+        correct_tag_breakdown=correct_tag_breakdown,
     )
 
     save_output(output_dir, filename, analysis_doc)
