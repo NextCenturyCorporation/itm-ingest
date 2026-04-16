@@ -917,6 +917,57 @@ def compute_patient_averages(csv_rows, assessments, treatments, triage_times):
     }
 
 
+
+
+def parse_vec3(pos_str):
+    if not pos_str:
+        return None
+    s = str(pos_str).strip().strip("()")
+    parts = [p.strip() for p in s.split(",")]
+    if len(parts) != 3:
+        return None
+    try:
+        return tuple(float(p) for p in parts)
+    except Exception:
+        return None
+
+
+def vec3_distance(a, b):
+    if not a or not b:
+        return 0.0
+    dx = a[0] - b[0]
+    dy = a[1] - b[1]
+    dz = a[2] - b[2]
+    return (dx * dx + dy * dy + dz * dz) ** 0.5
+
+
+def get_dragged_patients(csv_rows, min_drag_distance=1.0):
+    """
+    Reusable drag extraction based on DRAG_START / DRAG_STOP rows.
+    """
+    dragged_patients = set()
+    active_drag_start = {}
+
+    for row in csv_rows:
+        ev = row.get("EventName")
+        patient = clean_patient_name(row.get("PatientID", ""))
+
+        if not patient or not is_valid_patient(patient):
+            continue
+
+        if ev == "DRAG_START":
+            active_drag_start[patient] = parse_vec3(row.get("DragStartPosition", ""))
+
+        elif ev == "DRAG_STOP":
+            if patient not in active_drag_start:
+                continue
+            start_pos = active_drag_start.pop(patient, None)
+            stop_pos = parse_vec3(row.get("DragStopPosition", ""))
+            if vec3_distance(start_pos, stop_pos) > min_drag_distance:
+                dragged_patients.add(patient)
+
+    return dragged_patients
+
 # ============================================================
 # ACTION ANALYSIS BUILDER
 # ============================================================
@@ -935,6 +986,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     tags_applied = get_last_applied_tags(csv_rows)
+    dragged_patients = get_dragged_patients(csv_rows, min_drag_distance=1.0)
 
     aggregate_patient_metrics = compute_patient_averages(
         csv_rows, assessments, treatments, triage_times
@@ -975,6 +1027,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
         except Exception:
             action_analysis[f"{name}_order"] = "N/A"
 
+        action_analysis[f"{name}_dragged"] = "Yes" if sim_name in dragged_patients else "No"
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_tag"] = tags_applied.get(sim_name, "None")
