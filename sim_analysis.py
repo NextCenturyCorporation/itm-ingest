@@ -1,3 +1,21 @@
+# ============================================================
+# SIM ANALYSIS SCRIPT
+# ============================================================
+#
+# Processes simulation JSON + CSV files to generate analysis outputs
+# including patient interactions, treatment metrics, tagging accuracy,
+# and hemorrhage control. Designed to unify legacy probe matcher logic
+# into a reusable pipeline across scenarios. Outputs analysis JSON files
+# and optionally upserts results to MongoDB (dashboard → humanSimulator
+# and humanSimulatorRaw) when the `-m` flag is used.
+#
+# Flags:
+#   -i / --input_dir     Input directory containing JSON/CSV files (required)
+#   -o / --output_dir    Output directory for analysis files (default: output_sim_analysis)
+#   -m / --send_to_mongo Enable MongoDB upsert using MONGO_URL from .env
+#
+# ============================================================
+
 import argparse
 import csv
 import json
