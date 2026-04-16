@@ -569,6 +569,87 @@ def derive_required_injuries_and_procs(csv_rows):
     return required_injuries, required_proc_for_injury
 
 
+
+def compute_treatment_submetrics_required(csv_rows, required_injuries):
+    """
+    Reusable port of the updated feb2026_probe_matcher required-only treatment
+    submetrics logic.
+
+    Returns:
+      {
+        "total_hits": int,
+        "total_false_alarms": int,
+        "total_repeat_hits": int,
+        "total_repeat_false_alarms": int,
+        "per_patient_hits": {patient: int},
+        "per_patient_false_alarms": {patient: int},
+        "per_patient_repeat_hits": {patient: int},
+        "per_patient_repeat_false_alarms": {patient: int},
+      }
+    """
+    to_complete = {patient: list(injuries)[:] for patient, injuries in required_injuries.items()}
+
+    hits = {}
+    false_alarms = {}
+    repeat_hits = {}
+    repeat_false_alarms = {}
+    false_alarm_tracker = {}
+
+    for row in csv_rows:
+        if row.get("EventName") != "INJURY_TREATED":
+            continue
+
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if not is_valid_patient(patient):
+            continue
+
+        injury = str(row.get("InjuryName", "")).strip()
+        completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+
+        if not completed:
+            continue
+
+        patient_required = required_injuries.get(patient, [])
+
+        if patient_required:
+            if injury in patient_required:
+                if patient in to_complete and injury in to_complete[patient]:
+                    to_complete[patient].remove(injury)
+                    hits[patient] = hits.get(patient, 0) + 1
+                    if len(to_complete[patient]) == 0:
+                        del to_complete[patient]
+                else:
+                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+            else:
+                if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                else:
+                    false_alarms[patient] = false_alarms.get(patient, 0) + 1
+
+                if patient not in false_alarm_tracker:
+                    false_alarm_tracker[patient] = {}
+                false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+        else:
+            if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+            else:
+                false_alarms[patient] = false_alarms.get(patient, 0) + 1
+
+            if patient not in false_alarm_tracker:
+                false_alarm_tracker[patient] = {}
+            false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+
+    return {
+        "total_hits": sum(hits.values()),
+        "total_false_alarms": sum(false_alarms.values()),
+        "total_repeat_hits": sum(repeat_hits.values()),
+        "total_repeat_false_alarms": sum(repeat_false_alarms.values()),
+        "per_patient_hits": hits,
+        "per_patient_false_alarms": false_alarms,
+        "per_patient_repeat_hits": repeat_hits,
+        "per_patient_repeat_false_alarms": repeat_false_alarms,
+    }
+
 def get_last_applied_tags(csv_rows):
     tags_applied = {}
 
@@ -985,6 +1066,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
+    treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
     tags_applied = get_last_applied_tags(csv_rows)
     dragged_patients = get_dragged_patients(csv_rows, min_drag_distance=1.0)
 
@@ -1006,6 +1088,11 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
     action_analysis[f"{prefix}Hemorrhage control"] = hem_metrics["hemorrhage_control"]
     action_analysis[f"{prefix}Hemorrhage control_time"] = hem_metrics["hemorrhage_control_time"]
+
+    action_analysis[f"{prefix}Treat_hits_required"] = treatment_submetrics_required["total_hits"]
+    action_analysis[f"{prefix}Treat_false_alarms_required"] = treatment_submetrics_required["total_false_alarms"]
+    action_analysis[f"{prefix}Treat_repeat_hits_required"] = treatment_submetrics_required["total_repeat_hits"]
+    action_analysis[f"{prefix}Treat_repeat_false_alarms_required"] = treatment_submetrics_required["total_repeat_false_alarms"]
 
 
     patients_in_order = get_patients_in_order(csv_rows, patient_order_engaged)
@@ -1033,6 +1120,10 @@ def extract_action_analysis(csv_rows, sim_json, env):
         action_analysis[f"{name}_tag"] = tags_applied.get(sim_name, "None")
         action_analysis[f"{name}_triage_truth"] = expected_tag_color.get(sim_name, None)
         action_analysis[f"{name}_required_injuries"] = required_injuries.get(sim_name, [])
+        action_analysis[f"{name}_treat_hits_required"] = treatment_submetrics_required["per_patient_hits"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_false_alarms_required"] = treatment_submetrics_required["per_patient_false_alarms"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_repeat_hits_required"] = treatment_submetrics_required["per_patient_repeat_hits"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_repeat_false_alarms_required"] = treatment_submetrics_required["per_patient_repeat_false_alarms"].get(sim_name, 0)
 
     return action_analysis
 
