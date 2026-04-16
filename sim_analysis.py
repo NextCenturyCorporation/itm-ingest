@@ -114,7 +114,7 @@ def load_csv_rows(csv_path):
         return list(csv.DictReader(f))
 
 
-def get_env_prefix(env):
+def build_env_prefix(env):
     """Return the output field prefix for an environment."""
     env_lower = str(env).lower()
     if "desert" in env_lower:
@@ -180,6 +180,11 @@ def extract_month_year_label(*texts):
 # METADATA EXTRACTION
 # ============================================================
 
+# Fields extracted:
+# - pid
+# - env
+# - scenario_id
+# - openWorld
 def extract_run_metadata(sim_json, filename):
     """Extract top-level run metadata from the JSON and filename."""
     pid = extract_pid_from_filename(filename)
@@ -230,7 +235,7 @@ def extract_run_metadata(sim_json, filename):
 # EVENT METRICS
 # ============================================================
 
-def get_triage_time_seconds(csv_rows):
+def compute_triage_time_seconds(csv_rows):
     """Compute overall triage time from elapsed time values."""
     if len(csv_rows) <= 1:
         return 0.0
@@ -243,7 +248,7 @@ def get_triage_time_seconds(csv_rows):
         return 0.0
 
 
-def count_assessment_actions(csv_rows):
+def compute_assessment_metrics(csv_rows):
     """Count assessment events and break them out by patient."""
     count = 0
     last_done = {}
@@ -269,7 +274,7 @@ def count_assessment_actions(csv_rows):
     return {"count": count, "per_patient": per_patient}
 
 
-def count_treatment_actions(csv_rows):
+def compute_treatment_metrics(csv_rows):
     """Count tool applications and break them out by patient."""
     count = 0
     per_patient = {}
@@ -290,14 +295,18 @@ def count_treatment_actions(csv_rows):
     return {"count": count, "per_patient": per_patient}
 
 
+# Fields extracted:
+# - Triage_time
+# - Assess_total
+# - Treat_total
 def extract_event_totals(csv_rows, env):
-    """Build the eventTotals block."""
-    prefix = get_env_prefix(env)
-    assessments = count_assessment_actions(csv_rows)
-    treatments = count_treatment_actions(csv_rows)
+    """Build the eventTotals section using CSV-derived aggregate counts."""
+    prefix = build_env_prefix(env)
+    assessments = compute_assessment_metrics(csv_rows)
+    treatments = compute_treatment_metrics(csv_rows)
 
     return {
-        f"{prefix}Triage_time": get_triage_time_seconds(csv_rows),
+        f"{prefix}Triage_time": compute_triage_time_seconds(csv_rows),
         f"{prefix}Assess_total": assessments["count"],
         f"{prefix}Treat_total": treatments["count"],
     }
@@ -307,7 +316,7 @@ def extract_event_totals(csv_rows, env):
 # PATIENT INTERACTION LOGIC
 # ============================================================
 
-def find_patients_engaged(csv_rows):
+def compute_patient_engagement(csv_rows):
     """Compute patient engagement counts and order."""
     engagement_order = []
     treated = []
@@ -338,7 +347,12 @@ def find_patients_engaged(csv_rows):
     }
 
 
-def find_time_per_patient(csv_rows):
+# Fields extracted:
+# - patient_interactions
+# - interaction_time
+# - interaction_visits
+# - patient_order
+def compute_patient_interactions(csv_rows):
     """Build patient interaction timing and visit summaries."""
     raw_interactions = {}
     cur_p = None
@@ -440,7 +454,7 @@ def find_time_per_patient(csv_rows):
     }
 
 
-def get_patients_in_order(csv_rows, engagement_order):
+def compute_patients_in_order(csv_rows, engagement_order):
     """Determine the patient breakout order."""
     patients_in_order = []
 
@@ -462,6 +476,8 @@ def get_patients_in_order(csv_rows, engagement_order):
 # TRIAGE / TAG LOGIC
 # ============================================================
 
+# Fields extracted:
+# - PatientN_triage_truth
 def derive_expected_tag_color(csv_rows):
     """Build expected tag colors from patient record rows."""
     expected_tag_color = {}
@@ -479,6 +495,8 @@ def derive_expected_tag_color(csv_rows):
     return expected_tag_color
 
 
+# Fields extracted:
+# - PatientN_required_injuries
 def derive_required_injuries_and_procs(csv_rows):
     """Build required injuries and their required procedures."""
     required_injuries = {}
@@ -503,6 +521,15 @@ def derive_required_injuries_and_procs(csv_rows):
 # TREATMENT METRICS
 # ============================================================
 
+# Fields extracted:
+# - Treat_hits_required
+# - Treat_false_alarms_required
+# - Treat_repeat_hits_required
+# - Treat_repeat_false_alarms_required
+# - PatientN_treat_hits_required
+# - PatientN_treat_false_alarms_required
+# - PatientN_treat_repeat_hits_required
+# - PatientN_treat_repeat_false_alarms_required
 def compute_treatment_submetrics_required(csv_rows, required_injuries):
     """Compute required-only treatment submetrics."""
     to_complete = {patient: list(injuries)[:] for patient, injuries in required_injuries.items()}
@@ -563,7 +590,10 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
     }
 
 
-def get_last_applied_tags(csv_rows):
+# Fields extracted:
+# - tag_colors
+# - PatientN_tag
+def compute_last_applied_tags(csv_rows):
     """Return the last applied tag per patient."""
     tags_applied = {}
 
@@ -589,6 +619,13 @@ def normalize_tag_color(tag):
     return tag
 
 
+# Fields extracted:
+# - tag_distribution_red
+# - tag_distribution_yellow
+# - tag_distribution_green
+# - tag_distribution_gray
+# - tag_distribution_black
+# - percent_correct_per_patient
 def compute_tag_distribution(csv_rows, expected_tag_color):
     """Compute per-patient tag distributions and percent correct."""
     counts_by_patient = {}
@@ -635,6 +672,12 @@ def compute_tag_distribution(csv_rows, expected_tag_color):
     return result
 
 
+# Fields extracted:
+# - correct_tags_total
+# - correct_tags_correct
+# - correct_tags_over
+# - correct_tags_under
+# - correct_tags_critical
 def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
     """Compute the flattened correct tag summary fields."""
     correct = 0
@@ -682,6 +725,9 @@ def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
     }
 
 
+# Fields extracted:
+# - Tag_ACC
+# - Tag_Expectant
 def compute_tag_metrics(expected_tag_color, tags_applied):
     """Compute aggregate tag metrics."""
     if not expected_tag_color:
@@ -710,6 +756,10 @@ def compute_tag_metrics(expected_tag_color, tags_applied):
 # HEMORRHAGE CONTROL
 # ============================================================
 
+# Fields extracted:
+# - Hemorrhage control
+# - Hemorrhage control_time
+# - missed_hemorrhage_control
 def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
     """Compute hemorrhage control completion, time, and missed count."""
     to_complete = {}
@@ -758,6 +808,8 @@ def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
     }
 
 
+# Fields extracted:
+# - patient_hc_time
 def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_injury):
     """Compute per-patient hemorrhage control timing within visit segments."""
     times_controlled = {}
@@ -810,7 +862,7 @@ def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_in
 
 def compute_patient_averages(csv_rows, assessments, treatments, triage_times):
     """Compute aggregate patient-based averages."""
-    engaged_counts = find_patients_engaged(csv_rows)
+    engaged_counts = compute_patient_engagement(csv_rows)
     patients_engaged = engaged_counts["engaged"]
     patients_treated = engaged_counts["treated"]
     patient_order_engaged = engaged_counts["order"]
@@ -855,7 +907,9 @@ def vec3_distance(a, b):
     return (dx * dx + dy * dy + dz * dz) ** 0.5
 
 
-def get_dragged_patients(csv_rows, min_drag_distance=1.0):
+# Fields extracted:
+# - PatientN_dragged
+def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
     """Return the set of patients dragged beyond the distance threshold."""
     dragged_patients = set()
     active_drag_start = {}
@@ -884,21 +938,30 @@ def get_dragged_patients(csv_rows, min_drag_distance=1.0):
 # ACTION ANALYSIS
 # ============================================================
 
+# Fields extracted:
+# - Assess_patient
+# - Treat_patient
+# - Triage_time_patient
+# - Engage_patient
+# - PatientN_time
+# - PatientN_order
+# - PatientN_assess
+# - PatientN_treat
 def extract_action_analysis(csv_rows, sim_json, env):
-    """Build the actionAnalysis block."""
+    """Build the actionAnalysis section using reusable CSV-based metrics."""
     del sim_json  # currently unused
 
-    prefix = get_env_prefix(env)
+    prefix = build_env_prefix(env)
     action_analysis = {}
 
-    assessments = count_assessment_actions(csv_rows)
-    treatments = count_treatment_actions(csv_rows)
-    triage_times = find_time_per_patient(csv_rows)
+    assessments = compute_assessment_metrics(csv_rows)
+    treatments = compute_treatment_metrics(csv_rows)
+    triage_times = compute_patient_interactions(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
-    tags_applied = get_last_applied_tags(csv_rows)
-    dragged_patients = get_dragged_patients(csv_rows, min_drag_distance=1.0)
+    tags_applied = compute_last_applied_tags(csv_rows)
+    dragged_patients = compute_dragged_patients(csv_rows, min_drag_distance=1.0)
 
     aggregate_patient_metrics = compute_patient_averages(
         csv_rows, assessments, treatments, triage_times
@@ -921,7 +984,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
     action_analysis[f"{prefix}Treat_repeat_hits_required"] = treatment_submetrics_required["total_repeat_hits"]
     action_analysis[f"{prefix}Treat_repeat_false_alarms_required"] = treatment_submetrics_required["total_repeat_false_alarms"]
 
-    patients_in_order = get_patients_in_order(csv_rows, patient_order_engaged)
+    patients_in_order = compute_patients_in_order(csv_rows, patient_order_engaged)
 
     clean_patient_order_engaged = []
     for patient in patient_order_engaged:
@@ -1034,7 +1097,7 @@ def save_output(output_dir, filename, analysis_doc):
 # ============================================================
 
 def process_file(json_path, output_dir):
-    """Process a single run and write its analysis output."""
+    """Process one simulation run from JSON/CSV inputs and write its analysis output."""
     filename = os.path.basename(json_path).replace(".json", "")
 
     with open(json_path, "r", encoding="utf-8") as f:
@@ -1046,8 +1109,8 @@ def process_file(json_path, output_dir):
     metadata = extract_run_metadata(sim_json, filename)
     event_totals = extract_event_totals(csv_rows, metadata["env"])
     action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"])
-    triage_times = find_time_per_patient(csv_rows)
-    tag_colors = get_last_applied_tags(csv_rows)
+    triage_times = compute_patient_interactions(csv_rows)
+    tag_colors = compute_last_applied_tags(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
     tag_distribution = compute_tag_distribution(csv_rows, expected_tag_color)
