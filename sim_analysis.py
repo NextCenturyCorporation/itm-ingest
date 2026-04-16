@@ -5,7 +5,16 @@ import os
 import re
 from datetime import datetime
 
+from decouple import config
+
+try:
+    from pymongo import MongoClient
+except ImportError:
+    MongoClient = None
+
 SEND_TO_MONGO = False
+mongo_collection_analysis = None
+mongo_collection_raw = None
 
 ASSESSMENT_EVENTS = {"SP_O2_TAKEN", "BREATHING_CHECKED", "PULSE_TAKEN"}
 ENGAGEMENT_EVENTS = {
@@ -1092,6 +1101,41 @@ def save_output(output_dir, filename, analysis_doc):
     print(f"Saved analysis: {out_path}")
 
 
+
+# ============================================================
+# MONGO OUTPUT
+# ============================================================
+
+def initialize_mongo():
+    """Initialize Mongo output collections using the configured dashboard database."""
+    global mongo_collection_analysis, mongo_collection_raw
+
+    if MongoClient is None:
+        raise RuntimeError("pymongo is not installed. Install it to use --send_to_mongo.")
+
+    client = MongoClient(config("MONGO_URL"))
+    db = client.dashboard
+    mongo_collection_analysis = db["humanSimulator"]
+    mongo_collection_raw = db["humanSimulatorRaw"]
+    return client
+
+
+def save_to_mongo(raw_doc, analysis_doc):
+    """Upsert raw and analysis documents into Mongo collections."""
+    if mongo_collection_raw is None or mongo_collection_analysis is None:
+        raise RuntimeError("Mongo collections are not initialized.")
+
+    mongo_collection_raw.update_one(
+        {"_id": raw_doc["_id"]},
+        {"$set": raw_doc},
+        upsert=True,
+    )
+    mongo_collection_analysis.update_one(
+        {"_id": analysis_doc["_id"]},
+        {"$set": analysis_doc},
+        upsert=True,
+    )
+
 # ============================================================
 # PIPELINE EXECUTION
 # ============================================================
@@ -1142,8 +1186,8 @@ def process_file(json_path, output_dir):
     save_output(output_dir, filename, analysis_doc)
 
     if SEND_TO_MONGO:
-        # Insert raw_doc and analysis_doc here when Mongo support is enabled.
-        _ = raw_doc
+        save_to_mongo(raw_doc, analysis_doc)
+        print(f"Upserted Mongo documents for: {analysis_doc['_id']}")
 
 
 if __name__ == "__main__":
@@ -1160,7 +1204,17 @@ if __name__ == "__main__":
         default="output_sim_analysis",
         help="Directory for analysis JSON files",
     )
+    parser.add_argument(
+        "-m",
+        "--send_to_mongo",
+        action="store_true",
+        help="Also upsert raw and analysis documents to MongoDB",
+    )
     args = parser.parse_args()
+
+    if args.send_to_mongo:
+        SEND_TO_MONGO = True
+        initialize_mongo()
 
     for root, _, files in os.walk(args.input_dir):
         for file in files:
