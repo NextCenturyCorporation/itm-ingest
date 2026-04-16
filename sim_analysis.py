@@ -30,30 +30,6 @@ TRIAGE_LEVEL_TO_TAG_COLOR = {
 
 HEMORRHAGE_CONTROL_PROCS = {"tourniquet", "woundpack", "israeliWrap"}
 
-EVAC_ANSWER_TO_PATIENT = {
-    "desert": {
-        "Mil Amputation Big Building": "US Military 1",
-        "Mil Amputation Small Building": "US Military 5",
-        "Mil Wrist Broken": "US Military 2",
-        "Mil Chest Puncture": "US Military 3",
-        "Mil Stomach Puncture": "US Military 4",
-        "Civilian Thigh Laceration": "Civilian 1",
-        "Civilian Stomach Puncture": "Civilian 2",
-        "Civilian Amputation": "Civilian 3",
-        "Attacker Stomach Puncture": "Attacker 1",
-        "Attacker Shoulder Puncture": "Attacker 2",
-    },
-    "urban": {
-        "Mil Bicep Puncture": "US Military 1",
-        "Mil Discharged Weapon Stomach Puncture": "US Military 2",
-        "Civilian Broken Wrist": "Civilian 1",
-        "Shooter Shoulder Puncture": "Shooter 1",
-        "Mil Thigh Puncture": "US Military 3",
-        "Civilian Chest Puncture": "Civilian 2",
-        "Civilian Stomach Puncture": "Civilian 3",
-        "Mil Stomach Puncture": "US Military 4",
-    },
-}
 
 MONTH_MAP = {
     "january": "jan",
@@ -748,21 +724,6 @@ def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
     }
 
 
-def get_evaced_patient_names(sim_json, env):
-    env_key = get_env_key(env)
-    answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
-
-    evaced_answers = []
-
-    for action in sim_json.get("actionList", []):
-        if action.get("actionType") == "Question":
-            question = str(action.get("question", "")).lower()
-            if "evacuate" in question:
-                answer = action.get("answer")
-                if answer:
-                    evaced_answers.append(str(answer).strip())
-
-    return {answer_map[a] for a in evaced_answers if a in answer_map}
 
 
 # ============================================================
@@ -974,7 +935,6 @@ def extract_action_analysis(csv_rows, sim_json, env):
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     tags_applied = get_last_applied_tags(csv_rows)
-    evaced_patient_names = get_evaced_patient_names(sim_json, env)
 
     aggregate_patient_metrics = compute_patient_averages(
         csv_rows, assessments, treatments, triage_times
@@ -1015,7 +975,6 @@ def extract_action_analysis(csv_rows, sim_json, env):
         except Exception:
             action_analysis[f"{name}_order"] = "N/A"
 
-        action_analysis[f"{name}_evac"] = "Yes" if sim_name in evaced_patient_names else "No"
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_tag"] = tags_applied.get(sim_name, "None")
