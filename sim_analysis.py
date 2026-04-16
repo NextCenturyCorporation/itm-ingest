@@ -1,15 +1,11 @@
-import os
-import json
-import csv
 import argparse
+import csv
+import json
+import os
 import re
 from datetime import datetime
 
-# ============================================================
-# CONFIGURATION / FLAGS
-# ============================================================
-
-SEND_TO_MONGO = False  # wire up later if needed
+SEND_TO_MONGO = False
 
 ASSESSMENT_EVENTS = {"SP_O2_TAKEN", "BREATHING_CHECKED", "PULSE_TAKEN"}
 ENGAGEMENT_EVENTS = {
@@ -30,7 +26,6 @@ TRIAGE_LEVEL_TO_TAG_COLOR = {
 
 HEMORRHAGE_CONTROL_PROCS = {"tourniquet", "woundpack", "israeliWrap"}
 
-
 MONTH_MAP = {
     "january": "jan",
     "february": "feb",
@@ -46,11 +41,13 @@ MONTH_MAP = {
     "december": "dec",
 }
 
+
 # ============================================================
 # BASIC HELPERS
 # ============================================================
 
 def safe_float(value, default=0.0):
+    """Convert a value to float, returning a default on failure."""
     try:
         return float(value)
     except (TypeError, ValueError):
@@ -58,29 +55,21 @@ def safe_float(value, default=0.0):
 
 
 def safe_bool_from_csv(value) -> bool:
-    """
-    Convert CSV string-ish booleans to actual bool.
-    """
+    """Convert common CSV boolean-like values into a boolean."""
     if value is None:
         return False
-    s = str(value).strip().lower()
-    return s in ("true", "1", "yes", "y", "t")
+    return str(value).strip().lower() in ("true", "1", "yes", "y", "t")
 
 
 def clean_patient_name(value):
-    """
-    Match probe matcher behavior:
-    strip trailing ' Root' and trim whitespace.
-    """
+    """Normalize patient names for consistent matching."""
     if value is None:
         return ""
     return str(value).split(" Root")[0].strip()
 
 
 def is_valid_patient(patient_name):
-    """
-    Match the probe matcher filtering for obvious non-patient entities.
-    """
+    """Return True when the value represents a real patient entity."""
     if not patient_name:
         return False
     invalid_tokens = ["Level Core", "Simulation", "Player"]
@@ -88,10 +77,7 @@ def is_valid_patient(patient_name):
 
 
 def timestamp_to_seconds(ts_value):
-    """
-    Parse CSV Timestamp strings like:
-      2/23/2026 3:23:50 PM
-    """
+    """Parse a timestamp string into Unix seconds."""
     if not ts_value:
         return None
 
@@ -115,20 +101,21 @@ def timestamp_to_seconds(ts_value):
         return None
 
 
+# ============================================================
+# FILE LOADING
+# ============================================================
+
 def load_csv_rows(csv_path):
-    """
-    Load the sim CSV as a list of dictionaries.
-    Returns [] if the file is missing.
-    """
+    """Load the simulation CSV as a list of row dictionaries."""
     if not csv_path or not os.path.exists(csv_path):
         return []
 
     with open(csv_path, "r", newline="", encoding="utf-8-sig") as f:
-        reader = csv.DictReader(f)
-        return list(reader)
+        return list(csv.DictReader(f))
 
 
 def get_env_prefix(env):
+    """Return the output field prefix for an environment."""
     env_lower = str(env).lower()
     if "desert" in env_lower:
         return "Desert "
@@ -137,22 +124,8 @@ def get_env_prefix(env):
     return ""
 
 
-def get_env_key(env):
-    env_lower = str(env).lower()
-    if "desert" in env_lower:
-        return "desert"
-    if "urban" in env_lower:
-        return "urban"
-    return ""
-
-
 def extract_pid_from_filename(filename):
-    """
-    For filenames like:
-      uuid_202602118
-    return:
-      202602118
-    """
+    """Extract the participant id from the run filename."""
     parts = filename.split("_")
     if len(parts) >= 2 and parts[1]:
         return parts[1]
@@ -160,25 +133,13 @@ def extract_pid_from_filename(filename):
 
 
 def build_probe_matcher_style_id(pid, env):
+    """Build the output document id."""
     return f"{pid}_ow_{env if env else 'unknown'}"
 
 
-# ============================================================
-# METADATA EXTRACTION
-# ============================================================
-
 def extract_month_year_label(*texts):
-    """
-    Look for strings like:
-      - February 2026
-      - Feb 2026
-      - June 2025
-    Return:
-      - short_label: feb2026 / jun2025 / etc.
-      - pretty_label: Feb2026 / Jun2025 / etc.
-    """
+    """Extract short and pretty month-year labels from free text."""
     combined = " ".join(str(t or "") for t in texts)
-
     pattern = re.compile(
         r"\b("
         r"january|jan|february|feb|march|mar|april|apr|may|june|jun|"
@@ -212,18 +173,15 @@ def extract_month_year_label(*texts):
 
     short_month = MONTH_MAP[normalized]
     pretty_month = short_month.capitalize()
-
     return f"{short_month}{year}", f"{pretty_month}{year}"
 
 
+# ============================================================
+# METADATA EXTRACTION
+# ============================================================
+
 def extract_run_metadata(sim_json, filename):
-    """
-    Extract:
-      - pid
-      - env
-      - scenario_id
-      - openWorld
-    """
+    """Extract top-level run metadata from the JSON and filename."""
     pid = extract_pid_from_filename(filename)
 
     config = sim_json.get("configData", {})
@@ -236,8 +194,7 @@ def extract_run_metadata(sim_json, filename):
     bucket = str(config.get("CACIUploadToS3Bucket", ""))
 
     text_blob = " ".join([scene, narrative_desc, scenario_name, bucket]).lower()
-
-    open_world = ("ow" in text_blob or "open world" in text_blob)
+    open_world = "ow" in text_blob or "open world" in text_blob
 
     terrain = "unknown"
     if "desert" in text_blob:
@@ -250,20 +207,14 @@ def extract_run_metadata(sim_json, filename):
     )
 
     if open_world and terrain != "unknown":
-        if short_label:
-            env = f"{short_label}-{terrain}-openworld"
-        else:
-            env = f"{terrain}-openworld"
+        env = f"{short_label}-{terrain}-openworld" if short_label else f"{terrain}-openworld"
     elif terrain != "unknown":
         env = terrain
     else:
         env = "unknown"
 
     if open_world and terrain != "unknown":
-        if pretty_label:
-            scenario_id = f"{pretty_label}-OW_{terrain}"
-        else:
-            scenario_id = f"OW_{terrain}"
+        scenario_id = f"{pretty_label}-OW_{terrain}" if pretty_label else f"OW_{terrain}"
     else:
         scenario_id = "unknown"
 
@@ -271,73 +222,46 @@ def extract_run_metadata(sim_json, filename):
         "pid": pid,
         "env": env,
         "scenario_id": scenario_id,
-        "openWorld": open_world
+        "openWorld": open_world,
     }
 
 
 # ============================================================
-# EVENT TOTALS (MATCH PROBE MATCHER)
+# EVENT METRICS
 # ============================================================
 
 def get_triage_time_seconds(csv_rows):
-    """
-    Match Feb probe matcher:
-    use first row ElapsedTime and near-last row ElapsedTime.
-    """
-    if len(csv_rows) > 1:
-        try:
-            start = safe_float(csv_rows[0].get("ElapsedTime", 0))
-            end = safe_float(csv_rows[-2].get("ElapsedTime", 0))
-            return max(0.0, (end - start) / 1000.0)
-        except Exception:
-            return 0.0
-    return 0.0
+    """Compute overall triage time from elapsed time values."""
+    if len(csv_rows) <= 1:
+        return 0.0
+
+    try:
+        start = safe_float(csv_rows[0].get("ElapsedTime", 0))
+        end = safe_float(csv_rows[-2].get("ElapsedTime", 0))
+        return max(0.0, (end - start) / 1000.0)
+    except Exception:
+        return 0.0
 
 
 def count_assessment_actions(csv_rows):
-    """
-    Match Feb probe matcher:
-    dedupe same assessment event type if within 5 seconds.
-    """
+    """Count assessment events and break them out by patient."""
     count = 0
     last_done = {}
     per_patient = {}
 
     for row in csv_rows:
         ev = row.get("EventName")
-        if ev in ASSESSMENT_EVENTS:
-            ts = row.get("Timestamp")
-            ts_sec = timestamp_to_seconds(ts)
-            if ts_sec is None:
-                continue
+        if ev not in ASSESSMENT_EVENTS:
+            continue
 
-            if ev not in last_done or (ts_sec - last_done[ev]) > 5:
-                last_done[ev] = ts_sec
-                count += 1
+        ts_sec = timestamp_to_seconds(row.get("Timestamp"))
+        if ts_sec is None:
+            continue
 
-                patient = clean_patient_name(row.get("PatientID", ""))
-                if is_valid_patient(patient):
-                    per_patient[patient] = per_patient.get(patient, 0) + 1
-
-    return {"count": count, "per_patient": per_patient}
-
-
-def count_treatment_actions(csv_rows):
-    """
-    Match Feb probe matcher:
-    count TOOL_APPLIED except Pulse Oximeter.
-    """
-    count = 0
-    per_patient = {}
-
-    for row in csv_rows:
-        ev = row.get("EventName")
-        if ev == "TOOL_APPLIED":
-            tool = str(row.get("ToolType", "") or "")
-            if "Pulse Oximeter" in tool:
-                continue
-
+        if ev not in last_done or (ts_sec - last_done[ev]) > 5:
+            last_done[ev] = ts_sec
             count += 1
+
             patient = clean_patient_name(row.get("PatientID", ""))
             if is_valid_patient(patient):
                 per_patient[patient] = per_patient.get(patient, 0) + 1
@@ -345,42 +269,61 @@ def count_treatment_actions(csv_rows):
     return {"count": count, "per_patient": per_patient}
 
 
-def extract_event_totals(csv_rows, env):
-    prefix = get_env_prefix(env)
+def count_treatment_actions(csv_rows):
+    """Count tool applications and break them out by patient."""
+    count = 0
+    per_patient = {}
 
-    triage_time = get_triage_time_seconds(csv_rows)
+    for row in csv_rows:
+        if row.get("EventName") != "TOOL_APPLIED":
+            continue
+
+        tool = str(row.get("ToolType", "") or "")
+        if "Pulse Oximeter" in tool:
+            continue
+
+        count += 1
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if is_valid_patient(patient):
+            per_patient[patient] = per_patient.get(patient, 0) + 1
+
+    return {"count": count, "per_patient": per_patient}
+
+
+def extract_event_totals(csv_rows, env):
+    """Build the eventTotals block."""
+    prefix = get_env_prefix(env)
     assessments = count_assessment_actions(csv_rows)
     treatments = count_treatment_actions(csv_rows)
 
     return {
-        f"{prefix}Triage_time": triage_time,
+        f"{prefix}Triage_time": get_triage_time_seconds(csv_rows),
         f"{prefix}Assess_total": assessments["count"],
-        f"{prefix}Treat_total": treatments["count"]
+        f"{prefix}Treat_total": treatments["count"],
     }
 
 
 # ============================================================
-# PER-PATIENT INTERACTION METRICS
+# PATIENT INTERACTION LOGIC
 # ============================================================
 
 def find_patients_engaged(csv_rows):
-    """
-    Match Feb probe matcher.
-    """
+    """Compute patient engagement counts and order."""
     engagement_order = []
     treated = []
 
     for row in csv_rows:
         ev = row.get("EventName")
-        if ev in ENGAGEMENT_EVENTS:
-            patient = clean_patient_name(row.get("PatientID", ""))
-            if not is_valid_patient(patient):
-                continue
+        if ev not in ENGAGEMENT_EVENTS:
+            continue
 
-            engagement_order.append(patient)
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if not is_valid_patient(patient):
+            continue
 
-            if ev == "TOOL_APPLIED":
-                treated.append(patient)
+        engagement_order.append(patient)
+        if ev == "TOOL_APPLIED":
+            treated.append(patient)
 
     simple_order = []
     for patient in engagement_order:
@@ -388,29 +331,15 @@ def find_patients_engaged(csv_rows):
             continue
         simple_order.append(patient)
 
-    engaged_unique = len(set(engagement_order))
-    treated_unique = len(set(treated))
-
     return {
-        "engaged": engaged_unique,
-        "treated": treated_unique,
+        "engaged": len(set(engagement_order)),
+        "treated": len(set(treated)),
         "order": simple_order,
     }
 
 
 def find_time_per_patient(csv_rows):
-    """
-    Match the legacy new_14/new_16 patient interaction logic as closely as possible
-    while working on the newer event-log CSV format.
-
-    Returns:
-      - interactions: {patient: total_seconds}
-      - total: total seconds across all patient interaction segments
-      - patient_interactions: rich interaction structure
-      - interaction_time: flattened {patient: total_seconds}
-      - interaction_visits: flattened {patient: visit_count}
-      - patient_order: unique patient visit order, matching the interaction pass
-    """
+    """Build patient interaction timing and visit summaries."""
     raw_interactions = {}
     cur_p = None
     start_time = 0.0
@@ -479,19 +408,16 @@ def find_time_per_patient(csv_rows):
 
         for start, end in segs:
             start_ms = float(start)
-            end_ms = float(end)
-            if end_ms < start_ms:
-                end_ms = start_ms
+            end_ms = max(float(end), float(start))
             clean_segments.append([start_ms, end_ms])
             patient_ms += max(0.0, end_ms - start_ms)
 
-        total_time_ms += patient_ms
         total_seconds = round(patient_ms / 1000.0, 3)
+        total_time_ms += patient_ms
 
         per_patient_seconds[patient] = total_seconds
         interaction_time[patient] = total_seconds
         interaction_visits[patient] = len(clean_segments)
-
         patient_interactions[patient] = {
             "total_time": total_seconds,
             "indices_visited": patient_visit_indices.get(patient, []),
@@ -515,9 +441,7 @@ def find_time_per_patient(csv_rows):
 
 
 def get_patients_in_order(csv_rows, engagement_order):
-    """
-    Match probe matcher breakout order.
-    """
+    """Determine the patient breakout order."""
     patients_in_order = []
 
     for row in csv_rows:
@@ -535,60 +459,53 @@ def get_patients_in_order(csv_rows, engagement_order):
 
 
 # ============================================================
-# PER-PATIENT TRUTH / ACTION FIELDS
+# TRIAGE / TAG LOGIC
 # ============================================================
 
 def derive_expected_tag_color(csv_rows):
+    """Build expected tag colors from patient record rows."""
     expected_tag_color = {}
 
     for row in csv_rows:
-        if row.get("EventName") == "PATIENT_RECORD":
-            patient = clean_patient_name(row.get("PatientID", ""))
-            triage_level = str(row.get("PatientTriageLevel", "")).strip().upper()
+        if row.get("EventName") != "PATIENT_RECORD":
+            continue
 
-            if patient and triage_level in TRIAGE_LEVEL_TO_TAG_COLOR:
-                expected_tag_color[patient] = TRIAGE_LEVEL_TO_TAG_COLOR[triage_level]
+        patient = clean_patient_name(row.get("PatientID", ""))
+        triage_level = str(row.get("PatientTriageLevel", "")).strip().upper()
+
+        if patient and triage_level in TRIAGE_LEVEL_TO_TAG_COLOR:
+            expected_tag_color[patient] = TRIAGE_LEVEL_TO_TAG_COLOR[triage_level]
 
     return expected_tag_color
 
 
 def derive_required_injuries_and_procs(csv_rows):
+    """Build required injuries and their required procedures."""
     required_injuries = {}
     required_proc_for_injury = {}
 
     for row in csv_rows:
-        if row.get("EventName") == "INJURY_RECORD":
-            patient = clean_patient_name(row.get("PatientID", ""))
-            injury = str(row.get("InjuryName", "")).strip()
-            proc = str(row.get("InjuryRequiredProcedure", "")).strip()
+        if row.get("EventName") != "INJURY_RECORD":
+            continue
 
-            if patient and injury:
-                required_injuries.setdefault(patient, []).append(injury)
-                required_proc_for_injury[(patient, injury)] = proc
+        patient = clean_patient_name(row.get("PatientID", ""))
+        injury = str(row.get("InjuryName", "")).strip()
+        proc = str(row.get("InjuryRequiredProcedure", "")).strip()
+
+        if patient and injury:
+            required_injuries.setdefault(patient, []).append(injury)
+            required_proc_for_injury[(patient, injury)] = proc
 
     return required_injuries, required_proc_for_injury
 
 
+# ============================================================
+# TREATMENT METRICS
+# ============================================================
 
 def compute_treatment_submetrics_required(csv_rows, required_injuries):
-    """
-    Reusable port of the updated feb2026_probe_matcher required-only treatment
-    submetrics logic.
-
-    Returns:
-      {
-        "total_hits": int,
-        "total_false_alarms": int,
-        "total_repeat_hits": int,
-        "total_repeat_false_alarms": int,
-        "per_patient_hits": {patient: int},
-        "per_patient_false_alarms": {patient: int},
-        "per_patient_repeat_hits": {patient: int},
-        "per_patient_repeat_false_alarms": {patient: int},
-      }
-    """
+    """Compute required-only treatment submetrics."""
     to_complete = {patient: list(injuries)[:] for patient, injuries in required_injuries.items()}
-
     hits = {}
     false_alarms = {}
     repeat_hits = {}
@@ -605,7 +522,6 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
 
         injury = str(row.get("InjuryName", "")).strip()
         completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-
         if not completed:
             continue
 
@@ -616,7 +532,7 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
                 if patient in to_complete and injury in to_complete[patient]:
                     to_complete[patient].remove(injury)
                     hits[patient] = hits.get(patient, 0) + 1
-                    if len(to_complete[patient]) == 0:
+                    if not to_complete[patient]:
                         del to_complete[patient]
                 else:
                     repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
@@ -625,18 +541,14 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
                     repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
                 else:
                     false_alarms[patient] = false_alarms.get(patient, 0) + 1
-
-                if patient not in false_alarm_tracker:
-                    false_alarm_tracker[patient] = {}
+                false_alarm_tracker.setdefault(patient, {})
                 false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
         else:
             if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
                 repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
             else:
                 false_alarms[patient] = false_alarms.get(patient, 0) + 1
-
-            if patient not in false_alarm_tracker:
-                false_alarm_tracker[patient] = {}
+            false_alarm_tracker.setdefault(patient, {})
             false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
 
     return {
@@ -650,21 +562,25 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
         "per_patient_repeat_false_alarms": repeat_false_alarms,
     }
 
+
 def get_last_applied_tags(csv_rows):
+    """Return the last applied tag per patient."""
     tags_applied = {}
 
     for row in csv_rows:
-        if row.get("EventName") == "TAG_APPLIED":
-            patient = clean_patient_name(row.get("PatientID", ""))
-            tag = str(row.get("TagType", "")).strip().lower()
+        if row.get("EventName") != "TAG_APPLIED":
+            continue
 
-            if patient:
-                tags_applied[patient] = tag
+        patient = clean_patient_name(row.get("PatientID", ""))
+        tag = str(row.get("TagType", "")).strip().lower()
+        if patient:
+            tags_applied[patient] = tag
 
     return tags_applied
 
 
 def normalize_tag_color(tag):
+    """Normalize tag color aliases."""
     tag = str(tag or "").strip().lower()
     if tag == "yellow_orange":
         return "yellow"
@@ -674,22 +590,7 @@ def normalize_tag_color(tag):
 
 
 def compute_tag_distribution(csv_rows, expected_tag_color):
-    """
-    Match the legacy tag_distribution.csv concept:
-      - count every TAG_APPLIED color per patient
-      - compute percent correct per patient from full tag history
-
-    The legacy analyzers also had a special-case 'kim_yellow' bump for one
-    metro-chaotic patient. That legacy exception is not applied here because
-    open-world runs use the standard patient IDs and CSV-derived truth labels.
-    """
-    tag_distribution_red = {}
-    tag_distribution_yellow = {}
-    tag_distribution_green = {}
-    tag_distribution_gray = {}
-    tag_distribution_black = {}
-    percent_correct_per_patient = {}
-
+    """Compute per-patient tag distributions and percent correct."""
     counts_by_patient = {}
 
     for row in csv_rows:
@@ -700,63 +601,42 @@ def compute_tag_distribution(csv_rows, expected_tag_color):
         if not is_valid_patient(patient):
             continue
 
-        raw_tag = str(row.get("TagType", "")).strip().lower()
-        tag = normalize_tag_color(raw_tag)
-
+        tag = normalize_tag_color(str(row.get("TagType", "")).strip().lower())
         if tag not in {"red", "yellow", "green", "gray", "black"}:
             continue
 
-        if patient not in counts_by_patient:
-            counts_by_patient[patient] = {
-                "red": 0,
-                "yellow": 0,
-                "green": 0,
-                "gray": 0,
-                "black": 0,
-            }
+        counts_by_patient.setdefault(
+            patient,
+            {"red": 0, "yellow": 0, "green": 0, "gray": 0, "black": 0},
+        )
         counts_by_patient[patient][tag] += 1
 
-    for patient, counts in counts_by_patient.items():
-        total_tags = (
-            counts["red"]
-            + counts["yellow"]
-            + counts["green"]
-            + counts["gray"]
-            + counts["black"]
-        )
+    result = {
+        "tag_distribution_red": {},
+        "tag_distribution_yellow": {},
+        "tag_distribution_green": {},
+        "tag_distribution_gray": {},
+        "tag_distribution_black": {},
+        "percent_correct_per_patient": {},
+    }
 
+    for patient, counts in counts_by_patient.items():
+        total_tags = sum(counts.values())
         expected = normalize_tag_color(expected_tag_color.get(patient))
         correct_tags = counts.get(expected, 0) if expected else 0
-        percent_correct = round(correct_tags / max(1, total_tags), 4)
 
-        tag_distribution_red[patient] = counts["red"]
-        tag_distribution_yellow[patient] = counts["yellow"]
-        tag_distribution_green[patient] = counts["green"]
-        tag_distribution_gray[patient] = counts["gray"]
-        tag_distribution_black[patient] = counts["black"]
-        percent_correct_per_patient[patient] = percent_correct
+        result["tag_distribution_red"][patient] = counts["red"]
+        result["tag_distribution_yellow"][patient] = counts["yellow"]
+        result["tag_distribution_green"][patient] = counts["green"]
+        result["tag_distribution_gray"][patient] = counts["gray"]
+        result["tag_distribution_black"][patient] = counts["black"]
+        result["percent_correct_per_patient"][patient] = round(correct_tags / max(1, total_tags), 4)
 
-    return {
-        "tag_distribution_red": tag_distribution_red,
-        "tag_distribution_yellow": tag_distribution_yellow,
-        "tag_distribution_green": tag_distribution_green,
-        "tag_distribution_gray": tag_distribution_gray,
-        "tag_distribution_black": tag_distribution_black,
-        "percent_correct_per_patient": percent_correct_per_patient,
-    }
+    return result
 
 
 def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
-    """
-    Legacy-style correct tag breakdown adapted to CSV-derived triage truth.
-
-    Returns flattened fields:
-      - correct_tags_total
-      - correct_tags_correct
-      - correct_tags_over
-      - correct_tags_under
-      - correct_tags_critical
-    """
+    """Compute the flattened correct tag summary fields."""
     correct = 0
     total = 0
     over_triage = 0
@@ -774,24 +654,21 @@ def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
         if applied == expected:
             correct += 1
         else:
-            truth = expected
-            guess = applied
-
-            if truth == "black":
+            if expected == "black":
                 over_triage += 1
-            elif guess == "black":
+            elif applied == "black":
                 critical_triage += 1
-            elif truth == "gray":
+            elif expected == "gray":
                 over_triage += 1
-            elif guess == "gray":
+            elif applied == "gray":
                 critical_triage += 1
-            elif truth == "red":
+            elif expected == "red":
                 under_triage += 1
-            elif guess == "red":
+            elif applied == "red":
                 over_triage += 1
-            elif truth == "yellow":
+            elif expected == "yellow":
                 under_triage += 1
-            elif guess == "yellow":
+            elif applied == "yellow":
                 over_triage += 1
 
         total += 1
@@ -805,18 +682,8 @@ def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
     }
 
 
-
-
-# ============================================================
-# AGGREGATE SCORED OUTPUTS
-# ============================================================
-
 def compute_tag_metrics(expected_tag_color, tags_applied):
-    """
-    Compute:
-      - Tag_ACC
-      - Tag_Expectant
-    """
+    """Compute aggregate tag metrics."""
     if not expected_tag_color:
         tag_acc = None
     else:
@@ -834,21 +701,17 @@ def compute_tag_metrics(expected_tag_color, tags_applied):
     expectant_patients = [p for p, col in expected_tag_color.items() if col == "gray"]
     tag_expectant = None
     if expectant_patients:
-        any_gray = any(tags_applied.get(p) == "gray" for p in expectant_patients)
-        tag_expectant = "Yes" if any_gray else "No"
+        tag_expectant = "Yes" if any(tags_applied.get(p) == "gray" for p in expectant_patients) else "No"
 
-    return {
-        "tag_acc": tag_acc,
-        "tag_expectant": tag_expectant,
-    }
+    return {"tag_acc": tag_acc, "tag_expectant": tag_expectant}
 
+
+# ============================================================
+# HEMORRHAGE CONTROL
+# ============================================================
 
 def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
-    """
-    Match Feb probe matcher:
-    all injuries whose required procedure is hemorrhage control
-    must be completed.
-    """
+    """Compute hemorrhage control completion, time, and missed count."""
     to_complete = {}
 
     for (patient, injury), proc in required_proc_for_injury.items():
@@ -880,34 +743,23 @@ def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
                 if ts:
                     end_time_sec = timestamp_to_seconds(ts)
 
-                if len(to_complete[patient]) == 0:
+                if not to_complete[patient]:
                     del to_complete[patient]
 
-    completed = 1 if len(to_complete) == 0 else 0
+    completed = 1 if not to_complete else 0
     time_to = None
     if completed == 1 and start_time_sec is not None and end_time_sec is not None:
         time_to = end_time_sec - start_time_sec
 
-    # Match legacy missed_hemorrhage_control semantics:
-    # count remaining hemorrhage-control-required injuries, not patients.
-    missed_hemorrhage_control = sum(len(v) for v in to_complete.values())
-
     return {
         "hemorrhage_control": completed,
         "hemorrhage_control_time": time_to,
-        "missed_hemorrhage_control": missed_hemorrhage_control,
+        "missed_hemorrhage_control": sum(len(v) for v in to_complete.values()),
     }
 
 
 def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_injury):
-    """
-    Match legacy new_14/new_16 per-patient hemorrhage-control timing pattern.
-
-    For each completed hemorrhage-control treatment that matches a required
-    hemorrhage procedure, find the interaction visit segment that contains that
-    treatment event and record the time from the start of that visit segment
-    until the treatment completion.
-    """
+    """Compute per-patient hemorrhage control timing within visit segments."""
     times_controlled = {}
 
     for row in csv_rows:
@@ -924,19 +776,10 @@ def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_in
         if req_proc not in HEMORRHAGE_CONTROL_PROCS:
             continue
 
-        # CSV ElapsedTime is already in milliseconds for these OW event logs.
-        # patient_interactions[...]["all_data"] is also stored in milliseconds,
-        # so do NOT multiply by 1000 here or the times will never match a visit segment.
-        try:
-            tx = safe_float(row.get("ElapsedTime"), 0.0)
-        except Exception:
-            tx = 0.0
-
-        req = [patient, req_proc, injury]
-        times_controlled.setdefault(patient, []).append({
-            "procedure": req,
-            "time": tx,
-        })
+        tx = safe_float(row.get("ElapsedTime"), 0.0)
+        times_controlled.setdefault(patient, []).append(
+            {"procedure": [patient, req_proc, injury], "time": tx}
+        )
 
     control_times = {}
 
@@ -947,60 +790,49 @@ def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_in
 
         for controlled in controlled_list:
             tx = float(controlled["time"])
-            for (t1, t2) in interaction_times:
+            for t1, t2 in interaction_times:
                 if t1 == last_t2:
-                    # Match the defensive logic in the legacy analyzers.
                     t1 = last_t1
                 last_t1 = t1
                 last_t2 = t2
 
                 if tx >= t1 and tx <= t2:
-                    time_to_control = (tx - t1) / 1000.0
-                    control_times.setdefault(patient, []).append({
-                        "procedure": controlled["procedure"],
-                        "time": round(time_to_control, 3),
-                    })
+                    control_times.setdefault(patient, []).append(
+                        {
+                            "procedure": controlled["procedure"],
+                            "time": round((tx - t1) / 1000.0, 3),
+                        }
+                    )
                     break
 
     return control_times
 
 
-
 def compute_patient_averages(csv_rows, assessments, treatments, triage_times):
-    """
-    Compute:
-      - Assess_patient
-      - Treat_patient
-      - Triage_time_patient
-      - Engage_patient
-    """
+    """Compute aggregate patient-based averages."""
     engaged_counts = find_patients_engaged(csv_rows)
     patients_engaged = engaged_counts["engaged"]
     patients_treated = engaged_counts["treated"]
     patient_order_engaged = engaged_counts["order"]
 
-    engagement_times = list(
-        {p: patient_order_engaged.count(p) for p in set(patient_order_engaged)}.values()
-    )
-
-    engage_patient = sum(engagement_times) / max(1, len(engagement_times))
-    assess_patient = assessments["count"] / max(1, patients_engaged)
-    treat_patient = treatments["count"] / max(1, patients_treated)
-    triage_time_patient = triage_times["total"] / max(1, patients_engaged)
+    engagement_times = list({p: patient_order_engaged.count(p) for p in set(patient_order_engaged)}.values())
 
     return {
-        "engage_patient": engage_patient,
-        "assess_patient": assess_patient,
-        "treat_patient": treat_patient,
-        "triage_time_patient": triage_time_patient,
+        "engage_patient": sum(engagement_times) / max(1, len(engagement_times)),
+        "assess_patient": assessments["count"] / max(1, patients_engaged),
+        "treat_patient": treatments["count"] / max(1, patients_treated),
+        "triage_time_patient": triage_times["total"] / max(1, patients_engaged),
         "patients_engaged": patients_engaged,
         "patient_order_engaged": patient_order_engaged,
     }
 
 
-
+# ============================================================
+# MOVEMENT / DRAG LOGIC
+# ============================================================
 
 def parse_vec3(pos_str):
+    """Parse a string vector into a 3-tuple."""
     if not pos_str:
         return None
     s = str(pos_str).strip().strip("()")
@@ -1014,6 +846,7 @@ def parse_vec3(pos_str):
 
 
 def vec3_distance(a, b):
+    """Compute Euclidean distance between two 3D points."""
     if not a or not b:
         return 0.0
     dx = a[0] - b[0]
@@ -1023,9 +856,7 @@ def vec3_distance(a, b):
 
 
 def get_dragged_patients(csv_rows, min_drag_distance=1.0):
-    """
-    Reusable drag extraction based on DRAG_START / DRAG_STOP rows.
-    """
+    """Return the set of patients dragged beyond the distance threshold."""
     dragged_patients = set()
     active_drag_start = {}
 
@@ -1038,7 +869,6 @@ def get_dragged_patients(csv_rows, min_drag_distance=1.0):
 
         if ev == "DRAG_START":
             active_drag_start[patient] = parse_vec3(row.get("DragStartPosition", ""))
-
         elif ev == "DRAG_STOP":
             if patient not in active_drag_start:
                 continue
@@ -1049,21 +879,21 @@ def get_dragged_patients(csv_rows, min_drag_distance=1.0):
 
     return dragged_patients
 
+
 # ============================================================
-# ACTION ANALYSIS BUILDER
+# ACTION ANALYSIS
 # ============================================================
 
 def extract_action_analysis(csv_rows, sim_json, env):
-    """
-    Build actionAnalysis fields matching Feb probe matcher style.
-    """
+    """Build the actionAnalysis block."""
+    del sim_json  # currently unused
+
     prefix = get_env_prefix(env)
     action_analysis = {}
 
     assessments = count_assessment_actions(csv_rows)
     treatments = count_treatment_actions(csv_rows)
     triage_times = find_time_per_patient(csv_rows)
-
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
@@ -1082,18 +912,14 @@ def extract_action_analysis(csv_rows, sim_json, env):
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
     action_analysis[f"{prefix}Triage_time_patient"] = aggregate_patient_metrics["triage_time_patient"]
     action_analysis[f"{prefix}Engage_patient"] = aggregate_patient_metrics["engage_patient"]
-
     action_analysis[f"{prefix}Tag_ACC"] = tag_metrics["tag_acc"]
     action_analysis[f"{prefix}Tag_Expectant"] = tag_metrics["tag_expectant"]
-
     action_analysis[f"{prefix}Hemorrhage control"] = hem_metrics["hemorrhage_control"]
     action_analysis[f"{prefix}Hemorrhage control_time"] = hem_metrics["hemorrhage_control_time"]
-
     action_analysis[f"{prefix}Treat_hits_required"] = treatment_submetrics_required["total_hits"]
     action_analysis[f"{prefix}Treat_false_alarms_required"] = treatment_submetrics_required["total_false_alarms"]
     action_analysis[f"{prefix}Treat_repeat_hits_required"] = treatment_submetrics_required["total_repeat_hits"]
     action_analysis[f"{prefix}Treat_repeat_false_alarms_required"] = treatment_submetrics_required["total_repeat_false_alarms"]
-
 
     patients_in_order = get_patients_in_order(csv_rows, patient_order_engaged)
 
@@ -1105,9 +931,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
     for i, sim_name in enumerate(patients_in_order):
         name = f"{prefix}Patient{i + 1}"
 
-        action_analysis[f"{name}_time"] = round(
-            triage_times["interactions"].get(sim_name, 0), 3
-        )
+        action_analysis[f"{name}_time"] = round(triage_times["interactions"].get(sim_name, 0), 3)
 
         try:
             action_analysis[f"{name}_order"] = clean_patient_order_engaged.index(sim_name) + 1
@@ -1129,7 +953,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
 
 # ============================================================
-# OUTPUT DOCUMENT BUILDERS
+# OUTPUT BUILDING
 # ============================================================
 
 def build_output_documents(
@@ -1147,6 +971,7 @@ def build_output_documents(
     missed_hemorrhage_control=None,
     tag_distribution=None,
 ):
+    """Build the raw and analysis output documents."""
     pid = metadata["pid"]
     env = metadata["env"]
     doc_id = build_probe_matcher_style_id(pid, env)
@@ -1157,7 +982,7 @@ def build_output_documents(
         "env": env,
         "scenario_id": metadata["scenario_id"],
         "openWorld": metadata["openWorld"],
-        "data": sim_json
+        "data": sim_json,
     }
 
     analysis_doc = {
@@ -1168,7 +993,7 @@ def build_output_documents(
         "openWorld": metadata["openWorld"],
         "timestamp": int(datetime.utcnow().timestamp() * 1000),
         "eventTotals": event_totals,
-        "actionAnalysis": action_analysis
+        "actionAnalysis": action_analysis,
     }
 
     if patient_interactions is not None:
@@ -1194,20 +1019,22 @@ def build_output_documents(
 
 
 def save_output(output_dir, filename, analysis_doc):
+    """Write the analysis document to disk."""
     os.makedirs(output_dir, exist_ok=True)
     out_path = os.path.join(output_dir, f"{filename}_analysis.json")
 
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(analysis_doc, f, indent=2)
 
-    print(f"Saved: {out_path}")
+    print(f"Saved analysis: {out_path}")
 
 
 # ============================================================
-# MAIN PROCESSING PIPELINE
+# PIPELINE EXECUTION
 # ============================================================
 
 def process_file(json_path, output_dir):
+    """Process a single run and write its analysis output."""
     filename = os.path.basename(json_path).replace(".json", "")
 
     with open(json_path, "r", encoding="utf-8") as f:
@@ -1224,7 +1051,7 @@ def process_file(json_path, output_dir):
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
     tag_distribution = compute_tag_distribution(csv_rows, expected_tag_color)
-    required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
+    _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
     patient_hc_time = compute_patient_hc_time(
         csv_rows,
@@ -1232,31 +1059,6 @@ def process_file(json_path, output_dir):
         required_proc_for_injury,
     )
     missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
-
-    print("\n=== METADATA ===")
-    print(json.dumps(metadata, indent=2))
-    print("=== EVENT TOTALS ===")
-    print(json.dumps(event_totals, indent=2))
-    print("=== ACTION ANALYSIS ===")
-    print(json.dumps(action_analysis, indent=2))
-    print("=== PATIENT INTERACTIONS ===")
-    print(json.dumps(triage_times["patient_interactions"], indent=2))
-    print("=== INTERACTION TIME ===")
-    print(json.dumps(triage_times["interaction_time"], indent=2))
-    print("=== INTERACTION VISITS ===")
-    print(json.dumps(triage_times["interaction_visits"], indent=2))
-    print("=== PATIENT ORDER ===")
-    print(json.dumps(triage_times["patient_order"], indent=2))
-    print("=== TAG COLORS ===")
-    print(json.dumps(tag_colors, indent=2))
-    print("=== CORRECT TAG BREAKDOWN ===")
-    print(json.dumps(correct_tag_breakdown, indent=2))
-    print("=== TAG DISTRIBUTION ===")
-    print(json.dumps(tag_distribution, indent=2))
-    print("=== PATIENT HC TIME ===")
-    print(json.dumps(patient_hc_time, indent=2))
-    print("=== MISSED HEMORRHAGE CONTROL ===")
-    print(json.dumps(missed_hemorrhage_control, indent=2))
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -1277,34 +1079,27 @@ def process_file(json_path, output_dir):
     save_output(output_dir, filename, analysis_doc)
 
     if SEND_TO_MONGO:
-        # TODO: insert raw_doc into humanSimulatorRaw
-        # TODO: insert analysis_doc into humanSimulator
-        pass
+        # Insert raw_doc and analysis_doc here when Mongo support is enabled.
+        _ = raw_doc
 
-
-# ============================================================
-# ENTRY POINT
-# ============================================================
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Sim Analysis Starter Script")
-
+    parser = argparse.ArgumentParser(description="Simulation analysis script")
     parser.add_argument(
-        "-i", "--input_dir",
+        "-i",
+        "--input_dir",
         required=True,
-        help="Directory containing sim JSON files"
+        help="Directory containing simulation JSON files",
     )
-
     parser.add_argument(
-        "-o", "--output_dir",
+        "-o",
+        "--output_dir",
         default="output_sim_analysis",
-        help="Directory for output JSON files"
+        help="Directory for analysis JSON files",
     )
-
     args = parser.parse_args()
 
-    for root, dirs, files in os.walk(args.input_dir):
+    for root, _, files in os.walk(args.input_dir):
         for file in files:
             if file.endswith(".json"):
-                json_path = os.path.join(root, file)
-                process_file(json_path, args.output_dir)
+                process_file(os.path.join(root, file), args.output_dir)
