@@ -10,10 +10,11 @@
 #
 # Flags:
 #   -i / --input_dir     Input directory containing JSON/CSV files (required)
-#   -o / --output_dir    Output directory for analysis files (default: output_apr2026_probe_matcher)
+#   -o / --output_dir    Output directory for analysis files (default: output_april2026_probe_matcher)
 #   -m / --send_to_mongo Enable MongoDB upsert using MONGO_URL from .env
 #
 # ============================================================
+# --calc-kdmas: Enable ADEPT/TA1 calls to compute alignment scores and KDMAs
 
 import argparse
 import csv
@@ -22,7 +23,14 @@ import os
 import re
 from datetime import datetime
 
+import requests
 from decouple import config
+import yaml
+
+try:
+    from pymongo import MongoClient
+except ImportError:
+    MongoClient = None
 
 try:
     from pymongo import MongoClient
@@ -56,11 +64,11 @@ HEMORRHAGE_CONTROL_PROCS = {"tourniquet", "woundpack", "israeliWrap"}
 MONTH_MAP = {
     "january": "jan",
     "february": "feb",
-    "march": "mar",
-    "april": "apr",
+    "march": "march",
+    "april": "april",
     "may": "may",
-    "june": "jun",
-    "july": "jul",
+    "june": "june",
+    "july": "july",
     "august": "aug",
     "september": "sept",
     "october": "oct",
@@ -74,6 +82,9 @@ KDMA_MAP = {
     "personal_safety": "PS",
     "search": "SS",
 }
+
+CALC_KDMAS = False
+ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
 
 
 # ============================================================
@@ -1050,6 +1061,246 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
 
 # ============================================================
+# TA1 / ALIGNMENT HELPERS
+# ============================================================
+
+def load_openworld_yaml_for_env(env):
+    """Load the Apr 2026 openworld YAML matching the detected environment."""
+    yaml_filename = os.path.join("phase2", "april2026", "openworld", f"{env}.yaml")
+    if not os.path.exists(yaml_filename):
+        print(f"Warning: YAML file not found for environment {env}: {yaml_filename}")
+        return None
+    try:
+        with open(yaml_filename, "r", encoding="utf-8") as yf:
+            return yaml.load(yf, Loader=yaml.CLoader)
+    except Exception as e:
+        print(f"Warning: Error loading openworld yaml {yaml_filename}: {e}")
+        return None
+
+
+def get_ta1_calculations(scenario_id, probes):
+    """Create a TA1 session, send probe choices, and fetch computed KDMAs."""
+    if not CALC_KDMAS:
+        return None, None
+    if requests is None:
+        return None, None
+    if not probes:
+        return None, None
+    if not ADEPT_URL or ADEPT_URL == "/":
+        print("Warning: ADEPT_URL not set; skipping KDMA computation.")
+        return None, None
+    try:
+        session_id = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', '').strip()
+        for probe in probes:
+            requests.post(
+                f"{ADEPT_URL}api/v1/response",
+                json={
+                    "response": {
+                        "probe_id": probe["probe_id"],
+                        "choice": probe["choice"],
+                        "justification": "justification",
+                        "scenario_id": scenario_id,
+                    },
+                    "session_id": session_id,
+                },
+                timeout=120,
+            )
+        kdmas = requests.get(
+            f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}",
+            timeout=120,
+        ).json()
+    except Exception as e:
+        print(f"Warning: TA1 Server request failed; no KDMAs generated. {e}")
+        return None, None
+    return session_id, kdmas
+
+
+def _norm_casualty_name(name):
+    """Normalize casualty naming differences between YAML and JSON."""
+    if not name:
+        return ""
+    n = str(name).strip()
+    if n.lower().startswith("us "):
+        n = n[3:].lstrip()
+    return n.split(" Root")[0].strip()
+
+
+def compute_openworld_session_id(sim_json, metadata):
+    """Recreate the Feb matcher probe-to-choice flow and return the human TA1 session id."""
+    ow_yaml = load_openworld_yaml_for_env(metadata.get("env", ""))
+    if not ow_yaml:
+        return None
+
+    probe_map = {}
+    for scene in ow_yaml.get("scenes", []):
+        patient_name_map = {}
+        response_map = {}
+        for character in scene.get("state", {}).get("characters", []):
+            unstructured = character.get("unstructured", "")
+            sim_patient_name = unstructured.split(";")[-1].strip()
+            patient_name_map[character.get("id")] = sim_patient_name
+        for mapping in scene.get("action_mapping", []):
+            probe_id = mapping.get("probe_id")
+            choice_id = mapping.get("choice")
+            character_id = mapping.get("character_id")
+            if probe_id and choice_id and character_id in patient_name_map:
+                response_map[patient_name_map[character_id]] = choice_id
+                probe_map[probe_id] = response_map
+
+    engagement_actions = {"Pulse", "Treatment", "Tag", "DisarmPatientWeapon", "Question"}
+    action_list = [
+        action for action in sim_json.get("actionList", [])
+        if action.get("actionType") in engagement_actions
+    ]
+
+    def first_engaged(characters):
+        candidates = {_norm_casualty_name(ch) for ch in characters}
+        for action in action_list:
+            casualty = _norm_casualty_name(action.get("casualty", ""))
+            if casualty in candidates:
+                for ch in characters:
+                    if _norm_casualty_name(ch) == casualty:
+                        return ch
+        return None
+
+    probes = []
+    for probe_id, response_map in probe_map.items():
+        first_char = first_engaged(list(response_map.keys()))
+        if first_char:
+            probes.append({"probe_id": probe_id, "choice": response_map[first_char]})
+
+    session_id, _kdmas = get_ta1_calculations(ow_yaml.get("id", ""), probes)
+    return session_id
+
+
+def find_text_session_for_alignment(metadata, alignment_type):
+    """Find the matching text-session id for MF/AF alignment compare."""
+    if text_scenario_collection is None:
+        return None
+
+    pid = metadata.get("pid")
+    pid_candidates = [pid]
+    if str(pid).isdigit():
+        pid_candidates.append(int(pid))
+
+    scenario_regex = alignment_type
+    queries = [
+        {
+            "evalNumber": DEFAULT_EVAL_NUM,
+            "participantID": pid_val,
+            "scenario_id": {"$regex": scenario_regex, "$options": "i"},
+        }
+        for pid_val in pid_candidates
+    ]
+    queries.extend([
+        {
+            "participantID": pid_val,
+            "scenario_id": {"$regex": scenario_regex, "$options": "i"},
+        }
+        for pid_val in pid_candidates
+    ])
+
+    apr_specific_fields = []
+    if alignment_type == "MF":
+        apr_specific_fields = ["MF-PS_sessionId"]
+    elif alignment_type == "AF":
+        apr_specific_fields = ["AF-PS_sessionId"]
+
+    for query in queries:
+        try:
+            try:
+                text_doc = text_scenario_collection.find_one(query, sort=[("timestamp", -1)])
+            except TypeError:
+                text_doc = text_scenario_collection.find_one(query)
+        except Exception:
+            text_doc = None
+
+        if not text_doc:
+            continue
+
+        session_id = None
+        for field_name in [
+            "combinedSessionId",
+            "combined_session_id",
+            "session_id",
+            "sessionId",
+            "individualSessionId",
+            *apr_specific_fields,
+        ]:
+            if text_doc.get(field_name):
+                session_id = text_doc.get(field_name)
+                break
+
+        if session_id:
+            return str(session_id)
+
+        print(
+            f"Warning: Found {alignment_type} text document for pid {pid}, but no session id field was present."
+        )
+        return None
+
+    print(f"Warning: Could not find {alignment_type} text session for pid {pid}.")
+    return None
+
+
+def get_alignment_compare_score(human_session_id, metadata, alignment_type):
+    """Compare the current human session against the matching text session."""
+    if not CALC_KDMAS:
+        return None
+    if requests is None:
+        return None
+    if not human_session_id:
+        print(f"Warning: No human session_id available for {alignment_type} alignment.")
+        return None
+    if not ADEPT_URL or ADEPT_URL == "/":
+        print("Warning: ADEPT_URL not set; skipping alignment compare calculation.")
+        return None
+
+    text_session_id = find_text_session_for_alignment(metadata, alignment_type)
+    if not text_session_id:
+        return None
+
+    kdma_filter = "merit" if alignment_type == "MF" else "affiliation"
+    try:
+        response = requests.get(
+            f"{ADEPT_URL}api/v1/alignment/compare_sessions",
+            params={
+                "session_id_1": str(human_session_id),
+                "session_id_2": str(text_session_id),
+                "kdma_filter": kdma_filter,
+            },
+            timeout=120,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        score = payload.get("score")
+        return float(score) if score is not None else None
+    except Exception as e:
+        print(f"Warning: Alignment compare request failed for {alignment_type} / pid {metadata.get('pid')}: {e}")
+        return None
+
+
+def compute_alignment_scores(metadata, sim_json):
+    """Return MF/AF alignment fields using the Feb matcher flow."""
+    prefix = build_env_prefix(metadata.get("env", ""))
+    env_name = prefix.strip()
+    if not env_name:
+        env_name = metadata.get("env", "")
+
+    human_alignment_session_id = None
+    if CALC_KDMAS:
+        human_alignment_session_id = compute_openworld_session_id(sim_json, metadata)
+
+    mf_alignment_score = get_alignment_compare_score(human_alignment_session_id, metadata, "MF")
+    af_alignment_score = get_alignment_compare_score(human_alignment_session_id, metadata, "AF")
+
+    return {
+        f"MF Alignment_{env_name}": mf_alignment_score,
+        f"AF Alignment_{env_name}": af_alignment_score,
+    }
+
+
+# ============================================================
 # TEXT KDMAS
 # ============================================================
 
@@ -1057,7 +1308,7 @@ DEFAULT_EVAL_NUM = 16
 DEFAULT_EVAL_NAME = "April 2026 Evaluation"
 
 
-def _is_apr2026_text_doc(doc):
+def _is_april2026_text_doc(doc):
     """Return True when a text scenario document appears to belong to Apr 2026."""
     scenario_id = str(doc.get("scenario_id", "") or "")
     eval_name = str(doc.get("evalName", "") or "")
@@ -1084,7 +1335,7 @@ def _extract_kdmas_from_doc(doc):
         if isinstance(value, list) and value:
             merged.extend(value)
     if merged:
-        return merged, "merged_apr2026_assess_kdmas"
+        return merged, "merged_april2026_assess_kdmas"
 
     # Legacy Feb-style fallback.
     for field_name in ["kdmas", "individualKdmas"]:
@@ -1138,14 +1389,14 @@ def extract_text_kdmas(metadata):
         print(f"Warning: No text scenario documents found for pid {pid}.")
         return text_kdma_results
 
-    preferred_docs = [doc for doc in text_docs if _is_apr2026_text_doc(doc)]
+    preferred_docs = [doc for doc in text_docs if _is_april2026_text_doc(doc)]
     docs_to_use = preferred_docs if preferred_docs else text_docs
 
     # Prefer a doc with combinedKdmas since that is the clean Apr 2026 source.
     docs_to_use.sort(
         key=lambda d: (
             0 if (isinstance(d.get("combinedKdmas"), list) and d.get("combinedKdmas")) else 1,
-            0 if _is_apr2026_text_doc(d) else 1,
+            0 if _is_april2026_text_doc(d) else 1,
             str(d.get("timeComplete", "")),
         )
     )
@@ -1334,6 +1585,7 @@ def process_file(json_path, output_dir):
     )
     missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
     text_kdmas = extract_text_kdmas(metadata)
+    action_analysis.update(compute_alignment_scores(metadata, sim_json))
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -1370,7 +1622,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-o",
         "--output_dir",
-        default="output_apr2026_probe_matcher",
+        default="output_april2026_probe_matcher",
         help="Directory for analysis JSON files",
     )
     parser.add_argument(
@@ -1379,7 +1631,19 @@ if __name__ == "__main__":
         action="store_true",
         help="Also upsert raw and analysis documents to MongoDB",
     )
+    parser.add_argument(
+        "--calc_kdmas",
+        action="store_true",
+        help="Hit the ADEPT/TA1 server to compute open-world session KDMAs and alignment scores",
+    )
     args = parser.parse_args()
+
+    CALC_KDMAS = args.calc_kdmas
+
+    if args.calc_kdmas and requests is None:
+        raise ImportError(
+            "The requests package is required when --calc_kdmas is used. Install it with: pip install requests"
+        )
 
     if args.send_to_mongo:
         SEND_TO_MONGO = True
