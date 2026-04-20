@@ -1168,7 +1168,11 @@ def compute_openworld_match_data(sim_json, metadata):
 
     probes = []
     match_rows = []
+    real_probe_count = 0
     for probe_id, response_map in probe_map.items():
+        if "fake" in str(probe_id).lower():
+            continue
+        real_probe_count += 1
         first_char = first_engaged(list(response_map.keys()))
         if first_char:
             probes.append({"probe_id": probe_id, "choice": response_map[first_char]})
@@ -1193,7 +1197,7 @@ def compute_openworld_match_data(sim_json, metadata):
                 }
             )
 
-    logger.log(LogLevel.INFO, f"Found {len(probes)} out of {len(probe_map)} probes.")
+    logger.log(LogLevel.INFO, f"Found {len(probes)} out of {real_probe_count} probes.")
 
     ow_align = {}
     human_session_id = None
