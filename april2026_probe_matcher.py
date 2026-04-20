@@ -26,6 +26,7 @@ from datetime import datetime
 import requests
 from decouple import config
 import yaml
+from logger import LogLevel, Logger
 
 try:
     from pymongo import MongoClient
@@ -79,7 +80,9 @@ KDMA_MAP = {
 }
 
 CALC_KDMAS = False
+VERBOSE = False
 ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
+logger = Logger("april2026_probeMatcher")
 
 
 # ============================================================
@@ -1063,13 +1066,15 @@ def load_openworld_yaml_for_env(env):
     """Load the Apr 2026 openworld YAML matching the detected environment."""
     yaml_filename = os.path.join("phase2", "april2026", "openworld", f"{env}.yaml")
     if not os.path.exists(yaml_filename):
-        print(f"Warning: YAML file not found for environment {env}: {yaml_filename}")
+        logger.log(LogLevel.WARN, f"YAML file not found for environment {env}: {yaml_filename}")
         return None
     try:
+        if VERBOSE:
+            logger.log(LogLevel.INFO, f"Opening {yaml_filename}")
         with open(yaml_filename, "r", encoding="utf-8") as yf:
             return yaml.load(yf, Loader=yaml.CLoader)
     except Exception as e:
-        print(f"Warning: Error loading openworld yaml {yaml_filename}: {e}")
+        logger.log(LogLevel.ERROR, f"Error loading open world yaml file. Ensure it's valid YAML and exists.\n\n{e}\n")
         return None
 
 
@@ -1077,15 +1082,15 @@ def get_ta1_calculations(scenario_id, probes):
     """Create a TA1 session, send probe choices, and fetch computed KDMAs."""
     if not CALC_KDMAS:
         return None, None
-    if requests is None:
-        return None, None
     if not probes:
         return None, None
     if not ADEPT_URL or ADEPT_URL == "/":
-        print("Warning: ADEPT_URL not set; skipping KDMA computation.")
+        logger.log(LogLevel.WARN, "ADEPT_URL not set; skipping KDMA computation.")
         return None, None
     try:
         session_id = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', '').strip()
+        if VERBOSE:
+            logger.log(LogLevel.INFO, f"--> Sending probes: {probes}")
         for probe in probes:
             requests.post(
                 f"{ADEPT_URL}api/v1/response",
@@ -1104,8 +1109,8 @@ def get_ta1_calculations(scenario_id, probes):
             f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}",
             timeout=120,
         ).json()
-    except Exception as e:
-        print(f"Warning: TA1 Server request failed; no KDMAs generated. {e}")
+    except Exception:
+        logger.log(LogLevel.WARN, "TA1 Server request failed; no KDMAs generated.")
         return None, None
     return session_id, kdmas
 
@@ -1120,11 +1125,14 @@ def _norm_casualty_name(name):
     return n.split(" Root")[0].strip()
 
 
-def compute_openworld_session_id(sim_json, metadata):
-    """Recreate the Feb matcher probe-to-choice flow and return the human TA1 session id."""
-    ow_yaml = load_openworld_yaml_for_env(metadata.get("env", ""))
+def compute_openworld_match_data(sim_json, metadata):
+    """Recreate the Feb matcher OW probe matching flow and return match_data + human session id."""
+    env = metadata.get("env", "")
+    logger.log(LogLevel.INFO, f"Processing probe match for {'Desert' if 'desert' in env.lower() else 'Urban' if 'urban' in env.lower() else env}")
+
+    ow_yaml = load_openworld_yaml_for_env(env)
     if not ow_yaml:
-        return None
+        return {"alignment": {}, "data": []}, None
 
     probe_map = {}
     for scene in ow_yaml.get("scenes", []):
@@ -1159,13 +1167,47 @@ def compute_openworld_session_id(sim_json, metadata):
         return None
 
     probes = []
+    match_rows = []
     for probe_id, response_map in probe_map.items():
         first_char = first_engaged(list(response_map.keys()))
         if first_char:
             probes.append({"probe_id": probe_id, "choice": response_map[first_char]})
+            match_rows.append(
+                {
+                    "scene_id": probe_id,
+                    "probe_id": probe_id,
+                    "found_match": True,
+                    "response": response_map[first_char],
+                    "user_action": {},
+                }
+            )
+        else:
+            logger.log(LogLevel.WARN, f"Unmatched probe {probe_id}.")
+            match_rows.append(
+                {
+                    "scene_id": probe_id,
+                    "probe_id": probe_id,
+                    "found_match": False,
+                    "response": "",
+                    "user_action": {},
+                }
+            )
 
-    session_id, _kdmas = get_ta1_calculations(ow_yaml.get("id", ""), probes)
-    return session_id
+    logger.log(LogLevel.INFO, f"Found {len(probes)} out of {len(probe_map)} probes.")
+
+    ow_align = {}
+    human_session_id = None
+    if CALC_KDMAS:
+        human_session_id, kdmas = get_ta1_calculations(ow_yaml.get("id", ""), probes)
+        ow_align["sid"] = human_session_id
+        ow_align["kdmas"] = kdmas
+
+    match_data = {"alignment": ow_align, "data": match_rows}
+    if VERBOSE:
+        print()
+        logger.log(LogLevel.INFO, f"\nMatch data: {match_data}")
+
+    return match_data, human_session_id
 
 
 def find_text_session_for_alignment(metadata, alignment_type):
@@ -1273,16 +1315,16 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         return None
 
 
-def compute_alignment_scores(metadata, sim_json):
+def compute_alignment_scores(metadata, sim_json, human_session_id=None):
     """Return MF/AF alignment fields using the Feb matcher flow as a standalone section."""
     prefix = build_env_prefix(metadata.get("env", ""))
     env_name = prefix.strip()
     if not env_name:
         env_name = metadata.get("env", "")
 
-    human_alignment_session_id = None
-    if CALC_KDMAS:
-        human_alignment_session_id = compute_openworld_session_id(sim_json, metadata)
+    human_alignment_session_id = human_session_id
+    if CALC_KDMAS and human_alignment_session_id is None:
+        _match_data, human_alignment_session_id = compute_openworld_match_data(sim_json, metadata)
 
     mf_alignment_score = get_alignment_compare_score(human_alignment_session_id, metadata, "MF")
     af_alignment_score = get_alignment_compare_score(human_alignment_session_id, metadata, "AF")
@@ -1451,6 +1493,7 @@ def build_output_documents(
     tag_distribution=None,
     text_kdmas=None,
     alignment_scores=None,
+    match_data=None,
 ):
     """Build the raw and analysis output documents."""
     pid = metadata["pid"]
@@ -1499,6 +1542,8 @@ def build_output_documents(
         analysis_doc["text_kdmas"] = text_kdmas
     if alignment_scores is not None:
         analysis_doc["alignment_scores"] = alignment_scores
+    if match_data is not None:
+        analysis_doc["data"] = match_data
 
     return raw_doc, analysis_doc
 
@@ -1511,7 +1556,8 @@ def save_output(output_dir, filename, analysis_doc):
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(analysis_doc, f, indent=2)
 
-    print(f"Saved analysis: {out_path}")
+    if VERBOSE:
+        logger.log(LogLevel.INFO, f"Saved analysis: {out_path}")
 
 
 
@@ -1581,7 +1627,8 @@ def process_file(json_path, output_dir):
     )
     missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
     text_kdmas = extract_text_kdmas(metadata)
-    alignment_scores = compute_alignment_scores(metadata, sim_json)
+    match_data, human_session_id = compute_openworld_match_data(sim_json, metadata)
+    alignment_scores = compute_alignment_scores(metadata, sim_json, human_session_id=human_session_id)
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -1599,13 +1646,14 @@ def process_file(json_path, output_dir):
         tag_distribution=tag_distribution,
         text_kdmas=text_kdmas,
         alignment_scores=alignment_scores,
+        match_data=match_data,
     )
 
     save_output(output_dir, filename, analysis_doc)
 
+    logger.log(LogLevel.INFO, f"{'' if SEND_TO_MONGO else 'NOT '}Saving to database.")
     if SEND_TO_MONGO:
         save_to_mongo(raw_doc, analysis_doc)
-        print(f"Upserted Mongo documents for: {analysis_doc['_id']}")
 
 
 if __name__ == "__main__":
@@ -1634,9 +1682,16 @@ if __name__ == "__main__":
         action="store_true",
         help="Hit the ADEPT/TA1 server to compute open-world session KDMAs and alignment scores",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Verbose command line output",
+    )
     args = parser.parse_args()
 
     CALC_KDMAS = args.calc_kdmas
+    VERBOSE = args.verbose
 
     if args.send_to_mongo:
         SEND_TO_MONGO = True
@@ -1645,4 +1700,7 @@ if __name__ == "__main__":
     for root, _, files in os.walk(args.input_dir):
         for file in files:
             if file.endswith(".json"):
-                process_file(os.path.join(root, file), args.output_dir)
+                json_path = os.path.join(root, file)
+                print()
+                logger.log(LogLevel.INFO, f"Processing file {json_path}")
+                process_file(json_path, args.output_dir)
