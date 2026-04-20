@@ -59,7 +59,7 @@ def main(mongoDB, EVAL_NUMBER=8):
                 elif scenario_attribute is None or scenario_attribute not in page_scenario:
                     continue
 
-                if EVAL_NUMBER != 10:
+                if EVAL_NUMBER != 10 and EVAL_NUMBER != 16:
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
                         continue
@@ -88,7 +88,7 @@ def main(mongoDB, EVAL_NUMBER=8):
                         else:
                             print(f'Error getting comparison for scenarios {scenario_id} and {adm_scenario_id} with text session {session_id} and adm session {adm_session}', res)
                 else:
-                    adm_session = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})['admSessionId']
+                    adm_session = medic['admSessionId']
 
                     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
                     # send document to mongo
