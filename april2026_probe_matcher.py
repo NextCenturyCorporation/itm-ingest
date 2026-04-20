@@ -9,12 +9,12 @@
 # and humanSimulatorRaw) when the `-m` flag is used.
 #
 # Flags:
-#   -i / --input_dir     Input directory containing JSON/CSV files (required)
-#   -o / --output_dir    Output directory for analysis files (default: output_april2026_probe_matcher)
-#   -m / --send_to_mongo Enable MongoDB upsert using MONGO_URL from .env
+#   -i / --input_dir      Input directory containing JSON/CSV files (required)
+#   -o / --output_dir     Output directory for analysis files (default: output_april2026_probe_matcher)
+#   -m / --send_to_mongo  Enable MongoDB upsert using MONGO_URL from .env
+#   -k / --calc_kdmas     Enable ADEPT/TA1 calls to compute open-world session KDMAs and alignment scores
 #
 # ============================================================
-# --calc-kdmas: Enable ADEPT/TA1 calls to compute alignment scores and KDMAs
 
 import argparse
 import csv
@@ -26,11 +26,6 @@ from datetime import datetime
 import requests
 from decouple import config
 import yaml
-
-try:
-    from pymongo import MongoClient
-except ImportError:
-    MongoClient = None
 
 try:
     from pymongo import MongoClient
@@ -1247,8 +1242,6 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
     """Compare the current human session against the matching text session."""
     if not CALC_KDMAS:
         return None
-    if requests is None:
-        return None
     if not human_session_id:
         print(f"Warning: No human session_id available for {alignment_type} alignment.")
         return None
@@ -1281,7 +1274,7 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
 
 
 def compute_alignment_scores(metadata, sim_json):
-    """Return MF/AF alignment fields using the Feb matcher flow."""
+    """Return MF/AF alignment fields using the Feb matcher flow as a standalone section."""
     prefix = build_env_prefix(metadata.get("env", ""))
     env_name = prefix.strip()
     if not env_name:
@@ -1457,6 +1450,7 @@ def build_output_documents(
     missed_hemorrhage_control=None,
     tag_distribution=None,
     text_kdmas=None,
+    alignment_scores=None,
 ):
     """Build the raw and analysis output documents."""
     pid = metadata["pid"]
@@ -1503,6 +1497,8 @@ def build_output_documents(
         analysis_doc.update(tag_distribution)
     if text_kdmas is not None:
         analysis_doc["text_kdmas"] = text_kdmas
+    if alignment_scores is not None:
+        analysis_doc["alignment_scores"] = alignment_scores
 
     return raw_doc, analysis_doc
 
@@ -1585,7 +1581,7 @@ def process_file(json_path, output_dir):
     )
     missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
     text_kdmas = extract_text_kdmas(metadata)
-    action_analysis.update(compute_alignment_scores(metadata, sim_json))
+    alignment_scores = compute_alignment_scores(metadata, sim_json)
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -1602,6 +1598,7 @@ def process_file(json_path, output_dir):
         missed_hemorrhage_control=missed_hemorrhage_control,
         tag_distribution=tag_distribution,
         text_kdmas=text_kdmas,
+        alignment_scores=alignment_scores,
     )
 
     save_output(output_dir, filename, analysis_doc)
@@ -1632,6 +1629,7 @@ if __name__ == "__main__":
         help="Also upsert raw and analysis documents to MongoDB",
     )
     parser.add_argument(
+        "-k",
         "--calc_kdmas",
         action="store_true",
         help="Hit the ADEPT/TA1 server to compute open-world session KDMAs and alignment scores",
@@ -1639,11 +1637,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     CALC_KDMAS = args.calc_kdmas
-
-    if args.calc_kdmas and requests is None:
-        raise ImportError(
-            "The requests package is required when --calc_kdmas is used. Install it with: pip install requests"
-        )
 
     if args.send_to_mongo:
         SEND_TO_MONGO = True
