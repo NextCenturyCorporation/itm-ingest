@@ -8,7 +8,7 @@ ADEPT_URL = config('ADEPT_URL')
 
 def main(mongo_db):
     run_obs(mongo_db)
-    gen_comp(mongo_db, EVAL_NUMBER=16)
+    gen_comp(mongo_db)
 
 def run_obs(mongo_db):
     medics = mongo_db['admMedics']
@@ -132,7 +132,6 @@ def gen_comp(mongo_db):
             if res is not None and 'score' in res:
                 document = {
                     'pid': pid,
-                    'adm_type': page_data.get('admAlignment'),
                     'score': res['score'],
                     'text_scenario': scenario_id,
                     'text_session_id': session_id.replace('"', '').strip(),
