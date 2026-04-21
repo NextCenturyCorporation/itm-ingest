@@ -50,60 +50,100 @@ def run_obs_oracles(mongo_db):
 
 def gen_comp(mongo_db):
     EVAL_NUMBER = 16
-    text_scenario_collection = mongoDB['userScenarioResults']
-    delegation_collection = mongoDB['surveyResults']
-    comparison_collection = mongoDB['humanToADMComparison']
+    text_scenario_collection = mongo_db['userScenarioResults']
+    delegation_collection = mongo_db['surveyResults']
+    comparison_collection = mongo_db['humanToADMComparison']
 
     comparison_collection.delete_many({"evalNumber": EVAL_NUMBER})
-    medic_collection = mongoDB['admMedics']
+    medic_collection = mongo_db['admMedics']
 
     data_to_use = list(text_scenario_collection.find(
         {"evalNumber": EVAL_NUMBER}
     ))
 
-    total_text_scenarios = text_scenario_collection.count_documents(
-        {"evalNumber": EVAL_NUMBER}
-    )
+    total_text_scenarios = len(data_to_use)
+    current_text_scenario = 0
 
     for entry in data_to_use:
-        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation {EVAL_NUMBER}.")
         current_text_scenario += 1
+        print(f"Currently processing {current_text_scenario} of {total_text_scenarios} total text scenarios Evaluation {EVAL_NUMBER}.")
 
         scenario_id = entry.get('scenario_id')
-        session_id = entry.get('combinedSessionId')
         pid = entry.get('participantID')
-        survey = list(delegation_collection.find({"results.pid": pid}))
+
+        survey = list(delegation_collection.find({"results.pid": pid, "results.evalNumber": EVAL_NUMBER}))
         if len(survey) == 0:
             print(f"No survey found for {pid}")
             continue
-        survey = survey[-1] # get last survey entry for this pid
-        # get human to adm comparisons from delegation survey adms
+        survey = survey[-1]
+
+        # PS document has all three session ids I need, so just grab that
+        ps2_doc = text_scenario_collection.find_one({
+            'participantID': pid,
+            'evalNumber': EVAL_NUMBER,
+            'scenario_id': {'$regex': 'PS'}
+        })
+        if not ps2_doc:
+            print(f"No PS document found for {pid}")
+            continue
+
         for page in survey['results']:
-            if 'Medic' in page and ' vs ' not in page:
-                page_scenario = survey['results'][page]['scenarioIndex']
-                scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
+            if 'Medic' not in page or ' vs ' in page:
+                continue
 
-                medic = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})
-                adm_session = medic['admSessionId']
+            page_data = survey['results'][page]
+            page_scenario = page_data.get('scenarioIndex')
+            if not page_scenario:
+                continue
 
-                res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
-                # send document to mongo
-                if res is not None and 'score' in res:
-                    document = {
-                        'pid': pid,
-                        'adm_type': survey.get('results', {}).get(page, {}).get('admAlignment'),
-                        'score': res['score'],
-                        'text_scenario': scenario_id,
-                        'text_session_id': session_id.replace('"', "").strip(),
-                        'adm_scenario': page_scenario,
-                        'adm_session_id': adm_session,
-                        'adm_alignment_target': survey['results'][page]['admTarget'],
-                        'evalNumber': EVAL_NUMBER
-                    }
-                    send_document_to_mongo(comparison_collection, document)
-                else:
-                    print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {adm_session}', res)
+            # figure out what session id to use 
+            if 'MF-PS' in page_scenario:
+                session_id = ps2_doc.get('MF-PS_sessionId')
+            elif 'AF-PS' in page_scenario:
+                session_id = ps2_doc.get('AF-PS_sessionId')
+            elif 'MF-observe' in page_scenario or 'AF-observe' in page_scenario:
+                session_id = ps2_doc.get('combinedSessionId')
+            else:
+                #shouldnt happen
+                print(f"Couldnt match page_scenario of {page_scenario}")
+                continue
 
+            if not session_id:
+                print(f"No session ID found for {pid} page {page} scenario {page_scenario}")
+                continue
+
+            # Match text scenario attribute to medic scenario attribute
+            scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
+            if scenario_attribute is None or scenario_attribute not in page_scenario:
+                continue
+
+            medic = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})
+            if not medic:
+                print(f"No medic found for {page}")
+                continue
+
+            adm_session = medic.get('admSessionId')
+            if not adm_session:
+                print(f"No admSessionId for medic {page}")
+                continue
+
+            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
+
+            if res is not None and 'score' in res:
+                document = {
+                    'pid': pid,
+                    'adm_type': page_data.get('admAlignment'),
+                    'score': res['score'],
+                    'text_scenario': scenario_id,
+                    'text_session_id': session_id.replace('"', '').strip(),
+                    'adm_scenario': page_scenario,
+                    'adm_session_id': adm_session,
+                    'adm_alignment_target': page_data.get('admTarget'),
+                    'evalNumber': EVAL_NUMBER
+                }
+                send_document_to_mongo(comparison_collection, document)
+            else:
+                print(f'Error getting comparison for {scenario_id} and {page_scenario} with text session {session_id} and adm session {adm_session}', res)
 
     print("Human to ADM comparison values added to database.")
 
