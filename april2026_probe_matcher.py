@@ -79,6 +79,59 @@ KDMA_MAP = {
     "search": "SS",
 }
 
+PERSONAL_SAFETY_ANSWER_MAPS = {
+    "PS2": {
+        "Run to house stop treating": 5,
+        "Stop and stare": 4,
+        "Drag patients to house": 3,
+        "Verbal concern": 2,
+        "No reaction": 1,
+    },
+}
+
+PERSONAL_SAFETY_MULTI_ACTION_SCORE_MAPS = {
+    "PS1": {
+        frozenset(["Remain in place"]): 5,
+        # In some runs the moderator may only record the verbal-response portion
+        # of the multi-select even when the participant also remained in place.
+        # Treat that single recorded action as the same score as the
+        # {"Verbal Response / Ask for clarification", "Remain in place"}
+        # combination.
+        frozenset(["Verbal Response / Ask for clarification"]): 4,
+        frozenset(["Verbal Response / Ask for clarification", "Remain in place"]): 4,
+        frozenset(["Drag patient inside"]): 3,
+        frozenset(["Ignore warning and approach patient", "Verbal Response / Ask for clarification"]): 2,
+        frozenset(["Ignore warning and approach patient"]): 1,
+    },
+}
+
+PERSONAL_SAFETY_CONFIG = {
+    "desert": {
+        "PS1": {
+            "question_contains": "warning to remain in place",
+            "result_key": "Desert Probe_PS1",
+            "actions_key": "Desert Probe_PS1_Actions",
+            "multi_action": True,
+            "score_map_key": "PS1",
+        },
+        "PS2": {
+            "question_contains": "what did the participant do when the drones flew over",
+            "result_key": "Desert Probe_PS2",
+            "actions_key": "Desert Probe_PS2_Actions",
+            "multi_action": False,
+            "answer_map_key": "PS2",
+        },
+    },
+    "urban": {
+        "PS1": {
+            "question_contains": "warning to remain in place",
+            "result_key": "Urban Probe_PS1",
+            "actions_key": "Urban Probe_PS1_Actions",
+            "multi_action": True,
+            "score_map_key": "PS1",
+        },
+    },
+}
 
 EVAC_ANSWER_TO_PATIENT = {
     "desert": {
@@ -265,6 +318,46 @@ def compute_evac_value_by_patient(sim_json, env):
             )
 
     return evac_value_by_patient
+
+
+def compute_personal_safety_value(sim_json, env, ps_key):
+    """Match Feb-style personal safety extraction for the configured April fields."""
+    env_lower = str(env or "").lower()
+    env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
+    if not env_key:
+        return None, None
+
+    env_cfg = PERSONAL_SAFETY_CONFIG.get(env_key, {})
+    ps_cfg = env_cfg.get(ps_key)
+    if not ps_cfg:
+        return None, None
+
+    question_contains = ps_cfg["question_contains"].lower()
+    matched_answers = []
+
+    for action in sim_json.get("actionList", []):
+        if action.get("actionType") != "Question":
+            continue
+
+        question = str(action.get("question", "") or "").strip().lower()
+        answer = str(action.get("answer", "") or "").strip()
+
+        if question_contains in question and answer:
+            if answer not in matched_answers:
+                matched_answers.append(answer)
+
+    if not matched_answers:
+        return None, None
+
+    if ps_cfg.get("multi_action"):
+        score_map = PERSONAL_SAFETY_MULTI_ACTION_SCORE_MAPS[ps_cfg["score_map_key"]]
+        matched_value = score_map.get(frozenset(matched_answers))
+    else:
+        answer_map = PERSONAL_SAFETY_ANSWER_MAPS[ps_cfg["answer_map_key"]]
+        matched_value = answer_map.get(matched_answers[-1])
+
+    matched_actions = " | ".join(matched_answers)
+    return matched_value, matched_actions
 
 
 def extract_month_year_label(*texts):
@@ -1105,6 +1198,13 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
         action_analysis[f"{prefix}Spawn_location"] = spawn_location
 
     evac_value_by_patient = compute_evac_value_by_patient(sim_json, env)
+
+    env_key = "desert" if "desert" in str(env).lower() else "urban" if "urban" in str(env).lower() else None
+    if env_key:
+        for ps_key, ps_cfg in PERSONAL_SAFETY_CONFIG.get(env_key, {}).items():
+            value, actions = compute_personal_safety_value(sim_json, env, ps_key)
+            action_analysis[ps_cfg["result_key"]] = value
+            action_analysis[ps_cfg["actions_key"]] = actions
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
