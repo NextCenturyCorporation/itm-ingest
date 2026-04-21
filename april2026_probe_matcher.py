@@ -180,6 +180,14 @@ def build_probe_matcher_style_id(pid, env):
     return f"{pid}_ow_{env if env else 'unknown'}"
 
 
+def compute_spawn_location_value(pid):
+    """Match Feb 2026 spawn logic: even numeric pid -> 0, odd numeric pid -> 1."""
+    pid_str = str(pid or "").strip()
+    if not pid_str.isdigit():
+        return None
+    return 0 if int(pid_str) % 2 == 0 else 1
+
+
 def extract_month_year_label(*texts):
     """Extract short and pretty month-year labels from free text."""
     combined = " ".join(str(t or "") for t in texts)
@@ -990,7 +998,7 @@ def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
 # - PatientN_order
 # - PatientN_assess
 # - PatientN_treat
-def extract_action_analysis(csv_rows, sim_json, env):
+def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     """Build the actionAnalysis section using reusable CSV-based metrics."""
     del sim_json  # currently unused
 
@@ -1013,6 +1021,10 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
     tag_metrics = compute_tag_metrics(expected_tag_color, tags_applied)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
+
+    spawn_location = compute_spawn_location_value(pid)
+    if spawn_location is not None and prefix:
+        action_analysis[f"{prefix}Spawn_location"] = spawn_location
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
@@ -1616,7 +1628,7 @@ def process_file(json_path, output_dir):
 
     metadata = extract_run_metadata(sim_json, filename)
     event_totals = extract_event_totals(csv_rows, metadata["env"])
-    action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"])
+    action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"], pid=metadata["pid"])
     triage_times = compute_patient_interactions(csv_rows)
     tag_colors = compute_last_applied_tags(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
