@@ -7,12 +7,12 @@ import utils.db_utils as db_utils
 ADEPT_URL = config('ADEPT_URL')
 
 def main(mongo_db):
-    run_obs_oracles(mongo_db)
+    run_obs(mongo_db)
     gen_comp(mongo_db, EVAL_NUMBER=16)
 
-def run_obs_oracles(mongo_db):
+def run_obs(mongo_db):
     medics = mongo_db['admMedics']
-    observed_oracles = list(medics.find({'evalNumber': 16, 'admName': 'Oracle'}))
+    observed_oracles = list(medics.find({'evalNumber': 16}))
 
     for oracle in observed_oracles:
         responses = oracle['elements'][0]['rows']
