@@ -1122,7 +1122,6 @@ def get_ta1_calculations(scenario_id, probes):
             timeout=120,
         ).json()
     except Exception:
-        logger.log(LogLevel.WARN, "TA1 Server request failed; no KDMAs generated.")
         return None, None
     return session_id, kdmas
 
@@ -1214,9 +1213,19 @@ def compute_openworld_match_data(sim_json, metadata):
     ow_align = {}
     human_session_id = None
     if CALC_KDMAS:
-        human_session_id, kdmas = get_ta1_calculations(ow_yaml.get("id", ""), probes)
-        ow_align["sid"] = human_session_id
-        ow_align["kdmas"] = kdmas
+        if not probes:
+            logger.log(LogLevel.WARN, "No probes available for KDMA calculation.")
+        else:
+            logger.log(LogLevel.INFO, f"Calling TA1 server for KDMA calculation with {len(probes)} probes...")
+            human_session_id, kdmas = get_ta1_calculations(ow_yaml.get("id", ""), probes)
+            if human_session_id and kdmas is not None:
+                logger.log(LogLevel.INFO, f"KDMA calculation complete (session_id={human_session_id})")
+            else:
+                logger.log(LogLevel.WARN, "TA1 server request failed; no KDMAs generated.")
+            ow_align["sid"] = human_session_id
+            ow_align["kdmas"] = kdmas
+    else:
+        logger.log(LogLevel.INFO, "KDMA calculation disabled (use -k to enable).")
 
     match_data = {"alignment": ow_align, "data": match_rows}
     if VERBOSE:
