@@ -79,6 +79,36 @@ KDMA_MAP = {
     "search": "SS",
 }
 
+
+EVAC_ANSWER_TO_PATIENT = {
+    "desert": {
+        "Mil Amputation Big Building": "US Military 1",
+        "Mil Amputation Small Building": "US Military 5",
+        "Mil Wrist Broken": "US Military 2",
+        "Mil Chest Puncture": "US Military 3",
+        "Mil Stomach Puncture": "US Military 4",
+        "Civilian Thigh Laceration": "Civilian 1",
+        "Civilian Stomach Puncture": "Civilian 2",
+        "Civilian Amputation": "Civilian 3",
+        "Attacker Stomach Puncture": "Attacker 1",
+        "Attacker Shoulder Puncture": "Attacker 2",
+        "Mil Explosion Chest Puncture": "US Military 6",
+        "Mil Explosion Dead": "US Military 7",
+    },
+    "urban": {
+        "Mil Bicep Puncture": "US Military 1",
+        "Mil Discharged Weapon Stomach Puncture": "US Military 2",
+        "Civilian Broken Wrist": "Civilian 1",
+        "Shooter Shoulder Puncture": "Shooter 1",
+        "Mil Thigh Puncture": "US Military 3",
+        "Civilian Chest Puncture": "Civilian 2",
+        "Civilian Stomach Puncture": "Civilian 3",
+        "Mil Stomach Puncture": "US Military 4",
+        "Mil Explosion Burns": "US Military 5",
+        "Mil Explosion Dead": "US Military 6",
+    },
+}
+
 CALC_KDMAS = False
 VERBOSE = False
 ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
@@ -186,6 +216,55 @@ def compute_spawn_location_value(pid):
     if not pid_str.isdigit():
         return None
     return 0 if int(pid_str) % 2 == 0 else 1
+
+def compute_evac_value_by_patient(sim_json, env):
+    """Match Feb-style evac extraction, using April 2026 answer labels."""
+    env_lower = str(env or "").lower()
+    env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
+    if not env_key:
+        return {}
+
+    answer_map = EVAC_ANSWER_TO_PATIENT.get(env_key, {})
+    evac_value_by_patient = {}
+
+    for action in sim_json.get("actionList", []):
+        if action.get("actionType") != "Question":
+            continue
+
+        question = str(action.get("question", "") or "").strip().lower()
+        answer = str(action.get("answer", "") or "").strip()
+
+        if "evacuate" not in question or not answer:
+            continue
+
+        patient_name = answer_map.get(answer)
+        if not patient_name:
+            continue
+
+        evac_value = None
+        if env_key == "desert":
+            if (
+                "which casualty do you want to evacuate" in question
+                or "which one casualty do you want to evacuate" in question
+            ):
+                evac_value = 1
+            elif "which two casualties do you want to evacuate" in question:
+                evac_value = 2
+        elif env_key == "urban":
+            if "which three casualties do you want to evacuate" in question:
+                evac_value = 1
+
+        if evac_value is None:
+            continue
+
+        if patient_name not in evac_value_by_patient:
+            evac_value_by_patient[patient_name] = evac_value
+        else:
+            evac_value_by_patient[patient_name] = min(
+                evac_value_by_patient[patient_name], evac_value
+            )
+
+    return evac_value_by_patient
 
 
 def extract_month_year_label(*texts):
@@ -1000,7 +1079,6 @@ def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
 # - PatientN_treat
 def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     """Build the actionAnalysis section using reusable CSV-based metrics."""
-    del sim_json  # currently unused
 
     prefix = build_env_prefix(env)
     action_analysis = {}
@@ -1025,6 +1103,8 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     spawn_location = compute_spawn_location_value(pid)
     if spawn_location is not None and prefix:
         action_analysis[f"{prefix}Spawn_location"] = spawn_location
+
+    evac_value_by_patient = compute_evac_value_by_patient(sim_json, env)
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
@@ -1057,6 +1137,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
             action_analysis[f"{name}_order"] = "N/A"
 
         action_analysis[f"{name}_dragged"] = "Yes" if sim_name in dragged_patients else "No"
+        action_analysis[f"{name}_evac"] = evac_value_by_patient.get(sim_name, 0)
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_tag"] = tags_applied.get(sim_name, "None")
