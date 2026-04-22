@@ -12,6 +12,7 @@ def main(mongo_db):
 
 def run_obs(mongo_db):
     medics = mongo_db['admMedics']
+    adm_collec = mongo_db['admTargetRuns']
     observed_oracles = list(medics.find({'evalNumber': 16}))
 
     for oracle in observed_oracles:
@@ -44,6 +45,18 @@ def run_obs(mongo_db):
                     'kdmas': kdmas,
                 }
             }
+        )
+
+        adm_target_doc = {
+            **oracle,
+            'admSessionId': sid,
+            'kdmas': kdmas,
+        }
+
+        adm_collec.update_one(
+            {'_id': oracle['_id']},
+            {'$set': adm_target_doc},
+            upsert=True
         )
 
         print(f"Processed {oracle['name']} - {scenario_id} -> session {sid}")
