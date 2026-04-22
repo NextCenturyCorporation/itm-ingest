@@ -1305,9 +1305,11 @@ def vec3_distance(a, b):
 
 # Fields extracted:
 # - PatientN_dragged
-def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
-    """Return the set of patients dragged beyond the distance threshold."""
+# - PatientN_drag_times
+def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
+    """Return dragged patients and comma-joinable drag start times for meaningful drags."""
     dragged_patients = set()
+    drag_times_by_patient = {}
     active_drag_start = {}
 
     for row in csv_rows:
@@ -1318,16 +1320,26 @@ def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
             continue
 
         if ev == "DRAG_START":
-            active_drag_start[patient] = parse_vec3(row.get("DragStartPosition", ""))
+            active_drag_start[patient] = {
+                "position": parse_vec3(row.get("DragStartPosition", "")),
+                "elapsed_seconds": round(safe_float(row.get("ElapsedTime", 0)) / 1000.0, 3),
+            }
         elif ev == "DRAG_STOP":
             if patient not in active_drag_start:
                 continue
-            start_pos = active_drag_start.pop(patient, None)
+
+            start_data = active_drag_start.pop(patient, None) or {}
+            start_pos = start_data.get("position")
             stop_pos = parse_vec3(row.get("DragStopPosition", ""))
+
             if vec3_distance(start_pos, stop_pos) > min_drag_distance:
                 dragged_patients.add(patient)
+                drag_times_by_patient.setdefault(patient, []).append(start_data.get("elapsed_seconds", 0.0))
 
-    return dragged_patients
+    return {
+        "dragged_patients": dragged_patients,
+        "drag_times_by_patient": drag_times_by_patient,
+    }
 
 
 # ============================================================
@@ -1358,7 +1370,9 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env)
     triage_performance = compute_triage_performance_w_supp(csv_rows, required_injuries, env)
     tags_applied = compute_last_applied_tags(csv_rows)
-    dragged_patients = compute_dragged_patients(csv_rows, min_drag_distance=1.0)
+    drag_metrics = compute_drag_metrics(csv_rows, min_drag_distance=1.0)
+    dragged_patients = drag_metrics["dragged_patients"]
+    drag_times_by_patient = drag_metrics["drag_times_by_patient"]
 
     aggregate_patient_metrics = compute_patient_averages(
         csv_rows, assessments, treatments, triage_times
@@ -1417,6 +1431,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
             action_analysis[f"{name}_order"] = "N/A"
 
         action_analysis[f"{name}_dragged"] = "Yes" if sim_name in dragged_patients else "No"
+        action_analysis[f"{name}_drag_times"] = ", ".join(str(t) for t in drag_times_by_patient.get(sim_name, []))
         action_analysis[f"{name}_evac"] = evac_value_by_patient.get(sim_name, 0)
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
