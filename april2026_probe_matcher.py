@@ -17,6 +17,7 @@
 # ============================================================
 
 import argparse
+import copy
 import csv
 import json
 import os
@@ -159,6 +160,35 @@ EVAC_ANSWER_TO_PATIENT = {
         "Mil Stomach Puncture": "US Military 4",
         "Mil Explosion Burns": "US Military 5",
         "Mil Explosion Dead": "US Military 6",
+    },
+}
+
+SUPPLEMENTAL_PROCEDURES = {
+    "desert": {
+        "US Military 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics"],
+        "Civilian 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Attacker 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Civilian 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "US Military 4": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "Attacker 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "Civilian 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics"],
+        "US Military 5": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "US Military 6": [],
+        "US Military 7": [],
+    },
+    "urban": {
+        "US Military 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "US Military 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "Civilian 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Shooter 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Civilian 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Civilian 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 4": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 5": [],
+        "US Military 6": [],
     },
 }
 
@@ -813,6 +843,99 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
     }
 
 
+
+def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env):
+    """Compute required + supplemental treatment submetrics in the Feb matcher style."""
+    env_key = "desert" if "desert" in str(env).lower() else "urban" if "urban" in str(env).lower() else None
+    supplemental_map = copy.deepcopy(SUPPLEMENTAL_PROCEDURES.get(env_key, {}))
+    to_complete = copy.deepcopy(required_injuries)
+
+    hits = {}
+    false_alarms = {}
+    repeat_hits = {}
+    repeat_false_alarms = {}
+    supplemental_tracker = {}
+    false_alarm_tracker = {}
+    just_completed = None
+
+    for row in csv_rows:
+        event_name = row.get("EventName")
+
+        if event_name == "INJURY_TREATED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                continue
+
+            injury = str(row.get("InjuryName", "")).strip()
+            completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+            if not completed:
+                continue
+
+            patient_required = required_injuries.get(patient, [])
+            if patient_required:
+                if injury in patient_required:
+                    if patient in to_complete and injury in to_complete[patient]:
+                        to_complete[patient].remove(injury)
+                        just_completed = patient
+                        hits[patient] = hits.get(patient, 0) + 1
+                        if not to_complete[patient]:
+                            del to_complete[patient]
+                    else:
+                        repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+                else:
+                    if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                        repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                    else:
+                        false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                    false_alarm_tracker.setdefault(patient, {})
+                    false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+            else:
+                if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                else:
+                    false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                false_alarm_tracker.setdefault(patient, {})
+                false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+
+        if event_name == "TOOL_APPLIED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                just_completed = None
+                continue
+
+            tool = str(row.get("ToolType", "") or "").strip()
+            if "Pulse Oximeter" in tool:
+                just_completed = None
+                continue
+
+            if tool in supplemental_map.get(patient, []):
+                if supplemental_tracker.get(patient, {}).get(tool, 0) > 0:
+                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+                else:
+                    hits[patient] = hits.get(patient, 0) + 1
+                supplemental_tracker.setdefault(patient, {})
+                supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
+            else:
+                if patient != just_completed:
+                    if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
+                        repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                    else:
+                        false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                    false_alarm_tracker.setdefault(patient, {})
+                    false_alarm_tracker[patient][tool] = false_alarm_tracker[patient].get(tool, 0) + 1
+            just_completed = None
+
+    return {
+        "total_hits": sum(hits.values()),
+        "total_false_alarms": sum(false_alarms.values()),
+        "total_repeat_hits": sum(repeat_hits.values()),
+        "total_repeat_false_alarms": sum(repeat_false_alarms.values()),
+        "per_patient_hits": hits,
+        "per_patient_false_alarms": false_alarms,
+        "per_patient_repeat_hits": repeat_hits,
+        "per_patient_repeat_false_alarms": repeat_false_alarms,
+    }
+
 # Fields extracted:
 # - tag_colors
 # - PatientN_tag
@@ -1182,6 +1305,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
+    treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env)
     tags_applied = compute_last_applied_tags(csv_rows)
     dragged_patients = compute_dragged_patients(csv_rows, min_drag_distance=1.0)
 
@@ -1218,6 +1342,10 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     action_analysis[f"{prefix}Treat_false_alarms_required"] = treatment_submetrics_required["total_false_alarms"]
     action_analysis[f"{prefix}Treat_repeat_hits_required"] = treatment_submetrics_required["total_repeat_hits"]
     action_analysis[f"{prefix}Treat_repeat_false_alarms_required"] = treatment_submetrics_required["total_repeat_false_alarms"]
+    action_analysis[f"{prefix}Treat_hits_w_supp"] = treatment_submetrics_w_supp["total_hits"]
+    action_analysis[f"{prefix}Treat_false_alarms_w_supp"] = treatment_submetrics_w_supp["total_false_alarms"]
+    action_analysis[f"{prefix}Treat_repeat_hits_w_supp"] = treatment_submetrics_w_supp["total_repeat_hits"]
+    action_analysis[f"{prefix}Treat_repeat_false_alarms_w_supp"] = treatment_submetrics_w_supp["total_repeat_false_alarms"]
 
     patients_in_order = compute_patients_in_order(csv_rows, patient_order_engaged)
 
@@ -1247,6 +1375,10 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
         action_analysis[f"{name}_treat_false_alarms_required"] = treatment_submetrics_required["per_patient_false_alarms"].get(sim_name, 0)
         action_analysis[f"{name}_treat_repeat_hits_required"] = treatment_submetrics_required["per_patient_repeat_hits"].get(sim_name, 0)
         action_analysis[f"{name}_treat_repeat_false_alarms_required"] = treatment_submetrics_required["per_patient_repeat_false_alarms"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_hits_w_supp"] = treatment_submetrics_w_supp["per_patient_hits"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_false_alarms_w_supp"] = treatment_submetrics_w_supp["per_patient_false_alarms"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_repeat_hits_w_supp"] = treatment_submetrics_w_supp["per_patient_repeat_hits"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_repeat_false_alarms_w_supp"] = treatment_submetrics_w_supp["per_patient_repeat_false_alarms"].get(sim_name, 0)
 
     return action_analysis
 
