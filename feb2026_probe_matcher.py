@@ -1439,9 +1439,24 @@ class ProbeMatcher:
         # score = hits / (tools_applied + misses) * 100
         # -------------------------
         def get_triage_performance():
+            """
+            June-style supplemental-aware triage performance.
+
+            Numerator:
+              - completed required injuries
+              - approved supplemental tools, but only once a patient has no
+                required injuries remaining
+
+            Denominator:
+              - all TOOL_APPLIED events except Pulse Oximeter
+              - plus remaining required injuries (misses)
+            """
             remaining = {p: set(inj_list) for p, inj_list in required_injuries.items()}
-            correct_completed = 0
+            supplemental = copy.deepcopy(SUPPLEMENTAL_PROCEDURES.get(env.lower(), {}))
+            supplemental_tracker = {}
+            correct_tools_applied = 0
             total_tools_applied = 0
+            just_completed = None
 
             for row in data:
                 ev = _get_cell(row, idx, "EventName")
@@ -1452,25 +1467,36 @@ class ProbeMatcher:
                     completed = _safe_bool_from_csv(
                         _get_cell(row, idx, "InjuryTreatmentComplete")
                     )
-                    if (
-                        completed
-                        and patient in remaining
-                        and injury in remaining[patient]
-                    ):
+                    if completed and patient in remaining and injury in remaining[patient]:
                         remaining[patient].remove(injury)
-                        correct_completed += 1
+                        correct_tools_applied += 1
+                        just_completed = patient
                         if len(remaining[patient]) == 0:
                             del remaining[patient]
 
                 if ev == "TOOL_APPLIED":
+                    patient = _clean_patient_name(_get_cell(row, idx, "PatientID", ""))
                     tool = str(_get_cell(row, idx, "ToolType", "") or "")
                     if "Pulse Oximeter" in tool:
                         continue
+
                     total_tools_applied += 1
+
+                    if tool in supplemental.get(patient, []):
+                        tracker = supplemental_tracker.setdefault(patient, {})
+                        already_used = tracker.get(tool, 0) > 0
+                        patient_has_required_remaining = patient in remaining and len(remaining[patient]) > 0
+
+                        if not already_used and not patient_has_required_remaining and patient != just_completed:
+                            correct_tools_applied += 1
+
+                        tracker[tool] = tracker.get(tool, 0) + 1
+
+                    just_completed = None
 
             misses = sum(len(s) for s in remaining.values())
             denom = max(1, total_tools_applied + misses)
-            return (correct_completed / denom) * 100.0
+            return (correct_tools_applied / denom) * 100.0
 
         results[f"{env} Triage Performance"] = get_triage_performance()
 
