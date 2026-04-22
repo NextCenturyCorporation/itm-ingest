@@ -83,9 +83,22 @@ def gen_comp(mongo_db):
             'evalNumber': EVAL_NUMBER,
             'scenario_id': {'$regex': 'PS'}
         })
+
         if not ps2_doc:
             print(f"No PS document found for {pid}")
             continue
+
+        subpop_doc = text_scenario_collection.find_one({
+            'participantID': pid,
+            'evalNumber': 16,
+            'scenario_id': {'$regex': 'subpopulation'}
+        })
+
+        if not subpop_doc:
+            print(f"No subpop document found for {pid}")
+            continue
+
+        participant_subpop = subpop_doc.get('subPopResult')
 
         for page in survey['results']:
             if 'Medic' not in page or ' vs ' in page:
@@ -127,7 +140,33 @@ def gen_comp(mongo_db):
                 print(f"No admSessionId for medic {page}")
                 continue
 
-            res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
+            base_url = f'{ADEPT_URL}api/v1/alignment/compare_sessions'
+
+            query_params = {
+                'session_id_1': session_id,
+                'session_id_2': adm_session,
+            }
+
+            # Only add optional params if they exist
+            if medic['admName'] == 'Oracle':
+                if participant_subpop:
+                    query_params['enable_subpop'] = participant_subpop
+
+                query_params['kdma_filter'] = (
+                    'affiliation' if 'AF' in medic['scenarioIndex'] else 'merit'
+                )
+
+            response = requests.get(base_url, params=query_params)
+
+            if response.status_code != 200:
+                print(f"Request failed: {response.status_code} - {response.text}")
+                continue
+
+            try:
+                res = response.json()
+            except Exception:
+                print(f"Invalid JSON response: {response.text}")
+                continue
 
             if res is not None and 'score' in res:
                 document = {
@@ -138,8 +177,12 @@ def gen_comp(mongo_db):
                     'adm_scenario': page_scenario,
                     'adm_session_id': adm_session,
                     'adm_alignment_target': page_data.get('admTarget'),
-                    'evalNumber': EVAL_NUMBER
+                    'evalNumber': EVAL_NUMBER,
                 }
+
+                if medic['admName'] == 'Oracle':
+                    document['subpop'] = participant_subpop
+
                 send_document_to_mongo(comparison_collection, document)
             else:
                 print(f'Error getting comparison for {scenario_id} and {page_scenario} with text session {session_id} and adm session {adm_session}', res)
@@ -149,7 +192,7 @@ def gen_comp(mongo_db):
 
 def send_document_to_mongo(comparison_collection, document):
     # do not send duplicate documents, make sure if one already exists, we just replace it
-    found_docs = comparison_collection.find({'pid': document['pid'], 'adm_type': document['adm_type'], 'text_scenario': document['text_scenario'], 'adm_scenario': document['adm_scenario'], 'evalNumber': document['evalNumber'],
+    found_docs = comparison_collection.find({'pid': document['pid'], 'text_scenario': document['text_scenario'], 'adm_scenario': document['adm_scenario'], 'evalNumber': document['evalNumber'],
                                             'text_session_id': document['text_session_id'], 'adm_session_id': document['adm_session_id'], 'adm_alignment_target': document['adm_alignment_target']})
     doc_found = False
     obj_id = ''
