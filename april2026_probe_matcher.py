@@ -175,7 +175,7 @@ SUPPLEMENTAL_PROCEDURES = {
         "Attacker 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
         "Civilian 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics"],
         "US Military 5": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
-        "US Military 6": [],
+        "US Military 6": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
         "US Military 7": [],
     },
     "urban": {
@@ -187,7 +187,7 @@ SUPPLEMENTAL_PROCEDURES = {
         "Civilian 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
         "Civilian 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
         "US Military 4": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
-        "US Military 5": [],
+        "US Military 5": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
         "US Military 6": [],
     },
 }
