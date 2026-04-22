@@ -936,6 +936,56 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env):
         "per_patient_repeat_false_alarms": repeat_false_alarms,
     }
 
+
+def compute_triage_performance_w_supp(csv_rows, required_injuries, env):
+    """Compute triage performance using the June-style supplemental-aware logic."""
+    env_key = "desert" if "desert" in str(env).lower() else "urban" if "urban" in str(env).lower() else None
+    to_complete = copy.deepcopy(required_injuries)
+    supplemental_map = copy.deepcopy(SUPPLEMENTAL_PROCEDURES.get(env_key, {}))
+
+    supplemental_points = {}
+    total_tools_applied = 0
+    correct_tools_applied = 0
+    misses = 0
+
+    for row in csv_rows:
+        event_name = row.get("EventName")
+
+        if event_name == "INJURY_TREATED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                continue
+
+            injury = str(row.get("InjuryName", "")).strip()
+            completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+            if not completed:
+                continue
+
+            if patient in to_complete and injury in to_complete[patient]:
+                to_complete[patient].remove(injury)
+                correct_tools_applied += 1
+                if not to_complete[patient]:
+                    del to_complete[patient]
+
+        if event_name == "TOOL_APPLIED":
+            total_tools_applied += 1
+            patient = clean_patient_name(row.get("PatientID", ""))
+            tool = str(row.get("ToolType", "") or "").strip()
+            if not is_valid_patient(patient):
+                continue
+
+            if patient in supplemental_map and tool in supplemental_map[patient]:
+                supplemental_points[patient] = supplemental_points.get(patient, 0) + 1
+
+    for patient, remaining_injuries in to_complete.items():
+        misses += len(remaining_injuries)
+
+    for patient, supp_count in supplemental_points.items():
+        if patient not in to_complete:
+            correct_tools_applied += supp_count
+
+    return (correct_tools_applied / max(1, total_tools_applied + misses)) * 100
+
 # Fields extracted:
 # - tag_colors
 # - PatientN_tag
@@ -1306,6 +1356,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
     treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
     treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env)
+    triage_performance = compute_triage_performance_w_supp(csv_rows, required_injuries, env)
     tags_applied = compute_last_applied_tags(csv_rows)
     dragged_patients = compute_dragged_patients(csv_rows, min_drag_distance=1.0)
 
@@ -1346,6 +1397,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     action_analysis[f"{prefix}Treat_false_alarms_w_supp"] = treatment_submetrics_w_supp["total_false_alarms"]
     action_analysis[f"{prefix}Treat_repeat_hits_w_supp"] = treatment_submetrics_w_supp["total_repeat_hits"]
     action_analysis[f"{prefix}Treat_repeat_false_alarms_w_supp"] = treatment_submetrics_w_supp["total_repeat_false_alarms"]
+    action_analysis[f"{prefix}Triage Performance"] = triage_performance
 
     patients_in_order = compute_patients_in_order(csv_rows, patient_order_engaged)
 
