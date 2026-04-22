@@ -192,6 +192,16 @@ SUPPLEMENTAL_PROCEDURES = {
     },
 }
 
+INJECT_PATIENTS = {
+    "desert": ["US Military 6", "US Military 7"],
+    "urban": ["US Military 5", "US Military 6"],
+}
+
+INJECT_RADIO_SECTION_NAME = {
+    "desert": "Explosion Aftermath Radio.",
+    "urban": "Explosion Aftermath Radio.",
+}
+
 CALC_KDMAS = False
 VERBOSE = False
 ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
@@ -1355,6 +1365,87 @@ def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
 # - PatientN_order
 # - PatientN_assess
 # - PatientN_treat
+def compute_inject_probe_values(csv_rows, sim_json, env, patient_order_engaged):
+    """Compute the Apr 2026 inject-derived PS/SS probe values.
+
+    JSON is used as the source of truth for the radio section timing, while the
+    CSV engagement stream is used as the source of truth for participant
+    behavior.
+    """
+    env_key = "desert" if "desert" in str(env).lower() else "urban" if "urban" in str(env).lower() else None
+    if not env_key:
+        return {}
+
+    inject_patients = set(INJECT_PATIENTS.get(env_key, []))
+    engaged_patients = set()
+    engagement_rows = []
+
+    for row in csv_rows:
+        ev = row.get("EventName")
+        if ev not in ENGAGEMENT_EVENTS:
+            continue
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if not is_valid_patient(patient):
+            continue
+        try:
+            elapsed_sec = safe_float(row.get("ElapsedTime", 0)) / 1000.0
+        except Exception:
+            elapsed_sec = 0.0
+        engagement_rows.append({"patient": patient, "elapsed_sec": elapsed_sec})
+        engaged_patients.add(patient)
+
+    inject_engaged = any(patient in engaged_patients for patient in inject_patients)
+
+    narrative_sections = (
+        sim_json.get("configData", {})
+        .get("narrative", {})
+        .get("narrativeSections", [])
+    )
+    target_section = INJECT_RADIO_SECTION_NAME.get(env_key)
+    radio_elapsed_sec = None
+    running_elapsed = 0.0
+    for section in narrative_sections:
+        running_elapsed += safe_float(section.get("delayInSeconds", 0))
+        if str(section.get("sectionDescription", "")).strip() == target_section:
+            radio_elapsed_sec = running_elapsed
+            break
+
+    baseline_visit_index = 0
+    first_inject_visit_index = None
+    if engagement_rows:
+        if radio_elapsed_sec is not None:
+            for idx, event in enumerate(engagement_rows, start=1):
+                if event["elapsed_sec"] <= radio_elapsed_sec:
+                    baseline_visit_index = idx
+                if (
+                    first_inject_visit_index is None
+                    and event["elapsed_sec"] >= radio_elapsed_sec
+                    and event["patient"] in inject_patients
+                ):
+                    first_inject_visit_index = idx
+        else:
+            for idx, event in enumerate(engagement_rows, start=1):
+                if event["patient"] in inject_patients:
+                    first_inject_visit_index = idx
+                    break
+            baseline_visit_index = 0
+
+    if first_inject_visit_index is None:
+        ss_value = 10
+    else:
+        ss_value = max(0, min(10, first_inject_visit_index - baseline_visit_index))
+
+    if env_key == "desert":
+        return {
+            "Desert Probe_PS3": 1 if inject_engaged else 0,
+            "Desert Probe_SS1": ss_value,
+        }
+    return {
+        "Urban Probe_PS2": 1 if inject_engaged else 0,
+        "Urban Probe_SS1": ss_value,
+    }
+
+
 def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     """Build the actionAnalysis section using reusable CSV-based metrics."""
 
@@ -1394,6 +1485,9 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
             value, actions = compute_personal_safety_value(sim_json, env, ps_key)
             action_analysis[ps_cfg["result_key"]] = value
             action_analysis[ps_cfg["actions_key"]] = actions
+
+    inject_probe_values = compute_inject_probe_values(csv_rows, sim_json, env, patient_order_engaged)
+    action_analysis.update(inject_probe_values)
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
