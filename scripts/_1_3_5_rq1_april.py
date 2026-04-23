@@ -4,15 +4,26 @@ Runs oracle adms through TA1 server so session id's are available for rq1 compar
 import requests
 from decouple import config
 import utils.db_utils as db_utils
+from bson import ObjectId
 ADEPT_URL = config('ADEPT_URL')
 
 def main(mongo_db):
+    survey_collection = mongo_db['surveyResults']
+    # fix participant that reported wrong pid
+    id = '69d94c5f7d9621bcf9c5f7ef'
+    survey_collection.update_one(
+        {'_id': ObjectId(id)},
+        {'$set': {
+            'results.pid': '202604117',
+            'results.Participant ID Page.questions.Participant ID.response': '202604117',
+        }}
+    )
+
     run_obs(mongo_db)
     gen_comp(mongo_db)
 
 def run_obs(mongo_db):
     medics = mongo_db['admMedics']
-    adm_collec = mongo_db['admTargetRuns']
     observed_oracles = list(medics.find({'evalNumber': 16}))
 
     for oracle in observed_oracles:
@@ -37,26 +48,28 @@ def run_obs(mongo_db):
             f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={sid}"
         ).json()
 
+        alignment_params = {
+            'session_id': sid,
+            'target_id': oracle.get('target'),
+        }
+        if oracle.get('subpop'):
+            alignment_params['enable_subpop'] = oracle['subpop']
+
+        alignment_score = requests.get(
+            f"{ADEPT_URL}api/v1/alignment/session",
+            params=alignment_params
+        ).json()
+
+
         medics.update_one(
             {'_id': oracle['_id']},
             {
                 '$set': {
-                    'admSessionId': sid,
-                    'kdmas': kdmas,
+                'admSessionId': sid,
+                'kdmas': kdmas,
+                'alignmentScore': alignment_score.get('score'),
                 }
             }
-        )
-
-        adm_target_doc = {
-            **oracle,
-            'admSessionId': sid,
-            'kdmas': kdmas,
-        }
-
-        adm_collec.update_one(
-            {'_id': oracle['_id']},
-            {'$set': adm_target_doc},
-            upsert=True
         )
 
         print(f"Processed {oracle['name']} - {scenario_id} -> session {sid}")
