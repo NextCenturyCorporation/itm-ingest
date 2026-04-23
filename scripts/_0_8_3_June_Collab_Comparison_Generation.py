@@ -1,6 +1,7 @@
 import requests
 import utils.db_utils as db_utils
 from decouple import config 
+import math
 
 # compares the text responses for adept to ADMs to populate comparison collection
 
@@ -16,9 +17,9 @@ def main(mongoDB, EVAL_NUMBER=8):
     medic_collection = mongoDB['admMedics']
     adm_collection = mongoDB["admTargetRuns"]
 
-    data_to_use = text_scenario_collection.find(
+    data_to_use = list(text_scenario_collection.find(
         {"evalNumber": EVAL_NUMBER}
-    )
+    ))
 
     total_text_scenarios = text_scenario_collection.count_documents(
         {"evalNumber": EVAL_NUMBER}
@@ -29,7 +30,11 @@ def main(mongoDB, EVAL_NUMBER=8):
         current_text_scenario += 1
 
         scenario_id = entry.get('scenario_id')
-        session_id = entry.get('combinedSessionId')
+        if EVAL_NUMBER == 15:
+            is_individual_mf = 'MF' in scenario_id and 'SS' not in scenario_id
+            session_id = entry.get('individualSessionId') if is_individual_mf else entry.get('combinedSessionId')
+        else:
+            session_id = entry.get('combinedSessionId')
         pid = entry.get('participantID')
         survey = list(delegation_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid}))
         if len(survey) == 0:
@@ -40,6 +45,20 @@ def main(mongoDB, EVAL_NUMBER=8):
         for page in survey['results']:
             if 'Medic' in page and ' vs ' not in page:
                 page_scenario = survey['results'][page]['scenarioIndex']
+                scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
+
+                if EVAL_NUMBER == 15:
+                    if is_individual_mf:
+                        if 'MF' not in page_scenario or 'SS' in page_scenario:
+                            continue
+                    else:
+                        if scenario_attribute is None or scenario_attribute not in page_scenario:
+                            continue
+                        if 'MF' in page_scenario and 'SS' not in page_scenario:
+                            continue
+                elif scenario_attribute is None or scenario_attribute not in page_scenario:
+                    continue
+
                 if EVAL_NUMBER != 10:
                     adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
                     if adm is None:
