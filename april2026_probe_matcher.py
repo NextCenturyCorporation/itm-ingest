@@ -1,18 +1,24 @@
 # ============================================================
-# APR 2026 PROBE MATCHER
+# APRIL 2026 PROBE MATCHER
 # ============================================================
 #
-# Processes simulation JSON + CSV files to generate APR 2026-style analysis outputs
-# including patient interactions, treatment metrics, tagging accuracy,
-# and hemorrhage control. Designed to extend the reusable sim analysis pipeline with Apr 2026 probe matcher behavior. Outputs analysis JSON files
-# and optionally upserts results to MongoDB (dashboard → humanSimulator
-# and humanSimulatorRaw) when the `-m` flag is used.
+# Processes April 2026 simulation JSON + CSV files and produces:
+# - actionAnalysis metrics
+# - eventTotals metrics
+# - open-world probe matches
+# - text KDMA joins
+# - alignment compare values
+#
+# The script always allows Mongo reads when Mongo is available so that
+# alignment and text KDMA lookups can work during local testing. It only
+# writes analysis documents back to Mongo when `-m / --send_to_mongo` is used.
 #
 # Flags:
 #   -i / --input_dir      Input directory containing JSON/CSV files (required)
-#   -o / --output_dir     Output directory for analysis files (default: output_april2026_probe_matcher)
+#   -o / --output_dir     Output directory for analysis files
 #   -m / --send_to_mongo  Enable MongoDB upsert using MONGO_URL from .env
-#   -k / --calc_kdmas     Enable ADEPT/TA1 calls to compute open-world session KDMAs and alignment scores
+#   -k / --calc_kdmas     Enable ADEPT/TA1 calls to compute open-world KDMAs
+#                         and alignment compare values
 #
 # ============================================================
 
@@ -208,7 +214,6 @@ VERBOSE = False
 ADEPT_URL = config("ADEPT_URL", default="").rstrip("/") + "/"
 logger = Logger("april2026_probeMatcher")
 
-
 # ============================================================
 # BASIC HELPERS
 # ============================================================
@@ -220,13 +225,11 @@ def safe_float(value, default=0.0):
     except (TypeError, ValueError):
         return default
 
-
 def safe_bool_from_csv(value) -> bool:
     """Convert common CSV boolean-like values into a boolean."""
     if value is None:
         return False
     return str(value).strip().lower() in ("true", "1", "yes", "y", "t")
-
 
 def clean_patient_name(value):
     """Normalize patient names for consistent matching."""
@@ -234,14 +237,12 @@ def clean_patient_name(value):
         return ""
     return str(value).split(" Root")[0].strip()
 
-
 def is_valid_patient(patient_name):
     """Return True when the value represents a real patient entity."""
     if not patient_name:
         return False
     invalid_tokens = ["Level Core", "Simulation", "Player"]
     return not any(token in patient_name for token in invalid_tokens)
-
 
 def timestamp_to_seconds(ts_value):
     """Parse a timestamp string into Unix seconds."""
@@ -267,7 +268,6 @@ def timestamp_to_seconds(ts_value):
     except ValueError:
         return None
 
-
 # ============================================================
 # FILE LOADING
 # ============================================================
@@ -280,7 +280,6 @@ def load_csv_rows(csv_path):
     with open(csv_path, "r", newline="", encoding="utf-8-sig") as f:
         return list(csv.DictReader(f))
 
-
 def build_env_prefix(env):
     """Return the output field prefix for an environment."""
     env_lower = str(env).lower()
@@ -290,7 +289,6 @@ def build_env_prefix(env):
         return "Urban "
     return ""
 
-
 def extract_pid_from_filename(filename):
     """Extract the participant id from the run filename."""
     parts = filename.split("_")
@@ -298,21 +296,19 @@ def extract_pid_from_filename(filename):
         return parts[1]
     return parts[0] if parts else filename
 
-
 def build_probe_matcher_style_id(pid, env):
     """Build the output document id."""
     return f"{pid}_ow_{env if env else 'unknown'}"
 
-
 def compute_spawn_location_value(pid):
-    """Match Feb 2026 spawn logic: even numeric pid -> 0, odd numeric pid -> 1."""
+    """Return the spawn-location value derived from numeric PID parity."""
     pid_str = str(pid or "").strip()
     if not pid_str.isdigit():
         return None
     return 0 if int(pid_str) % 2 == 0 else 1
 
 def compute_evac_value_by_patient(sim_json, env):
-    """Match Feb-style evac extraction, using April 2026 answer labels."""
+    """Extract per-patient evacuation values from April question events."""
     env_lower = str(env or "").lower()
     env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
     if not env_key:
@@ -360,9 +356,8 @@ def compute_evac_value_by_patient(sim_json, env):
 
     return evac_value_by_patient
 
-
 def compute_personal_safety_value(sim_json, env, ps_key):
-    """Match Feb-style personal safety extraction for the configured April fields."""
+    """Extract configured personal-safety fields from question events."""
     env_lower = str(env or "").lower()
     env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
     if not env_key:
@@ -399,7 +394,6 @@ def compute_personal_safety_value(sim_json, env, ps_key):
 
     matched_actions = " | ".join(matched_answers)
     return matched_value, matched_actions
-
 
 def extract_month_year_label(*texts):
     """Extract short and pretty month-year labels from free text."""
@@ -438,7 +432,6 @@ def extract_month_year_label(*texts):
     short_month = MONTH_MAP[normalized]
     pretty_month = short_month.capitalize()
     return f"{short_month}{year}", f"{pretty_month}{year}"
-
 
 # ============================================================
 # METADATA EXTRACTION
@@ -494,11 +487,12 @@ def extract_run_metadata(sim_json, filename):
         "openWorld": open_world,
     }
 
-
 # ============================================================
 # EVENT METRICS
 # ============================================================
 
+# Fields extracted:
+# - Triage_time
 def compute_triage_time_seconds(csv_rows):
     """Compute overall triage time from elapsed time values."""
     if len(csv_rows) <= 1:
@@ -511,7 +505,9 @@ def compute_triage_time_seconds(csv_rows):
     except Exception:
         return 0.0
 
-
+# Fields extracted:
+# - Assess_total
+# - PatientN_assess
 def compute_assessment_metrics(csv_rows):
     """Count assessment events and break them out by patient."""
     count = 0
@@ -537,7 +533,9 @@ def compute_assessment_metrics(csv_rows):
 
     return {"count": count, "per_patient": per_patient}
 
-
+# Fields extracted:
+# - Treat_total
+# - PatientN_treat
 def compute_treatment_metrics(csv_rows):
     """Count tool applications and break them out by patient."""
     count = 0
@@ -558,7 +556,6 @@ def compute_treatment_metrics(csv_rows):
 
     return {"count": count, "per_patient": per_patient}
 
-
 # Fields extracted:
 # - Triage_time
 # - Assess_total
@@ -575,11 +572,13 @@ def extract_event_totals(csv_rows, env):
         f"{prefix}Treat_total": treatments["count"],
     }
 
-
 # ============================================================
 # PATIENT INTERACTION LOGIC
 # ============================================================
 
+# Fields extracted:
+# - Engage_patient
+# - PatientN_order
 def compute_patient_engagement(csv_rows):
     """Compute patient engagement counts and order."""
     engagement_order = []
@@ -609,7 +608,6 @@ def compute_patient_engagement(csv_rows):
         "treated": len(set(treated)),
         "order": simple_order,
     }
-
 
 # Fields extracted:
 # - patient_interactions
@@ -717,7 +715,6 @@ def compute_patient_interactions(csv_rows):
         "patient_order": patient_order,
     }
 
-
 def compute_patients_in_order(csv_rows, engagement_order):
     """Determine the patient breakout order."""
     patients_in_order = []
@@ -734,7 +731,6 @@ def compute_patients_in_order(csv_rows, engagement_order):
                 patients_in_order.append(patient)
 
     return patients_in_order
-
 
 # ============================================================
 # TRIAGE / TAG LOGIC
@@ -758,7 +754,6 @@ def derive_expected_tag_color(csv_rows):
 
     return expected_tag_color
 
-
 # Fields extracted:
 # - PatientN_required_injuries
 def derive_required_injuries_and_procs(csv_rows):
@@ -779,7 +774,6 @@ def derive_required_injuries_and_procs(csv_rows):
             required_proc_for_injury[(patient, injury)] = proc
 
     return required_injuries, required_proc_for_injury
-
 
 # ============================================================
 # TREATMENT METRICS
@@ -853,10 +847,8 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
         "per_patient_repeat_false_alarms": repeat_false_alarms,
     }
 
-
-
 def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env):
-    """Compute required + supplemental treatment submetrics in the Feb matcher style."""
+    """Compute required and supplemental treatment submetrics."""
     env_key = "desert" if "desert" in str(env).lower() else "urban" if "urban" in str(env).lower() else None
     supplemental_map = copy.deepcopy(SUPPLEMENTAL_PROCEDURES.get(env_key, {}))
     to_complete = copy.deepcopy(required_injuries)
@@ -947,9 +939,8 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, env):
         "per_patient_repeat_false_alarms": repeat_false_alarms,
     }
 
-
 def compute_triage_performance_w_supp(csv_rows, required_injuries, env):
-    """Compute triage performance using the June-style supplemental-aware logic."""
+    """Compute supplemental-aware triage performance."""
     env_key = "desert" if "desert" in str(env).lower() else "urban" if "urban" in str(env).lower() else None
     to_complete = copy.deepcopy(required_injuries)
     supplemental_map = copy.deepcopy(SUPPLEMENTAL_PROCEDURES.get(env_key, {}))
@@ -1015,7 +1006,6 @@ def compute_last_applied_tags(csv_rows):
 
     return tags_applied
 
-
 def normalize_tag_color(tag):
     """Normalize tag color aliases."""
     tag = str(tag or "").strip().lower()
@@ -1024,7 +1014,6 @@ def normalize_tag_color(tag):
     if tag == "green_blue":
         return "green"
     return tag
-
 
 # Fields extracted:
 # - tag_distribution_red
@@ -1078,7 +1067,6 @@ def compute_tag_distribution(csv_rows, expected_tag_color):
 
     return result
 
-
 # Fields extracted:
 # - correct_tags_total
 # - correct_tags_correct
@@ -1131,7 +1119,6 @@ def compute_correct_tag_breakdown(expected_tag_color, tags_applied):
         "correct_tags_critical": critical_triage,
     }
 
-
 # Fields extracted:
 # - Tag_ACC
 # - Tag_Expectant
@@ -1157,7 +1144,6 @@ def compute_tag_metrics(expected_tag_color, tags_applied):
         tag_expectant = "Yes" if any(tags_applied.get(p) == "gray" for p in expectant_patients) else "No"
 
     return {"tag_acc": tag_acc, "tag_expectant": tag_expectant}
-
 
 # ============================================================
 # HEMORRHAGE CONTROL
@@ -1214,7 +1200,6 @@ def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
         "missed_hemorrhage_control": sum(len(v) for v in to_complete.values()),
     }
 
-
 # Fields extracted:
 # - patient_hc_time
 def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_injury):
@@ -1266,7 +1251,6 @@ def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_in
 
     return control_times
 
-
 def compute_patient_averages(csv_rows, assessments, treatments, triage_times):
     """Compute aggregate patient-based averages."""
     engaged_counts = compute_patient_engagement(csv_rows)
@@ -1285,7 +1269,6 @@ def compute_patient_averages(csv_rows, assessments, treatments, triage_times):
         "patient_order_engaged": patient_order_engaged,
     }
 
-
 # ============================================================
 # MOVEMENT / DRAG LOGIC
 # ============================================================
@@ -1303,7 +1286,6 @@ def parse_vec3(pos_str):
     except Exception:
         return None
 
-
 def vec3_distance(a, b):
     """Compute Euclidean distance between two 3D points."""
     if not a or not b:
@@ -1312,7 +1294,6 @@ def vec3_distance(a, b):
     dy = a[1] - b[1]
     dz = a[2] - b[2]
     return (dx * dx + dy * dy + dz * dz) ** 0.5
-
 
 # Fields extracted:
 # - PatientN_dragged
@@ -1351,7 +1332,6 @@ def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
         "dragged_patients": dragged_patients,
         "drag_times_by_patient": drag_times_by_patient,
     }
-
 
 # ============================================================
 # ACTION ANALYSIS
@@ -1445,7 +1425,6 @@ def compute_inject_probe_values(csv_rows, sim_json, env, patient_order_engaged):
         "Urban Probe_PS2": 1 if inject_engaged else 0,
         "Urban Probe_SS1": ss_value,
     }
-
 
 def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     """Build the actionAnalysis section using reusable CSV-based metrics."""
@@ -1544,9 +1523,8 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
 
     return action_analysis
 
-
 # ============================================================
-# TA1 / ALIGNMENT HELPERS
+# TA1 / ADEPT
 # ============================================================
 
 def load_openworld_yaml_for_env(env):
@@ -1563,7 +1541,6 @@ def load_openworld_yaml_for_env(env):
     except Exception as e:
         logger.log(LogLevel.ERROR, f"Error loading open world yaml file. Ensure it's valid YAML and exists.\n\n{e}\n")
         return None
-
 
 def get_ta1_calculations(scenario_id, probes):
     """Create a TA1 session, send probe choices, and fetch computed KDMAs."""
@@ -1600,7 +1577,6 @@ def get_ta1_calculations(scenario_id, probes):
         return None, None
     return session_id, kdmas
 
-
 def _norm_casualty_name(name):
     """Normalize casualty naming differences between YAML and JSON."""
     if not name:
@@ -1610,9 +1586,8 @@ def _norm_casualty_name(name):
         n = n[3:].lstrip()
     return n.split(" Root")[0].strip()
 
-
 def compute_openworld_match_data(sim_json, metadata):
-    """Recreate the Feb matcher OW probe matching flow and return match_data + human session id."""
+    """Run open-world probe matching and return match data plus the human session id."""
     env = metadata.get("env", "")
     logger.log(LogLevel.INFO, f"Processing probe match for {'Desert' if 'desert' in env.lower() else 'Urban' if 'urban' in env.lower() else env}")
 
@@ -1709,9 +1684,8 @@ def compute_openworld_match_data(sim_json, metadata):
 
     return match_data, human_session_id
 
-
 def find_text_session_for_alignment(metadata, alignment_type):
-    """Find the matching Apr 2026 MF/AF text combinedSessionId for alignment compare."""
+    """Find the matching April 2026 MF/AF text combinedSessionId for alignment compare."""
     if text_scenario_collection is None:
         logger.log(
             LogLevel.WARN,
@@ -1769,7 +1743,6 @@ def find_text_session_for_alignment(metadata, alignment_type):
         f"(pid={pid}, scenario_id={scenario_id}, evalNumber={DEFAULT_EVAL_NUM}).",
     )
     return None
-
 
 def get_alignment_compare_score(human_session_id, metadata, alignment_type):
     """Compare the current human session against the matching text session."""
@@ -1837,26 +1810,25 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         )
         return None
 
-
-def compute_alignment_scores(metadata, sim_json, human_session_id=None):
-    """Return MF/AF alignment fields using the Feb matcher flow as a standalone section."""
+# Fields extracted:
+# - MF Alignment_Desert
+# - AF Alignment_Desert
+# - MF Alignment_Urban
+# - AF Alignment_Urban
+def compute_alignment_scores(metadata, human_session_id=None):
+    """Return MF/AF alignment fields for the current run."""
     prefix = build_env_prefix(metadata.get("env", ""))
     env_name = prefix.strip()
     if not env_name:
         env_name = metadata.get("env", "")
 
-    human_alignment_session_id = human_session_id
-    if CALC_KDMAS and human_alignment_session_id is None:
-        _match_data, human_alignment_session_id = compute_openworld_match_data(sim_json, metadata)
-
-    mf_alignment_score = get_alignment_compare_score(human_alignment_session_id, metadata, "MF")
-    af_alignment_score = get_alignment_compare_score(human_alignment_session_id, metadata, "AF")
+    mf_alignment_score = get_alignment_compare_score(human_session_id, metadata, "MF")
+    af_alignment_score = get_alignment_compare_score(human_session_id, metadata, "AF")
 
     return {
         f"MF Alignment_{env_name}": mf_alignment_score,
         f"AF Alignment_{env_name}": af_alignment_score,
     }
-
 
 # ============================================================
 # TEXT KDMAS
@@ -1864,7 +1836,6 @@ def compute_alignment_scores(metadata, sim_json, human_session_id=None):
 
 DEFAULT_EVAL_NUM = 16
 DEFAULT_EVAL_NAME = "April 2026 Evaluation"
-
 
 def _is_april2026_text_doc(doc):
     """Return True when a text scenario document appears to belong to Apr 2026."""
@@ -1878,15 +1849,13 @@ def _is_april2026_text_doc(doc):
         or scenario_id.startswith("April2026")
     )
 
-
-
 def _extract_kdmas_from_doc(doc):
     """Return the best available KDMA array from an Apr 2026 text scenario doc."""
-    # Preferred Apr 2026 source: one combined block containing AF/MF/PS/SS.
+    # Preferred April 2026 source: one combined block containing AF/MF/PS/SS.
     if isinstance(doc.get("combinedKdmas"), list) and doc.get("combinedKdmas"):
         return doc.get("combinedKdmas"), "combinedKdmas"
 
-    # Apr 2026 split assess docs.
+    # April 2026 split assess docs.
     merged = []
     for field_name in ["AF-PS_kdmas", "MF-PS_kdmas"]:
         value = doc.get(field_name)
@@ -1895,15 +1864,13 @@ def _extract_kdmas_from_doc(doc):
     if merged:
         return merged, "merged_april2026_assess_kdmas"
 
-    # Legacy Feb-style fallback.
+    # Fallback for older text scenario document shapes.
     for field_name in ["kdmas", "individualKdmas"]:
         value = doc.get(field_name)
         if isinstance(value, list) and value:
             return value, field_name
 
     return [], None
-
-
 
 def extract_text_kdmas(metadata):
     """Join Apr 2026 text scenario KDMAs, preferring combinedKdmas and Apr assess arrays."""
@@ -1925,11 +1892,11 @@ def extract_text_kdmas(metadata):
     seen_ids = set()
     queries = []
     for pid_val in pid_candidates:
-        # Prefer the Apr 2026 evaluation docs first.
+        # Prefer April 2026 evaluation documents first.
         queries.append({"participantID": pid_val, "evalNumber": DEFAULT_EVAL_NUM})
         queries.append({"participantID": pid_val, "evalName": DEFAULT_EVAL_NAME})
         queries.append({"participantID": pid_val, "scenario_id": {"$regex": r"^April2026", "$options": "i"}})
-        # Legacy fallback when eval fields are inconsistent.
+        # Fallback when eval fields are missing or inconsistent.
         queries.append({"participantID": pid_val})
 
     try:
@@ -1989,12 +1956,11 @@ def extract_text_kdmas(metadata):
 
                 text_kdma_results[key] = param_value
 
-        # combinedKdmas already contains the full Apr 2026 block, so stop once found.
+        # combinedKdmas already contains the full April 2026 block, so stop once found.
         if source_field == "combinedKdmas":
             break
 
     return text_kdma_results
-
 
 # ============================================================
 # OUTPUT BUILDING
@@ -2070,7 +2036,6 @@ def build_output_documents(
 
     return raw_doc, analysis_doc
 
-
 def save_output(output_dir, filename, analysis_doc):
     """Write the analysis document to disk."""
     os.makedirs(output_dir, exist_ok=True)
@@ -2081,8 +2046,6 @@ def save_output(output_dir, filename, analysis_doc):
 
     if VERBOSE:
         logger.log(LogLevel.INFO, f"Saved analysis: {out_path}")
-
-
 
 # ============================================================
 # MONGO OUTPUT
@@ -2101,7 +2064,6 @@ def initialize_mongo():
     mongo_collection_raw = db["humanSimulatorRaw"]
     text_scenario_collection = db["userScenarioResults"]
     return client
-
 
 def save_to_mongo(raw_doc, analysis_doc):
     """Upsert raw and analysis documents into Mongo collections."""
@@ -2151,7 +2113,7 @@ def process_file(json_path, output_dir):
     missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
     text_kdmas = extract_text_kdmas(metadata)
     match_data, human_session_id = compute_openworld_match_data(sim_json, metadata)
-    alignment_scores = compute_alignment_scores(metadata, sim_json, human_session_id=human_session_id)
+    alignment_scores = compute_alignment_scores(metadata, human_session_id=human_session_id)
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -2177,7 +2139,6 @@ def process_file(json_path, output_dir):
     logger.log(LogLevel.INFO, f"{'' if SEND_TO_MONGO else 'NOT '}Saving to database.")
     if SEND_TO_MONGO:
         save_to_mongo(raw_doc, analysis_doc)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="APR 2026 probe matcher")
