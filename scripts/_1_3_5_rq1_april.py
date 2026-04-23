@@ -207,7 +207,8 @@ def gen_comp(mongo_db):
                 }
 
                 if medic['admName'] == 'Oracle':
-                    document['subpop'] = participant_subpop
+                    document['oracle_subpop'] = page_data.get('subpop')
+                    document['participant_subpop'] = participant_subpop
 
                 send_document_to_mongo(comparison_collection, document)
             else:
