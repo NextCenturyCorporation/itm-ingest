@@ -6,8 +6,8 @@ that do not have a participantID in participantLogs OR its participantID field v
 
 Next Steps
 ** TEST SCRIPT && HAVE IT REVIEWED 
-** 266 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
-    * 46 NULL/DNE PIDS in surveyResults (ALL FACT CHECKED W/ DB)
+** 258 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
+    * 39 DNE PIDs & 2 NULL PIDs in surveyResults (ALL FACT CHECKED W/ DB) 
     * 133 TEST DATA PIDS in surveyResults 
     * 47 INVALID PIDS in surveyResults
     * 8 TEST DATA in scenarioResults
@@ -30,7 +30,7 @@ def get_valid_participant_ids(pid_collection):
 def log_and_delete(collection, query, label):
     # count documents that need to be deleted
     count = collection.count_documents(query)
-    print(f"\n{label} docs:", count)
+    print(f"\n{label} Total Documents:", count)
 
     # print the ids of docs that will be deleted
     for doc in collection.find(query):
@@ -97,12 +97,12 @@ def main(mongo_db):
 
 # -------- SURVEY CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
-    delete_null_pids(survey_collection, "results.pid", "NULL-- surveyResults__results.pid")
-    delete_invalid_pids(survey_collection, "results.pid", "results.evalNumber", valid_pids, "INVALID-- surveyResults__results.pid")
-   
+    delete_null_pids(survey_collection, "results.pid", "SurveyResults | NULL PIDs")
+    delete_invalid_pids(survey_collection, "results.pid", "results.evalNumber", valid_pids, "SurveyResults | INVALID PIDs")
+
 # -------- SCENARIO CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
-    delete_null_pids(scenario_collection, "participantID", "NULL-- ScenarioResults__participantID")
-    delete_invalid_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "INVALID-- ScenarioResults__participantID")
+    delete_null_pids(scenario_collection, "participantID", "ScenarioResults | NULL PIDs")
+    delete_invalid_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "UserScenarioResults | INVALID PIDs")
     
    
