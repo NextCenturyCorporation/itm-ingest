@@ -20,6 +20,7 @@ import argparse
 import copy
 import csv
 import json
+import math
 import os
 import re
 from datetime import datetime
@@ -1710,8 +1711,9 @@ def compute_openworld_match_data(sim_json, metadata):
 
 
 def find_text_session_for_alignment(metadata, alignment_type):
-    """Find the matching text-session id for MF/AF alignment compare."""
+    """Find the matching Apr 2026 MF/AF text combinedSessionId for alignment compare."""
     if text_scenario_collection is None:
+        print(f"Warning: text_scenario_collection is unavailable; cannot look up {alignment_type} text session.")
         return None
 
     pid = metadata.get("pid")
@@ -1719,33 +1721,21 @@ def find_text_session_for_alignment(metadata, alignment_type):
     if str(pid).isdigit():
         pid_candidates.append(int(pid))
 
-    scenario_regex = alignment_type
+    scenario_id = "April2026-MF-assess" if alignment_type == "MF" else "April2026-AF-assess"
+
     queries = [
         {
             "evalNumber": DEFAULT_EVAL_NUM,
             "participantID": pid_val,
-            "scenario_id": {"$regex": scenario_regex, "$options": "i"},
+            "scenario_id": scenario_id,
         }
         for pid_val in pid_candidates
     ]
-    queries.extend([
-        {
-            "participantID": pid_val,
-            "scenario_id": {"$regex": scenario_regex, "$options": "i"},
-        }
-        for pid_val in pid_candidates
-    ])
-
-    apr_specific_fields = []
-    if alignment_type == "MF":
-        apr_specific_fields = ["MF-PS_sessionId"]
-    elif alignment_type == "AF":
-        apr_specific_fields = ["AF-PS_sessionId"]
 
     for query in queries:
         try:
             try:
-                text_doc = text_scenario_collection.find_one(query, sort=[("timestamp", -1)])
+                text_doc = text_scenario_collection.find_one(query, sort=[("timeComplete", -1)])
             except TypeError:
                 text_doc = text_scenario_collection.find_one(query)
         except Exception:
@@ -1754,28 +1744,24 @@ def find_text_session_for_alignment(metadata, alignment_type):
         if not text_doc:
             continue
 
-        session_id = None
-        for field_name in [
-            "combinedSessionId",
-            "combined_session_id",
-            "session_id",
-            "sessionId",
-            "individualSessionId",
-            *apr_specific_fields,
-        ]:
-            if text_doc.get(field_name):
-                session_id = text_doc.get(field_name)
-                break
-
+        session_id = text_doc.get("combinedSessionId")
         if session_id:
+            print(
+                f"Info: Retrieved combinedSessionId successfully for {alignment_type} alignment "
+                f"(pid={pid}, scenario_id={scenario_id}, combinedSessionId={session_id})."
+            )
             return str(session_id)
 
         print(
-            f"Warning: Found {alignment_type} text document for pid {pid}, but no session id field was present."
+            f"Warning: Found text document for {alignment_type} alignment "
+            f"(pid={pid}, scenario_id={scenario_id}) but combinedSessionId was missing."
         )
         return None
 
-    print(f"Warning: Could not find {alignment_type} text session for pid {pid}.")
+    print(
+        f"Warning: Could not find text document for {alignment_type} alignment "
+        f"(pid={pid}, scenario_id={scenario_id}, evalNumber={DEFAULT_EVAL_NUM})."
+    )
     return None
 
 
@@ -1808,7 +1794,33 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         response.raise_for_status()
         payload = response.json()
         score = payload.get("score")
-        return float(score) if score is not None else None
+
+        if score is None:
+            print(
+                f"Warning: {alignment_type} alignment compare returned null for pid {metadata.get('pid')} "
+                f"(human_session_id={human_session_id}, text_session_id={text_session_id}). "
+                "The ADEPT server likely doesn't have the session id(s) needed to compute the value."
+            )
+            return None
+
+        try:
+            score_value = float(score)
+        except (TypeError, ValueError):
+            print(
+                f"Warning: {alignment_type} alignment compare returned a non-numeric score for pid {metadata.get('pid')}: {score!r}. "
+                "The ADEPT server likely doesn't have the session id(s) needed to compute the value."
+            )
+            return None
+
+        if math.isnan(score_value):
+            print(
+                f"Warning: {alignment_type} alignment compare returned NaN for pid {metadata.get('pid')} "
+                f"(human_session_id={human_session_id}, text_session_id={text_session_id}). "
+                "The ADEPT server likely doesn't have the session id(s) needed to compute the value."
+            )
+            return None
+
+        return score_value
     except Exception as e:
         print(f"Warning: Alignment compare request failed for {alignment_type} / pid {metadata.get('pid')}: {e}")
         return None
