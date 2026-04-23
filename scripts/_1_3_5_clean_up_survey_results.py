@@ -4,14 +4,13 @@ import pymongo
 This script cleans up all the entries in surveyResults and scenarioResults collections 
 that do not have a participantID in participantLogs OR its participantID field value is null, does not exist, or has junk test data
 
-Next Steps
-** TEST SCRIPT && HAVE IT REVIEWED 
+Delete Count Breakdown
 ** 258 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
     * 39 DNE PIDs & 2 NULL PIDs in surveyResults (ALL FACT CHECKED W/ DB) 
     * 133 TEST DATA PIDS in surveyResults 
     * 47 INVALID PIDS in surveyResults
     * 8 TEST DATA in scenarioResults
-    * 29 INVALID PIDS in scenarioResults
+    * 30 INVALID PIDS in scenarioResults
 
 '''
 DELETE = False # only delete documents after EVERYTHING is checked
@@ -102,7 +101,7 @@ def main(mongo_db):
 
 # -------- SCENARIO CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
-    delete_null_pids(scenario_collection, "participantID", "ScenarioResults | NULL PIDs")
+    delete_null_pids(scenario_collection, "participantID", "UserScenarioResults | NULL PIDs")
     delete_invalid_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "UserScenarioResults | INVALID PIDs")
     
    
