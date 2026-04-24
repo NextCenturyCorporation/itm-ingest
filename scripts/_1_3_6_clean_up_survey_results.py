@@ -5,15 +5,16 @@ This script cleans up all the entries in surveyResults and scenarioResults colle
 that do not have a participantID in participantLogs OR its participantID field value is null, does not exist, or has junk test data
 
 Delete Count Breakdown
-** 259 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
+** 323 DOCUMENTS IN TOTAL SHOULD BE DELETED ACROSS BOTH SURVEY/SCENARIO COLLECTIONS (all fact checked in mongoDB Compass)
     * 39 DNE PIDs & 2 NULL PIDs in surveyResults (ALL FACT CHECKED W/ DB) 
     * 133 TEST DATA PIDS in surveyResults 
     * 47 INVALID PIDS in surveyResults
+    * 64 OLD PIDS in surveyResults
     * 8 TEST DATA in scenarioResults
     * 30 INVALID PIDS in scenarioResults
 
 '''
-DELETE = False # only delete documents after EVERYTHING is checked
+DELETE = True # only delete documents after EVERYTHING is checked
 
 def get_valid_participant_ids(pid_collection):
     # get valid pids from participantLog
