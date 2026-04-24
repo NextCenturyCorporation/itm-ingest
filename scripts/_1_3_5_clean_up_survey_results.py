@@ -56,11 +56,12 @@ def delete_null_pids(collection, pid_field, label):
    
 
 def delete_invalid_pids(collection, pid_field, eval_field, valid_pids, label):
-    # delete entires where pid is NOT in valid_pids from Participant Logs
-    # AND if evalNumber >= 4 where Participant Logs exist post DRE 4
+    # delete entires where pid is
+        # NOT in valid_pids from Participant Logs + evalNumber >= 4
+        # obvious test data regardless of evalNumber
     query = {
         "$or": [
-             # invalid PIDs after eval 4 
+            # invalid PIDs after eval 4 
             {
                 "$expr": {
                     "$not": {
@@ -82,8 +83,28 @@ def delete_invalid_pids(collection, pid_field, eval_field, valid_pids, label):
     # log && delete documents
     log_and_delete(collection, query, label)
 
+def delete_old_pids(collection, pid_field, eval_field, valid_pids, label):
+    # delete old pids before eval 4 where it has junk data not containing proper pid syntax: [year, month, XX]
+        query =  {
+            "$expr": {
+                    "$and": [
+                        {"$ne": [f"${eval_field}", None]},
+                        {"$lte": [f"${eval_field}", 4]},
+                        {
+                            "$not": {
+                                "$regexMatch": {
+                                    "input": { "$toString": f"${pid_field}" },
+                                    "regex": r"(2024|2025|2026|2\d?0\d?2\d?4)"
+                                }
+                            }
+                        }
+                    ]
+                },
 
-
+            pid_field: {"$ne": None, "$exists": True}                
+        }
+    # log && delete documents
+        log_and_delete(collection, query, label)
 
 def main(mongo_db):
     # get all necessary collections and variables
@@ -97,11 +118,13 @@ def main(mongo_db):
 # -------- SURVEY CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
     delete_null_pids(survey_collection, "results.pid", "SurveyResults | NULL PIDs")
-    delete_invalid_pids(survey_collection, "results.pid", "results.evalNumber", valid_pids, "SurveyResults | INVALID PIDs")
+    delete_invalid_pids(survey_collection, "results.pid", "results.evalNumber", valid_pids, "SurveyResults | INVALID PIDs AFTER 4") # after evalNumber 4
+    delete_old_pids(survey_collection, "results.pid", "evalNumber", valid_pids, "SurveyResults | OLD PIDs BEFORE 4") # before evalNumber 4
 
 # -------- SCENARIO CLEANUP -------- #   
     # remove null, missing, && invalid PIDs
     delete_null_pids(scenario_collection, "participantID", "UserScenarioResults | NULL PIDs")
     delete_invalid_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "UserScenarioResults | INVALID PIDs")
+    delete_old_pids(scenario_collection, "participantID", "evalNumber", valid_pids, "UserScenarioResults | OLD PIDs BEFORE 4")
     
    
