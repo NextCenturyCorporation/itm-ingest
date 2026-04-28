@@ -484,6 +484,8 @@ def extract_run_metadata(sim_json, filename):
         "pid": pid,
         "env": env,
         "scenario_id": scenario_id,
+        "evalNumber": DEFAULT_EVAL_NUM,
+        "evalName": DEFAULT_EVAL_NAME,
         "openWorld": open_world,
     }
 
@@ -1994,6 +1996,8 @@ def build_output_documents(
         "pid": pid,
         "env": env,
         "scenario_id": metadata["scenario_id"],
+        "evalNumber": metadata.get("evalNumber", DEFAULT_EVAL_NUM),
+        "evalName": metadata.get("evalName", DEFAULT_EVAL_NAME),
         "openWorld": metadata["openWorld"],
         "data": sim_json,
     }
@@ -2003,6 +2007,8 @@ def build_output_documents(
         "pid": pid,
         "env": env,
         "scenario_id": metadata["scenario_id"],
+        "evalNumber": metadata.get("evalNumber", DEFAULT_EVAL_NUM),
+        "evalName": metadata.get("evalName", DEFAULT_EVAL_NAME),
         "openWorld": metadata["openWorld"],
         "timestamp": int(datetime.utcnow().timestamp() * 1000),
         "eventTotals": event_totals,
