@@ -16,8 +16,8 @@ ADEPT_URL = config("ADEPT_URL")
 
 
 def main(mongo_db):
-   text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": {"$gte": 15}})
-   adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": {"$gte": 15}})
+   text_scenarios = mongo_db["userScenarioResults"].find({"evalNumber": 15})
+   adm_runs = mongo_db["admTargetRuns"].find({"evalNumber": 15})
 
    # group text scenarios by pid
    participant_groups = defaultdict(list)
