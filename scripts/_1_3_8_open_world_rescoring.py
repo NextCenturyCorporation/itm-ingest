@@ -1,19 +1,19 @@
 """
 ITM-1332 / ITM-1337: Rescore Feb2026 Open World desert ADM target runs.
 
-This script recalculates TA1/ADEPT session alignment results for the Feb2026
-Open World desert ADM runs identified, then writes the recalculated result
+This script recalculates TA1/ADEPT session alignment results for the final Feb2026
+Open World desert ADM runs, then writes the recalculated result
 object back to admTargetRuns.results.
 
 Examples:
   python redo.py 138 false true false true
-      Dry-run, verbose, do not enforce the expected 16+16 document count.
+      Dry-run, verbose, do not enforce the expected 16+16 document count, call ADEPT for real values.
 
-  python redo.py 138 false true true true
-      Dry-run, verbose, enforce the expected 16 baseline + 16 aligned docs.
+  python redo.py 138 false true true false
+      Dry-run, verbose, enforce the expected 16 baseline + 16 aligned docs, fake dry-run values only.
 
   python redo.py 138 true true true true
-      Write updates, verbose, enforce expected counts.
+      Write updates, verbose, enforce expected counts, call ADEPT for real values.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
