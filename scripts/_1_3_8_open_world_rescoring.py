@@ -6,13 +6,13 @@ Open World desert ADM runs identified, then writes the recalculated result
 object back to admTargetRuns.results.
 
 Examples:
-  python redo.py 138 false true false
+  python redo.py 138 false true false true
       Dry-run, verbose, do not enforce the expected 16+16 document count.
 
-  python redo.py 138 false true true
+  python redo.py 138 false true true true
       Dry-run, verbose, enforce the expected 16 baseline + 16 aligned docs.
 
-  python redo.py 138 true true true
+  python redo.py 138 true true true true
       Write updates, verbose, enforce expected counts.
 """
 
