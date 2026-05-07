@@ -1,4 +1,4 @@
-id: Feb2026-OW_desert
+id: April2026-OW_desert
 name: Open World Desert
 state:
   unstructured: You are the assigned Combat Medic for US forces operating in a small
@@ -17,7 +17,7 @@ state:
     name: Patient B
     unstructured: Military member of your unit with a broken left wrist, no bleeding;
       Military 2
-    medical_condition: 0.162
+    medical_condition: 0.0162
     attribute_rating: 1.0
 scenes:
 - id: Scene 8
@@ -41,7 +41,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 0.8
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -55,7 +55,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-MF-OW_desert.Probe 4b
+    probe_id: April2026-MF-OW_desert.Probe 4b
     choice: Response 4b-A
     kdma_association:
       medical: 0.8377
@@ -63,15 +63,15 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-MF-OW_desert.Probe 4b
+    probe_id: April2026-MF-OW_desert.Probe 4b
     choice: Response 4b-B
     kdma_association:
-      medical: 0.162
+      medical: 0.0162
       merit: 0.8
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-MF-OW_desert.Probe 4b
+    - April2026-MF-OW_desert.Probe 4b
 - id: Scene 5
   next_scene: Scene 10
   end_scene_allowed: false
@@ -107,7 +107,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-MF-OW_desert.Probe 2
+    probe_id: April2026-MF-OW_desert.Probe 2
     choice: Response 2-A
     kdma_association:
       medical: 0.8377
@@ -115,7 +115,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-MF-OW_desert.Probe 2
+    probe_id: April2026-MF-OW_desert.Probe 2
     choice: Response 2-B
     kdma_association:
       medical: 0.8377
@@ -123,7 +123,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-MF-OW_desert.Probe 2
+    - April2026-MF-OW_desert.Probe 2
 - id: Scene 10
   next_scene: Scene 3
   end_scene_allowed: false
@@ -159,7 +159,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-MF-OW_desert.Probe 5b
+    probe_id: April2026-MF-OW_desert.Probe 5b
     choice: Response 5b-A
     kdma_association:
       medical: 0.8377
@@ -167,7 +167,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-MF-OW_desert.Probe 5b
+    probe_id: April2026-MF-OW_desert.Probe 5b
     choice: Response 5b-B
     kdma_association:
       medical: 0.8248
@@ -175,7 +175,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-MF-OW_desert.Probe 5b
+    - April2026-MF-OW_desert.Probe 5b
 - id: Scene 3
   next_scene: Scene 4
   end_scene_allowed: false
@@ -208,7 +208,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-AF-OW_desert.Probe 3
+    probe_id: April2026-AF-OW_desert.Probe 3
     choice: Response 3-A
     kdma_association:
       medical: 0.9628
@@ -216,7 +216,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-AF-OW_desert.Probe 3
+    probe_id: April2026-AF-OW_desert.Probe 3
     choice: Response 3-B
     kdma_association:
       medical: 0.9628
@@ -224,7 +224,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-AF-OW_desert.Probe 3
+    - April2026-AF-OW_desert.Probe 3
 - id: Scene 4
   next_scene: Scene 7
   end_scene_allowed: false
@@ -259,7 +259,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-MF-OW_desert.Probe 1
+    probe_id: April2026-MF-OW_desert.Probe 1
     choice: Response 1-A
     kdma_association:
       medical: 0.8248
@@ -267,7 +267,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-MF-OW_desert.Probe 1
+    probe_id: April2026-MF-OW_desert.Probe 1
     choice: Response 1-B
     kdma_association:
       medical: 0.8377
@@ -275,7 +275,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-MF-OW_desert.Probe 1
+    - April2026-MF-OW_desert.Probe 1
 - id: Scene 7
   next_scene: Scene 6
   end_scene_allowed: false
@@ -297,7 +297,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -311,7 +311,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-AF-OW_desert.Probe 4a
+    probe_id: April2026-AF-OW_desert.Probe 4a
     choice: Response 4a-A
     kdma_association:
       medical: 0.8377
@@ -319,15 +319,15 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-AF-OW_desert.Probe 4a
+    probe_id: April2026-AF-OW_desert.Probe 4a
     choice: Response 4a-B
     kdma_association:
-      medical: 0.162
+      medical: 0.0162
       affiliation: 1.0
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-AF-OW_desert.Probe 4a
+    - April2026-AF-OW_desert.Probe 4a
 - id: Scene 6
   next_scene: Scene 2
   end_scene_allowed: false
@@ -362,7 +362,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-MF-OW_desert.Probe 3
+    probe_id: April2026-MF-OW_desert.Probe 3
     choice: Response 3-A
     kdma_association:
       medical: 0.8248
@@ -370,7 +370,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-MF-OW_desert.Probe 3
+    probe_id: April2026-MF-OW_desert.Probe 3
     choice: Response 3-B
     kdma_association:
       medical: 0.8248
@@ -378,7 +378,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-MF-OW_desert.Probe 3
+    - April2026-MF-OW_desert.Probe 3
 - id: Scene 2
   next_scene: Scene 1
   end_scene_allowed: false
@@ -411,7 +411,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-AF-OW_desert.Probe 2
+    probe_id: April2026-AF-OW_desert.Probe 2
     choice: Response 2-A
     kdma_association:
       medical: 0.9628
@@ -419,7 +419,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-AF-OW_desert.Probe 2
+    probe_id: April2026-AF-OW_desert.Probe 2
     choice: Response 2-B
     kdma_association:
       medical: 0.9628
@@ -427,7 +427,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-AF-OW_desert.Probe 2
+    - April2026-AF-OW_desert.Probe 2
 - id: Scene 1
   next_scene: Scene 9
   end_scene_allowed: false
@@ -448,7 +448,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -462,7 +462,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-AF-OW_desert.Probe 1
+    probe_id: April2026-AF-OW_desert.Probe 1
     choice: Response 1-A
     kdma_association:
       medical: 0.8248
@@ -470,15 +470,15 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-AF-OW_desert.Probe 1
+    probe_id: April2026-AF-OW_desert.Probe 1
     choice: Response 1-B
     kdma_association:
-      medical: 0.162
+      medical: 0.0162
       affiliation: 1.0
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-AF-OW_desert.Probe 1
+    - April2026-AF-OW_desert.Probe 1
 - id: Scene 9
   next_scene: __END_SCENARIO__
   end_scene_allowed: false
@@ -514,7 +514,7 @@ scenes:
     action_type: TREAT_PATIENT
     unstructured: Treat Patient A
     character_id: Patient A
-    probe_id: Feb2026-AF-OW_desert.Probe 5a
+    probe_id: April2026-AF-OW_desert.Probe 5a
     choice: Response 5a-A
     kdma_association:
       medical: 0.8377
@@ -522,7 +522,7 @@ scenes:
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
-    probe_id: Feb2026-AF-OW_desert.Probe 5a
+    probe_id: April2026-AF-OW_desert.Probe 5a
     choice: Response 5a-B
     kdma_association:
       medical: 0.8248
@@ -530,7 +530,7 @@ scenes:
     character_id: Patient B
   transitions:
     probes:
-    - Feb2026-AF-OW_desert.Probe 5a
+    - April2026-AF-OW_desert.Probe 5a
 - id: Bonus
   next_scene: __END_SCENARIO__
   end_scene_allowed: false
