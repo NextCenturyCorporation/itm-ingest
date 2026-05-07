@@ -2,7 +2,7 @@
 ITM-1332 / ITM-1337: Rescore Feb2026 Open World desert ADM target runs.
 
 This script recalculates TA1/ADEPT session alignment results for the Feb2026
-Open World desert ADM runs Darren identified, then writes the recalculated result
+Open World desert ADM runs identified, then writes the recalculated result
 object back to admTargetRuns.results.
 
 Examples:
