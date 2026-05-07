@@ -1,19 +1,19 @@
 """
 ITM-1332 / ITM-1337: Rescore Feb2026 Open World desert ADM target runs.
 
-This script recalculates TA1/ADEPT session alignment results for the Feb2026
-Open World desert ADM runs Darren identified, then writes the recalculated result
-object back to admTargetRuns.evaluation.results.
+This script recalculates TA1/ADEPT session alignment results for the final Feb2026
+Open World desert ADM runs, then writes the recalculated result
+object back to admTargetRuns.results.
 
 Examples:
-  python redo.py 137 false true false
-      Dry-run, verbose, do not enforce the expected 16+16 document count.
+  python redo.py 138 false true false true
+      Dry-run, verbose, do not enforce the expected 16+16 document count, call ADEPT for real values.
 
-  python redo.py 137 false true true
-      Dry-run, verbose, enforce the expected 16 baseline + 16 aligned docs.
+  python redo.py 138 false true true false
+      Dry-run, verbose, enforce the expected 16 baseline + 16 aligned docs, fake dry-run values only.
 
-  python redo.py 137 true true true
-      Write updates, verbose, enforce expected counts.
+  python redo.py 138 true true true true
+      Write updates, verbose, enforce expected counts, call ADEPT for real values.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
@@ -333,7 +333,7 @@ def _write_updates(mongo_db: Any, updates: List[Tuple[Any, Dict[str, Any]]]) -> 
     for doc_id, new_results in updates:
         result = collection.update_one(
             {"_id": doc_id},
-            {"$set": {"evaluation.results": new_results}},
+            {"$set": {"results": new_results}},
         )
         modified_count += result.modified_count
 
@@ -351,7 +351,7 @@ def main(
     Recalculate and update Feb2026 Open World desert scoring.
 
     Args are intentionally simple so redo.py can pass them positionally:
-      write_to_db: False = dry-run; True = write evaluation.results updates.
+      write_to_db: False = dry-run; True = write results updates.
       verbose: True = print per-document prepared updates.
       strict_counts: True = require 16 baseline and 16 aligned documents.
       hit_ta1_server: False = fake values for smoke testing only.
@@ -394,7 +394,7 @@ def main(
         finally:
             req_session.close()
 
-    print(f"Prepared {len(updates)} total evaluation.results update(s).")
+    print(f"Prepared {len(updates)} total results update(s).")
 
     if not write_to_db:
         print("Dry-run complete. No MongoDB documents were updated.")
