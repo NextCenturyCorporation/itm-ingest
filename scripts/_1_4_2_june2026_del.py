@@ -1,4 +1,5 @@
 from delegation_survey.phase2_covert_adm_to_del_materials import main as convert_adms
+from scripts._1_2_2_post_scenario_measures import main as post_scenario
 from delegation_survey.update_survey_config import version12_setup
 def main(mongo_db):
     SCENARIO_ADMS = {
@@ -35,3 +36,4 @@ def main(mongo_db):
 
     convert_adms(mongo_db, 17, 'june2026/admrun', included_adms)
     version12_setup(auto_confirm=True)
+    post_scenario(mongo_db)
