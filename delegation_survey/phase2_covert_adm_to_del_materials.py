@@ -147,7 +147,7 @@ def convert_adm(adm, scenario, target, name, template, medic_collec, evalNumber,
 
 def main(mongo_db, evalNumber, extension, included_adms=None):
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    template_path = os.path.join(script_dir, 'templates', 'phase2_single_medic_template.json')
+    template_path = os.path.join(script_dir, 'templates', 'phase2_april_template.json')
     f = open(template_path, 'r', encoding='utf-8')
     template = json.load(f)
     medic_collec = mongo_db['admMedics']
