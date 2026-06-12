@@ -222,6 +222,261 @@ def build_probe_matcher_style_id(pid, env):
     """Build the output document id."""
     return f"{pid}_ow_{env if env else 'unknown'}"
 
+def get_nested_value(source, paths, default=None):
+    """Return the first non-empty value found at one of the provided key paths."""
+    if not isinstance(source, dict):
+        return default
+
+    for path in paths:
+        current = source
+        found = True
+        for key in path:
+            if isinstance(current, dict) and key in current:
+                current = current[key]
+            else:
+                found = False
+                break
+        if found and current not in (None, ""):
+            return current
+    return default
+
+
+def normalize_optional_int(value):
+    """Convert numeric-looking values to int while preserving None."""
+    if value is None or value == "":
+        return None
+    if isinstance(value, bool):
+        return int(value)
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return value
+
+
+def compute_spawn_location_value(sim_json, pid=None):
+    """Return the reusable spawn-location value from session metadata, with PID fallback.
+
+    Updated logs can provide sessionMetadata.spawnLocationId/spawnLocationID or
+    spawnPoint.  The April matcher inferred spawn from PID parity, so that is
+    retained only as a fallback for older logs without explicit metadata.
+    """
+    value = get_nested_value(
+        sim_json,
+        [
+            ("sessionMetadata", "spawnLocationId"),
+            ("sessionMetadata", "spawnLocationID"),
+            ("sessionMetadata", "spawn_location"),
+            ("sessionMetadata", "spawnLocation"),
+            ("configData", "spawnLocationId"),
+            ("configData", "spawnLocationID"),
+            ("spawnLocationId",),
+            ("spawnLocationID",),
+            ("spawn_location",),
+        ],
+    )
+    if value is not None:
+        return normalize_optional_int(value)
+
+    spawn_point = get_nested_value(
+        sim_json,
+        [
+            ("sessionMetadata", "spawnPoint"),
+            ("configData", "spawnPoint"),
+            ("spawnPoint",),
+        ],
+    )
+    if spawn_point is not None:
+        return spawn_point
+
+    pid_str = str(pid or "").strip()
+    if pid_str.isdigit():
+        return 0 if int(pid_str) % 2 == 0 else 1
+    return None
+
+
+def extract_eval_metadata(sim_json):
+    """Extract evalNumber/evalName from reusable run/session metadata."""
+    eval_number = get_nested_value(
+        sim_json,
+        [
+            ("sessionMetadata", "evalNumber"),
+            ("sessionMetadata", "eval_number"),
+            ("configData", "evalNumber"),
+            ("configData", "eval_number"),
+            ("evalNumber",),
+            ("eval_number",),
+        ],
+    )
+    eval_name = get_nested_value(
+        sim_json,
+        [
+            ("sessionMetadata", "evalName"),
+            ("sessionMetadata", "eval_name"),
+            ("configData", "evalName"),
+            ("configData", "eval_name"),
+            ("evalName",),
+            ("eval_name",),
+        ],
+    )
+    return {
+        "evalNumber": normalize_optional_int(eval_number),
+        "evalName": eval_name,
+    }
+
+
+def extract_patient_map_shown(sim_json):
+    """Extract patientMapShown from session metadata, preserving 0/1 semantics."""
+    value = get_nested_value(
+        sim_json,
+        [
+            ("sessionMetadata", "patientMapShown"),
+            ("sessionMetadata", "patient_map_shown"),
+            ("configData", "patientMapShown"),
+            ("configData", "patient_map_shown"),
+            ("patientMapShown",),
+            ("patient_map_shown",),
+        ],
+    )
+    return normalize_optional_int(value)
+
+
+def _split_patient_ids(value):
+    """Normalize evac patient identifiers from list/scalar/comma-delimited values."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        raw_values = value
+    else:
+        raw_values = str(value).split(",")
+    return [clean_patient_name(item) for item in raw_values if clean_patient_name(item)]
+
+
+def compute_evac_value_by_patient(csv_rows, sim_json, env):
+    """Extract per-patient evac values from reusable JSON/CSV evac selection records.
+
+    This follows the April matcher semantics for the value itself:
+    - Desert one-casualty evac round => 1
+    - Desert two-casualty evac round => 2
+    - Urban three-casualty evac round => 1
+
+    Updated reusable logs provide the selected patient IDs directly in
+    EvacSelection/EVAC_SELECTION records, so no scenario-specific answer-to-
+    patient mapping is needed.
+    """
+    env_lower = str(env or "").lower()
+    env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
+    if not env_key:
+        return {}
+
+    evac_value_by_patient = {}
+
+    def apply_selection(patient_ids, prompt_text="", evac_round=None):
+        if not patient_ids:
+            return
+
+        question = str(prompt_text or "").lower()
+        value = None
+        if env_key == "desert":
+            if "which two" in question or str(evac_round) == "2":
+                value = 2
+            elif "which one" in question or "which casualty" in question or str(evac_round) == "1":
+                value = 1
+        elif env_key == "urban":
+            if "which three" in question or str(evac_round) == "1":
+                value = 1
+
+        if value is None:
+            value = normalize_optional_int(evac_round) if evac_round not in (None, "") else 1
+
+        for patient_name in patient_ids:
+            if not is_valid_patient(patient_name):
+                continue
+            if patient_name not in evac_value_by_patient:
+                evac_value_by_patient[patient_name] = value
+            else:
+                try:
+                    evac_value_by_patient[patient_name] = min(evac_value_by_patient[patient_name], value)
+                except TypeError:
+                    evac_value_by_patient[patient_name] = value
+
+    last_prompt_by_round = {}
+    for action in _iter_action_items(sim_json):
+        action_type = str(action.get("actionType") or action.get("action_type") or "").strip().lower()
+        evac_round = action.get("evacRound") or action.get("evac_round")
+        question = str(action.get("question") or "")
+        if action_type == "evacprompt" or "evacuate" in question.lower():
+            last_prompt_by_round[str(evac_round or "")] = question
+            continue
+        if action_type in {"evacselection", "evac_selection"}:
+            patient_ids = _split_patient_ids(
+                action.get("evacPatientIds")
+                or action.get("evacPatientIDs")
+                or action.get("evac_patient_ids")
+                or action.get("EvacPatientIds")
+            )
+            prompt = last_prompt_by_round.get(str(evac_round or ""), "")
+            apply_selection(patient_ids, prompt, evac_round)
+
+    # CSV fallback for older/raw logs or if actionList was unavailable.
+    last_prompt_by_round = {}
+    for row in csv_rows:
+        event_name = str(row.get("EventName") or "").strip().upper()
+        evac_round = row.get("EvacRound")
+        question = str(row.get("QuestionPrompt") or row.get("NarrativeDescription") or "")
+        if event_name == "EVAC_PROMPT":
+            last_prompt_by_round[str(evac_round or "")] = question
+        elif event_name == "EVAC_SELECTION":
+            patient_ids = _split_patient_ids(row.get("EvacPatientIds") or row.get("EvacPatientId"))
+            prompt = last_prompt_by_round.get(str(evac_round or ""), "")
+            apply_selection(patient_ids, prompt, evac_round)
+
+    return evac_value_by_patient
+
+
+def derive_salt_categories(csv_rows, sim_json):
+    """Build a reusable patient -> SALT-category mapping from JSON with CSV fallback."""
+    salt = {}
+
+    for patient_def in _iter_patient_definitions(sim_json or {}):
+        patient = _extract_patient_name_from_definition(patient_def)
+        salt_value = (
+            patient_def.get("salt_category")
+            or patient_def.get("saltCategory")
+            or patient_def.get("salt")
+            or patient_def.get("triageSort")
+        )
+        if patient and salt_value:
+            salt[patient] = str(salt_value).strip().lower()
+
+    for row in csv_rows:
+        if row.get("EventName") != "PATIENT_RECORD":
+            continue
+        patient = clean_patient_name(row.get("PatientID", ""))
+        salt_value = row.get("PatientTriageSort")
+        if patient and salt_value and patient not in salt:
+            salt[patient] = str(salt_value).strip().lower()
+
+    return salt
+
+
+def compute_salt_errors(csv_rows, salt_categories):
+    """Return reusable SALT mismatches between recorded patient rows and JSON truth.
+
+    When the updated logs include both JSON salt_category and CSV
+    PatientTriageSort, this gives a small validation map of mismatches.  An
+    empty dict means no mismatches were found or there was nothing to compare.
+    """
+    errors = {}
+    for row in csv_rows:
+        if row.get("EventName") != "PATIENT_RECORD":
+            continue
+        patient = clean_patient_name(row.get("PatientID", ""))
+        observed = str(row.get("PatientTriageSort") or "").strip().lower()
+        expected = str(salt_categories.get(patient) or "").strip().lower()
+        if patient and observed and expected and observed != expected:
+            errors[patient] = {"expected": expected, "observed": observed}
+    return errors
+
 
 def extract_month_year_label(*texts):
     """Extract short and pretty month-year labels from free text."""
@@ -309,11 +564,17 @@ def extract_run_metadata(sim_json, filename):
     else:
         scenario_id = "unknown"
 
+    eval_metadata = extract_eval_metadata(sim_json)
+    patient_map_shown = extract_patient_map_shown(sim_json)
+
     return {
         "pid": pid,
         "env": env,
         "scenario_id": scenario_id,
         "openWorld": open_world,
+        "evalNumber": eval_metadata.get("evalNumber"),
+        "evalName": eval_metadata.get("evalName"),
+        "patientMapShown": patient_map_shown,
     }
 
 
@@ -1565,7 +1826,7 @@ def compute_personal_safety_values(sim_json, env):
 # - PatientN_order
 # - PatientN_assess
 # - PatientN_treat
-def extract_action_analysis(csv_rows, sim_json, env):
+def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     """Build the actionAnalysis section using reusable CSV + JSON-based metrics."""
 
     prefix = build_env_prefix(env)
@@ -1590,6 +1851,12 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
     tag_metrics = compute_tag_metrics(expected_tag_color, tags_applied)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
+
+    spawn_location = compute_spawn_location_value(sim_json, pid)
+    if spawn_location is not None and prefix:
+        action_analysis[f"{prefix}Spawn_location"] = spawn_location
+
+    evac_value_by_patient = compute_evac_value_by_patient(csv_rows, sim_json, env)
 
     personal_safety_values = compute_personal_safety_values(sim_json, env)
     action_analysis.update(personal_safety_values)
@@ -1630,6 +1897,7 @@ def extract_action_analysis(csv_rows, sim_json, env):
             action_analysis[f"{name}_order"] = "N/A"
 
         action_analysis[f"{name}_dragged"] = "Yes" if sim_name in dragged_patients else "No"
+        action_analysis[f"{name}_evac"] = evac_value_by_patient.get(sim_name, 0)
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_tag"] = tags_applied.get(sim_name, "None")
@@ -1665,6 +1933,8 @@ def build_output_documents(
     patient_hc_time=None,
     missed_hemorrhage_control=None,
     tag_distribution=None,
+    salt=None,
+    salt_errors=None,
 ):
     """Build the raw and analysis output documents."""
     pid = metadata["pid"]
@@ -1677,6 +1947,9 @@ def build_output_documents(
         "env": env,
         "scenario_id": metadata["scenario_id"],
         "openWorld": metadata["openWorld"],
+        "evalNumber": metadata.get("evalNumber"),
+        "evalName": metadata.get("evalName"),
+        "patientMapShown": metadata.get("patientMapShown"),
         "data": sim_json,
     }
 
@@ -1686,6 +1959,9 @@ def build_output_documents(
         "env": env,
         "scenario_id": metadata["scenario_id"],
         "openWorld": metadata["openWorld"],
+        "evalNumber": metadata.get("evalNumber"),
+        "evalName": metadata.get("evalName"),
+        "patientMapShown": metadata.get("patientMapShown"),
         "timestamp": int(datetime.utcnow().timestamp() * 1000),
         "eventTotals": event_totals,
         "actionAnalysis": action_analysis,
@@ -1709,6 +1985,10 @@ def build_output_documents(
         analysis_doc["missed_hemorrhage_control"] = missed_hemorrhage_control
     if tag_distribution is not None:
         analysis_doc.update(tag_distribution)
+    if salt is not None:
+        analysis_doc["salt"] = salt
+    if salt_errors is not None:
+        analysis_doc["salt_errors"] = salt_errors
 
     return raw_doc, analysis_doc
 
@@ -1775,12 +2055,14 @@ def process_file(json_path, output_dir):
 
     metadata = extract_run_metadata(sim_json, filename)
     event_totals = extract_event_totals(csv_rows, metadata["env"])
-    action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"])
+    action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"], metadata["pid"])
     triage_times = compute_patient_interactions(csv_rows)
     tag_colors = compute_last_applied_tags(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
     tag_distribution = compute_tag_distribution(csv_rows, expected_tag_color)
+    salt = derive_salt_categories(csv_rows, sim_json)
+    salt_errors = compute_salt_errors(csv_rows, salt)
     _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, sim_json)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
     patient_hc_time = compute_patient_hc_time(
@@ -1804,6 +2086,8 @@ def process_file(json_path, output_dir):
         patient_hc_time=patient_hc_time,
         missed_hemorrhage_control=missed_hemorrhage_control,
         tag_distribution=tag_distribution,
+        salt=salt,
+        salt_errors=salt_errors,
     )
 
     save_output(output_dir, filename, analysis_doc)
