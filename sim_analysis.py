@@ -128,6 +128,21 @@ PERSONAL_SAFETY_CONFIG = {
 }
 
 
+# April probe matcher inject/follow-on probe configuration.  The extraction
+# below first tries to infer these patients from reusable JSON metadata, then
+# falls back to these April-compatible names when the log does not provide a
+# stronger signal.
+INJECT_PATIENTS_FALLBACK = {
+    "desert": ["US Military 6", "US Military 7"],
+    "urban": ["US Military 5", "US Military 6"],
+}
+
+INJECT_RADIO_SECTION_NAME = {
+    "desert": "Explosion Aftermath Radio.",
+    "urban": "Explosion Aftermath Radio.",
+}
+
+
 # ============================================================
 # BASIC HELPERS
 # ============================================================
@@ -1534,9 +1549,11 @@ def vec3_distance(a, b):
 
 # Fields extracted:
 # - PatientN_dragged
-def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
-    """Return the set of patients dragged beyond the distance threshold."""
+# - PatientN_drag_times
+def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
+    """Return dragged patients and April-style drag start times for meaningful drags."""
     dragged_patients = set()
+    drag_times_by_patient = {}
     active_drag_start = {}
 
     for row in csv_rows:
@@ -1547,16 +1564,31 @@ def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
             continue
 
         if ev == "DRAG_START":
-            active_drag_start[patient] = parse_vec3(row.get("DragStartPosition", ""))
+            active_drag_start[patient] = {
+                "position": parse_vec3(row.get("DragStartPosition", "")),
+                "elapsed_seconds": round(safe_float(row.get("ElapsedTime", 0)) / 1000.0, 3),
+            }
         elif ev == "DRAG_STOP":
             if patient not in active_drag_start:
                 continue
-            start_pos = active_drag_start.pop(patient, None)
+            start_data = active_drag_start.pop(patient, None) or {}
+            start_pos = start_data.get("position")
             stop_pos = parse_vec3(row.get("DragStopPosition", ""))
             if vec3_distance(start_pos, stop_pos) > min_drag_distance:
                 dragged_patients.add(patient)
+                drag_times_by_patient.setdefault(patient, []).append(
+                    start_data.get("elapsed_seconds", 0.0)
+                )
 
-    return dragged_patients
+    return {
+        "dragged_patients": dragged_patients,
+        "drag_times_by_patient": drag_times_by_patient,
+    }
+
+
+def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
+    """Backward-compatible helper returning only the dragged-patient set."""
+    return compute_drag_metrics(csv_rows, min_drag_distance)["dragged_patients"]
 
 
 
@@ -1811,7 +1843,168 @@ def compute_personal_safety_values(sim_json, env):
         result[ps_config["result_key"]] = matched_value
         result[ps_config["actions_key"]] = " | ".join(matched_answer_choices) if matched_answer_choices else None
 
+
     return result
+
+
+def _derive_inject_patients_from_json(sim_json, env_key):
+    """Infer inject patients from reusable JSON metadata with April-compatible fallback.
+
+    Desert logs usually activate inject patients during the explosion section.
+    Urban June logs do not have that activation section, but mark the follow-on
+    patients as not already engaged in patientDataList.  If neither signal is
+    present, fall back to the April matcher patient names.
+    """
+    if not env_key:
+        return []
+
+    sections = (
+        sim_json.get("configData", {})
+        .get("narrative", {})
+        .get("narrativeSections", [])
+    )
+
+    active_state_patients = []
+    for section in sections:
+        desc = str(section.get("sectionDescription", "")).lower()
+        if not any(token in desc for token in ("explosion", "drone", "strike")):
+            continue
+        for item in section.get("patientsToChangeActiveState", []) or []:
+            if not isinstance(item, dict):
+                continue
+            active_state = item.get("activeState")
+            if active_state is True or str(active_state).strip().lower() == "true":
+                patient = clean_patient_name(
+                    item.get("patientName")
+                    or item.get("patient")
+                    or item.get("patientId")
+                    or item.get("patientID")
+                )
+                if patient and patient not in active_state_patients:
+                    active_state_patients.append(patient)
+
+    if active_state_patients:
+        return active_state_patients
+
+    not_engaged_patients = []
+    for patient_def in _iter_patient_definitions(sim_json or {}):
+        patient = _extract_patient_name_from_definition(patient_def)
+        if not patient:
+            continue
+        engaged = patient_def.get("engaged")
+        if engaged is False or str(engaged).strip().lower() == "false":
+            not_engaged_patients.append(patient)
+
+    if not_engaged_patients:
+        fallback_order = INJECT_PATIENTS_FALLBACK.get(env_key, [])
+        ordered = [p for p in fallback_order if p in not_engaged_patients]
+        ordered.extend([p for p in not_engaged_patients if p not in ordered])
+        return ordered
+
+    return list(INJECT_PATIENTS_FALLBACK.get(env_key, []))
+
+
+def _get_radio_elapsed_seconds(sim_json, env_key):
+    """Return cumulative narrative elapsed seconds at the inject radio section."""
+    sections = (
+        sim_json.get("configData", {})
+        .get("narrative", {})
+        .get("narrativeSections", [])
+    )
+    target_section = str(INJECT_RADIO_SECTION_NAME.get(env_key, "")).strip().lower()
+    running_elapsed = 0.0
+
+    for section in sections:
+        running_elapsed += safe_float(section.get("delayInSeconds", 0))
+        desc = str(section.get("sectionDescription", "")).strip().lower()
+        if target_section and desc == target_section:
+            return running_elapsed
+
+    # Reusable fallback: if the exact April section name changed slightly,
+    # treat the first section containing both explosion/aftermath and radio as
+    # the inject radio anchor.
+    running_elapsed = 0.0
+    for section in sections:
+        running_elapsed += safe_float(section.get("delayInSeconds", 0))
+        desc = str(section.get("sectionDescription", "")).strip().lower()
+        if "explosion" in desc and "radio" in desc:
+            return running_elapsed
+
+    return None
+
+
+# Fields extracted:
+# - Desert Probe_PS3
+# - Desert Probe_SS1
+# - Urban Probe_PS2
+# - Urban Probe_SS1
+def compute_inject_probe_values(csv_rows, sim_json, env):
+    """Compute April-style inject-derived personal-safety/search-safety probes.
+
+    This mirrors April matcher behavior while deriving patient and timing anchors
+    from the updated sim JSON when possible:
+    - PS value is 1 if any inject patient was engaged, else 0.
+    - SS value is the visit-count distance from the radio anchor to the first
+      inject-patient engagement, capped to 0..10.  If no inject patient was
+      engaged, SS is 10.
+    """
+    env_lower = str(env or "").lower()
+    env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
+    if not env_key:
+        return {}
+
+    inject_patients = set(_derive_inject_patients_from_json(sim_json, env_key))
+    engaged_patients = set()
+    engagement_rows = []
+
+    for row in csv_rows:
+        ev = row.get("EventName")
+        if ev not in ENGAGEMENT_EVENTS:
+            continue
+        patient = clean_patient_name(row.get("PatientID", ""))
+        if not is_valid_patient(patient):
+            continue
+        elapsed_sec = safe_float(row.get("ElapsedTime", 0)) / 1000.0
+        engagement_rows.append({"patient": patient, "elapsed_sec": elapsed_sec})
+        engaged_patients.add(patient)
+
+    inject_engaged = any(patient in engaged_patients for patient in inject_patients)
+    radio_elapsed_sec = _get_radio_elapsed_seconds(sim_json, env_key)
+
+    baseline_visit_index = 0
+    first_inject_visit_index = None
+    if engagement_rows:
+        if radio_elapsed_sec is not None:
+            for idx, event in enumerate(engagement_rows, start=1):
+                if event["elapsed_sec"] <= radio_elapsed_sec:
+                    baseline_visit_index = idx
+                if (
+                    first_inject_visit_index is None
+                    and event["elapsed_sec"] >= radio_elapsed_sec
+                    and event["patient"] in inject_patients
+                ):
+                    first_inject_visit_index = idx
+        else:
+            for idx, event in enumerate(engagement_rows, start=1):
+                if event["patient"] in inject_patients:
+                    first_inject_visit_index = idx
+                    break
+            baseline_visit_index = 0
+
+    if first_inject_visit_index is None:
+        ss_value = 10
+    else:
+        ss_value = max(0, min(10, first_inject_visit_index - baseline_visit_index))
+
+    if env_key == "desert":
+        return {
+            "Desert Probe_PS3": 1 if inject_engaged else 0,
+            "Desert Probe_SS1": ss_value,
+        }
+    return {
+        "Urban Probe_PS2": 1 if inject_engaged else 0,
+        "Urban Probe_SS1": ss_value,
+    }
 
 # ============================================================
 # ACTION ANALYSIS
@@ -1842,7 +2035,9 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplemental_map)
     triage_performance = compute_triage_performance_w_supp(csv_rows, required_injuries, supplemental_map)
     tags_applied = compute_last_applied_tags(csv_rows)
-    dragged_patients = compute_dragged_patients(csv_rows, min_drag_distance=1.0)
+    drag_metrics = compute_drag_metrics(csv_rows, min_drag_distance=1.0)
+    dragged_patients = drag_metrics["dragged_patients"]
+    drag_times_by_patient = drag_metrics["drag_times_by_patient"]
 
     aggregate_patient_metrics = compute_patient_averages(
         csv_rows, assessments, treatments, triage_times
@@ -1860,6 +2055,9 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
 
     personal_safety_values = compute_personal_safety_values(sim_json, env)
     action_analysis.update(personal_safety_values)
+
+    inject_probe_values = compute_inject_probe_values(csv_rows, sim_json, env)
+    action_analysis.update(inject_probe_values)
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
@@ -1897,6 +2095,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
             action_analysis[f"{name}_order"] = "N/A"
 
         action_analysis[f"{name}_dragged"] = "Yes" if sim_name in dragged_patients else "No"
+        action_analysis[f"{name}_drag_times"] = ", ".join(str(t) for t in drag_times_by_patient.get(sim_name, []))
         action_analysis[f"{name}_evac"] = evac_value_by_patient.get(sim_name, 0)
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
