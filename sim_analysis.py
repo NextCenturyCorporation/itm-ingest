@@ -17,6 +17,7 @@
 # ============================================================
 
 import argparse
+import copy
 import csv
 import json
 import os
@@ -522,12 +523,103 @@ def derive_expected_tag_color(csv_rows):
     return expected_tag_color
 
 
+def _iter_patient_definitions(sim_json):
+    """Yield patient definitions from known JSON locations."""
+    if not isinstance(sim_json, dict):
+        return
+
+    candidate_lists = [
+        sim_json.get("patientDataList"),
+        sim_json.get("patientList"),
+        sim_json.get("patients"),
+        sim_json.get("configData", {}).get("patientDataList"),
+        sim_json.get("configData", {}).get("patientList"),
+        sim_json.get("configData", {}).get("patients"),
+    ]
+
+    scenario_data = sim_json.get("configData", {}).get("scenarioData", {})
+    candidate_lists.extend(
+        [
+            scenario_data.get("patientDataList"),
+            scenario_data.get("patientList"),
+            scenario_data.get("patients"),
+        ]
+    )
+
+    seen_ids = set()
+    for candidate in candidate_lists:
+        if not isinstance(candidate, list):
+            continue
+        for patient_def in candidate:
+            if not isinstance(patient_def, dict):
+                continue
+            obj_id = id(patient_def)
+            if obj_id in seen_ids:
+                continue
+            seen_ids.add(obj_id)
+            yield patient_def
+
+
+def _extract_patient_name_from_definition(patient_def):
+    """Return the best patient identifier from a JSON patient definition."""
+    for key in ("name", "patientId", "patientID", "id", "patientName"):
+        value = patient_def.get(key)
+        patient = clean_patient_name(value)
+        if is_valid_patient(patient):
+            return patient
+    return ""
+
+
+def _as_clean_list(value):
+    """Normalize scalar/list values into a list of non-empty strings."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        raw_values = value
+    else:
+        raw_values = [value]
+    return [str(item).strip() for item in raw_values if str(item).strip()]
+
+
+def normalize_treatment_token(value):
+    """Normalize treatment/procedure strings for cross-source comparisons."""
+    return re.sub(r"[^a-z0-9]", "", str(value or "").lower())
+
+
 # Fields extracted:
 # - PatientN_required_injuries
-def derive_required_injuries_and_procs(csv_rows):
-    """Build required injuries and their required procedures."""
+def derive_required_injuries_and_procs(csv_rows, sim_json=None):
+    """Build required injuries and their required procedures from JSON, with CSV fallback."""
     required_injuries = {}
     required_proc_for_injury = {}
+
+    for patient_def in _iter_patient_definitions(sim_json or {}):
+        patient = _extract_patient_name_from_definition(patient_def)
+        if not patient:
+            continue
+
+        for injury_def in patient_def.get("injuries", []) or []:
+            if not isinstance(injury_def, dict):
+                continue
+            injury = str(
+                injury_def.get("type")
+                or injury_def.get("name")
+                or injury_def.get("injuryName")
+                or ""
+            ).strip()
+            proc = str(
+                injury_def.get("requiredProcedure")
+                or injury_def.get("required_procedure")
+                or injury_def.get("procedure")
+                or ""
+            ).strip()
+
+            if patient and injury:
+                required_injuries.setdefault(patient, [])
+                if injury not in required_injuries[patient]:
+                    required_injuries[patient].append(injury)
+                if proc:
+                    required_proc_for_injury[(patient, injury)] = proc
 
     for row in csv_rows:
         if row.get("EventName") != "INJURY_RECORD":
@@ -538,10 +630,32 @@ def derive_required_injuries_and_procs(csv_rows):
         proc = str(row.get("InjuryRequiredProcedure", "")).strip()
 
         if patient and injury:
-            required_injuries.setdefault(patient, []).append(injury)
-            required_proc_for_injury[(patient, injury)] = proc
+            required_injuries.setdefault(patient, [])
+            if injury not in required_injuries[patient]:
+                required_injuries[patient].append(injury)
+            if proc and (patient, injury) not in required_proc_for_injury:
+                required_proc_for_injury[(patient, injury)] = proc
 
     return required_injuries, required_proc_for_injury
+
+
+def derive_supplemental_procedures(sim_json):
+    """Build a per-patient supplemental procedure map from JSON patient definitions."""
+    supplemental_map = {}
+
+    for patient_def in _iter_patient_definitions(sim_json or {}):
+        patient = _extract_patient_name_from_definition(patient_def)
+        if not patient:
+            continue
+
+        procedures = _as_clean_list(
+            patient_def.get("supplementalProcedures")
+            or patient_def.get("supplemental_procedures")
+            or patient_def.get("approvedSupplementalProcedures")
+        )
+        supplemental_map[patient] = procedures
+
+    return supplemental_map
 
 
 # ============================================================
@@ -615,6 +729,171 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
         "per_patient_repeat_hits": repeat_hits,
         "per_patient_repeat_false_alarms": repeat_false_alarms,
     }
+
+
+def _procedure_is_supplemental(tool, patient, supplemental_map):
+    """Return True when a tool matches one of the patient's supplemental procedures."""
+    normalized_tool = normalize_treatment_token(tool)
+    return any(
+        normalize_treatment_token(proc) == normalized_tool
+        for proc in supplemental_map.get(patient, [])
+    )
+
+
+# Fields extracted:
+# - Treat_hits_w_supp
+# - Treat_false_alarms_w_supp
+# - Treat_repeat_hits_w_supp
+# - Treat_repeat_false_alarms_w_supp
+# - PatientN_treat_hits_w_supp
+# - PatientN_treat_false_alarms_w_supp
+# - PatientN_treat_repeat_hits_w_supp
+# - PatientN_treat_repeat_false_alarms_w_supp
+def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplemental_map):
+    """Compute required + supplemental treatment submetrics using reusable JSON metadata.
+
+    This mirrors the April probe matcher logic:
+    - completed required injuries count as hits the first time and repeat hits after that
+    - supplemental TOOL_APPLIED rows count as hits/repeat hits
+    - non-required/non-supplemental treatments count as false alarms/repeat false alarms
+    - the TOOL_APPLIED row paired with a just-completed required injury is not double-counted
+    """
+    to_complete = {patient: list(injuries)[:] for patient, injuries in required_injuries.items()}
+    hits = {}
+    false_alarms = {}
+    repeat_hits = {}
+    repeat_false_alarms = {}
+    supplemental_tracker = {}
+    false_alarm_tracker = {}
+    just_completed = None
+
+    for row in csv_rows:
+        event_name = row.get("EventName")
+
+        if event_name == "INJURY_TREATED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                continue
+
+            injury = str(row.get("InjuryName", "")).strip()
+            completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+            if not completed:
+                continue
+
+            patient_required = required_injuries.get(patient, [])
+            if patient_required:
+                if injury in patient_required:
+                    if patient in to_complete and injury in to_complete[patient]:
+                        to_complete[patient].remove(injury)
+                        just_completed = patient
+                        hits[patient] = hits.get(patient, 0) + 1
+                        if not to_complete[patient]:
+                            del to_complete[patient]
+                    else:
+                        repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+                else:
+                    if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                        repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                    else:
+                        false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                    false_alarm_tracker.setdefault(patient, {})
+                    false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+            else:
+                if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                else:
+                    false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                false_alarm_tracker.setdefault(patient, {})
+                false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+
+        if event_name == "TOOL_APPLIED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                just_completed = None
+                continue
+
+            tool = str(row.get("ToolType", "") or "").strip()
+            if "Pulse Oximeter" in tool:
+                just_completed = None
+                continue
+
+            if _procedure_is_supplemental(tool, patient, supplemental_map):
+                if supplemental_tracker.get(patient, {}).get(tool, 0) > 0:
+                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+                else:
+                    hits[patient] = hits.get(patient, 0) + 1
+                supplemental_tracker.setdefault(patient, {})
+                supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
+            else:
+                if patient != just_completed:
+                    if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
+                        repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                    else:
+                        false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                    false_alarm_tracker.setdefault(patient, {})
+                    false_alarm_tracker[patient][tool] = false_alarm_tracker[patient].get(tool, 0) + 1
+            just_completed = None
+
+    return {
+        "total_hits": sum(hits.values()),
+        "total_false_alarms": sum(false_alarms.values()),
+        "total_repeat_hits": sum(repeat_hits.values()),
+        "total_repeat_false_alarms": sum(repeat_false_alarms.values()),
+        "per_patient_hits": hits,
+        "per_patient_false_alarms": false_alarms,
+        "per_patient_repeat_hits": repeat_hits,
+        "per_patient_repeat_false_alarms": repeat_false_alarms,
+    }
+
+
+# Fields extracted:
+# - triage_performance
+def compute_triage_performance_w_supp(csv_rows, required_injuries, supplemental_map):
+    """Compute supplemental-aware triage performance using April probe matcher logic."""
+    to_complete = {patient: list(injuries)[:] for patient, injuries in required_injuries.items()}
+
+    supplemental_points = {}
+    total_tools_applied = 0
+    correct_tools_applied = 0
+    misses = 0
+
+    for row in csv_rows:
+        event_name = row.get("EventName")
+
+        if event_name == "INJURY_TREATED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                continue
+
+            injury = str(row.get("InjuryName", "")).strip()
+            completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+            if not completed:
+                continue
+
+            if patient in to_complete and injury in to_complete[patient]:
+                to_complete[patient].remove(injury)
+                correct_tools_applied += 1
+                if not to_complete[patient]:
+                    del to_complete[patient]
+
+        if event_name == "TOOL_APPLIED":
+            total_tools_applied += 1
+            patient = clean_patient_name(row.get("PatientID", ""))
+            tool = str(row.get("ToolType", "") or "").strip()
+            if not is_valid_patient(patient):
+                continue
+
+            if _procedure_is_supplemental(tool, patient, supplemental_map):
+                supplemental_points[patient] = supplemental_points.get(patient, 0) + 1
+
+    for remaining_injuries in to_complete.values():
+        misses += len(remaining_injuries)
+
+    for patient, supp_count in supplemental_points.items():
+        if patient not in to_complete:
+            correct_tools_applied += supp_count
+
+    return (correct_tools_applied / max(1, total_tools_applied + misses)) * 100
 
 
 # Fields extracted:
@@ -975,8 +1254,7 @@ def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
 # - PatientN_assess
 # - PatientN_treat
 def extract_action_analysis(csv_rows, sim_json, env):
-    """Build the actionAnalysis section using reusable CSV-based metrics."""
-    del sim_json  # currently unused
+    """Build the actionAnalysis section using reusable CSV + JSON-based metrics."""
 
     prefix = build_env_prefix(env)
     action_analysis = {}
@@ -985,8 +1263,11 @@ def extract_action_analysis(csv_rows, sim_json, env):
     treatments = compute_treatment_metrics(csv_rows)
     triage_times = compute_patient_interactions(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
-    required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
+    required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, sim_json)
+    supplemental_map = derive_supplemental_procedures(sim_json)
     treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
+    treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplemental_map)
+    triage_performance = compute_triage_performance_w_supp(csv_rows, required_injuries, supplemental_map)
     tags_applied = compute_last_applied_tags(csv_rows)
     dragged_patients = compute_dragged_patients(csv_rows, min_drag_distance=1.0)
 
@@ -1010,6 +1291,11 @@ def extract_action_analysis(csv_rows, sim_json, env):
     action_analysis[f"{prefix}Treat_false_alarms_required"] = treatment_submetrics_required["total_false_alarms"]
     action_analysis[f"{prefix}Treat_repeat_hits_required"] = treatment_submetrics_required["total_repeat_hits"]
     action_analysis[f"{prefix}Treat_repeat_false_alarms_required"] = treatment_submetrics_required["total_repeat_false_alarms"]
+    action_analysis[f"{prefix}Treat_hits_w_supp"] = treatment_submetrics_w_supp["total_hits"]
+    action_analysis[f"{prefix}Treat_false_alarms_w_supp"] = treatment_submetrics_w_supp["total_false_alarms"]
+    action_analysis[f"{prefix}Treat_repeat_hits_w_supp"] = treatment_submetrics_w_supp["total_repeat_hits"]
+    action_analysis[f"{prefix}Treat_repeat_false_alarms_w_supp"] = treatment_submetrics_w_supp["total_repeat_false_alarms"]
+    action_analysis[f"{prefix}Triage Performance"] = triage_performance
 
     patients_in_order = compute_patients_in_order(csv_rows, patient_order_engaged)
 
@@ -1038,6 +1324,10 @@ def extract_action_analysis(csv_rows, sim_json, env):
         action_analysis[f"{name}_treat_false_alarms_required"] = treatment_submetrics_required["per_patient_false_alarms"].get(sim_name, 0)
         action_analysis[f"{name}_treat_repeat_hits_required"] = treatment_submetrics_required["per_patient_repeat_hits"].get(sim_name, 0)
         action_analysis[f"{name}_treat_repeat_false_alarms_required"] = treatment_submetrics_required["per_patient_repeat_false_alarms"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_hits_w_supp"] = treatment_submetrics_w_supp["per_patient_hits"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_false_alarms_w_supp"] = treatment_submetrics_w_supp["per_patient_false_alarms"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_repeat_hits_w_supp"] = treatment_submetrics_w_supp["per_patient_repeat_hits"].get(sim_name, 0)
+        action_analysis[f"{name}_treat_repeat_false_alarms_w_supp"] = treatment_submetrics_w_supp["per_patient_repeat_false_alarms"].get(sim_name, 0)
 
     return action_analysis
 
@@ -1176,7 +1466,7 @@ def process_file(json_path, output_dir):
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
     tag_distribution = compute_tag_distribution(csv_rows, expected_tag_color)
-    _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows)
+    _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, sim_json)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
     patient_hc_time = compute_patient_hc_time(
         csv_rows,
