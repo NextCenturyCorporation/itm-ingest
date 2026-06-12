@@ -70,6 +70,64 @@ MONTH_MAP = {
 }
 
 
+# April probe matcher personal-safety scoring, keyed by reusable answerIds.
+# answerIds are normalized before lookup so values like
+# "verbal_response/ask_for_clarification" and
+# "verbal_response_/_ask_for_clarification" still map correctly.
+ANSWER_ID_ALIASES = {
+    "verbal_response/ask_for_clarification": "verbal_response_ask_for_clarification",
+    "verbal_response_/_ask_for_clarification": "verbal_response_ask_for_clarification",
+}
+
+PERSONAL_SAFETY_SINGLE_ANSWER_SCORE_MAPS = {
+    "PS2": {
+        "run_to_house_stop_treating": 5,
+        "stop_and_stare": 4,
+        "drag_patients_to_house": 3,
+        "verbal_concern": 2,
+        "no_reaction": 1,
+    },
+}
+
+PERSONAL_SAFETY_MULTI_ACTION_SCORE_MAPS = {
+    "PS1": {
+        frozenset(["remain_in_place"]): 5,
+        # Matches the April probe matcher behavior: if only the verbal response
+        # is recorded, score it the same as verbal response + remain in place.
+        frozenset(["verbal_response_ask_for_clarification"]): 4,
+        frozenset(["verbal_response_ask_for_clarification", "remain_in_place"]): 4,
+        frozenset(["drag_patient_inside"]): 3,
+        frozenset(["ignore_warning_and_approach_patient", "verbal_response_ask_for_clarification"]): 2,
+        frozenset(["ignore_warning_and_approach_patient"]): 1,
+    },
+}
+
+PERSONAL_SAFETY_CONFIG = {
+    "desert": {
+        "PS1": {
+            "result_key": "Desert Probe_PS1",
+            "actions_key": "Desert Probe_PS1_Actions",
+            "multi_action": True,
+            "score_map_key": "PS1",
+        },
+        "PS2": {
+            "result_key": "Desert Probe_PS2",
+            "actions_key": "Desert Probe_PS2_Actions",
+            "multi_action": False,
+            "answer_map_key": "PS2",
+        },
+    },
+    "urban": {
+        "PS1": {
+            "result_key": "Urban Probe_PS1",
+            "actions_key": "Urban Probe_PS1_Actions",
+            "multi_action": True,
+            "score_map_key": "PS1",
+        },
+    },
+}
+
+
 # ============================================================
 # BASIC HELPERS
 # ============================================================
@@ -1240,6 +1298,260 @@ def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
     return dragged_patients
 
 
+
+# ============================================================
+# PERSONAL SAFETY PROBE LOGIC
+# ============================================================
+
+# Fields extracted:
+# - Desert Probe_PS1
+# - Desert Probe_PS1_Actions
+# - Desert Probe_PS2
+# - Desert Probe_PS2_Actions
+# - Urban Probe_PS1
+# - Urban Probe_PS1_Actions
+def normalize_answer_id(value):
+    """Normalize sim-provided answerIds into stable lookup keys."""
+    raw_value = str(value or "").strip().lower()
+    if raw_value in ANSWER_ID_ALIASES:
+        return ANSWER_ID_ALIASES[raw_value]
+
+    normalized_value = re.sub(r"[^a-z0-9]+", "_", raw_value)
+    normalized_value = re.sub(r"_+", "_", normalized_value).strip("_")
+    return ANSWER_ID_ALIASES.get(normalized_value, normalized_value)
+
+
+def _iter_action_items(sim_json):
+    """Yield action dictionaries from known raw and wrapped JSON locations."""
+    if not isinstance(sim_json, dict):
+        return
+
+    candidate_lists = [
+        sim_json.get("actionList"),
+        sim_json.get("action_list"),
+        sim_json.get("actions"),
+        sim_json.get("data", {}).get("actionList") if isinstance(sim_json.get("data"), dict) else None,
+        sim_json.get("data", {}).get("action_list") if isinstance(sim_json.get("data"), dict) else None,
+        sim_json.get("data", {}).get("actions") if isinstance(sim_json.get("data"), dict) else None,
+        sim_json.get("configData", {}).get("actionList") if isinstance(sim_json.get("configData"), dict) else None,
+        sim_json.get("configData", {}).get("action_list") if isinstance(sim_json.get("configData"), dict) else None,
+        sim_json.get("sessionMetadata", {}).get("actionList") if isinstance(sim_json.get("sessionMetadata"), dict) else None,
+    ]
+
+    seen_ids = set()
+    for candidate in candidate_lists:
+        if not isinstance(candidate, list):
+            continue
+        for action in candidate:
+            if not isinstance(action, dict):
+                continue
+            obj_id = id(action)
+            if obj_id in seen_ids:
+                continue
+            seen_ids.add(obj_id)
+            yield action
+
+
+def _coerce_string_list(value):
+    """Normalize scalar/list fields into a list of non-empty strings."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        raw_values = value
+    else:
+        raw_values = [value]
+    return [str(item).strip() for item in raw_values if str(item).strip()]
+
+
+def get_answer_ids_from_question_action(action):
+    """Return normalized answerIds from a structured Question action."""
+    answer_ids = []
+
+    for key in ("answerIds", "answerIDs", "answer_ids", "answerids", "answerId", "answerID", "answer_id"):
+        answer_ids.extend(_coerce_string_list(action.get(key)))
+
+    # Fallback only if answerIds were not present. This keeps answerIds as the
+    # preferred source, but prevents null outputs if a log version only has
+    # answerChoice/answer.
+    if not answer_ids:
+        for choice in get_answer_choices_from_question_action(action):
+            answer_ids.append(choice)
+
+    normalized_ids = []
+    for answer_id in answer_ids:
+        normalized = normalize_answer_id(answer_id)
+        if normalized and normalized not in normalized_ids:
+            normalized_ids.append(normalized)
+
+    return normalized_ids
+
+
+def get_answer_choices_from_question_action(action):
+    """Return display answer choices for *_Actions output fields."""
+    answer_choices = []
+    for key in ("answerChoice", "answerChoices", "answer_choice", "answer_choices", "answer"):
+        answer_choices.extend(_coerce_string_list(action.get(key)))
+
+    # If there is no display answer text, use the raw answerIds so the Actions
+    # field still shows what was recorded instead of remaining null.
+    if not answer_choices:
+        for key in ("answerIds", "answerIDs", "answer_ids", "answerids", "answerId", "answerID", "answer_id"):
+            answer_choices.extend(_coerce_string_list(action.get(key)))
+
+    clean_choices = []
+    for choice in answer_choices:
+        if choice not in clean_choices:
+            clean_choices.append(choice)
+    return clean_choices
+
+
+def _is_question_action(action):
+    """Return True when an action appears to represent a question response.
+
+    Current reusable logs record questions as a lifecycle of events:
+    QuestionPrompted -> AnswerSelected -> QuestionAnswered.  The final
+    QuestionAnswered event is the best scoring source because it contains
+    the populated answerIds, while older logs may still use actionType=Question.
+    """
+    action_type = str(action.get("actionType") or action.get("action_type") or "").strip().lower()
+    question_action_types = {
+        "question",
+        "questionprompted",
+        "question_prompted",
+        "answerselected",
+        "answer_selected",
+        "questionanswered",
+        "question_answered",
+    }
+    if action_type in question_action_types:
+        return True
+    return any(key in action for key in ("questionId", "questionID", "question_id", "question"))
+
+
+def _question_action_priority(action):
+    """Prefer final answered question records over prompt/selection records."""
+    action_type = str(action.get("actionType") or action.get("action_type") or "").strip().lower()
+    if action_type in {"questionanswered", "question_answered", "question"}:
+        return 0
+    if action_type in {"answerselected", "answer_selected"}:
+        return 1
+    if action_type in {"questionprompted", "question_prompted"}:
+        return 2
+    return 3
+
+
+def _get_question_id(action):
+    """Return a normalized question id such as PS1 or PS2."""
+    question_id = str(
+        action.get("questionId")
+        or action.get("questionID")
+        or action.get("question_id")
+        or action.get("probeId")
+        or action.get("probeID")
+        or action.get("probe_id")
+        or ""
+    ).strip().upper()
+
+    return question_id
+
+
+def _get_question_type(action):
+    """Return a normalized question type/category."""
+    value = str(
+        action.get("questionType")
+        or action.get("question_type")
+        or action.get("questionCategory")
+        or action.get("question_category")
+        or action.get("category")
+        or ""
+    ).strip().lower()
+    return re.sub(r"[^a-z0-9]+", "_", value).strip("_")
+
+
+def _question_text_matches_ps_key(action, ps_key):
+    """Fallback matcher for older/free-text question records."""
+    question_text = str(action.get("question") or action.get("questionText") or "").strip().lower()
+    if ps_key == "PS1":
+        return "warning" in question_text and "remain in place" in question_text
+    if ps_key == "PS2":
+        return "drones" in question_text and "flew over" in question_text
+    return False
+
+
+def compute_personal_safety_values(sim_json, env):
+    """Compute April-style personal-safety probe fields from structured answerIds.
+
+    Scoring prefers answerIds from the final QuestionAnswered record. If an
+    older/raw log does not have QuestionAnswered, it falls back to Question or
+    AnswerSelected-style records. answerChoice is used for the *_Actions display
+    string and only used for scoring as a last-resort fallback when answerIds
+    are missing.
+    """
+    env_lower = str(env or "").lower()
+    env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
+    if not env_key:
+        return {}
+
+    result = {}
+    env_config = PERSONAL_SAFETY_CONFIG.get(env_key, {})
+
+    for ps_key, ps_config in env_config.items():
+        matching_actions = []
+
+        for action in _iter_action_items(sim_json):
+            if not _is_question_action(action):
+                continue
+
+            question_id = _get_question_id(action)
+            question_type = _get_question_type(action)
+
+            question_id_matches = question_id == ps_key
+            question_text_matches = not question_id and _question_text_matches_ps_key(action, ps_key)
+            personal_safety_type = question_type in ("", "personal_safety", "personalsafety")
+
+            # Prefer structured PS ids, but do not require questionType because
+            # some log versions omit it or vary its naming/capitalization.
+            if not ((question_id_matches and personal_safety_type) or question_text_matches):
+                continue
+
+            matching_actions.append(action)
+
+        # Use the best available event for this probe. In the current logs,
+        # QuestionAnswered contains the populated answerIds. AnswerSelected may
+        # only contain the display answerChoice, and QuestionPrompted is empty.
+        matching_actions.sort(key=_question_action_priority)
+
+        matched_answer_ids = []
+        matched_answer_choices = []
+
+        for action in matching_actions:
+            action_answer_ids = get_answer_ids_from_question_action(action)
+            action_answer_choices = get_answer_choices_from_question_action(action)
+
+            if action_answer_ids or action_answer_choices:
+                matched_answer_ids = action_answer_ids
+                matched_answer_choices = action_answer_choices
+                break
+
+        if not matched_answer_ids and matched_answer_choices:
+            matched_answer_ids = [normalize_answer_id(choice) for choice in matched_answer_choices]
+
+        matched_value = None
+        if matched_answer_ids:
+            if ps_config.get("multi_action"):
+                score_map = PERSONAL_SAFETY_MULTI_ACTION_SCORE_MAPS[ps_config["score_map_key"]]
+                matched_value = score_map.get(frozenset(matched_answer_ids))
+            else:
+                answer_map = PERSONAL_SAFETY_SINGLE_ANSWER_SCORE_MAPS[ps_config["answer_map_key"]]
+                # Matches the April probe matcher's single-answer behavior by using
+                # the last recorded answer when multiple answers are present.
+                matched_value = answer_map.get(matched_answer_ids[-1])
+
+        result[ps_config["result_key"]] = matched_value
+        result[ps_config["actions_key"]] = " | ".join(matched_answer_choices) if matched_answer_choices else None
+
+    return result
+
 # ============================================================
 # ACTION ANALYSIS
 # ============================================================
@@ -1278,6 +1590,9 @@ def extract_action_analysis(csv_rows, sim_json, env):
 
     tag_metrics = compute_tag_metrics(expected_tag_color, tags_applied)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
+
+    personal_safety_values = compute_personal_safety_values(sim_json, env)
+    action_analysis.update(personal_safety_values)
 
     action_analysis[f"{prefix}Assess_patient"] = aggregate_patient_metrics["assess_patient"]
     action_analysis[f"{prefix}Treat_patient"] = aggregate_patient_metrics["treat_patient"]
