@@ -2890,6 +2890,9 @@ def process_file(json_path, output_dir):
         save_to_mongo(raw_doc, analysis_doc)
         print(f"Upserted Mongo documents for: {analysis_doc['_id']}")
 
+    # Keep the command-line output readable when processing many files.
+    print()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="June 2026 probe matcher")
@@ -2938,13 +2941,16 @@ if __name__ == "__main__":
     except Exception as e:
         logger.log(LogLevel.WARN, f"Could not initialize Mongo collections for read/write access: {e}")
 
+    json_paths = []
     for root, _, files in os.walk(args.input_dir):
         for file in files:
             if not file.endswith(".json"):
                 continue
             if file.endswith("_analysis.json"):
                 continue
-            json_path = os.path.join(root, file)
-            if VERBOSE:
-                logger.log(LogLevel.INFO, f"Processing file {json_path}")
-            process_file(json_path, args.output_dir)
+            json_paths.append(os.path.join(root, file))
+
+    for json_path in json_paths:
+        if VERBOSE:
+            logger.log(LogLevel.INFO, f"Processing file {json_path}")
+        process_file(json_path, args.output_dir)
