@@ -101,7 +101,9 @@ MONTH_MAP = {
     "march": "mar",
     "april": "apr",
     "may": "may",
-    "june": "jun",
+    # Keep June as the full month so detected open-world env values match
+    # the June 2026 YAML filenames, e.g. june2026-desert-openworld.yaml.
+    "june": "june",
     "july": "jul",
     "august": "aug",
     "september": "sept",
@@ -2232,10 +2234,10 @@ def get_eval_prefix_candidates(metadata):
 
 
 def load_openworld_yaml_for_env(env):
-    """Load the open-world YAML matching the detected environment.
+    """Load the June 2026 open-world YAML matching the detected environment.
 
-    This first looks in June paths, then falls back to April paths for local
-    compatibility if the YAMLs are still stored under the old folder name.
+    The June 2026 YAML filenames use the full `june2026` prefix, for example
+    `june2026-desert-openworld.yaml` and `june2026-urban-openworld.yaml`.
     """
     if yaml is None:
         logger.log(LogLevel.WARN, "PyYAML is not installed; skipping open-world YAML matching.")
@@ -2246,11 +2248,7 @@ def load_openworld_yaml_for_env(env):
     terrain = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else env
     candidate_paths = [
         os.path.join("phase2", "june2026", "openworld", f"{env}.yaml"),
-        os.path.join("phase2", "jun2026", "openworld", f"{env}.yaml"),
         os.path.join("phase2", "june2026", "openworld", f"{terrain}.yaml"),
-        os.path.join("phase2", "jun2026", "openworld", f"{terrain}.yaml"),
-        os.path.join("phase2", "april2026", "openworld", f"{env}.yaml"),
-        os.path.join("phase2", "april2026", "openworld", f"{terrain}.yaml"),
     ]
 
     for yaml_filename in candidate_paths:
