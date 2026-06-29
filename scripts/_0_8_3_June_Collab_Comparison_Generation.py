@@ -11,7 +11,7 @@ def main(mongoDB, EVAL_NUMBER=8):
     text_scenario_collection = mongoDB['userScenarioResults']
     delegation_collection = mongoDB['surveyResults']
     comparison_collection = mongoDB['humanToADMComparison']
-    
+
     # Let's you rerun script when necessary to repopulate as more participants come in
     comparison_collection.delete_many({"evalNumber": EVAL_NUMBER})
     medic_collection = mongoDB['admMedics']
@@ -33,8 +33,20 @@ def main(mongoDB, EVAL_NUMBER=8):
         if EVAL_NUMBER == 15:
             is_individual_mf = 'MF' in scenario_id and 'SS' not in scenario_id
             session_id = entry.get('individualSessionId') if is_individual_mf else entry.get('combinedSessionId')
+        elif EVAL_NUMBER == 17:
+            # SS-assess feeds the AF-SS 2D block (scored under its own combined AF+SS session);
+            # everything else (AF/PS, binary or trinary) uses its group's combinedSessionId.
+            session_id = entry.get('AF-SS_sessionId') if 'SS' in scenario_id else entry.get('combinedSessionId')
         else:
             session_id = entry.get('combinedSessionId')
+
+        # Eval 17: MF is assessed for KDMA profiling only — no MF delegation block, so skip the doc entirely.
+        if EVAL_NUMBER == 17 and 'MF' in scenario_id:
+            continue
+        if EVAL_NUMBER == 17 and not session_id:
+            print(f"No session id for eval 17 text scenario {scenario_id} (pid {entry.get('participantID')})")
+            continue
+
         pid = entry.get('participantID')
         survey = list(delegation_collection.find({"results.Participant ID Page.questions.Participant ID.response": pid}))
         if len(survey) == 0:
@@ -47,7 +59,21 @@ def main(mongoDB, EVAL_NUMBER=8):
                 page_scenario = survey['results'][page]['scenarioIndex']
                 scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
 
-                if EVAL_NUMBER == 15:
+                if EVAL_NUMBER == 17:
+                    doc_is_trinary = 'trinary' in scenario_id
+                    if 'SS' in scenario_id:
+                        # SS-assess drives ONLY the AF-SS 2D observe block
+                        if 'AF-SS' not in page_scenario:
+                            continue
+                    else:
+                        # AF or PS single-attribute block: attribute + binary/trinary variant must match,
+                        # and exclude the AF-SS page (handled by the SS doc above)
+                        attr = 'AF' if 'AF' in scenario_id else 'PS'
+                        if attr not in page_scenario or 'AF-SS' in page_scenario:
+                            continue
+                        if doc_is_trinary != ('trinary' in page_scenario):
+                            continue
+                elif EVAL_NUMBER == 15:
                     if is_individual_mf:
                         if 'MF' not in page_scenario or 'SS' in page_scenario:
                             continue
@@ -65,12 +91,14 @@ def main(mongoDB, EVAL_NUMBER=8):
                         continue
 
                 medic = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})
+                if not medic:
+                    continue
                 if 'combined' in page_scenario:
                     adm_sessions = medic['admSessionIdsByScenario']
                     # Create a comparison for each scenario in the combined ADM
                     for adm_scenario_id, adm_session in adm_sessions.items():
                         res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
-                        
+
                         if res is not None and 'score' in res:
                             document = {
                                 'pid': pid,
@@ -104,6 +132,10 @@ def main(mongoDB, EVAL_NUMBER=8):
                             'adm_alignment_target': survey['results'][page]['admTarget'],
                             'evalNumber': EVAL_NUMBER
                         }
+                        # Eval 17: mark binary vs trinary so the dashboard can split the
+                        # Observed_ADM (binary) and DelegatorTRI columns.
+                        if EVAL_NUMBER == 17:
+                            document['session_type'] = 'trinary' if 'trinary' in scenario_id else 'binary'
                         send_document_to_mongo(comparison_collection, document)
                     else:
                         print(f'Error getting comparison for scenarios {scenario_id} and {page_scenario} with text session {session_id} and adm session {adm_session}', res)
