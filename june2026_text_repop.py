@@ -1,39 +1,31 @@
 """
 June 2026 text scenario ADEPT repopulation script.
 
-Purpose
--------
 Replays June 2026 text scenario probe responses from Mongo userScenarioResults
-into the ADEPT server, then writes the new ADEPT session ids back to Mongo.
+into the ADEPT server and writes the resulting ADEPT session IDs back to Mongo.
 
-This is useful when Mongo has text scenario documents, but the current ADEPT
-server was rebuilt or does not have those sessions in memory/storage anymore.
-The June 2026 open-world probe matcher uses userScenarioResults.combinedSessionId
-from the MF and AF text documents when calling /api/v1/alignment/compare_sessions.
+By default, existing session IDs are validated against ADEPT and reused when
+possible. Use --recreate-sessions to intentionally create fresh sessions.
 
-Expected June 2026 document shape
----------------------------------
-For each participant there are normally 6 userScenarioResults documents:
-- June2026-SS-assess
-- June2026-MF-assess
-- June2026-AF-assess
-- June2026-PS-assess
-- June2026-AF-assess-trinary
-- June2026-PS-assess-trinary
+Available flags:
+--eval-number <number> Eval number to process. Defaults to 17.
+--mongo-url <url> Mongo connection string. Defaults to MONGO_URL.
+--adept-url <url> ADEPT server URL. Defaults to ADEPT_URL.
+--db-name <name> Mongo database name. Defaults to "dashboard".
+--pid <participantID> Process only one participant.
+--dry-run Validate existing sessions and print what would happen
+without creating sessions or updating Mongo.
+--recreate-sessions Create fresh ADEPT sessions even if valid ones exist.
+--verbose, -v Print detailed progress messages.
+--timeout <seconds> ADEPT request timeout. Defaults to 120.
+--skip-af-ss Skip AF-SS_sessionId creation/update.
+--skip-trinary Skip trinary combinedSessionId creation/update.
+--skip-mf-individual Skip MF individualSessionId creation/update.
 
-This script creates or reuses:
-- One binomial combinedSessionId for SS + MF + AF + PS
-- One trinary combinedSessionId for AF-trinary + PS-trinary
-- One AF-SS_sessionId for SS + AF, because June docs already contain that field
-- One individualSessionId for MF, matching the older repop script behavior
-
-By default, existing session ids are validated against ADEPT and reused when
-they still exist. Use --recreate-sessions to intentionally create fresh ADEPT
-sessions and overwrite the Mongo session id fields.
-
-Only the binomial combinedSessionId is required by the current June open-world
-probe matcher for MF/AF alignment, but the other sessions are useful for keeping
-June text scenario documents consistent with the existing schema.
+Examples:
+py june2026_text_repop.py --eval-number 17 --pid 202606112 --dry-run -v
+py june2026_text_repop.py --eval-number 17 -v
+py june2026_text_repop.py --eval-number 17 --recreate-sessions -v
 """
 
 import argparse
