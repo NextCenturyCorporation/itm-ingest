@@ -1601,22 +1601,84 @@ def vec3_distance(a, b):
     return (dx * dx + dy * dy + dz * dz) ** 0.5
 
 
+def is_zero_vec3(pos):
+    """Return True when a parsed vector is the Unity/default zero position."""
+    if not pos:
+        return True
+    return all(abs(value) < 1e-9 for value in pos)
+
+
+def format_vec3(pos):
+    """Format a parsed vector for stable JSON output."""
+    if not pos:
+        return None
+    return f"({round(pos[0], 3)}, {round(pos[1], 3)}, {round(pos[2], 3)})"
+
+
+def extract_patient_start_locations(sim_json):
+    """Return patient starting positions from configData.patientDataList.
+
+    Keys are normalized simulation patient names, such as "US Military 1".
+    Values are parsed (x, y, z) tuples from positionAngle.position.
+    """
+    start_locations = {}
+    patient_data_list = (
+        sim_json.get("configData", {}).get("patientDataList")
+        or sim_json.get("patientDataList")
+        or []
+    )
+
+    for patient_data in patient_data_list:
+        if not isinstance(patient_data, dict):
+            continue
+        patient_name = clean_patient_name(patient_data.get("name", ""))
+        if not patient_name or not is_valid_patient(patient_name):
+            continue
+
+        position = (
+            patient_data.get("positionAngle", {})
+            .get("position", {})
+        )
+        try:
+            start_locations[patient_name] = (
+                float(position.get("x", 0.0)),
+                float(position.get("y", 0.0)),
+                float(position.get("z", 0.0)),
+            )
+        except Exception:
+            continue
+
+    return start_locations
+
+
 # Fields extracted:
 # - PatientN_dragged
 # - PatientN_drag_times
 # - PatientN_total_drag_time
-def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
-    """Return dragged patients, drag start times, and total drag duration for meaningful drags.
+# - PatientN_drag_start_location
+# - PatientN_drag_end_location
+def compute_drag_metrics(csv_rows, sim_json=None, min_drag_distance=1.0):
+    """Return drag metrics for meaningful patient drags.
 
     Drag duration is calculated from DRAG_START to the matching DRAG_STOP for the
     same patient, then summed per patient. A drag only counts if the start/stop
     positions are more than min_drag_distance apart, matching the existing
     PatientN_dragged and PatientN_drag_times behavior.
+
+    For location output, only one start and end location is returned per patient:
+    - drag_start_location is the patient's original scenario position from JSON
+      when available, falling back to the first meaningful DragStartPosition.
+    - drag_end_location is the final meaningful DragStopPosition found in the CSV.
     """
     dragged_patients = set()
     drag_times_by_patient = {}
     total_drag_time_by_patient = {}
+    drag_start_location_by_patient = {}
+    drag_end_location_by_patient = {}
+    first_meaningful_drag_start_by_patient = {}
     active_drag_start = {}
+
+    patient_start_locations = extract_patient_start_locations(sim_json or {})
 
     for row in csv_rows:
         ev = row.get("EventName")
@@ -1640,6 +1702,9 @@ def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
             stop_elapsed_seconds = safe_float(row.get("ElapsedTime", 0)) / 1000.0
             start_elapsed_seconds = safe_float(start_data.get("elapsed_seconds", 0.0))
 
+            if is_zero_vec3(stop_pos):
+                continue
+
             if vec3_distance(start_pos, stop_pos) > min_drag_distance:
                 drag_duration = max(0.0, stop_elapsed_seconds - start_elapsed_seconds)
                 dragged_patients.add(patient)
@@ -1651,16 +1716,28 @@ def compute_drag_metrics(csv_rows, min_drag_distance=1.0):
                     3,
                 )
 
+                if patient not in first_meaningful_drag_start_by_patient:
+                    first_meaningful_drag_start_by_patient[patient] = start_pos
+                drag_end_location_by_patient[patient] = stop_pos
+
+    for patient in dragged_patients:
+        drag_start_location_by_patient[patient] = (
+            patient_start_locations.get(patient)
+            or first_meaningful_drag_start_by_patient.get(patient)
+        )
+
     return {
         "dragged_patients": dragged_patients,
         "drag_times_by_patient": drag_times_by_patient,
         "total_drag_time_by_patient": total_drag_time_by_patient,
+        "drag_start_location_by_patient": drag_start_location_by_patient,
+        "drag_end_location_by_patient": drag_end_location_by_patient,
     }
 
 
 def compute_dragged_patients(csv_rows, min_drag_distance=1.0):
     """Backward-compatible helper returning only the dragged-patient set."""
-    return compute_drag_metrics(csv_rows, min_drag_distance)["dragged_patients"]
+    return compute_drag_metrics(csv_rows, min_drag_distance=min_drag_distance)["dragged_patients"]
 
 
 
@@ -2107,10 +2184,12 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplemental_map)
     triage_performance = compute_triage_performance_w_supp(csv_rows, required_injuries, supplemental_map)
     tags_applied = compute_last_applied_tags(csv_rows)
-    drag_metrics = compute_drag_metrics(csv_rows, min_drag_distance=1.0)
+    drag_metrics = compute_drag_metrics(csv_rows, sim_json, min_drag_distance=1.0)
     dragged_patients = drag_metrics["dragged_patients"]
     drag_times_by_patient = drag_metrics["drag_times_by_patient"]
     total_drag_time_by_patient = drag_metrics["total_drag_time_by_patient"]
+    drag_start_location_by_patient = drag_metrics["drag_start_location_by_patient"]
+    drag_end_location_by_patient = drag_metrics["drag_end_location_by_patient"]
 
     aggregate_patient_metrics = compute_patient_averages(
         csv_rows, assessments, treatments, triage_times
@@ -2170,6 +2249,12 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
         action_analysis[f"{name}_dragged"] = "Yes" if sim_name in dragged_patients else "No"
         action_analysis[f"{name}_drag_times"] = ", ".join(str(t) for t in drag_times_by_patient.get(sim_name, []))
         action_analysis[f"{name}_total_drag_time"] = total_drag_time_by_patient.get(sim_name, 0)
+        action_analysis[f"{name}_drag_start_location"] = format_vec3(
+            drag_start_location_by_patient.get(sim_name)
+        ) if sim_name in dragged_patients else None
+        action_analysis[f"{name}_drag_end_location"] = format_vec3(
+            drag_end_location_by_patient.get(sim_name)
+        ) if sim_name in dragged_patients else None
         action_analysis[f"{name}_evac"] = evac_value_by_patient.get(sim_name, 0)
         action_analysis[f"{name}_assess"] = assessments["per_patient"].get(sim_name, 0)
         action_analysis[f"{name}_treat"] = treatments["per_patient"].get(sim_name, 0)
