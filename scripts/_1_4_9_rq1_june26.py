@@ -1,9 +1,26 @@
 from scripts._0_8_3_June_Collab_Comparison_Generation import main as gen_comp
 from bson import ObjectId
+from decouple import config
+import requests
 
+ADEPT_URL = config('ADEPT_URL')
+def rescore_observed_adms(observed_runs):
+    for adm in observed_runs:
+        results = adm.get('results', '')
+        sid = results.get('ta1_session_id', None)
+        target = adm.get('alignment_target')
+        existing_score = results.get('alignment_score')
 
-def rescore_observed_adms():
-    pass
+        payload = {'session_id': sid, 'target_id': target}
+        new_score = (requests.get(f'{ADEPT_URL}api/v1/alignment/session', params=payload))
+        print(new_score)
+        print(new_score.json())
+
+        if existing_score != new_score:
+            print('Difference In Scores \n')
+            print(f'New Score: {new_score}')
+            print(f'Existing Score: {existing_score}')
+            print(f'ADM Target: {target}')
 
 
 def main(mongo_db):
@@ -21,7 +38,8 @@ def main(mongo_db):
         object_ids = [ObjectId(oid) for oid in oid_strings]
         text_collec.delete_many({'_id': {'$in': object_ids}})
 
-
+    observed_adms = list(mongo_db['admTargetRuns'].find({'evalNumber': 17}))
     #re score observed adm run alignment scores
-    rescore_observed_adms()
+    rescore_observed_adms(observed_adms)
     #gen_comp(mongo_db, EVAL_NUMBER=17)
+    
