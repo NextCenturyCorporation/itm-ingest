@@ -1,5 +1,11 @@
 from scripts._0_8_3_June_Collab_Comparison_Generation import main as gen_comp
 from bson import ObjectId
+
+
+def rescore_observed_adms():
+    pass
+
+
 def main(mongo_db):
     text_collec = mongo_db['userScenarioResults']
     # pid to remove bad second run: 137, 148, 152, 160
@@ -9,4 +15,13 @@ def main(mongo_db):
         '202606152': ['6a3d90b662f0eedd5f35fade', '6a3d90b662f0ee56da35fae1'],
         '202606160': ['6a3e6b5062f0ee046635fbda', '6a3e6b4f62f0eeb4dc35fbd7']
     }
-    gen_comp(mongo_db, EVAL_NUMBER=17)
+
+    # remove bad text docs before we make any comparison scores
+    for pid, oid_strings in bad_text_docs.items():
+        object_ids = [ObjectId(oid) for oid in oid_strings]
+        text_collec.delete_many({'_id': {'$in': object_ids}})
+
+
+    #re score observed adm run alignment scores
+    rescore_observed_adms()
+    #gen_comp(mongo_db, EVAL_NUMBER=17)
