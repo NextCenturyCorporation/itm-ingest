@@ -3170,4 +3170,8 @@ PLAYER_POSITIONS,520612,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1c
 VOICE_CAPTURE,520778,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,NA,Gonna mess up. I'm going to mess up. I believe so.,
 PLAYER_POSITIONS,521131,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"(17.0, 0.9, -24.0)","(17.2, 1.4, -23.9)","(17.0, 0.9, -23.5)",
 PLAYER_POSITIONS,521131,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"(17.0, 0.9, -24.0)","(17.2, 1.4, -23.9)","(17.0, 0.9, -23.5)",
+ANSWER_SELECTED,558040,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,Mil Explosion Burn,,,,US Military 5,1,
+ANSWER_SELECTED,558040,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,Civilian Chest Puncture,,,,Civilian 2,1,
+ANSWER_SELECTED,558040,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,Shooter Shoulder Puncture,,,,Shooter 1,1,
+EVAC_SELECTION,559433,6/16/2026 4:32:25 PM,79c817cf-f111-48a0-acd2-d5bad1b3c1ce,2.0,,,,,,,"US Military 5, Civilian 2, Shooter 1",1,
 Participant ID, 202606114

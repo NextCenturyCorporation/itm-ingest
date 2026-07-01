@@ -2659,7 +2659,7 @@
         "evalName": "June2026 OW Urban",
         "spawnLocationID": 0,
         "spawnPoint": "Default",
-        "patientMapShown": 1
+        "patientMapShown": 0
     },
     "actionList": [
         {
@@ -2682,29 +2682,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:21.080Z"
-        },
-        {
-            "actionType": "MovedBeforeClearedByCommand",
-            "casualty": "",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:23.472Z"
+            "timestamp": "2026-06-26T13:58:36.048Z"
         },
         {
             "actionType": "AnswerSelected",
@@ -2728,7 +2706,7 @@
             ],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:25.171Z"
+            "timestamp": "2026-06-26T13:58:41.487Z"
         },
         {
             "actionType": "QuestionAnswered",
@@ -2754,7 +2732,29 @@
                 "remain_in_place"
             ],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:27.790Z"
+            "timestamp": "2026-06-26T13:58:42.806Z"
+        },
+        {
+            "actionType": "MovedBeforeClearedByCommand",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T13:58:42.946Z"
         },
         {
             "actionType": "Treatment",
@@ -2776,29 +2776,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:32.761Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Civilian 3",
-            "treatment": "Israeli Wrap",
-            "treatmentLocation": "Right Stomach",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:35.484Z"
+            "timestamp": "2026-06-26T13:58:51.655Z"
         },
         {
             "actionType": "Pulse",
@@ -2820,7 +2798,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:25:36.254Z"
+            "timestamp": "2026-06-26T13:58:55.110Z"
         },
         {
             "actionType": "Treatment",
@@ -2842,7 +2820,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:00.050Z"
+            "timestamp": "2026-06-26T13:58:59.707Z"
         },
         {
             "actionType": "Tag",
@@ -2864,51 +2842,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:08.413Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "US Military 4",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "fast",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:23.461Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "US Military 4",
-            "treatment": "Mental Assessment",
-            "treatmentLocation": "head",
-            "injuryType": "None",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:27.509Z"
+            "timestamp": "2026-06-26T13:59:05.610Z"
         },
         {
             "actionType": "Treatment",
@@ -2930,51 +2864,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:34.928Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "US Military 4",
-            "treatment": "Israeli Wrap",
-            "treatmentLocation": "Left Stomach",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:45.015Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "US Military 4",
-            "treatment": "Fentanyl Lollipop",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:51.345Z"
+            "timestamp": "2026-06-26T13:59:27.317Z"
         },
         {
             "actionType": "Pulse",
@@ -2996,7 +2886,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:55.046Z"
+            "timestamp": "2026-06-26T13:59:28.989Z"
         },
         {
             "actionType": "Tag",
@@ -3018,29 +2908,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:26:57.023Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "US Military 3",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:05.537Z"
+            "timestamp": "2026-06-26T13:59:46.456Z"
         },
         {
             "actionType": "DisarmPatientWeapon",
@@ -3062,7 +2930,51 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:09.343Z"
+            "timestamp": "2026-06-26T13:59:56.915Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T13:59:59.352Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:00:09.921Z"
         },
         {
             "actionType": "Treatment",
@@ -3084,7 +2996,29 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:17.839Z"
+            "timestamp": "2026-06-26T14:00:16.050Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:00:20.982Z"
         },
         {
             "actionType": "Treatment",
@@ -3106,29 +3040,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:23.612Z"
-        },
-        {
-            "actionType": "Tag",
-            "casualty": "US Military 3",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "yellow",
-            "tagType": "DELAYED",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:31.930Z"
+            "timestamp": "2026-06-26T14:00:27.594Z"
         },
         {
             "actionType": "Pulse",
@@ -3150,51 +3062,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:43.284Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Civilian 2",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "faint",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:45.362Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Civilian 2",
-            "treatment": "Chest Seal Projector",
-            "treatmentLocation": "Left Chest",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:51.807Z"
+            "timestamp": "2026-06-26T14:00:56.551Z"
         },
         {
             "actionType": "Treatment",
@@ -3216,7 +3084,29 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:56.189Z"
+            "timestamp": "2026-06-26T14:01:05.821Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Civilian 2",
+            "treatment": "Chest Seal Projector",
+            "treatmentLocation": "Left Chest",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:01:09.227Z"
         },
         {
             "actionType": "Pulse",
@@ -3238,29 +3128,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:58.053Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Civilian 2",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "faint",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:27:59.025Z"
+            "timestamp": "2026-06-26T14:01:13.433Z"
         },
         {
             "actionType": "Tag",
@@ -3282,7 +3150,73 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:13.395Z"
+            "timestamp": "2026-06-26T14:01:22.408Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 2",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "faint",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:01:26.277Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "yellow",
+            "tagType": "DELAYED",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:01:51.740Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Shooter 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:01:56.413Z"
         },
         {
             "actionType": "Treatment",
@@ -3304,51 +3238,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:26.356Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "Shooter 1",
-            "treatment": "Fentanyl Lollipop",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:38.121Z"
-        },
-        {
-            "actionType": "Tag",
-            "casualty": "Shooter 1",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "yellow",
-            "tagType": "DELAYED",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:42.827Z"
+            "timestamp": "2026-06-26T14:02:06.769Z"
         },
         {
             "actionType": "Treatment",
@@ -3370,7 +3260,29 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:45.833Z"
+            "timestamp": "2026-06-26T14:02:12.199Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "Shooter 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "green",
+            "tagType": "MINIMAL",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:02:16.282Z"
         },
         {
             "actionType": "Pulse",
@@ -3392,7 +3304,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:56.146Z"
+            "timestamp": "2026-06-26T14:02:26.875Z"
         },
         {
             "actionType": "Treatment",
@@ -3414,73 +3326,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:57.947Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Civilian 1",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:59.058Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Civilian 1",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:59.416Z"
-        },
-        {
-            "actionType": "Pulse",
-            "casualty": "Civilian 1",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "normal",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:28:59.939Z"
+            "timestamp": "2026-06-26T14:02:32.320Z"
         },
         {
             "actionType": "Tag",
@@ -3489,8 +3335,8 @@
             "treatmentLocation": "",
             "injuryType": "",
             "successfulTreatment": false,
-            "tagColor": "yellow",
-            "tagType": "DELAYED",
+            "tagColor": "green",
+            "tagType": "MINIMAL",
             "pulse": "",
             "breathing": "",
             "SpO2": "",
@@ -3502,11 +3348,121 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:05.679Z"
+            "timestamp": "2026-06-26T14:02:35.809Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:02:38.038Z"
         },
         {
             "actionType": "Treatment",
-            "casualty": "Civilian 1",
+            "casualty": "US Military 2",
+            "treatment": "Hemostatic Gauze",
+            "treatmentLocation": "Left Stomach",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:02:52.524Z"
+        },
+        {
+            "actionType": "DisarmPatientWeapon",
+            "casualty": "US Military 2",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:02:54.753Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 2",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:02:57.760Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 2",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:02:58.425Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 2",
             "treatment": "Fentanyl Lollipop",
             "treatmentLocation": "",
             "injuryType": "",
@@ -3524,7 +3480,51 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:08.672Z"
+            "timestamp": "2026-06-26T14:03:09.085Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 2",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:03:19.423Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:03:25.310Z"
         },
         {
             "actionType": "DisarmPatientWeapon",
@@ -3546,7 +3546,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:13.824Z"
+            "timestamp": "2026-06-26T14:03:27.564Z"
         },
         {
             "actionType": "Treatment",
@@ -3568,7 +3568,29 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:23.055Z"
+            "timestamp": "2026-06-26T14:03:34.424Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:03:35.956Z"
         },
         {
             "actionType": "Treatment",
@@ -3590,117 +3612,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:28.748Z"
-        },
-        {
-            "actionType": "Tag",
-            "casualty": "US Military 1",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "yellow",
-            "tagType": "DELAYED",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:33.851Z"
-        },
-        {
-            "actionType": "DisarmPatientWeapon",
-            "casualty": "US Military 2",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:40.089Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "US Military 2",
-            "treatment": "Israeli Wrap",
-            "treatmentLocation": "Left Stomach",
-            "injuryType": "Puncture",
-            "successfulTreatment": true,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:29:51.300Z"
-        },
-        {
-            "actionType": "Treatment",
-            "casualty": "US Military 2",
-            "treatment": "Fentanyl Lollipop",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:00.343Z"
-        },
-        {
-            "actionType": "Tag",
-            "casualty": "US Military 2",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "yellow",
-            "tagType": "DELAYED",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:04.753Z"
+            "timestamp": "2026-06-26T14:03:44.009Z"
         },
         {
             "actionType": "Pulse",
@@ -3722,7 +3634,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:21.147Z"
+            "timestamp": "2026-06-26T14:04:49.513Z"
         },
         {
             "actionType": "Pulse",
@@ -3744,7 +3656,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:24.956Z"
+            "timestamp": "2026-06-26T14:04:49.542Z"
         },
         {
             "actionType": "Pulse",
@@ -3766,7 +3678,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:26.815Z"
+            "timestamp": "2026-06-26T14:04:49.937Z"
         },
         {
             "actionType": "Pulse",
@@ -3788,7 +3700,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:27.210Z"
+            "timestamp": "2026-06-26T14:04:50.839Z"
         },
         {
             "actionType": "Pulse",
@@ -3810,29 +3722,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:30.401Z"
-        },
-        {
-            "actionType": "Tag",
-            "casualty": "US Military 6",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "black",
-            "tagType": "EXPECTANT",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:39.884Z"
+            "timestamp": "2026-06-26T14:04:51.188Z"
         },
         {
             "actionType": "Pulse",
@@ -3854,7 +3744,117 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:40.463Z"
+            "timestamp": "2026-06-26T14:04:51.548Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:04:53.596Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:04:54.889Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:04:55.029Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:04:56.762Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:04:58.581Z"
         },
         {
             "actionType": "Pulse",
@@ -3876,7 +3876,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:46.602Z"
+            "timestamp": "2026-06-26T14:05:09.010Z"
         },
         {
             "actionType": "Pulse",
@@ -3898,7 +3898,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:46.625Z"
+            "timestamp": "2026-06-26T14:05:09.670Z"
         },
         {
             "actionType": "Pulse",
@@ -3920,7 +3920,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:47.937Z"
+            "timestamp": "2026-06-26T14:05:09.808Z"
         },
         {
             "actionType": "Pulse",
@@ -3942,7 +3942,73 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:30:48.025Z"
+            "timestamp": "2026-06-26T14:05:13.836Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:05:15.202Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:05:16.675Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:05:17.241Z"
         },
         {
             "actionType": "Treatment",
@@ -3964,13 +4030,13 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:00.630Z"
+            "timestamp": "2026-06-26T14:05:23.947Z"
         },
         {
             "actionType": "Treatment",
             "casualty": "US Military 5",
-            "treatment": "Burn Dressing  Projector",
-            "treatmentLocation": "Left Chest",
+            "treatment": "Burn Dressing",
+            "treatmentLocation": "Left Bicep",
             "injuryType": "Burn",
             "successfulTreatment": true,
             "tagColor": "",
@@ -3986,13 +4052,13 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:02.910Z"
+            "timestamp": "2026-06-26T14:05:25.599Z"
         },
         {
             "actionType": "Treatment",
             "casualty": "US Military 5",
-            "treatment": "Burn Dressing  Projector",
-            "treatmentLocation": "Left Chest",
+            "treatment": "Burn Dressing",
+            "treatmentLocation": "Left Forearm",
             "injuryType": "Burn",
             "successfulTreatment": true,
             "tagColor": "",
@@ -4008,18 +4074,18 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:05.690Z"
+            "timestamp": "2026-06-26T14:05:27.199Z"
         },
         {
-            "actionType": "Pulse",
+            "actionType": "Treatment",
             "casualty": "US Military 5",
-            "treatment": "",
-            "treatmentLocation": "",
+            "treatment": "Blanket",
+            "treatmentLocation": "Full Body",
             "injuryType": "",
             "successfulTreatment": false,
             "tagColor": "",
             "tagType": "",
-            "pulse": "fast",
+            "pulse": "",
             "breathing": "",
             "SpO2": "",
             "question": "",
@@ -4030,14 +4096,14 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:11.377Z"
+            "timestamp": "2026-06-26T14:05:30.916Z"
         },
         {
             "actionType": "Treatment",
             "casualty": "US Military 5",
-            "treatment": "Mental Assessment",
-            "treatmentLocation": "head",
-            "injuryType": "None",
+            "treatment": "Burn Dressing  Projector",
+            "treatmentLocation": "Left Chest",
+            "injuryType": "Burn",
             "successfulTreatment": true,
             "tagColor": "",
             "tagType": "",
@@ -4052,7 +4118,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:12.912Z"
+            "timestamp": "2026-06-26T14:05:36.282Z"
         },
         {
             "actionType": "Treatment",
@@ -4074,7 +4140,7 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:20.445Z"
+            "timestamp": "2026-06-26T14:05:46.106Z"
         },
         {
             "actionType": "Tag",
@@ -4096,17 +4162,39 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:31:33.388Z"
+            "timestamp": "2026-06-26T14:05:54.914Z"
         },
         {
-            "actionType": "Treatment",
-            "casualty": "US Military 5",
-            "treatment": "Nasal Trumpet",
-            "treatmentLocation": "Nostril",
-            "injuryType": "None",
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
             "successfulTreatment": false,
             "tagColor": "",
             "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:06:00.657Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "black",
+            "tagType": "EXPECTANT",
             "pulse": "",
             "breathing": "",
             "SpO2": "",
@@ -4118,9 +4206,52 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": "2026-06-16T16:32:15.207Z"
-        }
-        ,
+            "timestamp": "2026-06-26T14:06:03.671Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "none",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:06:04.071Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 6",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "black",
+            "tagType": "EXPECTANT",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:06:05.840Z"
+        },
         {
             "actionType": "EvacPrompt",
             "casualty": "",
@@ -4141,7 +4272,31 @@
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": ""
+            "timestamp": "2026-06-26T14:08:13.535Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "US Military 2"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-06-26T14:08:19.824Z"
         },
         {
             "actionType": "AnswerSelected",
@@ -4165,7 +4320,7 @@
             ],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": ""
+            "timestamp": "2026-06-26T14:08:24.948Z"
         },
         {
             "actionType": "AnswerSelected",
@@ -4189,31 +4344,7 @@
             ],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": ""
-        },
-        {
-            "actionType": "AnswerSelected",
-            "casualty": "",
-            "treatment": "",
-            "treatmentLocation": "",
-            "injuryType": "",
-            "successfulTreatment": false,
-            "tagColor": "",
-            "tagType": "",
-            "pulse": "",
-            "breathing": "",
-            "SpO2": "",
-            "question": "",
-            "questionId": "",
-            "questionType": "",
-            "evacRound": 1,
-            "evacPatientIds": [],
-            "answerChoice": [
-                "Shooter 1"
-            ],
-            "answerIds": [],
-            "movedBeforeClearedByCommand": false,
-            "timestamp": ""
+            "timestamp": "2026-06-26T14:08:35.495Z"
         },
         {
             "actionType": "EvacSelection",
@@ -4232,59 +4363,59 @@
             "questionType": "",
             "evacRound": 1,
             "evacPatientIds": [
+                "US Military 2",
                 "US Military 5",
-                "Civilian 2",
-                "Shooter 1"
+                "Civilian 2"
             ],
             "answerChoice": [],
             "answerIds": [],
             "movedBeforeClearedByCommand": false,
-            "timestamp": ""
+            "timestamp": "2026-06-26T14:08:36.820Z"
         }
     ],
     "images": [
         {
             "name": "US Military 1",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_US Military 1.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_US Military 1.jpg"
         },
         {
             "name": "US Military 2",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_US Military 2.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_US Military 2.jpg"
         },
         {
             "name": "Civilian 1",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_Civilian 1.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_Civilian 1.jpg"
         },
         {
             "name": "Shooter 1",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_Shooter 1.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_Shooter 1.jpg"
         },
         {
             "name": "US Military 3",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_US Military 3.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_US Military 3.jpg"
         },
         {
             "name": "Civilian 2",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_Civilian 2.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_Civilian 2.jpg"
         },
         {
             "name": "Civilian 3",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_Civilian 3.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_Civilian 3.jpg"
         },
         {
             "name": "US Military 4",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_US Military 4.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_US Military 4.jpg"
         },
         {
             "name": "US Military 5",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_US Military 5.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_US Military 5.jpg"
         },
         {
             "name": "US Military 6",
-            "filename": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce_202606114_US Military 6.jpg"
+            "filename": "67f63992-bd30-4018-bb97-3967f3e1f3d9_202606164_US Military 6.jpg"
         }
     ],
-    "sessionId": "79c817cf-f111-48a0-acd2-d5bad1b3c1ce",
-    "participantId": "202606114",
-    "scenarioDuration": "00h:08m:43s"
+    "sessionId": "67f63992-bd30-4018-bb97-3967f3e1f3d9",
+    "participantId": "202606164",
+    "scenarioDuration": "00h:11m:46s"
 }
