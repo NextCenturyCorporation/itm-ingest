@@ -35,7 +35,7 @@ def main(mongoDB, EVAL_NUMBER=8):
             session_id = entry.get('individualSessionId') if is_individual_mf else entry.get('combinedSessionId')
         elif EVAL_NUMBER == 17:
             # SS-assess feeds the AF-SS 2D block (scored under its own combined AF+SS session);
-            # everything else (AF/PS, binary or trinary) uses its group's combinedSessionId.
+            # every other doc (AF/PS, binary or trinary) uses its group's combinedSessionId.
             session_id = entry.get('AF-SS_sessionId') if 'SS' in scenario_id else entry.get('combinedSessionId')
         else:
             session_id = entry.get('combinedSessionId')
@@ -60,18 +60,15 @@ def main(mongoDB, EVAL_NUMBER=8):
                 scenario_attribute = next((x for x in ['MF', 'SS', 'PS', 'AF'] if x in scenario_id), None)
 
                 if EVAL_NUMBER == 17:
-                    doc_is_trinary = 'trinary' in scenario_id
                     if 'SS' in scenario_id:
-                        # SS-assess drives ONLY the AF-SS 2D observe block
+                        # SS-assess drives ONLY the AF-SS 2D observe block (binary only — no trinary counterpart)
                         if 'AF-SS' not in page_scenario:
                             continue
                     else:
-                        # AF or PS single-attribute block: attribute + binary/trinary variant must match,
-                        # and exclude the AF-SS page (handled by the SS doc above)
+                        # Each attribute's observe pages (BOTH the binary and the
+                        # trinary blocks) are scored against BOTH the delegator's binary and trinary sessions
                         attr = 'AF' if 'AF' in scenario_id else 'PS'
                         if attr not in page_scenario or 'AF-SS' in page_scenario:
-                            continue
-                        if doc_is_trinary != ('trinary' in page_scenario):
                             continue
                 elif EVAL_NUMBER == 15:
                     if is_individual_mf:
@@ -132,8 +129,9 @@ def main(mongoDB, EVAL_NUMBER=8):
                             'adm_alignment_target': survey['results'][page]['admTarget'],
                             'evalNumber': EVAL_NUMBER
                         }
-                        # Eval 17: mark binary vs trinary so the dashboard can split the
-                        # Observed_ADM (binary) and DelegatorTRI columns.
+                        # Eval 17: tag which delegator framework this score used (binary vs trinary probes)
+                        # so the dashboard routes it to Delegator|Observed_ADM vs DelegatorTRI|Observed_ADM.
+                        # The tag comes from THIS text doc's variant, not the observe page's variant.
                         if EVAL_NUMBER == 17:
                             document['session_type'] = 'trinary' if 'trinary' in scenario_id else 'binary'
                         send_document_to_mongo(comparison_collection, document)

@@ -416,7 +416,7 @@ def write_discrepancies(adm_records, human_rows):
     print(f"  adm sheet:   {len(adm_out)} discrepancy row(s)")
     print(f"  human sheet: {len(human_out)} row(s) ({changed_count} changed)")
 
-def main(mongo_db, write_to_db=False):
+def main(mongo_db, write_to_db=True):
     text_collec = mongo_db[HUMAN_TEXT_COLLECTION]
     # pid to remove bad second run: 137, 148, 152, 160
     bad_text_docs = {
@@ -441,4 +441,5 @@ def main(mongo_db, write_to_db=False):
     if write_to_db:
         apply_medic_updates(mongo_db, adm_records)
         apply_human_updates(mongo_db, human_rows)
-    #gen_comp(mongo_db, EVAL_NUMBER=17)
+    
+    gen_comp(mongo_db, EVAL_NUMBER=17)
