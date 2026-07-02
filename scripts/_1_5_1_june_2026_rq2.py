@@ -41,12 +41,20 @@ all_adm_data: list = []
 # e.g., [{'adm_name': 'baseline', 'alignment_target_id': 'Jun2026-AF-binomial-110', 'scenario_id': 'June2026-AFr12-eval',
 #                'probe_responses': {'Probe 1': "Response 1-A", ... }, {'adm_name': 'aligned', ... }]
 
-BAD_ADMS = ['ALIGN-ADM-Random__73bb07e1-2fdb-4bf4-b259-e15dd84e9e5c'
-            ]
-ORPHAN_ADM = {'old_name': 'ALIGN-ADM-OutlinesBaseline-DeepSeek-R1-Distill-Llama-8B__6d9ffe7b-a882-4846-9d8d-95a1644c76c2',
-              'new_name': 'ALIGN-ADM-OutlinesBaseline-DeepSeek-R1-Distill-Llama-8B_01_12'}
-ORPHAN_ADM = None
+BAD_ADMS = [
+    'ALIGN-ADM-Random__73bb07e1-2fdb-4bf4-b259-e15dd84e9e5c',
+    'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__cd19c6a3-4111-4100-8e46-cff3595a95c4',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Trinary-Mistral-7B-Instruct-v0.3__c91e3c14-2cb5-4a44-8332-8e41e241d20d'
+    ]
 
+RENAME_ADM = [
+    {'old_name': 'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-DeepSeek-R1-Distill-Llama-8B__027f85b6-f3d7-457d-a9db-8c518b34a00b',
+    'new_name': 'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__027f85b6-f3d7-457d-a9db-8c518b34a00b'},
+    {'old_name': 'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-DeepSeek-R1-Distill-Llama-8B__68fa949a-697c-4179-94f0-0a67dce8d234',
+    'new_name': 'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__68fa949a-697c-4179-94f0-0a67dce8d234'},
+    {'old_name': 'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-DeepSeek-R1-Distill-Llama-8B__8782bd97-7e37-4ffd-97df-b0754328c137',
+    'new_name': 'ALIGN-ADM-Ph2-DirectRegression-BertRelevance-Mistral-7B-Instruct-v0.3__8782bd97-7e37-4ffd-97df-b0754328c137'}
+    ]
 
 @dataclass
 class Adm_data:
@@ -195,7 +203,7 @@ def create_synthetic_adm_runs(mongo_db, binary_probe_sets: list, trinary_probe_s
             sent_probes, ta1_id, alignment_score, kdmas = get_ta1_calculations(req_session, adm_data, probe_set)
             if not alignment_score or not kdmas:
                 error_count += 1
-            synth_scenario_id = f"{EVALUATION_TYPE}-{attribute}r{subset_num}-eval" # e.g., "June2026-AFr23-eval"
+            synth_scenario_id = f"{EVALUATION_TYPE}-{attribute}r{subset_num}-eval{'-trinary' if is_trinary else ''}" # e.g., "June2026-AFr23-eval"
             synth_scenario_name = adm_data.scenario_name.replace('Set', 'Random Set ' + str(subset_num)) # e.g., "Search vs Stay Random Set 23"
             if VERBOSE:
                 print(f"  {synth_scenario_id}: Got alignment score of {alignment_score} and kdmas of {kdmas}")
@@ -234,15 +242,15 @@ def create_synthetic_adm_runs(mongo_db, binary_probe_sets: list, trinary_probe_s
 def main(mongo_db):
     adm_collection = mongo_db['admTargetRuns']
     if WRITE_TO_DB:
-        print('Deleting some bad/aborted ADMs.')
+        print('Deleting some bad/aborted ADMs and renaming some mis-named ADMs.')
         for adm_name in BAD_ADMS:
             adm_collection.delete_many({'evalNumber': EVAL_NUM, 'adm_name': adm_name})
-        if ORPHAN_ADM:
+        for adm_name_pair in RENAME_ADM:
             adm_collection.update_one(
-                    {'adm_name': ORPHAN_ADM['old_name']},
+                    {'adm_name': adm_name_pair['old_name']},
                     {'$set': {
-                        'adm_name': ORPHAN_ADM['new_name'],
-                        'evaluation.adm_name': ORPHAN_ADM['new_name']
+                        'adm_name': adm_name_pair['new_name'],
+                        'evaluation.adm_name': adm_name_pair['new_name']
                     }}
                 )
 
