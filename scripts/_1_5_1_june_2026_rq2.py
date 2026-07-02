@@ -10,7 +10,7 @@ from typing import Tuple
 
 """
 For RQ2, ADMs will be run on evaluation (hold-out) probes at a variety of alignment targets to collect probe responses.
-Previously, we post-constructed N probe sets of 24 probes (8 probes per attribute) based on Latin square selection (binary)
+Previously, we post-constructed N probe sets of 32 probes (8 probes per attribute) based on Latin square selection (binary)
 or random selection (trinary), outputting two csv files, one of all binary probe sets, the other all trinary probe sets.
 This script reads in these csv files, collects the ADM responses from the database, feeds the probes and responses to TA1 to
 collect alignment and kdma values, and creates synthetic ADM runs as if the ADM had run on each probe set.
@@ -267,7 +267,7 @@ def main(mongo_db):
         adm_collection.delete_many({'evalNumber': EVAL_NUM, 'synthetic': True})
 
     print('\nReading binary probe sets from csv...')
-    binary_probe_sets: list = read_probe_sets(BINARY_PROBESET_CSV_FILE, ['AF', 'PS', 'SS'])
+    binary_probe_sets: list = read_probe_sets(BINARY_PROBESET_CSV_FILE, ['AF', 'MF', 'PS', 'SS'])
     print('\nReading trinary probe sets from csv...')
     trinary_probe_sets: list = read_probe_sets(TRINARY_PROBESET_CSV_FILE, ['AF', 'PS'])
     print(f"\nCreating synthetic ADM runs.")

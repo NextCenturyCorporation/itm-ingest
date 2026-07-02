@@ -6,7 +6,7 @@ from scipy.stats import pearsonr
 
 """
 For RQ2, ADMs were run on evaluation (hold-out) probes at a variety of alignment targets to collect probe responses.
-We post-construct N probe sets of 24 binary probes (8 probes per attribute, no MF) based on Latin square selection.
+We post-construct N probe sets of 32 binary probes (8 probes per attribute) based on Latin square selection.
 Separately, we post-construct N probe sets of 16 trinary probes (8 probes per attribute, AF & PS) based on random selection.
 This script just creates the binary probe sets, and outputs a csv file with the set information as input to the ingest script
 that will collect the ADM responses from the database and run aligned vs. baseline alignment comparison across targets
@@ -42,7 +42,7 @@ OUTPUT_CSV_FILENAME = os.path.join('phase2', EVAL_NAME, 'RQ2-probesets.csv')
 # These are default values that can be overridden via the command line
 NUM_SETS = 25
 VERBOSE = False # Useful for development and testing
-ATTRIBUTES = ['AF', 'SS', 'PS']
+ATTRIBUTES = ['MF', 'AF', 'SS', 'PS']
 WRITE_FILES = True
 
 # Convert Excel data to a list of buckets/bins
@@ -388,7 +388,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--numsets', type=int, required=False, default=NUM_SETS,
                         help=f"Number of sets (default {NUM_SETS})")
     parser.add_argument('-a', '--attribute', required=False, default=None,
-                        help='Attribute of the probe set to generate (AF, SS, or PS), or all by default')
+                        help='Attribute of the probe set to generate (AF, MF, SS, or PS), or all by default')
     parser.add_argument('-v', '--verbose', action='store_true', required=False, default=False,
                         help='Verbose logging')
     parser.add_argument('-no', '--no_output', action='store_true', required=False, default=False,
