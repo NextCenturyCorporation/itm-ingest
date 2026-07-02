@@ -27,6 +27,7 @@ TA1_NAME = 'adept'
 ADEPT_URL = config("ADEPT_URL")
 HIT_TA1_SERVER = True # Useful for testing or if you can't reach the TA1 server
 PROBES_PER_SET = 8
+PYTHON_CMD = 'python3'
 BINARY_PROBESET_CSV_FILE = os.path.join('phase2', EVALUATION_TYPE.lower(), 'RQ2-probesets.csv')
 TRINARY_PROBESET_CSV_FILE = os.path.join('phase2', EVALUATION_TYPE.lower(), 'RQ2-probesets-trinary.csv')
 
@@ -240,6 +241,10 @@ def create_synthetic_adm_runs(mongo_db, binary_probe_sets: list, trinary_probe_s
 
 
 def main(mongo_db):
+    print('Generating RQ2 probesets.')
+    os.system(f'{PYTHON_CMD} dev_scripts/gen_RQ2_probesets.py')
+    os.system(f'{PYTHON_CMD} dev_scripts/gen_RQ2_trinary_probesets.py')
+
     adm_collection = mongo_db['admTargetRuns']
     if WRITE_TO_DB:
         print('Deleting some bad/aborted ADMs and renaming some mis-named ADMs.')
