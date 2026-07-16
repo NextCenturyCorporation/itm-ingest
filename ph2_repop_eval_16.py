@@ -109,7 +109,7 @@ def process_text_scenarios(mongo_db):
                 f"Warning: Participant {participant_id} does not have expected AF-PS and MF-PS groupings. "
                 f"AF-PS: {len(af_ps_docs)}, MF-PS: {len(mf_ps_docs)}"
             )
-            continue
+            
 
         # --- combined session, seeded by the subpopulation scenario ---
         combined_sid = new_session()
@@ -145,7 +145,7 @@ def process_text_scenarios(mongo_db):
                 },
             )
 
-        # --- pair sessions ---
+        # pair sessions 
         process_pair(collection, "AF-PS", af_ps_docs)
         process_pair(collection, "MF-PS", mf_ps_docs)
 
@@ -404,7 +404,7 @@ def main(mongo_db):
     # re run humans
     process_text_scenarios(mongo_db) 
     # re run observed adms
-    run_obs(mongo_db)      
+    #run_obs(mongo_db)      
     #redo comparisons          
     gen_comp(mongo_db)
     # populates otherSubKDMA (used on participant-level)
