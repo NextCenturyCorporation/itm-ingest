@@ -25,8 +25,6 @@ def get_kdmas(session_id, enable_subpop=None):
 
 
 def most_least_aligned(session_id, targets, enable_subpop=None):
-    """One get_ordered_alignment call per target (targets=[None] == skipKdmaFilter).
-    Drops synthetic '-group-' rows exactly like the dashboard does."""
     responses = []
     for target in targets:
         params = {"session_id": session_id}
@@ -86,7 +84,7 @@ def process_text_scenarios(mongo_db):
     collection = mongo_db["userScenarioResults"]
     text_scenarios = list(collection.find({"evalNumber": EVAL_NUMBER}))
 
-    # group ALL docs by pid (subpopulation included -- it seeds the combined session)
+    # group ALL docs by pid
     participant_groups = defaultdict(list)
     for result in text_scenarios:
         participant_groups[result["participantID"]].append(result)
