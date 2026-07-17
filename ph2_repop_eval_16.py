@@ -404,7 +404,7 @@ def main(mongo_db):
     # re run humans
     process_text_scenarios(mongo_db) 
     # re run observed adms
-    #run_obs(mongo_db)      
+    run_obs(mongo_db)      
     #redo comparisons          
     gen_comp(mongo_db)
     # populates otherSubKDMA (used on participant-level)
