@@ -17,6 +17,78 @@ TAG_TO_COLOR = {
     "EXPECTANT": "gray",
 }
 
+EXPECTED_TAGS = {
+    "April2026-OW_desert2": {
+        "Patient 1": "DELAYED",       # Civilian 1
+        "Patient 2": "MINIMAL",       # Military 2
+        "Patient 3": "IMMEDIATE",     # Civilian 3
+        "Patient 4": "IMMEDIATE",     # Military 5
+        "Patient 5": "IMMEDIATE",     # Military 1
+        "Patient 6": "IMMEDIATE",     # Attacker 1
+        "Patient 7": "IMMEDIATE",     # Civilian 2
+        "Patient 8": "DELAYED",       # Attacker 2
+        "Patient 9": "IMMEDIATE",     # Military 4
+        "Patient 10": "IMMEDIATE",    # Military 3  (doc typo: Expectant)
+        "Patient 11": "DELAYED",      # Military 6
+        "Patient 12": "EXPECTANT",    # Military 7
+    },
+    "April2026-OW_urban2": {
+        "Patient 1": "DELAYED",       # US Military 3
+        "Patient 2": "EXPECTANT",     # Civilian 2
+        "Patient 3": "IMMEDIATE",     # Civilian 3
+        "Patient 4": "IMMEDIATE",     # US Military 4
+        "Patient 5": "DELAYED",       # US Military 1
+        "Patient 6": "IMMEDIATE",     # US Military 2
+        "Patient 7": "MINIMAL",       # Civilian 1
+        "Patient 8": "DELAYED",       # Shooter 1
+        "Patient 9": "IMMEDIATE",     # US Military 5
+        "Patient 10": "EXPECTANT",    # US Military 6
+    },
+    "Feb2026-OW_desert2": {
+        "Patient 1": "DELAYED",       # Civilian 1
+        "Patient 2": "MINIMAL",       # Military 2
+        "Patient 3": "IMMEDIATE",     # Civilian 3
+        "Patient 4": "IMMEDIATE",     # Military 5
+        "Patient 5": "IMMEDIATE",     # Military 1
+        "Patient 6": "IMMEDIATE",     # Attacker 1
+        "Patient 7": "IMMEDIATE",     # Civilian 2
+        "Patient 8": "DELAYED",       # Attacker 2
+        "Patient 9": "IMMEDIATE",     # Military 4
+        "Patient 10": "IMMEDIATE",    # Military 3  (doc typo: Expectant)
+    },
+    "Feb2026-OW_urban2": {
+        "Patient 1": "DELAYED",       # US Military 3
+        "Patient 2": "EXPECTANT",     # Civilian 2
+        "Patient 3": "IMMEDIATE",     # Civilian 3
+        "Patient 4": "IMMEDIATE",     # US Military 4
+        "Patient 5": "DELAYED",       # US Military 1
+        "Patient 6": "IMMEDIATE",     # US Military 2
+        "Patient 7": "MINIMAL",       # Civilian 1
+        "Patient 8": "DELAYED",       # Shooter 1
+    },
+    "June2025-OW_desert2": {
+        "Patient 1": "IMMEDIATE",     # US Military 1  (doc typo: Expectant)
+        "Patient 2": "IMMEDIATE",     # Civilian 1
+        "Patient 3": "DELAYED",       # Attacker 1
+        "Patient 4": "DELAYED",       # Civilian 3
+        "Patient 5": "IMMEDIATE",     # US Military 3
+        "Patient 6": "MINIMAL",       # US Military 4
+        "Patient 7": "DELAYED",       # Attacker 2
+        "Patient 8": "IMMEDIATE",     # US Military 2
+        "Patient 9": "IMMEDIATE",     # Civilian 2
+    },
+    "June2025-OW_urban2": {
+        "Patient 1": "DELAYED",       # US Military 1
+        "Patient 2": "IMMEDIATE",     # US Military 2
+        "Patient 3": "MINIMAL",       # Civilian 1
+        "Patient 4": "DELAYED",       # Shooter 1
+        "Patient 5": "DELAYED",       # US Military 3
+        "Patient 6": "EXPECTANT",     # Civilian 2
+        "Patient 7": "IMMEDIATE",     # Civilian 3
+        "Patient 8": "IMMEDIATE",     # US Military 4
+    },
+}
+
 ADM_NAMES_TO_REMOVE = [
     'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__b1d8c4e4-7677-4055-8576-6a6c59b11879',
     'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__bf666949-e21f-4085-9984-7ba78e19d5b4',
@@ -104,13 +176,26 @@ def scenario_patients(history):
     return []
 
 
+def applied_tags(actions):
+    # last tag category applied to each patient, keyed by patient id
+    last_category = {}
+
+    for action in actions:
+        if action["action_type"] != "TAG_CHARACTER":
+            continue
+        if action["category"]:
+            last_category[action["character"]] = action["category"].upper()
+
+    return last_category
+
+
 def patient_key(character, field):
     # builds keys for different fields
     return f"{character.replace(' ', '')}_{field}"
 
 
 def patient_order(actions, patients):
-    # 1-based rank of first treat/tag interaction; evac moves don't count
+    # 1-based rank of first interaction
     first_seen = {}
 
     for action in actions:
@@ -140,31 +225,55 @@ def patient_evac(actions, patients):
 
 def patient_tag(actions, patients):
     # color of the last tag applied to each patient, N/A if not tagged
-    last_category = {}
-
-    for action in actions:
-        if action["action_type"] != "TAG_CHARACTER":
-            continue
-        if action["category"]:
-            last_category[action["character"]] = action["category"]
+    tagged = applied_tags(actions)
 
     tags = {}
     for patient in patients:
-        category = last_category.get(patient)
+        category = tagged.get(patient)
         if category is None:
             color = "N/A"
         else:
             # unknown categories fall through as themselves so bad data is visible
-            color = TAG_TO_COLOR.get(category.upper(), category)
+            color = TAG_TO_COLOR.get(category, category)
         tags[patient_key(patient, "tag")] = color
 
     return tags
+
+
+def tag_accuracy(actions, patients, expected):
+    # fraction of patients tagged with their expected tag; untagged counts as wrong
+    if not expected:
+        return {"Tag_ACC": None}
+
+    tagged = applied_tags(actions)
+
+    scored = [p for p in patients if p in expected]
+    if not scored:
+        return {"Tag_ACC": None}
+
+    correct = sum(1 for p in scored if tagged.get(p) == expected[p])
+
+    return {"Tag_ACC": round(correct / len(scored), 4)}
+
+
+def tag_expectant(actions, patients, expected):
+    # yes if every expectant patient was tagged EXPECTANT, N/A if none exist
+    tagged = applied_tags(actions)
+
+    expectant = [p for p in patients if expected.get(p) == "EXPECTANT"]
+    if not expectant:
+        return {"Tag_Expectant": "N/A"}
+
+    hit = all(tagged.get(p) == "EXPECTANT" for p in expectant)
+
+    return {"Tag_Expectant": "yes" if hit else "no"}
 
 
 def process_adm(adm):
     history = adm.get("history") or []
     actions = patient_actions(history)
     patients = scenario_patients(history)
+    expected = EXPECTED_TAGS.get(adm.get("scenario"), {})
 
     action_analysis = {}
     # determine Patient{N}_order
@@ -173,6 +282,10 @@ def process_adm(adm):
     action_analysis.update(patient_evac(actions, patients))
     # Patient{N}_tag
     action_analysis.update(patient_tag(actions, patients))
+    # Tag_ACC
+    action_analysis.update(tag_accuracy(actions, patients, expected))
+    # Tag_Expectant
+    action_analysis.update(tag_expectant(actions, patients, expected))
 
     return action_analysis
 
