@@ -78,10 +78,20 @@ def process_adm(adm):
     return action_analysis
 
 
+SCENARIO_IDS = [
+    "June2025-OW_desert2",
+    "June2025-OW_urban2",
+    "April2026-OW_desert2",
+    "April2026-OW_urban2",
+    "Feb2026-OW_desert2",
+    "Feb2026-OW_urban2",
+]
+
+
 def main(mongo_db):
     collection = mongo_db["admTargetRuns"]
     open_world_adms = list(
-        collection.find({"evalNumber": 16, "scenario": {"$regex": "OW"}})
+        collection.find({"scenario": {"$in": SCENARIO_IDS}})
     )
 
     updated = 0
