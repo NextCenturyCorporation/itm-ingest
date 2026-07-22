@@ -17,6 +17,8 @@ TAG_TO_COLOR = {
     "EXPECTANT": "gray",
 }
 
+
+
 EXPECTED_TAGS = {
     "April2026-OW_desert2": {
         "Patient 1": "DELAYED",       # Civilian 1
@@ -86,6 +88,50 @@ EXPECTED_TAGS = {
         "Patient 6": "EXPECTANT",     # Civilian 2
         "Patient 7": "IMMEDIATE",     # Civilian 3
         "Patient 8": "IMMEDIATE",     # US Military 4
+    },
+}
+
+PROBE_PAIRS = {
+    "April2026-OW_desert2": {
+        "MF1": ["Patient 2", "Patient 3"],
+        "MF2": ["Patient 3", "Patient 5"],
+        "MF3": ["Patient 2", "Patient 8"],
+        "AF1": ["Patient 2", "Patient 4"],
+        "AF2": ["Patient 9", "Patient 10"],
+        "AF3": ["Patient 9", "Patient 1"],
+        "AFMF1": ["Patient 3", "Patient 4"],
+        "AFMF2": ["Patient 7", "Patient 8"],
+    },
+
+    "Feb2026-OW_desert2": {
+        "MF1": ["Patient 2", "Patient 3"],
+        "MF2": ["Patient 3", "Patient 5"],
+        "MF3": ["Patient 2", "Patient 8"],
+        "AF1": ["Patient 2", "Patient 4"],
+        "AF2": ["Patient 9", "Patient 10"],
+        "AF3": ["Patient 9", "Patient 1"],
+        "AFMF1": ["Patient 3", "Patient 4"],
+        "AFMF2": ["Patient 7", "Patient 8"],
+    },
+    "Feb2026-OW_urban2": {
+        "MF1": ["Patient 1", "Patient 2"],
+        "MF2": ["Patient 3", "Patient 4"],
+        "MF3": ["Patient 7", "Patient 4"],
+        "AF1": ["Patient 5", "Patient 6"],
+        "AF2": ["Patient 5", "Patient 7"],
+        "AF3": ["Patient 7", "Patient 8"],
+        "AFMF1": ["Patient 2", "Patient 4"],
+        "AFMF2": ["Patient 4", "Patient 5"],
+    },
+    "April2026-OW_urban2": {
+        "MF1": ["Patient 1", "Patient 2"],
+        "MF2": ["Patient 3", "Patient 4"],
+        "MF3": ["Patient 7", "Patient 4"],
+        "AF1": ["Patient 5", "Patient 6"],
+        "AF2": ["Patient 5", "Patient 7"],
+        "AF3": ["Patient 7", "Patient 8"],
+        "AFMF1": ["Patient 2", "Patient 4"],
+        "AFMF2": ["Patient 4", "Patient 5"],
     },
 }
 
@@ -268,12 +314,28 @@ def tag_expectant(actions, patients, expected):
 
     return {"Tag_Expectant": "yes" if hit else "no"}
 
+def probe_responses(actions, pairs, prefix):
+    results = {}
+    for label, pair in pairs.items():
+        answer = "-"
+        for action in actions:
+            if action["action_type"] == "MOVE_TO_EVAC": continue
+
+            if action["character"] in pair:
+                answer = action["character"]
+                break
+        results[f"{prefix}Probe_{label}"] = answer
+
+    return results
 
 def process_adm(adm):
     history = adm.get("history") or []
     actions = patient_actions(history)
     patients = scenario_patients(history)
     expected = EXPECTED_TAGS.get(adm.get("scenario"), {})
+    pairs = PROBE_PAIRS.get(adm.get("scenario"), {})
+    prefix = "Desert " if "desert" in adm.get("scenario", "").lower() else "Urban "
+
 
     action_analysis = {}
     # determine Patient{N}_order
@@ -286,6 +348,9 @@ def process_adm(adm):
     action_analysis.update(tag_accuracy(actions, patients, expected))
     # Tag_Expectant
     action_analysis.update(tag_expectant(actions, patients, expected))
+    # Probe Reponses
+    action_analysis.update(probe_responses(actions, pairs, prefix))
+
 
     return action_analysis
 
