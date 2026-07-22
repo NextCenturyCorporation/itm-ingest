@@ -322,7 +322,7 @@ def probe_responses(actions, pairs, prefix):
             if action["action_type"] == "MOVE_TO_EVAC": continue
 
             if action["character"] in pair:
-                answer = action["character"]
+                answer = "Patient A" if action["character"] == pair[0] else "Patient B"
                 break
         results[f"{prefix}Probe_{label}"] = answer
 
