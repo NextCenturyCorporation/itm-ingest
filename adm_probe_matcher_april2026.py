@@ -73,21 +73,27 @@ def process_adm(adm):
     # determine Patient{N}_order
     action_analysis.update(patient_order(actions))
     # Patient{N}_evac
-    action_analysis.update(patient_evac)
+    action_analysis.update(patient_evac(actions))
 
     return action_analysis
 
 
 def main(mongo_db):
+    collection = mongo_db["admTargetRuns"]
     open_world_adms = list(
-        mongo_db["admTargetRuns"].find({"evalNumber": 16, "scenario": {"$regex": "OW"}})
+        collection.find({"evalNumber": 16, "scenario": {"$regex": "OW"}})
     )
 
-    results = {}
+    updated = 0
     for adm in open_world_adms:
-        results[adm["_id"]] = process_adm(adm)
-
-    return results
+        action_analysis = process_adm(adm)
+        result = collection.update_one(
+            {"_id": adm["_id"]},
+            {"$set": {"actionAnalysis": action_analysis}},
+        )
+        updated += result.modified_count
+    
+    print(f"Updated actionAnalysis on {updated} of {len(open_world_adms)} documents")
 
 
 if __name__ == "__main__":
