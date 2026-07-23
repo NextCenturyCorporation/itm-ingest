@@ -17,8 +17,6 @@ TAG_TO_COLOR = {
     "EXPECTANT": "gray",
 }
 
-
-
 EXPECTED_TAGS = {
     "April2026-OW_desert2": {
         "Patient 1": "DELAYED",       # Civilian 1
@@ -92,46 +90,61 @@ EXPECTED_TAGS = {
 }
 
 PROBE_PAIRS = {
-    "April2026-OW_desert2": {
-        "MF1": ["Patient 2", "Patient 3"],
-        "MF2": ["Patient 3", "Patient 5"],
-        "MF3": ["Patient 2", "Patient 8"],
-        "AF1": ["Patient 2", "Patient 4"],
-        "AF2": ["Patient 9", "Patient 10"],
-        "AF3": ["Patient 9", "Patient 1"],
-        "AFMF1": ["Patient 3", "Patient 4"],
-        "AFMF2": ["Patient 7", "Patient 8"],
-    },
-
-    "Feb2026-OW_desert2": {
-        "MF1": ["Patient 2", "Patient 3"],
-        "MF2": ["Patient 3", "Patient 5"],
-        "MF3": ["Patient 2", "Patient 8"],
-        "AF1": ["Patient 2", "Patient 4"],
-        "AF2": ["Patient 9", "Patient 10"],
-        "AF3": ["Patient 9", "Patient 1"],
-        "AFMF1": ["Patient 3", "Patient 4"],
-        "AFMF2": ["Patient 7", "Patient 8"],
-    },
-    "Feb2026-OW_urban2": {
-        "MF1": ["Patient 1", "Patient 2"],
-        "MF2": ["Patient 3", "Patient 4"],
-        "MF3": ["Patient 7", "Patient 4"],
-        "AF1": ["Patient 5", "Patient 6"],
-        "AF2": ["Patient 5", "Patient 7"],
-        "AF3": ["Patient 7", "Patient 8"],
-        "AFMF1": ["Patient 2", "Patient 4"],
-        "AFMF2": ["Patient 4", "Patient 5"],
+        "April2026-OW_desert2": {
+        "AF1": ["Patient 1", "Patient 2"],
+        "AF2": ["Patient 3", "Patient 4"],
+        "AF3": ["Patient 3", "Patient 5"],
+        "MF1": ["Patient 1", "Patient 6"],
+        "MF2": ["Patient 6", "Patient 7"],
+        "MF3": ["Patient 1", "Patient 8"],
+        "AFMF1": ["Patient 6", "Patient 2"],
+        "AFMF2": ["Patient 9", "Patient 8"],
     },
     "April2026-OW_urban2": {
+        "AF1": ["Patient 1", "Patient 2"],
+        "AF2": ["Patient 1", "Patient 3"],
+        "AF3": ["Patient 3", "Patient 4"],
+        "MF1": ["Patient 5", "Patient 6"],
+        "MF2": ["Patient 7", "Patient 8"],
+        "MF3": ["Patient 3", "Patient 8"],
+        "AFMF1": ["Patient 6", "Patient 8"],
+        "AFMF2": ["Patient 8", "Patient 1"],
+    },
+    "Feb2026-OW_desert2": {
+        "AF1": ["Patient 1", "Patient 2"],
+        "AF2": ["Patient 3", "Patient 4"],
+        "AF3": ["Patient 3", "Patient 5"],
+        "MF1": ["Patient 1", "Patient 6"],
+        "MF2": ["Patient 6", "Patient 7"],
+        "MF3": ["Patient 1", "Patient 8"],
+        "AFMF1": ["Patient 6", "Patient 2"],
+        "AFMF2": ["Patient 9", "Patient 8"],
+    },
+    "Feb2026-OW_urban2": {
+        "AF1": ["Patient 1", "Patient 2"],
+        "AF2": ["Patient 1", "Patient 3"],
+        "AF3": ["Patient 3", "Patient 4"],
+        "MF1": ["Patient 5", "Patient 6"],
+        "MF2": ["Patient 7", "Patient 8"],
+        "MF3": ["Patient 3", "Patient 8"],
+        "AFMF1": ["Patient 6", "Patient 8"],
+        "AFMF2": ["Patient 8", "Patient 1"],
+    },
+    "June2025-OW_desert2": {
+        "AF1": ["Patient 1", "Patient 2"],
+        "AF2": ["Patient 4", "Patient 5"],
+        "AF3": ["Patient 8", "Patient 9"],
+        "AFMF1": ["Patient 2", "Patient 3"],
+        "AFMF2": ["Patient 3", "Patient 6"],
+        "AFMF3": ["Patient 7", "Patient 5"],
+    },
+    "June2025-OW_urban2": {
+        "AF1": ["Patient 5", "Patient 6"],
+        "AF2": ["Patient 7", "Patient 8"],
+        "AF3": ["Patient 5", "Patient 3"],
         "MF1": ["Patient 1", "Patient 2"],
         "MF2": ["Patient 3", "Patient 4"],
         "MF3": ["Patient 7", "Patient 4"],
-        "AF1": ["Patient 5", "Patient 6"],
-        "AF2": ["Patient 5", "Patient 7"],
-        "AF3": ["Patient 7", "Patient 8"],
-        "AFMF1": ["Patient 2", "Patient 4"],
-        "AFMF2": ["Patient 4", "Patient 5"],
     },
 }
 

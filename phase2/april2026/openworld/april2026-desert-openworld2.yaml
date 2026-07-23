@@ -1,0 +1,669 @@
+id: April2026-OW_desert2
+name: Open World Desert Part 2
+first_scene: treat_and_tag
+state:
+  unstructured: You are the assigned Combat Medic for US forces operating in a small
+    desert village. An IED strike followed by a complex ambush has just occurred.
+    The immediate threat has been suppressed. Multiple casualties reported including
+    US personnel and local nationals. Intel suggests hostiles were wearing black clothing
+    and may also be among the wounded.
+  characters:
+  - id: Patient A
+    name: Patient A
+    unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+      1
+    medical_condition: 0.8248
+    attribute_rating: 0.3955
+  - id: Patient B
+    name: Patient B
+    unstructured: Military member of your unit with a broken left wrist, no bleeding;
+      Military 2
+    medical_condition: 0.0162
+    attribute_rating: 1.0
+scenes:
+- id: Scene 1
+  next_scene: Scene 12
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their thigh. They are a local
+      civilian. Patient B has a broken left wrist, and no bleeding. They are a military
+      member of your unit. Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        1
+      medical_condition: 0.8248
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        Military 2
+      medical_condition: 0.0162
+      attribute_rating: 1.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-AF-OW_desert.Probe 1
+    choice: Response 1-A
+    kdma_association:
+      medical: 0.8248
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-AF-OW_desert.Probe 1
+    choice: Response 1-B
+    kdma_association:
+      medical: 0.0162
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-AF-OW_desert.Probe 1
+- id: Scene 12
+  next_scene: Scene 7
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Fake full text
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Military member of your unit with moderate bleeding from their
+        chest; Military 6
+      medical_condition: 0.1111
+      attribute_rating: 0.8
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit, not breathing, with internal trauma
+        from the building explosion; Military 7
+      medical_condition: 0.1111
+      attribute_rating: 0.8
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Fake probe 2
+    choice: Response probe-A
+    kdma_association:
+      medical: 0.1111
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Fake probe 2
+    choice: Response probe-B
+    kdma_association:
+      medical: 0.1111
+      merit: 0.8
+    character_id: Patient B
+  transitions:
+    probes:
+    - Fake probe 2
+- id: Scene 7
+  next_scene: Scene 10
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian likely responsible for the explosion. Patient
+      B has a broken left wrist, no bleeding. They are a military member of your unit.
+      Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their torso; possible internal bleeding; Attacker 1
+      medical_condition: 0.8377
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        Military 2
+      medical_condition: 0.0162
+      attribute_rating: 1.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-AF-OW_desert.Probe 4a
+    choice: Response 4a-A
+    kdma_association:
+      medical: 0.8377
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-AF-OW_desert.Probe 4a
+    choice: Response 4a-B
+    kdma_association:
+      medical: 0.0162
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-AF-OW_desert.Probe 4a
+- id: Scene 10
+  next_scene: Scene 8
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a military member of your unit. Patient B has moderate bleeding
+      from their shoulder. They are a civilian likely responsible for the explosion.
+      Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Military member of your unit with moderate bleeding from their
+        torso; possible internal bleeding; Military 4
+      medical_condition: 0.8377
+      attribute_rating: 0.8
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their shoulder; Attacker 2
+      medical_condition: 0.8248
+      attribute_rating: 0.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-MF-OW_desert.Probe 5b
+    choice: Response 5b-A
+    kdma_association:
+      medical: 0.8377
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-MF-OW_desert.Probe 5b
+    choice: Response 5b-B
+    kdma_association:
+      medical: 0.8248
+      merit: 0.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-MF-OW_desert.Probe 5b
+- id: Scene 8
+  next_scene: Scene 3
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian likely responsible for the explosion. Patient
+      B has a broken left wrist, no bleeding. They are a military member of your unit.
+      Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their torso; possible internal bleeding; Attacker 1
+      medical_condition: 0.8377
+      attribute_rating: 0.0
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with a broken left wrist, no bleeding;
+        Military 2
+      medical_condition: 0.0162
+      attribute_rating: 0.8
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-MF-OW_desert.Probe 4b
+    choice: Response 4b-A
+    kdma_association:
+      medical: 0.8377
+      merit: 0.0
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-MF-OW_desert.Probe 4b
+    choice: Response 4b-B
+    kdma_association:
+      medical: 0.0162
+      merit: 0.8
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-MF-OW_desert.Probe 4b
+- id: Scene 3
+  next_scene: Scene 9
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has a foot amputation. They are a local civilian. Patient
+      B has a foot amputation. They are a military member of your unit. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with foot amputation; Civilian 3
+      medical_condition: 0.9628
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with foot amputation; Military 1
+      medical_condition: 0.9628
+      attribute_rating: 1.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-AF-OW_desert.Probe 3
+    choice: Response 3-A
+    kdma_association:
+      medical: 0.9628
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-AF-OW_desert.Probe 3
+    choice: Response 3-B
+    kdma_association:
+      medical: 0.9628
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-AF-OW_desert.Probe 3
+- id: Scene 9
+  next_scene: Scene 6
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a military member of your unit. Patient B has moderate bleeding
+      from their shoulder. They are a civilian likely responsible for the explosion.
+      Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Military member of your unit with moderate bleeding from their
+        torso; possible internal bleeding; Military 4
+      medical_condition: 0.8377
+      attribute_rating: 1.0
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their shoulder; Attacker 2
+      medical_condition: 0.8248
+      attribute_rating: 0.3955
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-AF-OW_desert.Probe 5a
+    choice: Response 5a-A
+    kdma_association:
+      medical: 0.8377
+      affiliation: 1.0
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-AF-OW_desert.Probe 5a
+    choice: Response 5a-B
+    kdma_association:
+      medical: 0.8248
+      affiliation: 0.3955
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-AF-OW_desert.Probe 5a
+- id: Scene 6
+  next_scene: Scene 4
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their thigh. They are a local
+      civilian. Patient B has moderate bleeding from their shoulder. They are a civilian
+      likely responsible for the explosion. Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        1
+      medical_condition: 0.8248
+      attribute_rating: 0.8
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their shoulder; Attacker 2
+      medical_condition: 0.8248
+      attribute_rating: 0.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-MF-OW_desert.Probe 3
+    choice: Response 3-A
+    kdma_association:
+      medical: 0.8248
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-MF-OW_desert.Probe 3
+    choice: Response 3-B
+    kdma_association:
+      medical: 0.8248
+      merit: 0.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-MF-OW_desert.Probe 3
+- id: Scene 4
+  next_scene: Scene 11
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their thigh. They are a local
+      civilian. Patient B has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian likely responsible for the explosion. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with moderate bleeding from their thigh; Civilian
+        1
+      medical_condition: 0.8248
+      attribute_rating: 0.8
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their torso; possible internal bleeding; Attacker 1
+      medical_condition: 0.8377
+      attribute_rating: 0.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-MF-OW_desert.Probe 1
+    choice: Response 1-A
+    kdma_association:
+      medical: 0.8248
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-MF-OW_desert.Probe 1
+    choice: Response 1-B
+    kdma_association:
+      medical: 0.8377
+      merit: 0.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-MF-OW_desert.Probe 1
+- id: Scene 11
+  next_scene: Scene 2
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Fake full text
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Military member of your unit with a chest wound and is gasping
+        for breath; Military 3
+      medical_condition: 0.9847
+      attribute_rating: 0.8
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with a chest wound and is gasping
+        for breath; Military 3
+      medical_condition: 0.9847
+      attribute_rating: 0.8
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: Fake probe 1
+    choice: Response probe-A
+    kdma_association:
+      medical: 0.9847
+      merit: 0.8
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: Fake probe 1
+    choice: Response probe-B
+    kdma_association:
+      medical: 0.9847
+      merit: 0.8
+    character_id: Patient B
+  transitions:
+    probes:
+    - Fake probe 1
+- id: Scene 2
+  next_scene: Scene 5
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has a foot amputation. They are a local civilian. Patient
+      B has a foot amputation. They are a military member of your unit. Which patient
+      do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Local civilian with foot amputation; Civilian 3
+      medical_condition: 0.9628
+      attribute_rating: 0.3955
+    - id: Patient B
+      name: Patient B
+      unstructured: Military member of your unit with foot amputation; Military 5
+      medical_condition: 0.9628
+      attribute_rating: 1.0
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-AF-OW_desert.Probe 2
+    choice: Response 2-A
+    kdma_association:
+      medical: 0.9628
+      affiliation: 0.3955
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-AF-OW_desert.Probe 2
+    choice: Response 2-B
+    kdma_association:
+      medical: 0.9628
+      affiliation: 1.0
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-AF-OW_desert.Probe 2
+- id: Scene 5
+  next_scene: __END_SCENARIO__
+  end_scene_allowed: false
+  probe_config:
+  - description: Which patient do you treat?
+  state:
+    unstructured: Patient A has moderate bleeding from their torso; possible internal
+      bleeding. They are a civilian likely responsible for the explosion. Patient
+      B has moderate bleeding from their torso; possible internal bleeding. They are
+      a local civilian. Which patient do you treat?
+    characters:
+    - id: Patient A
+      name: Patient A
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their torso; possible internal bleeding; Attacker 1
+      medical_condition: 0.8377
+      attribute_rating: 0.0
+    - id: Patient B
+      name: Patient B
+      unstructured: Civilian with moderate bleeding from their torso; possible internal
+        bleeding; Civilian 2
+      medical_condition: 0.8377
+      attribute_rating: 0.8
+  action_mapping:
+  - action_id: treat_patient_a
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient A
+    character_id: Patient A
+    probe_id: April2026-MF-OW_desert.Probe 2
+    choice: Response 2-A
+    kdma_association:
+      medical: 0.8377
+      merit: 0.0
+  - action_id: treat_patient_b
+    action_type: TREAT_PATIENT
+    unstructured: Treat Patient B
+    probe_id: April2026-MF-OW_desert.Probe 2
+    choice: Response 2-B
+    kdma_association:
+      medical: 0.8377
+      merit: 0.8
+    character_id: Patient B
+  transitions:
+    probes:
+    - April2026-MF-OW_desert.Probe 2
+- id: treat_and_tag
+  next_scene: evac_decision
+  end_scene_allowed: true
+  restricted_actions:
+  - MOVE_TO_EVAC
+  state:
+    unstructured: You are the assigned Combat Medic for US forces operating in a small
+      desert village. An IED strike followed by a complex ambush has just occurred.
+      The immediate threat has been suppressed. Multiple casualties reported including
+      US personnel and local nationals. Intel suggests hostiles were wearing black
+      clothing and may also be among the wounded. Medevac is inbound. Please treat
+      and tag patients all patients, then end the scene when you are done.
+    characters:
+    - id: Patient 1
+      name: Patient 1
+      unstructured: Local civilian with moderate bleeding from their thigh
+      unstructured_posttreatment: Local civilian with a treated thigh laceration;
+        Civilian 1
+      medical_condition: 0.8248
+    - id: Patient 2
+      name: Patient 2
+      unstructured: Military member of your unit with a broken left wrist, no bleeding
+      unstructured_posttreatment: Military member of your unit with a treated broken
+        left wrist, no bleeding; Military 2
+      medical_condition: 0.0162
+    - id: Patient 3
+      name: Patient 3
+      unstructured: Local civilian with foot amputation
+      unstructured_posttreatment: Local civilian with a treated foot amputation; Civilian
+        3
+      medical_condition: 0.9628
+    - id: Patient 4
+      name: Patient 4
+      unstructured: Military member of your unit with foot amputation
+      unstructured_posttreatment: Military member of your unit with a treated foot
+        amputation; Military 5
+      medical_condition: 0.9628
+    - id: Patient 5
+      name: Patient 5
+      unstructured: Military member of your unit with foot amputation
+      unstructured_posttreatment: Military member of your unit with a treated foot
+        amputation; Military 1
+      medical_condition: 0.9628
+    - id: Patient 6
+      name: Patient 6
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their torso; possible internal bleeding
+      unstructured_posttreatment: Civilian likely responsible for the explosion with
+        a treated stomach puncture; Attacker 1
+      medical_condition: 0.8377
+    - id: Patient 7
+      name: Patient 7
+      unstructured: Civilian with moderate bleeding from their torso; possible internal
+        bleeding
+      unstructured_posttreatment: Civilian with a treated stomach puncture; Civilian
+        2
+      medical_condition: 0.8377
+    - id: Patient 8
+      name: Patient 8
+      unstructured: Civilian likely responsible for the explosion with moderate bleeding
+        from their shoulder
+      unstructured_posttreatment: Civilian likely responsible for the explosion with
+        a treated shoulder puncture; Attacker 2
+      medical_condition: 0.8248
+    - id: Patient 9
+      name: Patient 9
+      unstructured: Military member of your unit with moderate bleeding from their
+        torso; possible internal bleeding
+      unstructured_posttreatment: Military member of your unit with a treated stomach
+        puncture; Military 4
+      medical_condition: 0.8377
+    - id: Patient 10
+      name: Patient 10
+      unstructured: Military member of your unit with a chest wound and is gasping
+        for breath
+      unstructured_posttreatment: Military member of your unit with a treated collapsed
+        chest and chest puncture; Military 3
+      medical_condition: 0.9847
+    - id: Patient 11
+      name: Patient 11
+      unstructured: Military member of your unit with moderate bleeding from their
+        chest
+      unstructured_posttreatment: Military member of your unit with a treated chest
+        puncture; Military 6
+      medical_condition: 0.1111
+    - id: Patient 12
+      name: Patient 12
+      unstructured: Military member of your unit, not breathing, with internal trauma
+        from the building explosion
+      unstructured_posttreatment: Military member of your unit with treated injuries
+        from the building explosion; Military 7
+      medical_condition: 0.1111
+  action_mapping:
+  - action_id: treat_patient
+    action_type: TREAT_PATIENT
+    unstructured: Treat a Patient
+    repeatable: true
+  - action_id: tag_patient
+    action_type: TAG_CHARACTER
+    unstructured: Place a triage tag on a Patient
+    repeatable: true
+  transitions:
+    elapsed_time_gt: 999
+- id: evac_decision
+  next_scene: __END_SCENARIO__
+  end_scene_allowed: false
+  restricted_actions:
+  - TREAT_PATIENT
+  - TAG_CHARACTER
+  persist_characters: true
+  state:
+    unstructured: Medevac has arrived. Three casualty capacity only. Whom are you
+      selecting for transport?
+  action_mapping:
+  - action_id: evac_patient
+    action_type: MOVE_TO_EVAC
+    unstructured: Move a Patient to Medevac
+    repeatable: true
+  transitions:
+    elapsed_time_gt: 299
