@@ -1,5 +1,6 @@
 from decouple import config
 from typing import Any
+import re
 
 SCENARIO_IDS = [
     "June2025-OW_desert2",
@@ -264,6 +265,45 @@ def print_matching_documents(collection: Any, query: dict[str, Any]) -> None:
             f"adm_name={doc.get('adm_name')}"
         )
 
+CATEGORY_WORDS = ("IMMEDIATE", "DELAYED", "MINIMAL", "EXPECTANT")
+
+
+def justification_tag(actions, patients):
+    '''
+    Full disclosure, this is clearly a flawed approach but the best I could come up with.
+    I scan the justification for matches to the tag names, the last occurence is marked as 
+    the justification tag (since this often does not align with the actual tag selected).
+    I have a loose notion of ambiguity accounted for that gets flagged if we match to more than
+    one word. Not great, but hopefully provides some usefulness.
+    '''
+    last_tag_justification = {}
+    for action in actions:
+        if action["action_type"] == "TAG_CHARACTER" and action.get("justification"):
+            last_tag_justification[action["character"]] = action["justification"]
+
+    result = {}
+    for patient in sorted(patients, key=_patient_sort_key):
+        just = last_tag_justification.get(patient)
+        found = re.findall(r"\b(" + "|".join(CATEGORY_WORDS) + r")\b",
+                           (just or "").upper())
+
+        if not just:
+            # no tag
+            color = "N/A"
+        elif not found:
+            # justification doesn't say any of the keywords
+            color = "none"         
+        else:
+            #grab last occurence of a keyword. From reading a few, the adm kinda talks itself to a conclusion.
+            category = found[-1]
+            color = TAG_TO_COLOR.get(category, category)
+
+        distinct = len(set(found))
+        result[patient_key(patient, "Justification_Tag")] = color
+        result[patient_key(patient, "Justification_Tag_Ambiguous")] = 1 if distinct > 1 else 0
+
+    return result
+
 def patient_actions(history, scene_id=None, action_types=None, exclude_types=None, remap=None):
     # parses history to extract all actions involving patient, will be used for multiple fields
     actions = []
@@ -400,7 +440,7 @@ def patient_treat_before_tag(actions, patients):
     # 1 if the patient's first treatment came before their first tag, else 0
     first_treat = {}
     first_tag = {}
-    
+
     for idx, action in enumerate(actions):
         character = action["character"]
         if action["action_type"] == "TREAT_PATIENT":
@@ -465,6 +505,8 @@ def process_adm(adm):
     action_analysis.update(patient_tag(actions, patients))
     # Patient{N}_Treat_Before_Tag
     action_analysis.update(patient_treat_before_tag(actions, patients))
+    # Patient{N}_Justification_Tag
+    action_analysis.update(justification_tag(actions, patients))
     # Tag_ACC
     action_analysis.update(tag_accuracy(actions, patients, expected))
     # Tag_Expectant
