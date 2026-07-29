@@ -396,6 +396,28 @@ def tag_accuracy(actions, patients, expected):
 
     return {"Tag_ACC": round(correct / len(scored), 4)}
 
+def patient_treat_before_tag(actions, patients):
+    # 1 if the patient's first treatment came before their first tag, else 0
+    first_treat = {}
+    first_tag = {}
+    
+    for idx, action in enumerate(actions):
+        character = action["character"]
+        if action["action_type"] == "TREAT_PATIENT":
+            first_treat.setdefault(character, idx)
+        elif action["action_type"] == "TAG_CHARACTER":
+            first_tag.setdefault(character, idx)
+
+    result = {}
+
+    for patient in sorted(patients, key=_patient_sort_key):
+        treat = first_treat.get(patient)
+        tag = first_tag.get(patient)
+        hit = treat is not None and (tag is None or treat < tag)
+        result[patient_key(patient, "Treat_Before_Tag")] = 1 if hit else 0
+
+    return result
+
 
 def tag_expectant(actions, patients, expected):
     # yes if every expectant patient was tagged EXPECTANT, N/A if none exist
@@ -441,6 +463,8 @@ def process_adm(adm):
     action_analysis.update(patient_evac(actions, patients))
     # Patient{N}_tag
     action_analysis.update(patient_tag(actions, patients))
+    # Patient{N}_Treat_Before_Tag
+    action_analysis.update(patient_treat_before_tag(actions, patients))
     # Tag_ACC
     action_analysis.update(tag_accuracy(actions, patients, expected))
     # Tag_Expectant
