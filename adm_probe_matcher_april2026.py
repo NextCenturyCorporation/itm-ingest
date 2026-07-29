@@ -19,73 +19,145 @@ TAG_TO_COLOR = {
 
 EXPECTED_TAGS = {
     "April2026-OW_desert2": {
-        "Patient 1": "DELAYED",       # Civilian 1
-        "Patient 2": "MINIMAL",       # Military 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # Military 5
-        "Patient 5": "IMMEDIATE",     # Military 1
-        "Patient 6": "IMMEDIATE",     # Attacker 1
-        "Patient 7": "IMMEDIATE",     # Civilian 2
+        "Patient 1": "IMMEDIATE",     # Military 1
+        "Patient 2": "DELAYED",       # Civilian 1
+        "Patient 3": "IMMEDIATE",     # Attacker 1
+        "Patient 4": "MINIMAL",       # Military 2
+        "Patient 5": "IMMEDIATE",     # Civilian 2
+        "Patient 6": "EXPECTANT",     # Military 3
+        "Patient 7": "IMMEDIATE",     # Military 4
         "Patient 8": "DELAYED",       # Attacker 2
-        "Patient 9": "IMMEDIATE",     # Military 4
-        "Patient 10": "IMMEDIATE",    # Military 3  (doc typo: Expectant)
+        "Patient 9": "IMMEDIATE",     # Civilian 3
+        "Patient 10": "IMMEDIATE",    # Military 5
         "Patient 11": "DELAYED",      # Military 6
         "Patient 12": "EXPECTANT",    # Military 7
     },
     "April2026-OW_urban2": {
-        "Patient 1": "DELAYED",       # US Military 3
-        "Patient 2": "EXPECTANT",     # Civilian 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # US Military 4
-        "Patient 5": "DELAYED",       # US Military 1
-        "Patient 6": "IMMEDIATE",     # US Military 2
-        "Patient 7": "MINIMAL",       # Civilian 1
-        "Patient 8": "DELAYED",       # Shooter 1
-        "Patient 9": "IMMEDIATE",     # US Military 5
-        "Patient 10": "EXPECTANT",    # US Military 6
-    },
-    "Feb2026-OW_desert2": {
-        "Patient 1": "DELAYED",       # Civilian 1
-        "Patient 2": "MINIMAL",       # Military 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # Military 5
-        "Patient 5": "IMMEDIATE",     # Military 1
-        "Patient 6": "IMMEDIATE",     # Attacker 1
-        "Patient 7": "IMMEDIATE",     # Civilian 2
-        "Patient 8": "DELAYED",       # Attacker 2
-        "Patient 9": "IMMEDIATE",     # Military 4
-        "Patient 10": "IMMEDIATE",    # Military 3  (doc typo: Expectant)
-    },
-    "Feb2026-OW_urban2": {
-        "Patient 1": "DELAYED",       # US Military 3
-        "Patient 2": "EXPECTANT",     # Civilian 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # US Military 4
-        "Patient 5": "DELAYED",       # US Military 1
-        "Patient 6": "IMMEDIATE",     # US Military 2
-        "Patient 7": "MINIMAL",       # Civilian 1
-        "Patient 8": "DELAYED",       # Shooter 1
-    },
-    "June2025-OW_desert2": {
-        "Patient 1": "IMMEDIATE",     # US Military 1  (doc typo: Expectant)
-        "Patient 2": "IMMEDIATE",     # Civilian 1
-        "Patient 3": "DELAYED",       # Attacker 1
-        "Patient 4": "DELAYED",       # Civilian 3
-        "Patient 5": "IMMEDIATE",     # US Military 3
-        "Patient 6": "MINIMAL",       # US Military 4
-        "Patient 7": "DELAYED",       # Attacker 2
-        "Patient 8": "IMMEDIATE",     # US Military 2
-        "Patient 9": "IMMEDIATE",     # Civilian 2
-    },
-    "June2025-OW_urban2": {
-        "Patient 1": "DELAYED",       # US Military 1
-        "Patient 2": "IMMEDIATE",     # US Military 2
-        "Patient 3": "MINIMAL",       # Civilian 1
+        "Patient 1": "DELAYED",       # Military 1
+        "Patient 2": "IMMEDIATE",     # Military 2
+        "Patient 3": "MINIMAL",     # Civilian 1
         "Patient 4": "DELAYED",       # Shooter 1
-        "Patient 5": "DELAYED",       # US Military 3
+        "Patient 5": "DELAYED",       # Military 3
         "Patient 6": "EXPECTANT",     # Civilian 2
         "Patient 7": "IMMEDIATE",     # Civilian 3
-        "Patient 8": "IMMEDIATE",     # US Military 4
+        "Patient 8": "IMMEDIATE",     # Military 4
+        "Patient 9": "IMMEDIATE",     # Military 5
+        "Patient 10": "EXPECTANT",    # Military 6
+    },
+    "Feb2026-OW_desert2": {
+        "Patient 1": "IMMEDIATE",     # Military 1
+        "Patient 2": "DELAYED",       # Civilian 1
+        "Patient 3": "IMMEDIATE",     # Attacker 1
+        "Patient 4": "MINIMAL",       # Military 2
+        "Patient 5": "IMMEDIATE",     # Civilian 2
+        "Patient 6": "EXPECTANT",     # Military 3
+        "Patient 7": "IMMEDIATE",     # Military 4
+        "Patient 8": "DELAYED",       # Attacker 2
+        "Patient 9": "IMMEDIATE",     # Civilian 3
+        "Patient 10": "IMMEDIATE",    # Military 5
+    },
+    "Feb2026-OW_urban2": {
+        "Patient 1": "DELAYED",       # Military 1
+        "Patient 2": "IMMEDIATE",     # Military 2
+        "Patient 3": "MINIMAL",     # Civilian 1
+        "Patient 4": "DELAYED",       # Shooter 1
+        "Patient 5": "DELAYED",       # Military 3
+        "Patient 6": "EXPECTANT",     # Civilian 2
+        "Patient 7": "IMMEDIATE",     # Civilian 3
+        "Patient 8": "IMMEDIATE",     # Military 4
+    },
+    "June2025-OW_desert2": {
+        "Patient 1": "EXPECTANT",     # Military 1
+        "Patient 2": "IMMEDIATE",     # Civilian 1
+        "Patient 3": "DELAYED",       # Attacker 1
+        "Patient 4": "IMMEDIATE",     # Military 2
+        "Patient 5": "IMMEDIATE",     # Civilian 2
+        "Patient 6": "DELAYED",       # Attacker 2
+        "Patient 7": "DELAYED",       # Civilian 3
+        "Patient 8": "IMMEDIATE",     # Military 3
+        "Patient 9": "MINIMAL",       # Military 4
+    },
+    "June2025-OW_urban2": {
+        "Patient 1": "DELAYED",       # Military 1
+        "Patient 2": "IMMEDIATE",     # Military 2
+        "Patient 3": "MINIMAL",     # Civilian 1
+        "Patient 4": "DELAYED",       # Shooter 1
+        "Patient 5": "DELAYED",       # Military 3
+        "Patient 6": "EXPECTANT",     # Civilian 2
+        "Patient 7": "IMMEDIATE",     # Civilian 3
+        "Patient 8": "IMMEDIATE",     # Military 4
+    },
+}
+
+PATIENT_REMAP = {
+    "April2026-OW_desert2": {
+        "Patient 1": "Patient 2",         # Civilian 1
+        "Patient 2": "Patient 4",         # Military 2
+        "Patient 3": "Patient 9",         # Civilian 3
+        "Patient 4": "Patient 10",        # Military 5
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 3",         # Attacker 1
+        "Patient 7": "Patient 5",         # Civilian 2
+        "Patient 8": "Patient 8",         # Attacker 2
+        "Patient 9": "Patient 7",         # Military 4
+        "Patient 10": "Patient 6",        # Military 3
+        "Patient 11": "Patient 11",       # Military 6
+        "Patient 12": "Patient 12",       # Military 7
+    },
+    "April2026-OW_urban2": {
+        "Patient 1": "Patient 5",         # Military 3
+        "Patient 2": "Patient 6",         # Civilian 2
+        "Patient 3": "Patient 7",         # Civilian 3
+        "Patient 4": "Patient 8",         # Military 4
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 2",         # Military 2
+        "Patient 7": "Patient 3",         # Civilian 1
+        "Patient 8": "Patient 4",         # Shooter 1
+        "Patient 9": "Patient 9",         # Military 5
+        "Patient 10": "Patient 10",       # Military 6
+    },
+    "Feb2026-OW_desert2": {
+        "Patient 1": "Patient 2",         # Civilian 1
+        "Patient 2": "Patient 4",         # Military 2
+        "Patient 3": "Patient 9",         # Civilian 3
+        "Patient 4": "Patient 10",        # Military 5
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 3",         # Attacker 1
+        "Patient 7": "Patient 5",         # Civilian 2
+        "Patient 8": "Patient 8",         # Attacker 2
+        "Patient 9": "Patient 7",         # Military 4
+        "Patient 10": "Patient 6",        # Military 3
+    },
+    "Feb2026-OW_urban2": {
+        "Patient 1": "Patient 5",         # Military 3
+        "Patient 2": "Patient 6",         # Civilian 2
+        "Patient 3": "Patient 7",         # Civilian 3
+        "Patient 4": "Patient 8",         # Military 4
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 2",         # Military 2
+        "Patient 7": "Patient 3",         # Civilian 1
+        "Patient 8": "Patient 4",         # Shooter 1
+    },
+    "June2025-OW_desert2": {
+        "Patient 1": "Patient 1",         # Military 1
+        "Patient 2": "Patient 2",         # Civilian 1
+        "Patient 3": "Patient 3",         # Attacker 1
+        "Patient 4": "Patient 7",         # Civilian 3
+        "Patient 5": "Patient 8",         # Military 3
+        "Patient 6": "Patient 9",         # Military 4
+        "Patient 7": "Patient 6",         # Attacker 2
+        "Patient 8": "Patient 4",         # Military 2
+        "Patient 9": "Patient 5",         # Civilian 2
+    },
+    "June2025-OW_urban2": {
+        "Patient 1": "Patient 1",         # Military 1
+        "Patient 2": "Patient 2",         # Military 2
+        "Patient 3": "Patient 3",         # Civilian 1
+        "Patient 4": "Patient 4",         # Shooter 1
+        "Patient 5": "Patient 5",         # Military 3
+        "Patient 6": "Patient 6",         # Civilian 2
+        "Patient 7": "Patient 7",         # Civilian 3
+        "Patient 8": "Patient 8",         # Military 4
     },
 }
 
@@ -192,7 +264,7 @@ def print_matching_documents(collection: Any, query: dict[str, Any]) -> None:
             f"adm_name={doc.get('adm_name')}"
         )
 
-def patient_actions(history, scene_id=None, action_types=None, exclude_types=None):
+def patient_actions(history, scene_id=None, action_types=None, exclude_types=None, remap=None):
     # parses history to extract all actions involving patient, will be used for multiple fields
     actions = []
 
@@ -216,6 +288,9 @@ def patient_actions(history, scene_id=None, action_types=None, exclude_types=Non
             if meta.get("scene_id") != scene_id:
                 continue
 
+        if remap is not None:
+            character = remap.get(character, character)
+
         actions.append({
             "character": character,
             "action_type": action_type,
@@ -226,12 +301,16 @@ def patient_actions(history, scene_id=None, action_types=None, exclude_types=Non
     return actions
 
 
-def scenario_patients(history):
-    # ordered list of patient ids from the initial scenario roster
+def scenario_patients(history, remap=None):
+    # ordered list of patient ids from the initial scenario roster,
+    # translated to corrected patient numbers when a remap is supplied
     for entry in history or []:
         if entry.get("command") == "Start Scenario":
             state = (entry.get("response") or {}).get("state") or {}
-            return [c["id"] for c in state.get("characters") or [] if c.get("id")]
+            ids = [c["id"] for c in state.get("characters") or [] if c.get("id")]
+            if remap is not None:
+                ids = [remap.get(pid, pid) for pid in ids]
+            return ids
     return []
 
 
@@ -342,11 +421,13 @@ def probe_responses(actions, pairs, prefix):
     return results
 
 def process_adm(adm):
+    scenario = adm.get("scenario", "")
     history = adm.get("history") or []
-    actions = patient_actions(history)
-    patients = scenario_patients(history)
-    expected = EXPECTED_TAGS.get(adm.get("scenario"), {})
-    pairs = PROBE_PAIRS.get(adm.get("scenario"), {})
+    remap = PATIENT_REMAP.get(scenario, {})
+    actions = patient_actions(history, remap=remap)
+    patients = scenario_patients(history, remap=remap)
+    expected = EXPECTED_TAGS.get(scenario, {})
+    pairs = PROBE_PAIRS.get(scenario, {})
     prefix = "Desert " if "desert" in adm.get("scenario", "").lower() else "Urban "
 
 
