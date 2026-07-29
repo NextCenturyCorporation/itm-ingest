@@ -331,6 +331,9 @@ def patient_key(character, field):
     # builds keys for different fields
     return f"{character.replace(' ', '')}_{field}"
 
+def _patient_sort_key(patient):
+    # "Patient 10" -> 10, so ordering is numeric not lexical
+    return int(patient.split()[-1])
 
 def patient_order(actions, patients):
     # 1-based rank of first interaction
@@ -343,7 +346,7 @@ def patient_order(actions, patients):
 
     return {
         patient_key(patient, "order"): first_seen.get(patient)
-        for patient in patients
+        for patient in sorted(patients, key=_patient_sort_key)
     }
 
 
@@ -357,7 +360,7 @@ def patient_evac(actions, patients):
 
     return {
         patient_key(patient, "evac"): 1 if patient in evacuated else 0
-        for patient in patients
+        for patient in sorted(patients, key=_patient_sort_key)
     }
 
 
@@ -366,7 +369,7 @@ def patient_tag(actions, patients):
     tagged = applied_tags(actions)
 
     tags = {}
-    for patient in patients:
+    for patient in sorted(patients, key=_patient_sort_key):
         category = tagged.get(patient)
         if category is None:
             color = "N/A"
@@ -483,12 +486,13 @@ def delete_adms(collection, write_to_db=True, verbose=True):
 
     print("Cleanup complete. No matching unwanted ADM documents remain.")
 
-def main(mongo_db, delete_bad_adms=False):
+def main(mongo_db):
     collection = mongo_db["admTargetRuns"]
-    delete_adms(collection, delete_bad_adms)
+    delete_adms(collection)
     open_world_adms = list(collection.find({"scenario": {"$in": SCENARIO_IDS}}))
 
     updated = 0
+    unchanged = []
 
     for adm in open_world_adms:
         action_analysis = process_adm(adm)
@@ -497,9 +501,14 @@ def main(mongo_db, delete_bad_adms=False):
             {"_id": adm["_id"]},
             {"$set": {"actionAnalysis": action_analysis}},
         )
-        updated += result.modified_count
 
-    print(f"Updated actionAnalysis on {updated} of {len(open_world_adms)} documents")
+        if result.modified_count:
+            updated += 1
+        else:
+            unchanged.append(adm)
+
+    matched = len(open_world_adms)
+    print(f"Matched {matched}, modified {updated}, unchanged {len(unchanged)}")
 
 
 if __name__ == "__main__":
