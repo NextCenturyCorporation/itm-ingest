@@ -1,5 +1,6 @@
 from decouple import config
 from typing import Any
+import re
 
 SCENARIO_IDS = [
     "June2025-OW_desert2",
@@ -19,73 +20,145 @@ TAG_TO_COLOR = {
 
 EXPECTED_TAGS = {
     "April2026-OW_desert2": {
-        "Patient 1": "DELAYED",       # Civilian 1
-        "Patient 2": "MINIMAL",       # Military 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # Military 5
-        "Patient 5": "IMMEDIATE",     # Military 1
-        "Patient 6": "IMMEDIATE",     # Attacker 1
-        "Patient 7": "IMMEDIATE",     # Civilian 2
+        "Patient 1": "IMMEDIATE",     # Military 1
+        "Patient 2": "DELAYED",       # Civilian 1
+        "Patient 3": "IMMEDIATE",     # Attacker 1
+        "Patient 4": "MINIMAL",       # Military 2
+        "Patient 5": "IMMEDIATE",     # Civilian 2
+        "Patient 6": "EXPECTANT",     # Military 3
+        "Patient 7": "IMMEDIATE",     # Military 4
         "Patient 8": "DELAYED",       # Attacker 2
-        "Patient 9": "IMMEDIATE",     # Military 4
-        "Patient 10": "IMMEDIATE",    # Military 3  (doc typo: Expectant)
+        "Patient 9": "IMMEDIATE",     # Civilian 3
+        "Patient 10": "IMMEDIATE",    # Military 5
         "Patient 11": "DELAYED",      # Military 6
         "Patient 12": "EXPECTANT",    # Military 7
     },
     "April2026-OW_urban2": {
-        "Patient 1": "DELAYED",       # US Military 3
-        "Patient 2": "EXPECTANT",     # Civilian 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # US Military 4
-        "Patient 5": "DELAYED",       # US Military 1
-        "Patient 6": "IMMEDIATE",     # US Military 2
-        "Patient 7": "MINIMAL",       # Civilian 1
-        "Patient 8": "DELAYED",       # Shooter 1
-        "Patient 9": "IMMEDIATE",     # US Military 5
-        "Patient 10": "EXPECTANT",    # US Military 6
-    },
-    "Feb2026-OW_desert2": {
-        "Patient 1": "DELAYED",       # Civilian 1
-        "Patient 2": "MINIMAL",       # Military 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # Military 5
-        "Patient 5": "IMMEDIATE",     # Military 1
-        "Patient 6": "IMMEDIATE",     # Attacker 1
-        "Patient 7": "IMMEDIATE",     # Civilian 2
-        "Patient 8": "DELAYED",       # Attacker 2
-        "Patient 9": "IMMEDIATE",     # Military 4
-        "Patient 10": "IMMEDIATE",    # Military 3  (doc typo: Expectant)
-    },
-    "Feb2026-OW_urban2": {
-        "Patient 1": "DELAYED",       # US Military 3
-        "Patient 2": "EXPECTANT",     # Civilian 2
-        "Patient 3": "IMMEDIATE",     # Civilian 3
-        "Patient 4": "IMMEDIATE",     # US Military 4
-        "Patient 5": "DELAYED",       # US Military 1
-        "Patient 6": "IMMEDIATE",     # US Military 2
-        "Patient 7": "MINIMAL",       # Civilian 1
-        "Patient 8": "DELAYED",       # Shooter 1
-    },
-    "June2025-OW_desert2": {
-        "Patient 1": "IMMEDIATE",     # US Military 1  (doc typo: Expectant)
-        "Patient 2": "IMMEDIATE",     # Civilian 1
-        "Patient 3": "DELAYED",       # Attacker 1
-        "Patient 4": "DELAYED",       # Civilian 3
-        "Patient 5": "IMMEDIATE",     # US Military 3
-        "Patient 6": "MINIMAL",       # US Military 4
-        "Patient 7": "DELAYED",       # Attacker 2
-        "Patient 8": "IMMEDIATE",     # US Military 2
-        "Patient 9": "IMMEDIATE",     # Civilian 2
-    },
-    "June2025-OW_urban2": {
-        "Patient 1": "DELAYED",       # US Military 1
-        "Patient 2": "IMMEDIATE",     # US Military 2
-        "Patient 3": "MINIMAL",       # Civilian 1
+        "Patient 1": "DELAYED",       # Military 1
+        "Patient 2": "IMMEDIATE",     # Military 2
+        "Patient 3": "MINIMAL",     # Civilian 1
         "Patient 4": "DELAYED",       # Shooter 1
-        "Patient 5": "DELAYED",       # US Military 3
+        "Patient 5": "DELAYED",       # Military 3
         "Patient 6": "EXPECTANT",     # Civilian 2
         "Patient 7": "IMMEDIATE",     # Civilian 3
-        "Patient 8": "IMMEDIATE",     # US Military 4
+        "Patient 8": "IMMEDIATE",     # Military 4
+        "Patient 9": "IMMEDIATE",     # Military 5
+        "Patient 10": "EXPECTANT",    # Military 6
+    },
+    "Feb2026-OW_desert2": {
+        "Patient 1": "IMMEDIATE",     # Military 1
+        "Patient 2": "DELAYED",       # Civilian 1
+        "Patient 3": "IMMEDIATE",     # Attacker 1
+        "Patient 4": "MINIMAL",       # Military 2
+        "Patient 5": "IMMEDIATE",     # Civilian 2
+        "Patient 6": "EXPECTANT",     # Military 3
+        "Patient 7": "IMMEDIATE",     # Military 4
+        "Patient 8": "DELAYED",       # Attacker 2
+        "Patient 9": "IMMEDIATE",     # Civilian 3
+        "Patient 10": "IMMEDIATE",    # Military 5
+    },
+    "Feb2026-OW_urban2": {
+        "Patient 1": "DELAYED",       # Military 1
+        "Patient 2": "IMMEDIATE",     # Military 2
+        "Patient 3": "MINIMAL",     # Civilian 1
+        "Patient 4": "DELAYED",       # Shooter 1
+        "Patient 5": "DELAYED",       # Military 3
+        "Patient 6": "EXPECTANT",     # Civilian 2
+        "Patient 7": "IMMEDIATE",     # Civilian 3
+        "Patient 8": "IMMEDIATE",     # Military 4
+    },
+    "June2025-OW_desert2": {
+        "Patient 1": "EXPECTANT",     # Military 1
+        "Patient 2": "IMMEDIATE",     # Civilian 1
+        "Patient 3": "DELAYED",       # Attacker 1
+        "Patient 4": "IMMEDIATE",     # Military 2
+        "Patient 5": "IMMEDIATE",     # Civilian 2
+        "Patient 6": "DELAYED",       # Attacker 2
+        "Patient 7": "DELAYED",       # Civilian 3
+        "Patient 8": "IMMEDIATE",     # Military 3
+        "Patient 9": "MINIMAL",       # Military 4
+    },
+    "June2025-OW_urban2": {
+        "Patient 1": "DELAYED",       # Military 1
+        "Patient 2": "IMMEDIATE",     # Military 2
+        "Patient 3": "MINIMAL",     # Civilian 1
+        "Patient 4": "DELAYED",       # Shooter 1
+        "Patient 5": "DELAYED",       # Military 3
+        "Patient 6": "EXPECTANT",     # Civilian 2
+        "Patient 7": "IMMEDIATE",     # Civilian 3
+        "Patient 8": "IMMEDIATE",     # Military 4
+    },
+}
+
+PATIENT_REMAP = {
+    "April2026-OW_desert2": {
+        "Patient 1": "Patient 2",         # Civilian 1
+        "Patient 2": "Patient 4",         # Military 2
+        "Patient 3": "Patient 9",         # Civilian 3
+        "Patient 4": "Patient 10",        # Military 5
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 3",         # Attacker 1
+        "Patient 7": "Patient 5",         # Civilian 2
+        "Patient 8": "Patient 8",         # Attacker 2
+        "Patient 9": "Patient 7",         # Military 4
+        "Patient 10": "Patient 6",        # Military 3
+        "Patient 11": "Patient 11",       # Military 6
+        "Patient 12": "Patient 12",       # Military 7
+    },
+    "April2026-OW_urban2": {
+        "Patient 1": "Patient 5",         # Military 3
+        "Patient 2": "Patient 6",         # Civilian 2
+        "Patient 3": "Patient 7",         # Civilian 3
+        "Patient 4": "Patient 8",         # Military 4
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 2",         # Military 2
+        "Patient 7": "Patient 3",         # Civilian 1
+        "Patient 8": "Patient 4",         # Shooter 1
+        "Patient 9": "Patient 9",         # Military 5
+        "Patient 10": "Patient 10",       # Military 6
+    },
+    "Feb2026-OW_desert2": {
+        "Patient 1": "Patient 2",         # Civilian 1
+        "Patient 2": "Patient 4",         # Military 2
+        "Patient 3": "Patient 9",         # Civilian 3
+        "Patient 4": "Patient 10",        # Military 5
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 3",         # Attacker 1
+        "Patient 7": "Patient 5",         # Civilian 2
+        "Patient 8": "Patient 8",         # Attacker 2
+        "Patient 9": "Patient 7",         # Military 4
+        "Patient 10": "Patient 6",        # Military 3
+    },
+    "Feb2026-OW_urban2": {
+        "Patient 1": "Patient 5",         # Military 3
+        "Patient 2": "Patient 6",         # Civilian 2
+        "Patient 3": "Patient 7",         # Civilian 3
+        "Patient 4": "Patient 8",         # Military 4
+        "Patient 5": "Patient 1",         # Military 1
+        "Patient 6": "Patient 2",         # Military 2
+        "Patient 7": "Patient 3",         # Civilian 1
+        "Patient 8": "Patient 4",         # Shooter 1
+    },
+    "June2025-OW_desert2": {
+        "Patient 1": "Patient 1",         # Military 1
+        "Patient 2": "Patient 2",         # Civilian 1
+        "Patient 3": "Patient 3",         # Attacker 1
+        "Patient 4": "Patient 7",         # Civilian 3
+        "Patient 5": "Patient 8",         # Military 3
+        "Patient 6": "Patient 9",         # Military 4
+        "Patient 7": "Patient 6",         # Attacker 2
+        "Patient 8": "Patient 4",         # Military 2
+        "Patient 9": "Patient 5",         # Civilian 2
+    },
+    "June2025-OW_urban2": {
+        "Patient 1": "Patient 1",         # Military 1
+        "Patient 2": "Patient 2",         # Military 2
+        "Patient 3": "Patient 3",         # Civilian 1
+        "Patient 4": "Patient 4",         # Shooter 1
+        "Patient 5": "Patient 5",         # Military 3
+        "Patient 6": "Patient 6",         # Civilian 2
+        "Patient 7": "Patient 7",         # Civilian 3
+        "Patient 8": "Patient 8",         # Military 4
     },
 }
 
@@ -192,7 +265,46 @@ def print_matching_documents(collection: Any, query: dict[str, Any]) -> None:
             f"adm_name={doc.get('adm_name')}"
         )
 
-def patient_actions(history, scene_id=None, action_types=None, exclude_types=None):
+CATEGORY_WORDS = ("IMMEDIATE", "DELAYED", "MINIMAL", "EXPECTANT")
+
+
+def justification_tag(actions, patients):
+    '''
+    Full disclosure, this is clearly a flawed approach but the best I could come up with.
+    I scan the justification for matches to the tag names, the last occurence is marked as 
+    the justification tag (since this often does not align with the actual tag selected).
+    I have a loose notion of ambiguity accounted for that gets flagged if we match to more than
+    one word. Not great, but hopefully provides some usefulness.
+    '''
+    last_tag_justification = {}
+    for action in actions:
+        if action["action_type"] == "TAG_CHARACTER" and action.get("justification"):
+            last_tag_justification[action["character"]] = action["justification"]
+
+    result = {}
+    for patient in sorted(patients, key=_patient_sort_key):
+        just = last_tag_justification.get(patient)
+        found = re.findall(r"\b(" + "|".join(CATEGORY_WORDS) + r")\b",
+                           (just or "").upper())
+
+        if not just:
+            # no tag
+            color = "N/A"
+        elif not found:
+            # justification doesn't say any of the keywords
+            color = "none"         
+        else:
+            #grab last occurence of a keyword. From reading a few, the adm kinda talks itself to a conclusion.
+            category = found[-1]
+            color = TAG_TO_COLOR.get(category, category)
+
+        distinct = len(set(found))
+        result[patient_key(patient, "Justification_Tag")] = color
+        result[patient_key(patient, "Justification_Tag_Ambiguous")] = 1 if distinct > 1 else 0
+
+    return result
+
+def patient_actions(history, scene_id=None, action_types=None, exclude_types=None, remap=None):
     # parses history to extract all actions involving patient, will be used for multiple fields
     actions = []
 
@@ -216,6 +328,9 @@ def patient_actions(history, scene_id=None, action_types=None, exclude_types=Non
             if meta.get("scene_id") != scene_id:
                 continue
 
+        if remap is not None:
+            character = remap.get(character, character)
+
         actions.append({
             "character": character,
             "action_type": action_type,
@@ -226,12 +341,16 @@ def patient_actions(history, scene_id=None, action_types=None, exclude_types=Non
     return actions
 
 
-def scenario_patients(history):
-    # ordered list of patient ids from the initial scenario roster
+def scenario_patients(history, remap=None):
+    # ordered list of patient ids from the initial scenario roster,
+    # translated to corrected patient numbers when a remap is supplied
     for entry in history or []:
         if entry.get("command") == "Start Scenario":
             state = (entry.get("response") or {}).get("state") or {}
-            return [c["id"] for c in state.get("characters") or [] if c.get("id")]
+            ids = [c["id"] for c in state.get("characters") or [] if c.get("id")]
+            if remap is not None:
+                ids = [remap.get(pid, pid) for pid in ids]
+            return ids
     return []
 
 
@@ -252,6 +371,9 @@ def patient_key(character, field):
     # builds keys for different fields
     return f"{character.replace(' ', '')}_{field}"
 
+def _patient_sort_key(patient):
+    # "Patient 10" -> 10, so ordering is numeric not lexical
+    return int(patient.split()[-1])
 
 def patient_order(actions, patients):
     # 1-based rank of first interaction
@@ -264,7 +386,7 @@ def patient_order(actions, patients):
 
     return {
         patient_key(patient, "order"): first_seen.get(patient)
-        for patient in patients
+        for patient in sorted(patients, key=_patient_sort_key)
     }
 
 
@@ -278,7 +400,7 @@ def patient_evac(actions, patients):
 
     return {
         patient_key(patient, "evac"): 1 if patient in evacuated else 0
-        for patient in patients
+        for patient in sorted(patients, key=_patient_sort_key)
     }
 
 
@@ -287,7 +409,7 @@ def patient_tag(actions, patients):
     tagged = applied_tags(actions)
 
     tags = {}
-    for patient in patients:
+    for patient in sorted(patients, key=_patient_sort_key):
         category = tagged.get(patient)
         if category is None:
             color = "N/A"
@@ -313,6 +435,28 @@ def tag_accuracy(actions, patients, expected):
     correct = sum(1 for p in scored if tagged.get(p) == expected[p])
 
     return {"Tag_ACC": round(correct / len(scored), 4)}
+
+def patient_treat_before_tag(actions, patients):
+    # 1 if the patient's first treatment came before their first tag, else 0
+    first_treat = {}
+    first_tag = {}
+
+    for idx, action in enumerate(actions):
+        character = action["character"]
+        if action["action_type"] == "TREAT_PATIENT":
+            first_treat.setdefault(character, idx)
+        elif action["action_type"] == "TAG_CHARACTER":
+            first_tag.setdefault(character, idx)
+
+    result = {}
+
+    for patient in sorted(patients, key=_patient_sort_key):
+        treat = first_treat.get(patient)
+        tag = first_tag.get(patient)
+        hit = treat is not None and (tag is None or treat < tag)
+        result[patient_key(patient, "Treat_Before_Tag")] = 1 if hit else 0
+
+    return result
 
 
 def tag_expectant(actions, patients, expected):
@@ -342,11 +486,13 @@ def probe_responses(actions, pairs, prefix):
     return results
 
 def process_adm(adm):
+    scenario = adm.get("scenario", "")
     history = adm.get("history") or []
-    actions = patient_actions(history)
-    patients = scenario_patients(history)
-    expected = EXPECTED_TAGS.get(adm.get("scenario"), {})
-    pairs = PROBE_PAIRS.get(adm.get("scenario"), {})
+    remap = PATIENT_REMAP.get(scenario, {})
+    actions = patient_actions(history, remap=remap)
+    patients = scenario_patients(history, remap=remap)
+    expected = EXPECTED_TAGS.get(scenario, {})
+    pairs = PROBE_PAIRS.get(scenario, {})
     prefix = "Desert " if "desert" in adm.get("scenario", "").lower() else "Urban "
 
 
@@ -357,6 +503,10 @@ def process_adm(adm):
     action_analysis.update(patient_evac(actions, patients))
     # Patient{N}_tag
     action_analysis.update(patient_tag(actions, patients))
+    # Patient{N}_Treat_Before_Tag
+    action_analysis.update(patient_treat_before_tag(actions, patients))
+    # Patient{N}_Justification_Tag
+    action_analysis.update(justification_tag(actions, patients))
     # Tag_ACC
     action_analysis.update(tag_accuracy(actions, patients, expected))
     # Tag_Expectant
@@ -402,12 +552,13 @@ def delete_adms(collection, write_to_db=True, verbose=True):
 
     print("Cleanup complete. No matching unwanted ADM documents remain.")
 
-def main(mongo_db, delete_bad_adms=False):
+def main(mongo_db):
     collection = mongo_db["admTargetRuns"]
-    delete_adms(collection, delete_bad_adms)
+    delete_adms(collection)
     open_world_adms = list(collection.find({"scenario": {"$in": SCENARIO_IDS}}))
 
     updated = 0
+    unchanged = []
 
     for adm in open_world_adms:
         action_analysis = process_adm(adm)
@@ -416,9 +567,14 @@ def main(mongo_db, delete_bad_adms=False):
             {"_id": adm["_id"]},
             {"$set": {"actionAnalysis": action_analysis}},
         )
-        updated += result.modified_count
 
-    print(f"Updated actionAnalysis on {updated} of {len(open_world_adms)} documents")
+        if result.modified_count:
+            updated += 1
+        else:
+            unchanged.append(adm)
+
+    matched = len(open_world_adms)
+    print(f"Matched {matched}, modified {updated}, unchanged {len(unchanged)}")
 
 
 if __name__ == "__main__":
