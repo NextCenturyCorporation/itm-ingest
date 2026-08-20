@@ -18,7 +18,7 @@ state:
     name: Patient B
     unstructured: Military member of your unit with a broken left wrist, no bleeding;
       Military 2
-    medical_condition: 0.162
+    medical_condition: 0.0162
     attribute_rating: 1.0
 scenes:
 - id: Scene 8
@@ -42,7 +42,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 0.8
   action_mapping:
   - action_id: treat_patient_a
@@ -86,7 +86,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
   action_mapping:
   - action_id: treat_patient_a
@@ -263,7 +263,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
   action_mapping:
   - action_id: treat_patient_a
@@ -529,7 +529,7 @@ scenes:
       unstructured: Military member of your unit with a broken left wrist, no bleeding
       unstructured_posttreatment: Military member of your unit with a treated broken
         left wrist, no bleeding; Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
     - id: Patient 3
       name: Patient 3
       unstructured: Local civilian with foot amputation

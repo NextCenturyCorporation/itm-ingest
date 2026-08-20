@@ -17,7 +17,7 @@ state:
     name: Patient B
     unstructured: Military member of your unit with a broken left wrist, no bleeding;
       Military 2
-    medical_condition: 0.162
+    medical_condition: 0.0162
     attribute_rating: 1.0
 scenes:
 - id: Scene 8
@@ -41,7 +41,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 0.8
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -297,7 +297,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -448,7 +448,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
