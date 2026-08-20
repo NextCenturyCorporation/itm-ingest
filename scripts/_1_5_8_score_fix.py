@@ -19,6 +19,8 @@ def main(mongo_db):
     }))
 
     for adm in adm_runs:
+        if ('June' not in adm['alignment_target']): 
+            continue
         probes, scenario_id = get_probe_responses(adm)
         if not probes:
             print(f'WARNING: no probe responses found for {adm.get("adm_name")} 'f'- {adm.get("scenario")} - skipping')
@@ -31,11 +33,17 @@ def main(mongo_db):
             f'{ADEPT_URL}api/v1/computed_kdma_profile?session_id={adept_sid}'
         ).json()
 
+        target = adm['alignment_target']
+        alignment = requests.get(
+            f'{ADEPT_URL}api/v1/alignment/session?session_id={adept_sid}&target_id={target}'
+        ).json()
+
         # overwrite the run's kdmas and session id with new stuff
         mongo_db['admTargetRuns'].update_one(
             {'_id': adm['_id']},
             {'$set': {
                 'results.kdmas': kdmas,
+                'results.alignment_score': alignment['score'],
                 'results.ta1_session_id': adept_sid,
             }}
         )
