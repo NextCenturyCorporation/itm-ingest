@@ -14,7 +14,6 @@ def main(mongo_db, write_to_db=False):
     for doc in adm_collection.find(missing_filter):
         ids = derive_probes(doc)
         if not ids:
-            print(doc['_id'])
             skipped += 1
             continue
         if write_to_db:

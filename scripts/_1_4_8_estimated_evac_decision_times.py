@@ -1,4 +1,4 @@
-from misc_scripts.evac_response_window import compute_evac_windows
+from dev_scripts.evac_response_window import compute_evac_windows
 
 
 def main(mongo_db):
