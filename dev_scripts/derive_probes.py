@@ -6,7 +6,7 @@ def derive_probes(doc):
         return [p['probe_id'] for p in doc['probes']]
     return [h['parameters']['probe_id'] for h in doc.get('history', []) if h['command'] == 'Respond to TA1 Probe' and 'probe_id' in h['parameters']]
 
-def main(mongo_db, write_to_db=False):
+def main(mongo_db, write_to_db=True):
     updated = 0
     skipped = 0
     adm_collection = mongo_db['admTargetRuns']
