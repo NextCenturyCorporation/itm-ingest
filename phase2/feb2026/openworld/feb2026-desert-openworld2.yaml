@@ -18,7 +18,7 @@ state:
     name: Patient B
     unstructured: Military member of your unit with a broken left wrist, no bleeding;
       Military 2
-    medical_condition: 0.162
+    medical_condition: 0.0162
     attribute_rating: 1.0
 scenes:
 - id: Scene 8
@@ -42,7 +42,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 0.8
   action_mapping:
   - action_id: treat_patient_a
@@ -60,7 +60,7 @@ scenes:
     probe_id: Feb2026-MF-OW_desert.Probe 4b
     choice: Response 4b-B
     kdma_association:
-      medical: 0.162
+      medical: 0.0162
       merit: 0.8
     character_id: Patient B
   transitions:
@@ -86,7 +86,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
   action_mapping:
   - action_id: treat_patient_a
@@ -104,7 +104,7 @@ scenes:
     probe_id: Feb2026-AF-OW_desert.Probe 1
     choice: Response 1-B
     kdma_association:
-      medical: 0.162
+      medical: 0.0162
       affiliation: 1.0
     character_id: Patient B
   transitions:
@@ -263,7 +263,7 @@ scenes:
       name: Patient B
       unstructured: Military member of your unit with a broken left wrist, no bleeding;
         Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
       attribute_rating: 1.0
   action_mapping:
   - action_id: treat_patient_a
@@ -281,7 +281,7 @@ scenes:
     probe_id: Feb2026-AF-OW_desert.Probe 4a
     choice: Response 4a-B
     kdma_association:
-      medical: 0.162
+      medical: 0.0162
       affiliation: 1.0
     character_id: Patient B
   transitions:
@@ -529,7 +529,7 @@ scenes:
       unstructured: Military member of your unit with a broken left wrist, no bleeding
       unstructured_posttreatment: Military member of your unit with a treated broken
         left wrist, no bleeding; Military 2
-      medical_condition: 0.162
+      medical_condition: 0.0162
     - id: Patient 3
       name: Patient 3
       unstructured: Local civilian with foot amputation
