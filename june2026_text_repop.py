@@ -20,7 +20,7 @@ without creating sessions or updating Mongo.
 --timeout <seconds> ADEPT request timeout. Defaults to 120.
 --skip-af-ss Skip AF-SS_sessionId creation/update.
 --skip-trinary Skip trinary combinedSessionId creation/update.
---skip-mf-individual Skip MF individualSessionId creation/update.
+--create-mf-individual Also create the legacy MF individualSessionId.
 
 Examples:
 py june2026_text_repop.py --eval-number 17 --pid 202606112 --dry-run -v
@@ -528,10 +528,15 @@ def process_participant(
                 recreate_sessions=recreate_sessions,
             )
 
-            if trinary_sid and created:
+            if trinary_sid and created and trinary_kdmas is None:
+                log(
+                    "  Error: the new combined trinary session did not return a "
+                    "computed KDMA profile. Mongo will not be updated, preventing "
+                    "a new session id from being paired with stale combinedKdmas."
+                )
+            elif trinary_sid and created:
                 set_values = {"combinedSessionId": trinary_sid}
-                if trinary_kdmas is not None:
-                    set_values["combinedKdmas"] = trinary_kdmas
+                set_values["combinedKdmas"] = trinary_kdmas
                 update_documents(collection, trinary_docs, set_values, dry_run)
                 for old_sid in old_trinary_ids:
                     update_session_references(mongo_db, old_sid, trinary_sid, dry_run)
@@ -574,7 +579,12 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=120)
     parser.add_argument("--skip-af-ss", action="store_true", help="Do not create/update AF-SS_sessionId")
     parser.add_argument("--skip-trinary", action="store_true", help="Do not create/update trinary combinedSessionId")
-    parser.add_argument("--skip-mf-individual", action="store_true", help="Do not create/update MF individualSessionId")
+    parser.add_argument(
+        "--create-mf-individual",
+        action="store_true",
+        help="Also create/update the legacy MF individualSessionId (not needed for open-world alignment)",
+    )
+    parser.add_argument("--skip-mf-individual", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
 
     if MongoClient is None:
@@ -631,7 +641,7 @@ def main() -> int:
                 verbose=args.verbose,
                 update_af_ss=not args.skip_af_ss,
                 update_trinary=not args.skip_trinary,
-                update_mf_individual=not args.skip_mf_individual,
+                update_mf_individual=args.create_mf_individual and not args.skip_mf_individual,
                 recreate_sessions=args.recreate_sessions,
             )
         except Exception as exc:
