@@ -2769,7 +2769,7 @@ def extract_text_kdmas(metadata):
     for doc in docs_to_use:
         scenario_id = doc.get("scenario_id", "")
         kdmas, source_field = _extract_kdmas_from_doc(doc)
-        if not kdmas:
+        if not kdmas or 'trinary' in scenario_id:
             continue
 
         for kdma in kdmas:
