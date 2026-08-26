@@ -36,7 +36,7 @@ def main(mongo_db):
         if scenario == 'Feb2026-MF-SS1-observe' and 'Mistral' in adm:
             new_pages.append(page)
 
-        if scenario == 'Feb2026-AF-PS1-observe' and 'DirectRegression' in adm:
+        if scenario == 'Feb2026-AF-PS1-observe' and 'Mistral' in adm:
             new_pages.append(page)
 
     #update eval num and change text as needed
