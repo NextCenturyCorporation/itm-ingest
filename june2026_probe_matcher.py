@@ -974,6 +974,36 @@ def normalize_treatment_token(value):
     return re.sub(r"[^a-z0-9]", "", str(value or "").lower())
 
 
+def injury_treatment_was_correct(row):
+    """Return whether an INJURY_TREATED event used the correct treatment.
+
+    Older logs may not populate InjuryTreatedWithCorrectTreatment.  For those
+    logs only, preserve the previous completion-based behavior.
+    """
+    value = row.get("InjuryTreatedWithCorrectTreatment")
+    if value is None or str(value).strip() == "":
+        return safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+    return safe_bool_from_csv(value)
+
+
+def treatment_and_tool_events_are_paired(treatment_row, tool_row, tolerance_ms=20.0):
+    """Return True when adjacent treatment/tool rows describe one application."""
+    if not treatment_row:
+        return False
+
+    treatment_patient = clean_patient_name(treatment_row.get("PatientID", ""))
+    tool_patient = clean_patient_name(tool_row.get("PatientID", ""))
+    if treatment_patient != tool_patient:
+        return False
+
+    treatment_elapsed = safe_float(treatment_row.get("ElapsedTime"), None)
+    tool_elapsed = safe_float(tool_row.get("ElapsedTime"), None)
+    if treatment_elapsed is None or tool_elapsed is None:
+        return False
+
+    return abs(tool_elapsed - treatment_elapsed) <= tolerance_ms
+
+
 # Fields extracted:
 # - PatientN_required_injuries
 def derive_required_injuries_and_procs(csv_rows, sim_json=None):
@@ -1060,31 +1090,35 @@ def derive_supplemental_procedures(sim_json):
 # - PatientN_treat_repeat_hits_required
 # - PatientN_treat_repeat_false_alarms_required
 def compute_treatment_submetrics_required(csv_rows, required_injuries):
-    """Compute required-only treatment submetrics."""
+    """Compute required-only treatment submetrics from every treatment attempt.
+
+    Incorrect INJURY_TREATED events are false alarms even when they eventually
+    mark an injury complete.  TOOL_APPLIED-only events (normally supplemental
+    treatments) are also false alarms under the required-only definition.
+    """
     to_complete = {patient: list(injuries)[:] for patient, injuries in required_injuries.items()}
     hits = {}
     false_alarms = {}
     repeat_hits = {}
     repeat_false_alarms = {}
     false_alarm_tracker = {}
+    last_treatment_row = None
 
     for row in csv_rows:
-        if row.get("EventName") != "INJURY_TREATED":
-            continue
+        event_name = row.get("EventName")
 
-        patient = clean_patient_name(row.get("PatientID", ""))
-        if not is_valid_patient(patient):
-            continue
+        if event_name == "INJURY_TREATED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                last_treatment_row = None
+                continue
 
-        injury = str(row.get("InjuryName", "")).strip()
-        completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-        if not completed:
-            continue
+            injury = str(row.get("InjuryName", "")).strip()
+            completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+            correct = injury_treatment_was_correct(row)
+            patient_required = required_injuries.get(patient, [])
 
-        patient_required = required_injuries.get(patient, [])
-
-        if patient_required:
-            if injury in patient_required:
+            if correct and completed and injury in patient_required:
                 if patient in to_complete and injury in to_complete[patient]:
                     to_complete[patient].remove(injury)
                     hits[patient] = hits.get(patient, 0) + 1
@@ -1092,20 +1126,50 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
                         del to_complete[patient]
                 else:
                     repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
-            else:
-                if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+            elif not correct or injury not in patient_required:
+                tracker_key = injury or "unknown_injury"
+                if false_alarm_tracker.get(patient, {}).get(tracker_key, 0) > 0:
                     repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
                 else:
                     false_alarms[patient] = false_alarms.get(patient, 0) + 1
                 false_alarm_tracker.setdefault(patient, {})
-                false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
-        else:
-            if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                false_alarm_tracker[patient][tracker_key] = (
+                    false_alarm_tracker[patient].get(tracker_key, 0) + 1
+                )
+
+            last_treatment_row = row
+            continue
+
+        if event_name == "TOOL_APPLIED":
+            patient = clean_patient_name(row.get("PatientID", ""))
+            if not is_valid_patient(patient):
+                last_treatment_row = None
+                continue
+
+            tool = str(row.get("ToolType", "") or "").strip()
+            if "Pulse Oximeter" in tool:
+                last_treatment_row = None
+                continue
+
+            # The paired INJURY_TREATED row was already classified above.
+            if treatment_and_tool_events_are_paired(last_treatment_row, row):
+                last_treatment_row = None
+                continue
+
+            tracker_key = normalize_treatment_token(tool) or "unknown_tool"
+            if false_alarm_tracker.get(patient, {}).get(tracker_key, 0) > 0:
                 repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
             else:
                 false_alarms[patient] = false_alarms.get(patient, 0) + 1
             false_alarm_tracker.setdefault(patient, {})
-            false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+            false_alarm_tracker[patient][tracker_key] = (
+                false_alarm_tracker[patient].get(tracker_key, 0) + 1
+            )
+            last_treatment_row = None
+            continue
+
+        # Pairing is intentionally limited to adjacent treatment/tool events.
+        last_treatment_row = None
 
     return {
         "total_hits": sum(hits.values()),
@@ -1153,7 +1217,8 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplementa
     repeat_false_alarms = {}
     supplemental_tracker = {}
     false_alarm_tracker = {}
-    just_completed = None
+    last_treatment_row = None
+    skip_paired_tool = False
 
     for row in csv_rows:
         event_name = row.get("EventName")
@@ -1161,48 +1226,67 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplementa
         if event_name == "INJURY_TREATED":
             patient = clean_patient_name(row.get("PatientID", ""))
             if not is_valid_patient(patient):
+                last_treatment_row = None
+                skip_paired_tool = False
                 continue
 
             injury = str(row.get("InjuryName", "")).strip()
             completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-            if not completed:
-                continue
+            correct = injury_treatment_was_correct(row)
 
             patient_required = required_injuries.get(patient, [])
-            if patient_required:
-                if injury in patient_required:
-                    if patient in to_complete and injury in to_complete[patient]:
-                        to_complete[patient].remove(injury)
-                        just_completed = patient
-                        hits[patient] = hits.get(patient, 0) + 1
-                        if not to_complete[patient]:
-                            del to_complete[patient]
-                    else:
-                        repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+            # Most INJURY_TREATED rows fully describe the application, so the
+            # adjacent TOOL_APPLIED row must be skipped to avoid double-counting.
+            # A correct-but-incomplete non-required/Unspecified row is the
+            # exception: June supplemental treatments such as Fentanyl emit
+            # that placeholder row, and the tool row carries the information
+            # needed to recognize the approved supplemental procedure.
+            skip_paired_tool = not (
+                correct and not completed and injury not in patient_required
+            )
+
+            if correct and completed and injury in patient_required:
+                if patient in to_complete and injury in to_complete[patient]:
+                    to_complete[patient].remove(injury)
+                    hits[patient] = hits.get(patient, 0) + 1
+                    if not to_complete[patient]:
+                        del to_complete[patient]
                 else:
-                    if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
-                        repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
-                    else:
-                        false_alarms[patient] = false_alarms.get(patient, 0) + 1
-                    false_alarm_tracker.setdefault(patient, {})
-                    false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
-            else:
-                if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
+                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+            elif not correct or (completed and injury not in patient_required):
+                tracker_key = injury or "unknown_injury"
+                if false_alarm_tracker.get(patient, {}).get(tracker_key, 0) > 0:
                     repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
                 else:
                     false_alarms[patient] = false_alarms.get(patient, 0) + 1
                 false_alarm_tracker.setdefault(patient, {})
-                false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+                false_alarm_tracker[patient][tracker_key] = (
+                    false_alarm_tracker[patient].get(tracker_key, 0) + 1
+                )
+
+            last_treatment_row = row
+            continue
 
         if event_name == "TOOL_APPLIED":
             patient = clean_patient_name(row.get("PatientID", ""))
             if not is_valid_patient(patient):
-                just_completed = None
+                last_treatment_row = None
+                skip_paired_tool = False
                 continue
 
             tool = str(row.get("ToolType", "") or "").strip()
             if "Pulse Oximeter" in tool:
-                just_completed = None
+                last_treatment_row = None
+                skip_paired_tool = False
+                continue
+
+            # The paired INJURY_TREATED row was already classified above.
+            if (
+                treatment_and_tool_events_are_paired(last_treatment_row, row)
+                and skip_paired_tool
+            ):
+                last_treatment_row = None
+                skip_paired_tool = False
                 continue
 
             if _procedure_is_supplemental(tool, patient, supplemental_map):
@@ -1213,14 +1297,21 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplementa
                 supplemental_tracker.setdefault(patient, {})
                 supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
             else:
-                if patient != just_completed:
-                    if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
-                        repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
-                    else:
-                        false_alarms[patient] = false_alarms.get(patient, 0) + 1
-                    false_alarm_tracker.setdefault(patient, {})
-                    false_alarm_tracker[patient][tool] = false_alarm_tracker[patient].get(tool, 0) + 1
-            just_completed = None
+                tracker_key = normalize_treatment_token(tool) or "unknown_tool"
+                if false_alarm_tracker.get(patient, {}).get(tracker_key, 0) > 0:
+                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
+                else:
+                    false_alarms[patient] = false_alarms.get(patient, 0) + 1
+                false_alarm_tracker.setdefault(patient, {})
+                false_alarm_tracker[patient][tracker_key] = (
+                    false_alarm_tracker[patient].get(tracker_key, 0) + 1
+                )
+            last_treatment_row = None
+            skip_paired_tool = False
+            continue
+
+        last_treatment_row = None
+        skip_paired_tool = False
 
     return {
         "total_hits": sum(hits.values()),
@@ -1255,7 +1346,8 @@ def compute_triage_performance_w_supp(csv_rows, required_injuries, supplemental_
 
             injury = str(row.get("InjuryName", "")).strip()
             completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-            if not completed:
+            correct = injury_treatment_was_correct(row)
+            if not completed or not correct:
                 continue
 
             if patient in to_complete and injury in to_complete[patient]:
@@ -1455,11 +1547,24 @@ def compute_tag_metrics(expected_tag_color, tags_applied):
 # - Hemorrhage control_time
 # - missed_hemorrhage_control
 def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
-    """Compute hemorrhage control completion, time, and missed count."""
+    """Compute hemorrhage control for casualties eligible for treatment."""
     to_complete = {}
 
+    # Dead/EXPECTANT casualties should not make the all-or-nothing hemorrhage
+    # metric fail.  June Urban includes a dead EXPECTANT casualty with a
+    # wound-pack injury, which previously forced every Urban result to zero.
+    excluded_patients = set()
+    for row in csv_rows:
+        if row.get("EventName") != "PATIENT_RECORD":
+            continue
+        patient = clean_patient_name(row.get("PatientID", ""))
+        mood = str(row.get("PatientMood", "") or "").strip().lower()
+        triage_level = str(row.get("PatientTriageLevel", "") or "").strip().upper()
+        if mood == "dead" or triage_level == "EXPECTANT":
+            excluded_patients.add(patient)
+
     for (patient, injury), proc in required_proc_for_injury.items():
-        if proc in HEMORRHAGE_CONTROL_PROCS:
+        if patient not in excluded_patients and proc in HEMORRHAGE_CONTROL_PROCS:
             to_complete.setdefault(patient, set()).add(injury)
 
     start_time_sec = None
@@ -1477,8 +1582,9 @@ def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
             patient = clean_patient_name(row.get("PatientID", ""))
             injury = str(row.get("InjuryName", "")).strip()
             completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
+            correct = injury_treatment_was_correct(row)
 
-            if not completed:
+            if not completed or not correct:
                 continue
 
             if patient in to_complete and injury in to_complete[patient]:
@@ -1515,7 +1621,8 @@ def compute_patient_hc_time(csv_rows, patient_interactions, required_proc_for_in
         patient = clean_patient_name(row.get("PatientID", ""))
         injury = str(row.get("InjuryName", "")).strip()
         completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-        if not completed:
+        correct = injury_treatment_was_correct(row)
+        if not completed or not correct:
             continue
 
         req_proc = required_proc_for_injury.get((patient, injury))
@@ -3013,6 +3120,13 @@ def process_file(json_path, output_dir):
         sim_json = json.load(f)
 
     csv_path = json_path.replace(".json", ".csv")
+    if not os.path.isfile(csv_path):
+        logger.log(
+            LogLevel.WARN,
+            f"Missing CSV for {filename}; expected {csv_path}. Skipping this run.",
+        )
+        return
+
     csv_rows = load_csv_rows(csv_path)
 
     metadata = extract_run_metadata(sim_json, filename)
