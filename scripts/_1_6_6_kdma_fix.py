@@ -1,10 +1,12 @@
 from decouple import config
+from scripts._1_4_9_rq1_june26 import main as rerun_script
 import requests
 
 
 ADEPT_URL = config('ADEPT_URL')
 
 def main(mongo_db):
+    rerun_script(mongo_db)
     adm_runs = list(mongo_db['admMedics'].find({'evalNumber': 17}))
 
     for adm in adm_runs:
