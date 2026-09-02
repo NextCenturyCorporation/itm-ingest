@@ -2387,11 +2387,13 @@ def get_ta1_calculations(scenario_id, probes):
         logger.log(LogLevel.WARN, "ADEPT_URL not set; skipping KDMA computation.")
         return None, None
     try:
-        session_id = requests.post(f"{ADEPT_URL}api/v1/new_session", timeout=120).text.replace('"', '').strip()
+        response = requests.post(f"{ADEPT_URL}api/v1/new_session", timeout=120)
+        response.raise_for_status()
+        session_id = response.text.replace('"', '').strip()
         if VERBOSE:
             logger.log(LogLevel.INFO, f"--> Sending probes: {probes}")
         for probe in probes:
-            requests.post(
+            response = requests.post(
                 f"{ADEPT_URL}api/v1/response",
                 json={
                     "response": {
@@ -2404,10 +2406,13 @@ def get_ta1_calculations(scenario_id, probes):
                 },
                 timeout=120,
             )
-        kdmas = requests.get(
+            response.raise_for_status()
+        response = requests.get(
             f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}",
             timeout=120,
-        ).json()
+        )
+        response.raise_for_status()
+        kdmas = response.json()
     except Exception as e:
         logger.log(LogLevel.WARN, f"TA1/KDMA request failed: {e}")
         return None, None
@@ -2548,7 +2553,12 @@ def compute_openworld_match_data(sim_json, metadata):
 
 
 def find_text_session_for_alignment(metadata, alignment_type):
-    """Find the matching MF/AF text combinedSessionId for alignment compare."""
+    """Find the binomial combinedSessionId used for MF/AF alignment.
+
+    Both comparisons intentionally use the session populated from all four
+    binomial text scenarios.  Scenario ids are matched exactly so an AF query
+    can never select ``June2026-AF-assess-trinary``.
+    """
     if text_scenario_collection is None:
         logger.log(LogLevel.WARN, f"text_scenario_collection is unavailable; cannot look up {alignment_type} text session.")
         return None
@@ -2565,22 +2575,24 @@ def find_text_session_for_alignment(metadata, alignment_type):
         scenario_candidates.append(f"{prefix}-{alignment_type}-assess")
         scenario_candidates.append(f"{prefix}_{alignment_type}_assess")
 
-    queries = []
-    for pid_val in pid_candidates:
-        for scenario_id in scenario_candidates:
-            queries.append({"evalNumber": eval_number, "participantID": pid_val, "scenario_id": scenario_id})
-            queries.append({"participantID": pid_val, "scenario_id": scenario_id})
-        # Fallbacks for naming differences.
-        queries.append({
+    # All candidates are exact binomial ids.  Do not use a broad expression
+    # such as ``AF.*assess`` because it also matches AF-assess-trinary.
+    queries = [
+        {
             "evalNumber": eval_number,
-            "participantID": pid_val,
-            "scenario_id": {"$regex": f"{alignment_type}.*assess", "$options": "i"},
-        })
-        queries.append({
+            "participantID": {"$in": pid_candidates},
+            "scenario_id": {"$in": scenario_candidates},
+        },
+        {
             "evalName": eval_name,
-            "participantID": pid_val,
-            "scenario_id": {"$regex": f"{alignment_type}.*assess", "$options": "i"},
-        })
+            "participantID": {"$in": pid_candidates},
+            "scenario_id": {"$in": scenario_candidates},
+        },
+        {
+            "participantID": {"$in": pid_candidates},
+            "scenario_id": {"$in": scenario_candidates},
+        },
+    ]
 
     for query in queries:
         try:
@@ -2594,13 +2606,29 @@ def find_text_session_for_alignment(metadata, alignment_type):
         if not text_doc:
             continue
 
+        selected_scenario = str(text_doc.get("scenario_id", ""))
+        if selected_scenario.lower().endswith("-trinary"):
+            logger.log(
+                LogLevel.ERROR,
+                f"Refusing trinary text document for {alignment_type} alignment: {selected_scenario}",
+            )
+            return None
+
         session_id = text_doc.get("combinedSessionId")
         if session_id:
             if VERBOSE:
-                logger.log(LogLevel.INFO, f"Retrieved combinedSessionId for {alignment_type}: {session_id}")
+                logger.log(
+                    LogLevel.INFO,
+                    f"Retrieved binomial combinedSessionId for {alignment_type} "
+                    f"from {selected_scenario}: {session_id}",
+                )
             return str(session_id)
 
-        logger.log(LogLevel.WARN, f"Found text document for {alignment_type} alignment but combinedSessionId was missing.")
+        logger.log(
+            LogLevel.WARN,
+            f"Found binomial text document {selected_scenario} for {alignment_type} "
+            "alignment but combinedSessionId was missing.",
+        )
         return None
 
     logger.log(LogLevel.WARN, f"Could not find text document for {alignment_type} alignment (pid={pid}, evalNumber={eval_number}).")
@@ -2644,7 +2672,12 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
             return None
         score_value = float(score)
         if math.isnan(score_value):
-            logger.log(LogLevel.WARN, f"{alignment_type} alignment compare returned NaN for pid {metadata.get('pid')}.")
+            logger.log(
+                LogLevel.WARN,
+                f"{alignment_type} alignment compare returned NaN for pid {metadata.get('pid')} "
+                f"(open-world session={human_session_id}, text session={text_session_id}, "
+                f"kdma_filter={kdma_filter}).",
+            )
             return None
         return score_value
     except Exception as e:
@@ -2689,29 +2722,43 @@ def _is_current_eval_text_doc(doc, metadata):
     )
 
 
-def _extract_kdmas_from_doc(doc):
-    """Return the best available KDMA array from a text scenario doc."""
-    if isinstance(doc.get("combinedKdmas"), list) and doc.get("combinedKdmas"):
-        return doc.get("combinedKdmas"), "combinedKdmas"
+def _binary_text_scenario_ids(metadata):
+    """Return the exact June binomial assessment ids for this evaluation."""
+    return {
+        scenario_id
+        for prefix in get_eval_prefix_candidates(metadata)
+        for kdma_name in KDMA_MAP.values()
+        for scenario_id in (
+            f"{prefix}-{kdma_name}-assess",
+            f"{prefix}_{kdma_name}_assess",
+        )
+    }
 
-    merged = []
-    for field_name in ["AF-PS_kdmas", "MF-PS_kdmas", "AF_SS_kdmas", "MF_SS_kdmas", "AF-SS_kdmas", "MF-SS_kdmas"]:
-        value = doc.get(field_name)
-        if isinstance(value, list) and value:
-            merged.extend(value)
-    if merged:
-        return merged, "merged_assess_kdmas"
 
-    for field_name in ["kdmas", "individualKdmas"]:
-        value = doc.get(field_name)
-        if isinstance(value, list) and value:
-            return value, field_name
+def _classify_text_kdma_doc(doc, metadata):
+    """Classify a text result by its exact assessment scenario id.
 
-    return [], None
+    ADEPT can represent binary KDMAs either as scalar ``value`` entries or as
+    ``intercept``/weight parameters, depending on the server version.  Payload
+    shape therefore cannot distinguish binary from trinary.  June trinary
+    documents are identified by their explicit ``-trinary``/``_trinary``
+    scenario-id suffix; exact non-trinary assessment ids are binary.
+    """
+    scenario_id = str(doc.get("scenario_id", "") or "").strip().lower()
+    if scenario_id.endswith(("-trinary", "_trinary")):
+        return "trinary"
+
+    binary_ids_lower = {
+        candidate.lower() for candidate in _binary_text_scenario_ids(metadata)
+    }
+    if scenario_id not in binary_ids_lower:
+        return "other"
+
+    return "binary"
 
 
 def extract_text_kdmas(metadata):
-    """Join text scenario KDMAs for the current eval, preferring combinedKdmas."""
+    """Extract parameterized AF/MF/PS/SS profiles from binary text documents."""
     text_kdma_results = {
         f"Participant Text {short_name} {param_name} KDMA": ""
         for short_name in KDMA_MAP.values()
@@ -2728,17 +2775,18 @@ def extract_text_kdmas(metadata):
 
     eval_number = get_eval_number(metadata)
     eval_name = get_eval_name(metadata)
-    prefixes = get_eval_prefix_candidates(metadata)
+    binary_scenario_ids = sorted(_binary_text_scenario_ids(metadata))
 
     text_docs = []
     seen_ids = set()
     queries = []
     for pid_val in pid_candidates:
-        queries.append({"participantID": pid_val, "evalNumber": eval_number})
-        queries.append({"participantID": pid_val, "evalName": eval_name})
-        for prefix in prefixes:
-            queries.append({"participantID": pid_val, "scenario_id": {"$regex": f"^{prefix}", "$options": "i"}})
-        queries.append({"participantID": pid_val})
+        # Exact ids prevent an ``*-assess`` lookup from also selecting
+        # ``*-assess-trinary`` documents.
+        scenario_query = {"$in": binary_scenario_ids}
+        queries.append({"participantID": pid_val, "evalNumber": eval_number, "scenario_id": scenario_query})
+        queries.append({"participantID": pid_val, "evalName": eval_name, "scenario_id": scenario_query})
+        queries.append({"participantID": pid_val, "scenario_id": scenario_query})
 
     try:
         for query in queries:
@@ -2756,42 +2804,63 @@ def extract_text_kdmas(metadata):
             print(f"Warning: No text scenario documents found for pid {pid}.")
         return text_kdma_results
 
-    preferred_docs = [doc for doc in text_docs if _is_current_eval_text_doc(doc, metadata)]
-    docs_to_use = preferred_docs if preferred_docs else text_docs
+    binary_docs = [doc for doc in text_docs if _classify_text_kdma_doc(doc, metadata) == "binary"]
+    rejected_docs = len(text_docs) - len(binary_docs)
+    if VERBOSE and rejected_docs:
+        logger.log(
+            LogLevel.INFO,
+            f"Ignored {rejected_docs} non-binary text KDMA document(s) for pid {pid}.",
+        )
+
+    preferred_docs = [doc for doc in binary_docs if _is_current_eval_text_doc(doc, metadata)]
+    docs_to_use = preferred_docs if preferred_docs else binary_docs
+    if not docs_to_use:
+        logger.log(LogLevel.WARN, f"No valid binomial text KDMA documents found for pid {pid}.")
+        return text_kdma_results
+
     docs_to_use.sort(
         key=lambda d: (
-            0 if (isinstance(d.get("combinedKdmas"), list) and d.get("combinedKdmas")) else 1,
-            0 if _is_current_eval_text_doc(d, metadata) else 1,
             str(d.get("timeComplete", "")),
-        )
+            str(d.get("_id", "")),
+        ),
+        reverse=True,
     )
 
+    processed_sessions = set()
     for doc in docs_to_use:
-        scenario_id = doc.get("scenario_id", "")
-        kdmas, source_field = _extract_kdmas_from_doc(doc)
+        scenario_id = str(doc.get("scenario_id", "") or "")
+        kdmas = doc.get("combinedKdmas", [])
         if not kdmas:
             continue
+
+        session_id = str(doc.get("combinedSessionId", "") or "")
+        if session_id and session_id in processed_sessions:
+            continue
+        if session_id:
+            processed_sessions.add(session_id)
 
         for kdma in kdmas:
             kdma_name = kdma.get("kdma")
             if kdma_name not in KDMA_MAP:
                 continue
             short_name = KDMA_MAP[kdma_name]
+
+            # Read only the binary binomial coefficient names from documents
+            # already classified by scenario_id as non-trinary.
             for param in kdma.get("parameters", []) or []:
                 param_name = param.get("name")
                 param_value = param.get("value", "")
-                if not param_name:
+                if param_name not in {"intercept", "attr_weight", "medical_weight"}:
                     continue
                 key = f"Participant Text {short_name} {param_name} KDMA"
-                if key in text_kdma_results and text_kdma_results[key] not in ("", param_value):
+                if text_kdma_results[key] not in ("", param_value):
                     print(
                         f"Warning: Duplicate text KDMA value for {key} on pid {pid}; "
-                        f"overwriting {text_kdma_results[key]} with {param_value} from {scenario_id} ({source_field})."
+                        f"keeping {text_kdma_results[key]} and ignoring {param_value} "
+                        f"from older binomial document {scenario_id}."
                     )
-                text_kdma_results[key] = param_value
-
-        if source_field == "combinedKdmas":
-            break
+                else:
+                    text_kdma_results[key] = param_value
 
     return text_kdma_results
 
