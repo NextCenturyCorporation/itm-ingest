@@ -24,7 +24,10 @@ def main(mongo_db):
     survey['survey']['version'] = 14
     for page in survey['survey']['pages']:
         page['evalNumber'] = 19
-        for row in page['elements'][0]['rows']:
+        rows = page['elements'][0].get('rows')
+        if rows is None:
+            continue
+        for row in rows:
             for old_text, new_text in lang_dict.items():
                 row['probe_unstructured'] = row['probe_unstructured'].replace(old_text, new_text)
 
