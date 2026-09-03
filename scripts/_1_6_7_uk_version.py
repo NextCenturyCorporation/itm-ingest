@@ -21,6 +21,7 @@ def main(mongo_db):
 
     survey = mongo_db['delegationConfig'].find_one({'_id': 'delegation_v13.0'})
     survey['_id'] = 'delegation_v14.0'
+    survey['survey']['version'] = 14
     for page in survey['survey']['pages']:
         for row in page['elements'][0]['rows']:
             for old_text, new_text in lang_dict.items():
