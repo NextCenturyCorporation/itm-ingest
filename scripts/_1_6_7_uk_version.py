@@ -15,6 +15,7 @@ def main(mongo_db):
         del config['_id']
         config['eval'] = 'Phase 2 UK Evaluation'
         for page in config['pages']:
+            page['evalNumber'] = 19
             for old_text, new_text in lang_dict.items():
                 page['elements'][0]['probe_unstructured'] = page['elements'][0]['probe_unstructured'].replace(old_text, new_text)
         mongo_db['textBasedConfig'].insert_one(config)
