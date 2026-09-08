@@ -321,7 +321,7 @@ def scenario_patients(history):
         response = entry.get("response") or {}
         if not isinstance(response, dict):
             continue
-            
+
         characters = response.get("characters") or response.get("state", {}).get("characters") or []
         for item in characters:
             if item.get("id"): 
@@ -394,7 +394,6 @@ def patient_treat(actions, patients):
         patient_key(patient, "treat"): treated.get(patient, 0)
         for patient in sorted(patients, key=_patient_sort_key)
     }
-
 
 def patient_tag(actions, patients):
     # color of the last tag applied to each patient, N/A if not tagged
@@ -578,6 +577,8 @@ def process_adm(adm):
         if key.endswith("false_alarms_required"))})
     # Treat Patient
     action_analysis.update({"Treat_patient": treat_patient})
+    # Treat Per Patient
+    action_analysis.update(treated)
     # Triage Performance
     action_analysis.update({"Triage Performance": triage_perf})
     # Probe Reponses
