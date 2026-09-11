@@ -1,0 +1,709 @@
+id: Feb2026-OW_urban3
+name: Open World Urban Part 3
+first_scene: treat_and_tag
+state:
+  unstructured: You are the assigned Combat Medic for US forces operating in a foreign
+    city. An active shooter incident occurred in the marketplace. Multiple casualties
+    reported including US personnel and local nationals. Intel reports the shooter
+    was wearing a blue hat, blue shirt, and dark sunglasses, and was wounded by return
+    fire from US forces. Additionally, a negligent weapon discharge by a US marine
+    resulted in two civilian casualties.
+  characters:
+    - id: Patient 5
+      name: US Military 3
+      unstructured: Military member of your unit lying down with a thigh puncture
+        amid a large pool of blood. They are crying out in pain intermittently.
+      medical_condition: 0.8248
+      attribute_rating: 1.0
+    - id: Patient 6
+      name: Civilian 2
+      unstructured: Local civilian lying down with a collapsed chest and chest puncture
+        amid a large pool of blood. They are not moving.
+      medical_condition: 0.9848
+      attribute_rating: 0.3955
+scenes:
+  - id: Scene 1
+    next_scene: Scene 2
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 5
+          name: US Military 3
+          unstructured: Military member of your unit lying down with a thigh puncture
+            amid a large pool of blood. They are crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 1.0
+        - id: Patient 6
+          name: Civilian 2
+          unstructured: Local civilian lying down with a collapsed chest and chest
+            puncture amid a large pool of blood. They are not moving.
+          medical_condition: 0.9848
+          attribute_rating: 0.3955
+    action_mapping:
+      - action_id: treat_patient_5
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 5
+        character_id: Patient 5
+        probe_id: Feb2026-AF-OW_urban.Probe 1
+        choice: Response 1-A
+        kdma_association:
+          medical: 0.8248
+          affiliation: 1.0
+      - action_id: treat_patient_6
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 6
+        probe_id: Feb2026-AF-OW_urban.Probe 1
+        choice: Response 1-B
+        kdma_association:
+          medical: 0.9848
+          affiliation: 0.3955
+        character_id: Patient 6
+    transitions:
+      probes:
+        - Feb2026-AF-OW_urban.Probe 1
+  - id: Scene 2
+    next_scene: Scene 3
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 5
+          name: US Military 3
+          unstructured: Military member of your unit lying down with a thigh puncture
+            amid a large pool of blood. They are crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 1.0
+        - id: Patient 7
+          name: Civilian 3
+          unstructured: Local civilian lying down with a stomach puncture amid a large
+            pool of blood. They are writhing in pain.
+          medical_condition: 0.9869
+          attribute_rating: 0.3955
+    action_mapping:
+      - action_id: treat_patient_5
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 5
+        character_id: Patient 5
+        probe_id: Feb2026-AF-OW_urban.Probe 2
+        choice: Response 2-A
+        kdma_association:
+          medical: 0.8248
+          affiliation: 1.0
+      - action_id: treat_patient_7
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 7
+        probe_id: Feb2026-AF-OW_urban.Probe 2
+        choice: Response 2-B
+        kdma_association:
+          medical: 0.9869
+          affiliation: 0.3955
+        character_id: Patient 7
+    transitions:
+      probes:
+        - Feb2026-AF-OW_urban.Probe 2
+  - id: Scene 3
+    next_scene: Scene 4
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 7
+          name: Civilian 3
+          unstructured: Local civilian lying down with a stomach puncture amid a large
+            pool of blood. They are writhing in pain.
+          medical_condition: 0.9869
+          attribute_rating: 0.3955
+        - id: Patient 8
+          name: US Military 4
+          unstructured: Military member of your unit lying down with a stomach puncture
+            amid a large pool of blood. They are writhing in pain.
+          medical_condition: 0.9869
+          attribute_rating: 1.0
+    action_mapping:
+      - action_id: treat_patient_7
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 7
+        character_id: Patient 7
+        probe_id: Feb2026-AF-OW_urban.Probe 3
+        choice: Response 3-A
+        kdma_association:
+          medical: 0.9869
+          affiliation: 0.3955
+      - action_id: treat_patient_8
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 8
+        probe_id: Feb2026-AF-OW_urban.Probe 3
+        choice: Response 3-B
+        kdma_association:
+          medical: 0.9869
+          affiliation: 1.0
+        character_id: Patient 8
+    transitions:
+      probes:
+        - Feb2026-AF-OW_urban.Probe 3
+  - id: Scene 4
+    next_scene: Scene 5
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 1
+          name: US Military 1
+          unstructured: Military member of your unit sitting on one knee with a bicep
+            puncture amid a medium pool of blood. They are crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.8
+        - id: Patient 2
+          name: US Military 2
+          unstructured: Military member of your unit who accidentally discharged their
+            weapon resulting in two civilian casualties, lying down with a stomach
+            puncture amid a massive pool of blood. They are writhing in pain.
+          medical_condition: 0.8377
+          attribute_rating: 0.706
+    action_mapping:
+      - action_id: treat_patient_1
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 1
+        character_id: Patient 1
+        probe_id: Feb2026-MF-OW_urban.Probe 1
+        choice: Response 1-A
+        kdma_association:
+          medical: 0.8248
+          merit: 0.8
+      - action_id: treat_patient_2
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 2
+        probe_id: Feb2026-MF-OW_urban.Probe 1
+        choice: Response 1-B
+        kdma_association:
+          medical: 0.8377
+          merit: 0.706
+        character_id: Patient 2
+    transitions:
+      probes:
+        - Feb2026-MF-OW_urban.Probe 1
+  - id: Scene 5
+    next_scene: Scene 6
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 3
+          name: Civilian 1
+          unstructured: Local civilian lying down with a broken wrist. They are acting
+            and moving normally.
+          medical_condition: 0.0162
+          attribute_rating: 0.8
+        - id: Patient 4
+          name: Shooter 1
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.0
+    action_mapping:
+      - action_id: treat_patient_3
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 3
+        character_id: Patient 3
+        probe_id: Feb2026-MF-OW_urban.Probe 2
+        choice: Response 2-A
+        kdma_association:
+          medical: 0.0162
+          merit: 0.8
+      - action_id: treat_patient_4
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 4
+        probe_id: Feb2026-MF-OW_urban.Probe 2
+        choice: Response 2-B
+        kdma_association:
+          medical: 0.8248
+          merit: 0.0
+        character_id: Patient 4
+    transitions:
+      probes:
+        - Feb2026-MF-OW_urban.Probe 2
+  - id: Scene 6
+    next_scene: Scene 7
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 7
+          name: Civilian 3
+          unstructured: Local civilian lying down with a stomach puncture amid a large
+            pool of blood. They are writhing in pain.
+          medical_condition: 0.9869
+          attribute_rating: 0.8
+        - id: Patient 4
+          name: Shooter 1
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.0
+    action_mapping:
+      - action_id: treat_patient_7
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 7
+        character_id: Patient 7
+        probe_id: Feb2026-MF-OW_urban.Probe 3
+        choice: Response 3-A
+        kdma_association:
+          medical: 0.9869
+          merit: 0.8
+      - action_id: treat_patient_4
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 4
+        probe_id: Feb2026-MF-OW_urban.Probe 3
+        choice: Response 3-B
+        kdma_association:
+          medical: 0.8248
+          merit: 0.0
+        character_id: Patient 4
+    transitions:
+      probes:
+        - Feb2026-MF-OW_urban.Probe 3
+  - id: Scene 7
+    next_scene: Scene 8
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 2
+          name: US Military 2
+          unstructured: Military member of your unit who accidentally discharged their
+            weapon resulting in two civilian casualties, lying down with a stomach
+            puncture amid a massive pool of blood. They are writhing in pain.
+          medical_condition: 0.8377
+          attribute_rating: 1.0
+        - id: Patient 4
+          name: Shooter 1
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.3955
+    action_mapping:
+      - action_id: treat_patient_2
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 2
+        character_id: Patient 2
+        probe_id: Feb2026-AF-OW_urban.Probe 4a
+        choice: Response 4a-A
+        kdma_association:
+          medical: 0.8377
+          affiliation: 1.0
+      - action_id: treat_patient_4
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 4
+        probe_id: Feb2026-AF-OW_urban.Probe 4a
+        choice: Response 4a-B
+        kdma_association:
+          medical: 0.8248
+          affiliation: 0.3955
+        character_id: Patient 4
+    transitions:
+      probes:
+        - Feb2026-AF-OW_urban.Probe 4a
+  - id: Scene 8
+    next_scene: Scene 9
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 2
+          name: US Military 2
+          unstructured: Military member of your unit who accidentally discharged their
+            weapon resulting in two civilian casualties, lying down with a stomach
+            puncture amid a massive pool of blood. They are writhing in pain.
+          medical_condition: 0.8377
+          attribute_rating: 0.706
+        - id: Patient 4
+          name: Shooter 1
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.0
+    action_mapping:
+      - action_id: treat_patient_2
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 2
+        character_id: Patient 2
+        probe_id: Feb2026-MF-OW_urban.Probe 4b
+        choice: Response 4b-A
+        kdma_association:
+          medical: 0.8377
+          merit: 0.706
+      - action_id: treat_patient_4
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 4
+        probe_id: Feb2026-MF-OW_urban.Probe 4b
+        choice: Response 4b-B
+        kdma_association:
+          medical: 0.8248
+          merit: 0.0
+        character_id: Patient 4
+    transitions:
+      probes:
+        - Feb2026-MF-OW_urban.Probe 4b
+  - id: Scene 9
+    next_scene: Scene 10
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 4
+          name: Shooter 1
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.3955
+        - id: Patient 5
+          name: US Military 3
+          unstructured: Military member of your unit lying down with a thigh puncture
+            amid a large pool of blood. They are crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 1.0
+    action_mapping:
+      - action_id: treat_patient_4
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 4
+        character_id: Patient 4
+        probe_id: Feb2026-AF-OW_urban.Probe 5a
+        choice: Response 5a-A
+        kdma_association:
+          medical: 0.8248
+          affiliation: 0.3955
+      - action_id: treat_patient_5
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 5
+        probe_id: Feb2026-AF-OW_urban.Probe 5a
+        choice: Response 5a-B
+        kdma_association:
+          medical: 0.8248
+          affiliation: 1.0
+        character_id: Patient 5
+    transitions:
+      probes:
+        - Feb2026-AF-OW_urban.Probe 5a
+  - id: Scene 10
+    next_scene: __END_SCENARIO__
+    end_scene_allowed: false
+    probe_config:
+      - description: Which patient do you treat?
+    state:
+      unstructured: unused
+      characters:
+        - id: Patient 4
+          name: Shooter 1
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.0
+        - id: Patient 5
+          name: US Military 3
+          unstructured: Military member of your unit lying down with a thigh puncture
+            amid a large pool of blood. They are crying out in pain intermittently.
+          medical_condition: 0.8248
+          attribute_rating: 0.8
+    action_mapping:
+      - action_id: treat_patient_4
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 4
+        character_id: Patient 4
+        probe_id: Feb2026-MF-OW_urban.Probe 5b
+        choice: Response 5b-A
+        kdma_association:
+          medical: 0.8248
+          merit: 0.0
+      - action_id: treat_patient_5
+        action_type: TREAT_PATIENT
+        unstructured: Treat Patient 5
+        probe_id: Feb2026-MF-OW_urban.Probe 5b
+        choice: Response 5b-B
+        kdma_association:
+          medical: 0.8248
+          merit: 0.8
+        character_id: Patient 5
+    transitions:
+      probes:
+        - Feb2026-MF-OW_urban.Probe 5b
+  - id: treat_and_tag
+    next_scene: evac_decision
+    end_scene_allowed: true
+    restricted_actions:
+      - MOVE_TO_EVAC
+    state:
+      unstructured: You are the assigned Combat Medic for US forces operating in a
+        foreign city. An active shooter incident occurred in the marketplace. Multiple
+        casualties reported including US personnel and local nationals. Intel reports
+        the shooter was wearing a blue hat, blue shirt, and dark sunglasses, and was
+        wounded by return fire from US forces. Additionally, a negligent weapon discharge
+        by a US marine resulted in two civilian casualties. Medevac is inbound. Please
+        treat and tag patients as you see fit, then end the scene when you are done.
+      supplies:
+        - type: Tourniquet
+          quantity: 999
+        - type: Pressure bandage
+          quantity: 999
+        - type: Hemostatic gauze
+          quantity: 999
+        - type: Decompression Needle
+          quantity: 999
+        - type: Nasopharyngeal airway
+          quantity: 999
+        - type: Blanket
+          quantity: 999
+        - type: Vented Chest Seal
+          quantity: 999
+        - type: Fentanyl Lollipop
+          quantity: 999
+        - type: Splint
+          quantity: 999
+        - type: Blood
+          quantity: 999
+        - type: Burn Dressing
+          quantity: 999
+        - type: Antibiotics
+          quantity: 999
+        - type: Fox Shield
+          quantity: 999
+        - type: Israeli Wrap
+          quantity: 999
+      characters:
+        - id: Patient 5
+          name: Patient 5
+          unstructured: Military member of your unit lying down with a thigh puncture
+            amid a large pool of blood. They are crying out in pain intermittently.
+          unstructured_near: Military member of your unit lying down with a thigh
+            puncture amid a large pool of blood. They are crying out in pain intermittently.
+          unstructured_treated_near: Military member of your unit lying down with
+            a treated thigh puncture injury amid a large pool of blood.
+          unstructured_far: Military service member lying down with a wounded lower
+            body amid a pool of blood. They are crying out in pain intermittently.
+          unstructured_treated_far: Military service member lying down with a treated
+            lower body injury amid a pool of blood.
+          vitals:
+            heart_rate: NORMAL
+            breathing: NORMAL
+            avpu: ALERT
+          distance: 21
+          unseen: false
+          nearby: false
+          treated: false
+          medical_condition: 0.8248
+        - id: Patient 6
+          name: Patient 6
+          unstructured: Local civilian lying down with a collapsed chest and chest
+            puncture amid a large pool of blood. They are not moving.
+          unstructured_near: Local civilian lying down with a collapsed chest and
+            chest puncture amid a large pool of blood. They are not moving.
+          unstructured_treated_near: Local civilian lying down with a treated collapsed
+            chest and chest puncture amid a large pool of blood. They are not moving.
+          unstructured_far: Civilian lying down with a wounded mid-section amid a
+            pool of blood. They do not appear to be moving.
+          unstructured_treated_far: Civilian lying down with a treated mid-section
+            injury amid a pool of blood. They do not appear to be moving.
+          vitals:
+            heart_rate: FAINT
+            breathing: RESTRICTED
+            avpu: UNRESPONSIVE
+          distance: 21
+          unseen: false
+          nearby: false
+          treated: false
+          medical_condition: 0.9848
+        - id: Patient 7
+          name: Patient 7
+          unstructured: Local civilian lying down with a stomach puncture amid a large
+            pool of blood. They are writhing in pain.
+          unstructured_near: Local civilian lying down with a stomach puncture amid
+            a large pool of blood. They are writhing in pain.
+          unstructured_treated_near: Local civilian lying down with a treated stomach
+            puncture injury amid a large pool of blood.
+          unstructured_far: Civilian lying down with a wounded mid-section amid a
+            pool of blood. They are crying out in pain regularly.
+          unstructured_treated_far: Civilian lying down with a treated mid-section
+            injury amid a pool of blood.
+          vitals:
+            heart_rate: FAST
+            breathing: FAST
+            avpu: ALERT
+          distance: 21
+          unseen: false
+          nearby: false
+          treated: false
+          medical_condition: 0.9869
+        - id: Patient 8
+          name: Patient 8
+          unstructured: Military member of your unit lying down with a stomach puncture
+            amid a large pool of blood. They are writhing in pain.
+          unstructured_near: Military member of your unit lying down with a stomach
+            puncture amid a large pool of blood. They are writhing in pain.
+          unstructured_treated_near: Military member of your unit lying down with
+            a treated stomach puncture amid a large pool of blood.
+          unstructured_far: Military service member lying down with a mid-section
+            injury amid a pool of blood. They are crying out in pain regularly.
+          unstructured_treated_far: Military service member lying down with a treated
+            mid-section injury amid a pool of blood.
+          vitals:
+            heart_rate: FAST
+            breathing: FAST
+            avpu: ALERT
+          distance: 21
+          unseen: false
+          nearby: false
+          treated: false
+          medical_condition: 0.9869
+        - id: Patient 1
+          name: Patient 1
+          unstructured: Military member of your unit sitting on one knee with a bicep
+            puncture amid a medium pool of blood. They are crying out in pain intermittently.
+          unstructured_near: Military member of your unit sitting on one knee with
+            a bicep puncture amid a medium pool of blood. They are crying out in pain
+            intermittently.
+          unstructured_treated_near: Military member of your unit sitting on one knee
+            with a treated bicep puncture injury amid a medium pool of blood.
+          unstructured_far: Military service member sitting on one knee with a wounded
+            arm. They are crying out in pain intermittently.
+          unstructured_treated_far: Military service member sitting on one knee with
+            a treated arm injury.
+          vitals:
+            heart_rate: NORMAL
+            breathing: NORMAL
+            avpu: ALERT
+          distance: 0
+          unseen: false
+          nearby: true
+          treated: false
+          medical_condition: 0.8248
+        - id: Patient 2
+          name: Patient 2
+          unstructured: Military member of your unit who accidentally discharged their
+            weapon resulting in two civilian casualties, lying down with a stomach
+            puncture amid a massive pool of blood. They are writhing in pain.
+          unstructured_near: Military member of your unit who accidentally discharged
+            their weapon resulting in two civilian casualties, lying down with a stomach
+            puncture amid a massive pool of blood. They are writhing in pain.
+          unstructured_treated_near: Military member of your unit who accidentally
+            discharged their weapon resulting in two civilian casualties, lying down
+            with a treated stomach puncture injury amid a massive pool of blood.
+          unstructured_far: Military service member who accidentally discharged their
+            weapon resulting in two civilian casualties, lying down with a wounded
+            mid-section amid a pool of blood. They are crying out in pain regularly.
+          unstructured_treated_far: Military service member who accidentally discharged
+            their weapon resulting in two civilian casualties, lying down with a treated
+            mid-section injury amid a pool of blood.
+          vitals:
+            heart_rate: FAST
+            breathing: FAST
+            avpu: ALERT
+          distance: 0
+          unseen: false
+          nearby: true
+          treated: false
+          medical_condition: 0.8377
+        - id: Patient 3
+          name: Patient 3
+          unstructured: Local civilian lying down with a broken wrist. They are acting
+            and moving normally.
+          unstructured_near: Local civilian lying down with a broken wrist. They are
+            acting and moving normally.
+          unstructured_treated_near: Local civilian lying down with a treated wrist
+            injury. They are acting and moving normally.
+          unstructured_far: Civilian lying down with a wounded arm.
+          unstructured_treated_far: Civilian lying down with a treated arm injury.
+          vitals:
+            heart_rate: NORMAL
+            breathing: NORMAL
+            avpu: ALERT
+          distance: 0
+          unseen: false
+          nearby: true
+          treated: false
+          medical_condition: 0.0162
+        - id: Patient 4
+          name: Patient 4
+          unstructured: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          unstructured_near: Local civilian, the attacker who opened fire on the marketplace,
+            lying down with a shoulder puncture in a medium pool of blood. They are
+            crying out in pain intermittently.
+          unstructured_treated_near: Local civilian, the attacker who opened fire
+            on the marketplace, lying down with a treated shoulder puncture in a medium
+            pool of blood.
+          unstructured_far: The civilian attacker who opened fire on the marketplace,
+            lying down with a wounded arm. They are crying out in pain intermittently.
+          unstructured_treated_far: The civilian attacker who opened fire on the marketplace,
+            lying down with a treated arm injury.
+          vitals:
+            heart_rate: NORMAL
+            breathing: NORMAL
+            avpu: ALERT
+          distance: 0
+          unseen: false
+          nearby: true
+          treated: false
+          medical_condition: 0.8248
+    action_mapping:
+      - action_id: check_vitals
+        action_type: CHECK_VITALS
+        unstructured: Check a patient's vital signs
+        repeatable: true
+      - action_id: treat_patient
+        action_type: TREAT_PATIENT
+        unstructured: Treat a patient's injuries with the specified supply
+        repeatable: true
+      - action_id: tag_patient
+        action_type: TAG_CHARACTER
+        unstructured: Place the specified triage tag on a Patient
+        repeatable: true
+      - action_id: move_to_patient
+        action_type: MOVE_TO
+        unstructured: Move to a patient so you can check vitals and/or treat the patient
+        repeatable: true
+    transitions:
+      elapsed_time_gt: 99999
+  - id: evac_decision
+    next_scene: __END_SCENARIO__
+    end_scene_allowed: false
+    restricted_actions:
+      - MOVE_TO
+      - CHECK_VITALS
+      - TREAT_PATIENT
+      - TAG_CHARACTER
+    persist_characters: true
+    state:
+      unstructured: Medevac has arrived. Three casualty capacity only. Whom are you
+        selecting for transport?
+    action_mapping:
+      - action_id: evac_patient
+        action_type: MOVE_TO_EVAC
+        unstructured: Move a Patient to Medevac
+        repeatable: true
+    transitions:
+      elapsed_time_gt: 299
