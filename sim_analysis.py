@@ -1024,28 +1024,20 @@ def compute_treatment_submetrics_required(csv_rows, required_injuries):
 
         injury = str(row.get("InjuryName", "")).strip()
         completed = safe_bool_from_csv(row.get("InjuryTreatmentComplete"))
-        if not completed:
-            continue
-
         patient_required = required_injuries.get(patient, [])
 
-        if patient_required:
-            if injury in patient_required:
-                if patient in to_complete and injury in to_complete[patient]:
-                    to_complete[patient].remove(injury)
-                    hits[patient] = hits.get(patient, 0) + 1
-                    if not to_complete[patient]:
-                        del to_complete[patient]
-                else:
-                    repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
+        if completed and injury in patient_required:
+            if patient in to_complete and injury in to_complete[patient]:
+                to_complete[patient].remove(injury)
+                hits[patient] = hits.get(patient, 0) + 1
+                if not to_complete[patient]:
+                    del to_complete[patient]
             else:
-                if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
-                    repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
-                else:
-                    false_alarms[patient] = false_alarms.get(patient, 0) + 1
-                false_alarm_tracker.setdefault(patient, {})
-                false_alarm_tracker[patient][injury] = false_alarm_tracker[patient].get(injury, 0) + 1
+                repeat_hits[patient] = repeat_hits.get(patient, 0) + 1
         else:
+            # Failed treatment attempts are emitted with
+            # InjuryTreatmentComplete=False.  They still represent false
+            # alarms and must not be discarded before repeat detection.
             if false_alarm_tracker.get(patient, {}).get(injury, 0) > 0:
                 repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
             else:
@@ -1100,6 +1092,7 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplementa
     supplemental_tracker = {}
     false_alarm_tracker = {}
     just_completed = None
+    paired_event_tolerance_ms = 20.0
 
     for row in csv_rows:
         event_name = row.get("EventName")
@@ -1119,7 +1112,10 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplementa
                 if injury in patient_required:
                     if patient in to_complete and injury in to_complete[patient]:
                         to_complete[patient].remove(injury)
-                        just_completed = patient
+                        just_completed = {
+                            "patient": patient,
+                            "elapsed_ms": safe_float(row.get("ElapsedTime"), default=None),
+                        }
                         hits[patient] = hits.get(patient, 0) + 1
                         if not to_complete[patient]:
                             del to_complete[patient]
@@ -1159,7 +1155,16 @@ def compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplementa
                 supplemental_tracker.setdefault(patient, {})
                 supplemental_tracker[patient][tool] = supplemental_tracker[patient].get(tool, 0) + 1
             else:
-                if patient != just_completed:
+                tool_elapsed_ms = safe_float(row.get("ElapsedTime"), default=None)
+                is_paired_required_event = (
+                    just_completed is not None
+                    and patient == just_completed["patient"]
+                    and tool_elapsed_ms is not None
+                    and just_completed["elapsed_ms"] is not None
+                    and abs(tool_elapsed_ms - just_completed["elapsed_ms"])
+                    <= paired_event_tolerance_ms
+                )
+                if not is_paired_required_event:
                     if false_alarm_tracker.get(patient, {}).get(tool, 0) > 0:
                         repeat_false_alarms[patient] = repeat_false_alarms.get(patient, 0) + 1
                     else:
@@ -1400,11 +1405,20 @@ def compute_tag_metrics(expected_tag_color, tags_applied):
 # - Hemorrhage control
 # - Hemorrhage control_time
 # - missed_hemorrhage_control
-def compute_hemorrhage_control(csv_rows, required_proc_for_injury):
+def compute_hemorrhage_control(
+    csv_rows,
+    required_proc_for_injury,
+    expected_tag_color=None,
+):
     """Compute hemorrhage control completion, time, and missed count."""
     to_complete = {}
 
+    expected_tag_color = expected_tag_color or {}
     for (patient, injury), proc in required_proc_for_injury.items():
+        # EXPECTANT/gray casualties are intentionally excluded from the
+        # hemorrhage-control completion requirement.
+        if expected_tag_color.get(patient) == "gray":
+            continue
         if proc in HEMORRHAGE_CONTROL_PROCS:
             to_complete.setdefault(patient, set()).add(injury)
 
@@ -2139,7 +2153,11 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     patient_order_engaged = aggregate_patient_metrics["patient_order_engaged"]
 
     tag_metrics = compute_tag_metrics(expected_tag_color, tags_applied)
-    hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
+    hem_metrics = compute_hemorrhage_control(
+        csv_rows,
+        required_proc_for_injury,
+        expected_tag_color,
+    )
 
     spawn_location = compute_spawn_location_value(sim_json, pid)
     if spawn_location is not None and prefix:
@@ -2351,6 +2369,9 @@ def process_file(json_path, output_dir):
         sim_json = json.load(f)
 
     csv_path = json_path.replace(".json", ".csv")
+    if not os.path.exists(csv_path):
+        print(f"Warning: CSV file not found for {json_path}; skipping file.")
+        return
     csv_rows = load_csv_rows(csv_path)
 
     metadata = extract_run_metadata(sim_json, filename)
@@ -2364,7 +2385,11 @@ def process_file(json_path, output_dir):
     salt = derive_salt_categories(csv_rows, sim_json)
     salt_errors = compute_salt_errors(csv_rows, salt)
     _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, sim_json)
-    hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
+    hem_metrics = compute_hemorrhage_control(
+        csv_rows,
+        required_proc_for_injury,
+        expected_tag_color,
+    )
     patient_hc_time = compute_patient_hc_time(
         csv_rows,
         triage_times["patient_interactions"],
@@ -2425,5 +2450,5 @@ if __name__ == "__main__":
 
     for root, _, files in os.walk(args.input_dir):
         for file in files:
-            if file.endswith(".json"):
+            if file.endswith(".json") and not file.endswith("_analysis.json"):
                 process_file(os.path.join(root, file), args.output_dir)
