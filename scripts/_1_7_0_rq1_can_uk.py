@@ -11,7 +11,7 @@ import requests
 ADEPT_URL = config('ADEPT_URL')
 
 def main(mongo_db):
-    survey = mongo_db['delegationConfig'].find_one({'_id': 'delegation_v14.0'})
+    survey = mongo_db['delegationConfig'].find_one({'_id': 'delegation_v13.0'})
 
     #iterating over the observed adms in the survey
     for page in survey['survey']['pages']:
