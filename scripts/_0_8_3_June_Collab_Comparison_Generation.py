@@ -37,7 +37,7 @@ def find_can_uk_adm_session(adm_collection, survey, page):
     adm = adm_collection.find_one({
         'alignment_target': page_data['admTarget'],
         'scenario': page_data['scenarioIndex'],
-        'adm_name': page_data['admName'],
+        'evaluation.adm_name': page_data['admName'],
     })
     if not adm:
         print(f"No ADM run found for {page_data['admName']} - {page_data['scenarioIndex']} - {page_data['admTarget']}")
