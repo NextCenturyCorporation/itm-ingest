@@ -22,7 +22,7 @@ def main(mongo_db):
         adm = mongo_db['admTargetRuns'].find_one({
             'alignment_target': page['target'],
             'scenario': page['scenarioIndex'],
-            'adm_name': page['admName']
+            'evaluation.adm_name': page['admName']
         })
 
         if not adm:
