@@ -6,6 +6,49 @@ import math
 # compares the text responses for adept to ADMs to populate comparison collection
 
 ADEPT_URL = config("ADEPT_URL")
+CAN_UK_EVALS = (18, 19)
+
+CAN_UK_BLOCKS = {
+    # block -> (driving text document attribute, session id field on that document)
+    'AF-PS': ('AF', 'AF-PS_sessionId'),
+    'MF-SS': ('MF', 'MF-SS_sessionId'),
+    'AF': ('AF', 'combinedSessionId'),
+    'PS': ('PS', 'combinedSessionId'),
+    'MF': ('MF', 'combinedSessionId'),
+}
+
+
+def can_uk_block(page_scenario):
+    has = lambda code: code in page_scenario
+    if has('AF') and has('PS'):
+        return 'AF-PS'
+    if has('MF') and has('SS'):
+        return 'MF-SS'
+    if has('AF'):
+        return 'AF'
+    if has('PS'):
+        return 'PS'
+    if has('MF'):
+        return 'MF'
+    return None
+
+def find_can_uk_adm_session(adm_collection, survey, page):
+    page_data = survey['results'][page]
+    adm = adm_collection.find_one({
+        'alignment_target': page_data['admTarget'],
+        'scenario': page_data['scenarioIndex'],
+        'evaluation.adm_name': page_data['admName'],
+    })
+    if not adm:
+        print(f"No ADM run found for {page_data['admName']} - {page_data['scenarioIndex']} - {page_data['admTarget']}")
+        return None
+
+    adm_session = (adm.get('results') or {}).get('ta1_session_id')
+    if not adm_session:
+        print(f"No ta1_session_id on ADM run {page_data['admName']} - {page_data['scenarioIndex']} "
+              f"- run _1_7_0_rq1_can_uk first to rebuild the observed ADM sessions")
+        return None
+    return adm_session
 
 def main(mongoDB, EVAL_NUMBER=8):
     text_scenario_collection = mongoDB['userScenarioResults']
@@ -43,6 +86,9 @@ def main(mongoDB, EVAL_NUMBER=8):
         # Eval 17: MF is assessed for KDMA profiling only — no MF delegation block, so skip the doc entirely.
         if EVAL_NUMBER == 17 and 'MF' in scenario_id:
             continue
+        # can skip over since we get the MF-SS pair data from the MF doc
+        if EVAL_NUMBER in CAN_UK_EVALS and 'SS' in scenario_id:
+            continue
         if EVAL_NUMBER == 17 and not session_id:
             print(f"No session id for eval 17 text scenario {scenario_id} (pid {entry.get('participantID')})")
             continue
@@ -70,6 +116,19 @@ def main(mongoDB, EVAL_NUMBER=8):
                         attr = 'AF' if 'AF' in scenario_id else 'PS'
                         if attr not in page_scenario or 'AF-SS' in page_scenario:
                             continue
+                elif EVAL_NUMBER in CAN_UK_EVALS:
+                    block = can_uk_block(page_scenario)
+                    if block is None:
+                        continue
+                    driver_attribute, session_field = CAN_UK_BLOCKS[block]
+                    # only the block's driving document scores it, so each block gets one score
+                    if scenario_attribute != driver_attribute:
+                        continue
+                    # solo blocks score against the combined session, 2D blocks against the pair's
+                    session_id = entry.get(session_field)
+                    if not session_id:
+                        print(f"No {session_field} on {scenario_id} for pid {pid} - skipping {block} block")
+                        continue
                 elif EVAL_NUMBER == 15:
                     if is_individual_mf:
                         if 'MF' not in page_scenario or 'SS' in page_scenario:
@@ -82,15 +141,22 @@ def main(mongoDB, EVAL_NUMBER=8):
                 elif scenario_attribute is None or scenario_attribute not in page_scenario:
                     continue
 
-                if EVAL_NUMBER != 10 and EVAL_NUMBER != 16:
-                    adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
-                    if adm is None:
+                medic = None
+                if EVAL_NUMBER in CAN_UK_EVALS:
+                    adm_session = find_can_uk_adm_session(adm_collection, survey, page)
+                    if adm_session is None:
+                        continue
+                else:
+                    if EVAL_NUMBER != 10 and EVAL_NUMBER != 16:
+                        adm = db_utils.find_adm_from_medic(EVAL_NUMBER, medic_collection, adm_collection, page, page_scenario, survey)
+                        if adm is None:
+                            continue
+
+                    medic = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})
+                    if not medic:
                         continue
 
-                medic = medic_collection.find_one({'evalNumber': EVAL_NUMBER, 'name': page})
-                if not medic:
-                    continue
-                if 'combined' in page_scenario:
+                if medic and 'combined' in page_scenario:
                     adm_sessions = medic['admSessionIdsByScenario']
                     # Create a comparison for each scenario in the combined ADM
                     for adm_scenario_id, adm_session in adm_sessions.items():
@@ -113,7 +179,8 @@ def main(mongoDB, EVAL_NUMBER=8):
                         else:
                             print(f'Error getting comparison for scenarios {scenario_id} and {adm_scenario_id} with text session {session_id} and adm session {adm_session}', res)
                 else:
-                    adm_session = medic['admSessionId']
+                    if medic:
+                        adm_session = medic['admSessionId']
 
                     res = requests.get(f'{ADEPT_URL}api/v1/alignment/compare_sessions?session_id_1={session_id}&session_id_2={adm_session}').json()
                     # send document to mongo
