@@ -632,15 +632,17 @@ def extract_run_metadata(sim_json, filename):
 
 def compute_triage_time_seconds(csv_rows):
     """Compute overall triage time from elapsed time values."""
-    if len(csv_rows) <= 1:
-        return 0.0
+    start = None
+    end = None
+    for row in csv_rows:
+        elapsed = safe_float(row.get("ElapsedTime"), None)
+        if not row.get("Timestamp") or elapsed is None or not math.isfinite(elapsed) or elapsed < 0:
+            continue
+        if start is None or row.get("EventName") == "SESSION_START":
+            start = elapsed
+        end = elapsed
 
-    try:
-        start = safe_float(csv_rows[0].get("ElapsedTime", 0))
-        end = safe_float(csv_rows[-2].get("ElapsedTime", 0))
-        return max(0.0, (end - start) / 1000.0)
-    except Exception:
-        return 0.0
+    return max(0.0, (end - start) / 1000.0) if start is not None else 0.0
 
 
 def compute_assessment_metrics(csv_rows):

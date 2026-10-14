@@ -87,6 +87,19 @@ class OctoberProbeMatcherTests(unittest.TestCase):
                 operation.assert_not_called()
             self.assertEqual(list(Path(output_dir).iterdir()), [])
 
+    def test_triage_time_uses_current_session_events_and_excludes_footer(self):
+        rows = [
+            {"EventName": "SESSION_END", "ElapsedTime": "-292288", "Timestamp": "before"},
+            {"EventName": "PLAYER_POSITIONS", "ElapsedTime": "0", "Timestamp": "start"},
+            {"EventName": "SESSION_START", "ElapsedTime": "2", "Timestamp": "start"},
+            {"EventName": "PLAYER_POSITIONS", "ElapsedTime": "402846", "Timestamp": "end"},
+            {"EventName": "Participant ID", "ElapsedTime": "202609114"},
+            {"EventName": "Localization", "ElapsedTime": "CANADA"},
+        ]
+        self.assertAlmostEqual(matcher.compute_triage_time_seconds(rows), 402.844)
+        self.assertEqual(matcher.compute_triage_time_seconds([]), 0.0)
+        self.assertEqual(matcher.compute_triage_time_seconds(rows[-2:]), 0.0)
+
     def test_missing_eval18_text_has_no_cross_evaluation_fallback(self):
         collection = MagicMock()
         collection.find_one.return_value = None
