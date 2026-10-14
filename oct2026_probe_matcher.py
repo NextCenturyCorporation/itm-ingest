@@ -3,8 +3,8 @@
 # ============================================================
 #
 # Based on the June matcher, with inject probes and patient-map extraction removed.
-# Evaluation defaults and text/YAML lookup configuration are inherited from June;
-# update these for October before production use.
+# Uses the original February scenario package for the October evaluation (eval 18).
+# Existing eval 18 text responses retain their recorded June2026 scenario IDs.
 # Processes simulation JSON + CSV files and produces:
 # - reusable open-world actionAnalysis/eventTotals fields
 # - moderator-question personal-safety probes
@@ -21,6 +21,10 @@
 #   -k / --calc_kdmas     Enable ADEPT/TA1 calls to compute open-world KDMAs
 #                         and alignment compare values
 #   -v / --verbose        Verbose command-line output
+#   --eval-number        Evaluation number (default: 18)
+#   --eval-name          Evaluation label (default: October 2026 Evaluation)
+#   --text-scenario-prefix Recorded text prefix (default: June2026 / Jun2026);
+#                          repeat this flag to include multiple prefixes
 #
 # ============================================================
 
@@ -122,8 +126,15 @@ KDMA_MAP = {
     "search": "SS",
 }
 
-DEFAULT_EVAL_NUM = 17
-DEFAULT_EVAL_NAME = "June 2026 Evaluation"
+DEFAULT_EVAL_NUM = 18
+DEFAULT_EVAL_NAME = "October 2026 Evaluation"
+EVAL_NUM = DEFAULT_EVAL_NUM
+EVAL_NAME = DEFAULT_EVAL_NAME
+DEFAULT_TEXT_SCENARIO_PREFIXES = ("June2026", "Jun2026")
+TEXT_SCENARIO_PREFIXES = DEFAULT_TEXT_SCENARIO_PREFIXES
+OPENWORLD_YAML_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "phase2", "feb2026", "openworld"
+)
 
 
 
@@ -589,19 +600,17 @@ def extract_run_metadata(sim_json, filename):
     elif "urban" in text_blob:
         terrain = "urban"
 
-    short_label, pretty_label = extract_month_year_label(
-        narrative_desc, bucket, scenario_name
-    )
-
     if open_world and terrain != "unknown":
-        env = f"{short_label}-{terrain}-openworld" if short_label else f"{terrain}-openworld"
+        # Existing eval 18 logs still contain February/Triangle eval 15 labels.
+        # Label output for October while reusing the original February scenarios.
+        env = f"oct2026-{terrain}-openworld"
     elif terrain != "unknown":
         env = terrain
     else:
         env = "unknown"
 
     if open_world and terrain != "unknown":
-        scenario_id = f"{pretty_label}-OW_{terrain}" if pretty_label else f"OW_{terrain}"
+        scenario_id = f"Feb2026-OW_{terrain}"
     else:
         scenario_id = "unknown"
 
@@ -612,8 +621,8 @@ def extract_run_metadata(sim_json, filename):
         "env": env,
         "scenario_id": scenario_id,
         "openWorld": open_world,
-        "evalNumber": eval_metadata.get("evalNumber"),
-        "evalName": eval_metadata.get("evalName"),
+        "evalNumber": EVAL_NUM if open_world else eval_metadata.get("evalNumber"),
+        "evalName": EVAL_NAME if open_world else eval_metadata.get("evalName"),
     }
 
 
@@ -2194,82 +2203,53 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
 # ============================================================
 
 def get_eval_number(metadata):
-    """Return the best evalNumber for this run, defaulting to June 2026."""
+    """Return the selected evaluation number for this run."""
     value = metadata.get("evalNumber")
-    return value if value is not None else DEFAULT_EVAL_NUM
+    return value if value is not None else EVAL_NUM
 
 
 def get_eval_name(metadata):
-    """Return the best evalName for this run, defaulting to June 2026."""
+    """Return the selected evaluation label for this run."""
     value = metadata.get("evalName")
-    return value if value else DEFAULT_EVAL_NAME
+    return value if value else EVAL_NAME
 
 
 def get_eval_prefix(metadata):
-    """Derive a text/open-world scenario prefix such as Jun2026 or June2026."""
-    scenario_id = str(metadata.get("scenario_id", "") or "")
-    for separator in ("-OW", "_OW", "-ow", "_ow"):
-        if separator in scenario_id:
-            prefix = scenario_id.split(separator)[0]
-            if prefix:
-                return prefix
-
-    eval_name = str(get_eval_name(metadata) or "")
-    match = re.search(r"\b(Jan|Feb|Mar|Apr|May|Jun|June|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s*(\d{4})\b", eval_name, re.IGNORECASE)
-    if match:
-        month = match.group(1).lower()
-        year = match.group(2)
-        month_short = {
-            "january": "Jan", "jan": "Jan",
-            "february": "Feb", "feb": "Feb",
-            "march": "Mar", "mar": "Mar",
-            "april": "Apr", "apr": "Apr",
-            "may": "May",
-            "june": "Jun", "jun": "Jun",
-            "july": "Jul", "jul": "Jul",
-            "august": "Aug", "aug": "Aug",
-            "september": "Sept", "sept": "Sept", "sep": "Sept",
-            "october": "Oct", "oct": "Oct",
-            "november": "Nov", "nov": "Nov",
-            "december": "Dec", "dec": "Dec",
-        }.get(month, month[:3].title())
-        return f"{month_short}{year}"
-
-    return "Jun2026"
+    """Return the recorded text prefix, independently of open-world IDs."""
+    return TEXT_SCENARIO_PREFIXES[0]
 
 
 def get_eval_prefix_candidates(metadata):
-    """Return possible prefixes used by June text/open-world scenario ids."""
-    base = get_eval_prefix(metadata)
-    candidates = [base]
-    if base.lower().startswith("jun") and not base.lower().startswith("june"):
-        candidates.append("June" + base[3:])
-    if base.lower().startswith("june"):
-        candidates.append("Jun" + base[4:])
-    # Include the known June 2026 variants as fallbacks.
-    for fallback in ("Jun2026", "June2026"):
-        if fallback not in candidates:
-            candidates.append(fallback)
+    """Return the explicitly selected prefixes for recorded text responses."""
+    return list(TEXT_SCENARIO_PREFIXES)
+
+
+def text_scenario_ids_for_alignment(metadata, alignment_type):
+    """Return exact assessment IDs, including February numbered sets."""
+    candidates = []
+    for prefix in get_eval_prefix_candidates(metadata):
+        sets = ("1", "2") if prefix.lower() == "feb2026" else ("",)
+        for assessment_set in sets:
+            candidates.append(f"{prefix}-{alignment_type}{assessment_set}-assess")
+            candidates.append(f"{prefix}_{alignment_type}{assessment_set}_assess")
     return candidates
 
 
 def load_openworld_yaml_for_env(env):
-    """Load the June 2026 open-world YAML matching the detected environment.
-
-    The June 2026 YAML filenames use the full `june2026` prefix, for example
-    `june2026-desert-openworld.yaml` and `june2026-urban-openworld.yaml`.
-    """
+    """Load the original February open-world scenario by terrain."""
     if yaml is None:
         logger.log(LogLevel.WARN, "PyYAML is not installed; skipping open-world YAML matching.")
         return None
 
     env = str(env or "")
     env_lower = env.lower()
-    terrain = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else env
-    candidate_paths = [
-        os.path.join("phase2", "june2026", "openworld", f"{env}.yaml"),
-        os.path.join("phase2", "june2026", "openworld", f"{terrain}.yaml"),
-    ]
+    terrain = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
+    if terrain is None:
+        logger.log(LogLevel.WARN, f"Cannot select a February open-world YAML for environment {env}.")
+        return None
+    variant = re.search(r"openworld([23])$", env_lower)
+    suffix = variant.group(1) if variant else ""
+    candidate_paths = [os.path.join(OPENWORLD_YAML_DIR, f"feb2026-{terrain}-openworld{suffix}.yaml")]
 
     for yaml_filename in candidate_paths:
         if not os.path.exists(yaml_filename):
@@ -2284,8 +2264,7 @@ def load_openworld_yaml_for_env(env):
             logger.log(LogLevel.ERROR, f"Error loading open world yaml file {yaml_filename}.\n\n{e}\n")
             return None
 
-    if VERBOSE:
-        logger.log(LogLevel.WARN, f"No open-world YAML file found for environment {env}.")
+    logger.log(LogLevel.WARN, f"No February open-world YAML file found for environment {env}; expected {candidate_paths[0]}.")
     return None
 
 
@@ -2471,8 +2450,8 @@ def find_text_session_for_alignment(metadata, alignment_type):
     """Find the binomial combinedSessionId used for MF/AF alignment.
 
     Both comparisons intentionally use the session populated from all four
-    binomial text scenarios.  Scenario ids are matched exactly so an AF query
-    can never select ``June2026-AF-assess-trinary``.
+    recorded text scenarios. Both the evaluation number and assessment IDs
+    must match, so records from another evaluation or trinary set are excluded.
     """
     if text_scenario_collection is None:
         logger.log(LogLevel.WARN, f"text_scenario_collection is unavailable; cannot look up {alignment_type} text session.")
@@ -2484,26 +2463,13 @@ def find_text_session_for_alignment(metadata, alignment_type):
         pid_candidates.append(int(pid))
 
     eval_number = get_eval_number(metadata)
-    eval_name = get_eval_name(metadata)
-    scenario_candidates = []
-    for prefix in get_eval_prefix_candidates(metadata):
-        scenario_candidates.append(f"{prefix}-{alignment_type}-assess")
-        scenario_candidates.append(f"{prefix}_{alignment_type}_assess")
+    scenario_candidates = text_scenario_ids_for_alignment(metadata, alignment_type)
 
     # All candidates are exact binomial ids.  Do not use a broad expression
     # such as ``AF.*assess`` because it also matches AF-assess-trinary.
     queries = [
         {
             "evalNumber": eval_number,
-            "participantID": {"$in": pid_candidates},
-            "scenario_id": {"$in": scenario_candidates},
-        },
-        {
-            "evalName": eval_name,
-            "participantID": {"$in": pid_candidates},
-            "scenario_id": {"$in": scenario_candidates},
-        },
-        {
             "participantID": {"$in": pid_candidates},
             "scenario_id": {"$in": scenario_candidates},
         },
@@ -2620,33 +2586,16 @@ def compute_alignment_scores(metadata, human_session_id=None):
 # ============================================================
 
 def _is_current_eval_text_doc(doc, metadata):
-    """Return True when a text scenario document appears to belong to this eval."""
-    scenario_id = str(doc.get("scenario_id", "") or "")
-    eval_name = str(doc.get("evalName", "") or "")
-    eval_number = doc.get("evalNumber")
-    eval_number_target = get_eval_number(metadata)
-    eval_name_target = str(get_eval_name(metadata) or "")
-    prefixes = tuple(get_eval_prefix_candidates(metadata))
-
-    return (
-        eval_number == eval_number_target
-        or (eval_name_target and eval_name == eval_name_target)
-        or any(scenario_id.startswith(prefix) for prefix in prefixes)
-        or "June 2026" in eval_name
-        or "June2026" in eval_name
-    )
+    """Return True only for the selected evaluation's text responses."""
+    return doc.get("evalNumber") == get_eval_number(metadata)
 
 
 def _binary_text_scenario_ids(metadata):
-    """Return the exact June binomial assessment ids for this evaluation."""
+    """Return exact binomial IDs for the selected recorded text prefixes."""
     return {
         scenario_id
-        for prefix in get_eval_prefix_candidates(metadata)
         for kdma_name in KDMA_MAP.values()
-        for scenario_id in (
-            f"{prefix}-{kdma_name}-assess",
-            f"{prefix}_{kdma_name}_assess",
-        )
+        for scenario_id in text_scenario_ids_for_alignment(metadata, kdma_name)
     }
 
 
@@ -2689,19 +2638,15 @@ def extract_text_kdmas(metadata):
         pid_candidates.append(int(pid))
 
     eval_number = get_eval_number(metadata)
-    eval_name = get_eval_name(metadata)
     binary_scenario_ids = sorted(_binary_text_scenario_ids(metadata))
 
     text_docs = []
     seen_ids = set()
-    queries = []
-    for pid_val in pid_candidates:
-        # Exact ids prevent an ``*-assess`` lookup from also selecting
-        # ``*-assess-trinary`` documents.
-        scenario_query = {"$in": binary_scenario_ids}
-        queries.append({"participantID": pid_val, "evalNumber": eval_number, "scenario_id": scenario_query})
-        queries.append({"participantID": pid_val, "evalName": eval_name, "scenario_id": scenario_query})
-        queries.append({"participantID": pid_val, "scenario_id": scenario_query})
+    queries = [{
+        "participantID": {"$in": pid_candidates},
+        "evalNumber": eval_number,
+        "scenario_id": {"$in": binary_scenario_ids},
+    }]
 
     try:
         for query in queries:
@@ -2728,7 +2673,7 @@ def extract_text_kdmas(metadata):
         )
 
     preferred_docs = [doc for doc in binary_docs if _is_current_eval_text_doc(doc, metadata)]
-    docs_to_use = preferred_docs if preferred_docs else binary_docs
+    docs_to_use = preferred_docs
     if not docs_to_use:
         logger.log(LogLevel.WARN, f"No valid binomial text KDMA documents found for pid {pid}.")
         return text_kdma_results
@@ -2925,17 +2870,22 @@ def process_file(json_path, output_dir):
     with open(json_path, "r", encoding="utf-8") as f:
         sim_json = json.load(f)
 
+    metadata = extract_run_metadata(sim_json, filename)
+    if not metadata["openWorld"]:
+        if VERBOSE:
+            logger.log(LogLevel.INFO, f"Skipping non-open-world run {filename}.")
+        return False
+
     csv_path = json_path.replace(".json", ".csv")
     if not os.path.isfile(csv_path):
         logger.log(
             LogLevel.WARN,
             f"Missing CSV for {filename}; expected {csv_path}. Skipping this run.",
         )
-        return
+        return False
 
     csv_rows = load_csv_rows(csv_path)
 
-    metadata = extract_run_metadata(sim_json, filename)
     event_totals = extract_event_totals(csv_rows, metadata["env"])
     action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"], metadata["pid"])
     triage_times = compute_patient_interactions(csv_rows)
@@ -2986,6 +2936,7 @@ def process_file(json_path, output_dir):
 
     # Keep the command-line output readable when processing many files.
     print()
+    return True
 
 
 if __name__ == "__main__":
@@ -3020,10 +2971,20 @@ if __name__ == "__main__":
         action="store_true",
         help="Verbose command line output",
     )
+    parser.add_argument("--eval-number", "--eval_number", type=int, default=DEFAULT_EVAL_NUM)
+    parser.add_argument("--eval-name", "--eval_name", default=DEFAULT_EVAL_NAME)
+    parser.add_argument(
+        "--text-scenario-prefix",
+        action="append",
+        help="Recorded text scenario prefix; repeat for multiple prefixes (default: June2026 and Jun2026)",
+    )
     args = parser.parse_args()
 
     CALC_KDMAS = args.calc_kdmas
     VERBOSE = args.verbose
+    EVAL_NUM = args.eval_number
+    EVAL_NAME = args.eval_name
+    TEXT_SCENARIO_PREFIXES = tuple(args.text_scenario_prefix or DEFAULT_TEXT_SCENARIO_PREFIXES)
 
     if args.send_to_mongo:
         SEND_TO_MONGO = True
@@ -3044,7 +3005,9 @@ if __name__ == "__main__":
                 continue
             json_paths.append(os.path.join(root, file))
 
-    for json_path in json_paths:
+    processed = 0
+    for json_path in sorted(json_paths):
         if VERBOSE:
             logger.log(LogLevel.INFO, f"Processing file {json_path}")
-        process_file(json_path, args.output_dir)
+        processed += bool(process_file(json_path, args.output_dir))
+    print(f"Processed {processed} open-world runs; skipped {len(json_paths) - processed} runs.")
