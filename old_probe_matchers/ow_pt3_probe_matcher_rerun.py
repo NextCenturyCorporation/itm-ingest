@@ -1,3 +1,10 @@
+
+# Support direct execution from the archive while importing repo utilities.
+import sys as _archive_sys
+from pathlib import Path as _ArchivePath
+if __package__ in (None, ""):
+    _archive_sys.path.insert(0, str(_ArchivePath(__file__).resolve().parents[1]))
+
 from decouple import config
 from typing import Any
 import copy
@@ -234,8 +241,19 @@ PROBE_PAIRS = {
     },
 }
 
-ADM_NAMES_TO_REMOVE = [
-    'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__ea0f78ed-9572-4dfc-9c5e-087124e3fbfa'
+ADM_NAMES_TO_KEEP = [
+    'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__1d017d2f-f582-452d-929e-41cec2db608b',
+    'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__51f09362-fb95-4044-b939-7a2d58e32f9f',
+    'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__3adc2c84-ce5b-4027-8f31-7d9eb1731ce6',
+    'ALIGN-ADM-Ph2-Zeroshot-ComparativeRegression-Mistral-7B-Instruct-v0.3__145a6e95-1de3-4a24-86a5-709ea70a351f',
+    'ALIGN-ADM-Ph2-Zeroshot-ComparativeRegression-Mistral-7B-Instruct-v0.3__0a055284-08f7-40a1-b034-09f471d7221d',
+    'ALIGN-ADM-Ph2-Zeroshot-ComparativeRegression-Mistral-7B-Instruct-v0.3__6ce19d20-3e47-4a9d-b4ad-d373203c6a61',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__b8960983-5c60-4c85-9acc-29dccfffb114',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__8f39dcf2-99c2-44e0-a4b4-a57125c09919',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__82cdafd4-5d11-4469-adbd-5bcc6d424a4c',
+    'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__8e506168-235a-4d0b-930a-1b589839b112',
+    'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__8681e0dd-39c3-4d80-92f1-fc7df79b138c',
+    'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__e64937a4-54a9-4e6f-9356-bb0234cccd51'
 ]
 
 EVAL_NAMES = [
@@ -244,19 +262,20 @@ EVAL_NAMES = [
     "June 2025 Open World Experiment Part 3"
 ]
 
+CUT_OFF_START_TIME = '2026-09-15'
+
 def build_query() -> dict[str, Any]:
     return {
-        "evalName": {"$in": EVAL_NAMES},
-        "$or": [
-            {"adm_name": {"$regex": "testrun"}},
-            {"adm_name": {"$in": ADM_NAMES_TO_REMOVE}},
-        ]
+        "evaluation.evalName": {"$in": EVAL_NAMES},
+        "evaluation.start_time": {"$gte": CUT_OFF_START_TIME},
+        "adm_name": {"$nin": ADM_NAMES_TO_KEEP}
     }
 
 def print_matching_documents(collection: Any, query: dict[str, Any]) -> None:
     projection = {
         "_id": 1,
-        "evalName": 1,
+        "evaluation.evalName": 1,
+        "evaluation.start_time": 1,
         "scenario": 1,
         "adm_name": 1,
         "alignment_target": 1,
@@ -268,10 +287,12 @@ def print_matching_documents(collection: Any, query: dict[str, Any]) -> None:
     print(f"Matched {len(docs)} document(s) for removal.")
 
     for doc in docs:
+        evaluation = doc.get("evaluation") or {}
         print(
             "  "
             f"_id={doc.get('_id')} | "
-            f"evalName={doc.get('evalName')} | "
+            f"evalName={evaluation.get('evalName')} | "
+            f"start_time={evaluation.get('start_time')} | "
             f"scenario={doc.get('scenario')} | "
             f"alignment_target={doc.get('alignment_target')} | "
             f"synthetic={doc.get('synthetic', False)} | "
@@ -625,7 +646,10 @@ def delete_adms(collection, write_to_db=True, verbose=True):
 def main(mongo_db):
     collection = mongo_db["admTargetRuns"]
     delete_adms(collection)
-    open_world_adms = list(collection.find({"scenario": {"$in": SCENARIO_IDS}}))
+    open_world_adms = list(collection.find({
+        "scenario": {"$in": SCENARIO_IDS},
+        "adm_name": {"$in": ADM_NAMES_TO_KEEP}
+        }))
 
     updated = 0
     unchanged = []

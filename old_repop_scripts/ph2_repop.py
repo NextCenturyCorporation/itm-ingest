@@ -6,6 +6,13 @@ and repopulates the ADEPT server with the probe responses. This script is to be 
 ADEPT server is not persisting session ids that are needed to generate comparison scores.
 """
 
+# Support direct execution from the archive while importing repo utilities.
+import sys as _archive_sys
+from pathlib import Path as _ArchivePath
+if __package__ in (None, ""):
+    _archive_sys.path.insert(0, str(_ArchivePath(__file__).resolve().parents[1]))
+
+
 import requests
 from decouple import config
 from collections import defaultdict

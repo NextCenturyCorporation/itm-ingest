@@ -1,3 +1,10 @@
+
+# Support direct execution from the archive while importing repo utilities.
+import sys as _archive_sys
+from pathlib import Path as _ArchivePath
+if __package__ in (None, ""):
+    _archive_sys.path.insert(0, str(_ArchivePath(__file__).resolve().parents[1]))
+
 import yaml, argparse, json, os, csv, requests, copy
 from logger import LogLevel, Logger
 from pymongo import MongoClient
