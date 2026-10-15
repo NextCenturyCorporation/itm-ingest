@@ -35,7 +35,7 @@ import json
 import math
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 try:
     import requests
@@ -98,6 +98,42 @@ TRIAGE_LEVEL_TO_TAG_COLOR = {
     "DELAYED": "yellow",
     "MINIMAL": "green",
     "EXPECTANT": "gray",
+}
+
+URBAN_EVAC_ANSWER_TO_PATIENT = {
+    "Mil Bicep Puncture": "US Military 1",
+    "Mil Discharged Weapon Stomach Puncture": "US Military 2",
+    "Civilian Broken Wrist": "Civilian 1",
+    "Shooter Shoulder Puncture": "Shooter 1",
+    "Mil Thigh Puncture": "US Military 3",
+    "Civilian Chest Puncture": "Civilian 2",
+    "Civilian Stomach Puncture": "Civilian 3",
+    "Mil Stomach Puncture": "US Military 4",
+}
+
+FEB2026_SUPPLEMENTAL_PROCEDURES = {
+    "desert": {
+        "US Military 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics"],
+        "Civilian 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Attacker 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Civilian 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "US Military 4": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "Attacker 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "Civilian 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics"],
+        "US Military 5": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+    },
+    "urban": {
+        "US Military 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "US Military 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "Civilian 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Shooter 1": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Civilian 2": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap"],
+        "Civilian 3": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+        "US Military 4": ["Nasal Airway", "Blanket", "Fentanyl Lollipop", "IV Blood", "Antibiotics", "Gauze Wrap", "Israeli Wrap", "Chest Seal"],
+    },
 }
 
 HEMORRHAGE_CONTROL_PROCS = {"tourniquet", "woundpack", "israeliWrap"}
@@ -268,6 +304,54 @@ def load_csv_rows(csv_path):
         return list(csv.DictReader(f))
 
 
+def scope_run_events(sim_json, csv_rows):
+    """Keep current-session events for analysis, preserving the original raw JSON."""
+    session_id = str(sim_json.get("sessionId") or sim_json.get("sessionID") or "")
+    rows = []
+    for row in csv_rows:
+        elapsed = safe_float(row.get("ElapsedTime"), None)
+        if not row.get("Timestamp") or elapsed is None or not math.isfinite(elapsed) or elapsed < 0:
+            continue
+        if session_id and row.get("SessionID") and row["SessionID"] != session_id:
+            continue
+        rows.append(row)
+
+    start_row = next((row for row in reversed(rows) if row.get("EventName") == "SESSION_START"), None)
+    if not session_id and start_row:
+        session_id = start_row.get("SessionID") or ""
+        rows = [row for row in rows if not row.get("SessionID") or row["SessionID"] == session_id]
+    anchor = start_row or (rows[0] if rows else {})
+    start_time = timestamp_to_seconds(anchor.get("Timestamp"))
+    if start_time is not None and not start_row:
+        start_time -= safe_float(anchor.get("ElapsedTime")) / 1000.0
+
+    def belongs_to_session(action):
+        if not isinstance(action, dict):
+            return False
+        action_session = action.get("sessionId") or action.get("SessionID")
+        if session_id and action_session and str(action_session) != session_id:
+            return False
+        timestamp = action.get("timestamp") or action.get("Timestamp")
+        if start_time is not None and timestamp:
+            try:
+                # Both logs use the simulator's wall clock, even when JSON appends Z.
+                action_time = datetime.fromisoformat(str(timestamp).replace("Z", "+00:00")).replace(tzinfo=None).timestamp()
+            except ValueError:
+                action_time = timestamp_to_seconds(timestamp)
+            if action_time is not None and action_time < start_time:
+                return False
+        return True
+
+    scoped = copy.deepcopy(sim_json)
+    for container in (scoped, scoped.get("data"), scoped.get("configData"), scoped.get("sessionMetadata")):
+        if not isinstance(container, dict):
+            continue
+        for key in ("actionList", "action_list", "actions"):
+            if isinstance(container.get(key), list):
+                container[key] = [action for action in container[key] if belongs_to_session(action)]
+    return scoped, rows
+
+
 def build_env_prefix(env):
     """Return the output field prefix for an environment."""
     env_lower = str(env).lower()
@@ -404,16 +488,15 @@ def _split_patient_ids(value):
 
 
 def compute_evac_value_by_patient(csv_rows, sim_json, env):
-    """Extract per-patient evac values from reusable JSON/CSV evac selection records.
+    """Extract per-patient evac values from February and reusable logs.
 
-    This follows the April matcher semantics for the value itself:
+    Selected patients receive the same codes as the February matcher:
     - Desert one-casualty evac round => 1
     - Desert two-casualty evac round => 2
     - Urban three-casualty evac round => 1
 
-    Updated reusable logs provide the selected patient IDs directly in
-    EvacSelection/EVAC_SELECTION records, so no scenario-specific answer-to-
-    patient mapping is needed.
+    February Urban logs store Question answers; reusable logs provide selected
+    patient IDs directly in EvacSelection/EVAC_SELECTION records.
     """
     env_lower = str(env or "").lower()
     env_key = "desert" if "desert" in env_lower else "urban" if "urban" in env_lower else None
@@ -434,8 +517,7 @@ def compute_evac_value_by_patient(csv_rows, sim_json, env):
             elif "which one" in question or "which casualty" in question or str(evac_round) == "1":
                 value = 1
         elif env_key == "urban":
-            if "which three" in question or str(evac_round) == "1":
-                value = 1
+            value = 1
 
         if value is None:
             value = normalize_optional_int(evac_round) if evac_round not in (None, "") else 1
@@ -456,6 +538,11 @@ def compute_evac_value_by_patient(csv_rows, sim_json, env):
         action_type = str(action.get("actionType") or action.get("action_type") or "").strip().lower()
         evac_round = action.get("evacRound") or action.get("evac_round")
         question = str(action.get("question") or "")
+        if env_key == "urban" and action_type == "question" and "which three casualties do you want to evacuate" in question.lower():
+            patient_name = URBAN_EVAC_ANSWER_TO_PATIENT.get(str(action.get("answer", "")).strip())
+            if patient_name:
+                apply_selection([patient_name])
+            continue
         if action_type == "evacprompt" or "evacuate" in question.lower():
             last_prompt_by_round[str(evac_round or "")] = question
             continue
@@ -660,11 +747,12 @@ def compute_assessment_metrics(csv_rows):
         if ts_sec is None:
             continue
 
-        if ev not in last_done or (ts_sec - last_done[ev]) > 5:
-            last_done[ev] = ts_sec
+        patient = clean_patient_name(row.get("PatientID", ""))
+        event_key = (patient, ev)
+        if event_key not in last_done or (ts_sec - last_done[event_key]) > 5:
+            last_done[event_key] = ts_sec
             count += 1
 
-            patient = clean_patient_name(row.get("PatientID", ""))
             if is_valid_patient(patient):
                 per_patient[patient] = per_patient.get(patient, 0) + 1
 
@@ -1038,21 +1126,24 @@ def derive_required_injuries_and_procs(csv_rows, sim_json=None):
     return required_injuries, required_proc_for_injury
 
 
-def derive_supplemental_procedures(sim_json):
+def derive_supplemental_procedures(sim_json, env=None):
     """Build a per-patient supplemental procedure map from JSON patient definitions."""
     supplemental_map = {}
+    env = str(env or extract_run_metadata(sim_json or {}, "")["env"]).lower()
+    terrain = "desert" if "desert" in env else "urban" if "urban" in env else ""
+    fallback = FEB2026_SUPPLEMENTAL_PROCEDURES.get(terrain, {})
 
     for patient_def in _iter_patient_definitions(sim_json or {}):
         patient = _extract_patient_name_from_definition(patient_def)
         if not patient:
             continue
 
-        procedures = _as_clean_list(
-            patient_def.get("supplementalProcedures")
-            or patient_def.get("supplemental_procedures")
-            or patient_def.get("approvedSupplementalProcedures")
-        )
-        supplemental_map[patient] = procedures
+        procedures = get_nested_value(patient_def, [
+            ("supplementalProcedures",),
+            ("supplemental_procedures",),
+            ("approvedSupplementalProcedures",),
+        ])
+        supplemental_map[patient] = _as_clean_list(procedures) if procedures is not None else list(fallback.get(patient, []))
 
     return supplemental_map
 
@@ -1919,7 +2010,7 @@ def get_answer_ids_from_question_action(action):
 def get_answer_choices_from_question_action(action):
     """Return display answer choices for *_Actions output fields."""
     answer_choices = []
-    for key in ("answerChoice", "answerChoices", "answer_choice", "answer_choices", "answer"):
+    for key in ("answerChoice", "answer_choice", "answer"):
         answer_choices.extend(_coerce_string_list(action.get(key)))
 
     # If there is no display answer text, use the raw answerIds so the Actions
@@ -1961,13 +2052,15 @@ def _is_question_action(action):
 def _question_action_priority(action):
     """Prefer final answered question records over prompt/selection records."""
     action_type = str(action.get("actionType") or action.get("action_type") or "").strip().lower()
-    if action_type in {"questionanswered", "question_answered", "question"}:
+    if action_type in {"questionanswered", "question_answered"}:
         return 0
-    if action_type in {"answerselected", "answer_selected"}:
+    if action_type == "question":
         return 1
-    if action_type in {"questionprompted", "question_prompted"}:
+    if action_type in {"answerselected", "answer_selected"}:
         return 2
-    return 3
+    if action_type in {"questionprompted", "question_prompted"}:
+        return 3
+    return 4
 
 
 def _get_question_id(action):
@@ -2053,15 +2146,25 @@ def compute_personal_safety_values(sim_json, env):
 
         matched_answer_ids = []
         matched_answer_choices = []
+        legacy_questions = bool(matching_actions) and str(
+            matching_actions[0].get("actionType") or matching_actions[0].get("action_type") or ""
+        ).strip().lower() == "question"
 
         for action in matching_actions:
+            if legacy_questions and str(action.get("actionType") or action.get("action_type") or "").strip().lower() != "question":
+                continue
             action_answer_ids = get_answer_ids_from_question_action(action)
             action_answer_choices = get_answer_choices_from_question_action(action)
 
             if action_answer_ids or action_answer_choices:
-                matched_answer_ids = action_answer_ids
-                matched_answer_choices = action_answer_choices
-                break
+                for answer_id in action_answer_ids:
+                    if answer_id not in matched_answer_ids:
+                        matched_answer_ids.append(answer_id)
+                for choice in action_answer_choices:
+                    if choice not in matched_answer_choices:
+                        matched_answer_choices.append(choice)
+                if not legacy_questions:
+                    break
 
         if not matched_answer_ids and matched_answer_choices:
             matched_answer_ids = [normalize_answer_id(choice) for choice in matched_answer_choices]
@@ -2108,7 +2211,7 @@ def extract_action_analysis(csv_rows, sim_json, env, pid=None):
     triage_times = compute_patient_interactions(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     required_injuries, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, sim_json)
-    supplemental_map = derive_supplemental_procedures(sim_json)
+    supplemental_map = derive_supplemental_procedures(sim_json, env)
     treatment_submetrics_required = compute_treatment_submetrics_required(csv_rows, required_injuries)
     treatment_submetrics_w_supp = compute_treatment_submetrics_w_supp(csv_rows, required_injuries, supplemental_map)
     triage_performance = compute_triage_performance_w_supp(csv_rows, required_injuries, supplemental_map)
@@ -2413,8 +2516,7 @@ def compute_openworld_match_data(sim_json, metadata):
                 }
             )
         else:
-            if VERBOSE:
-                logger.log(LogLevel.WARN, f"Unmatched probe {probe_id}.")
+            logger.log(LogLevel.WARN, f"Unmatched probe {probe_id} for pid {metadata.get('pid')}.")
             match_rows.append(
                 {
                     "scene_id": probe_id,
@@ -2445,7 +2547,11 @@ def compute_openworld_match_data(sim_json, metadata):
     elif VERBOSE:
         logger.log(LogLevel.INFO, "KDMA calculation disabled (use -k to enable).")
 
-    return {"alignment": ow_align, "data": match_rows}, human_session_id
+    return {
+        "alignment": ow_align,
+        "data": match_rows,
+        "unmatched_probe_ids": [row["probe_id"] for row in match_rows if not row["found_match"]],
+    }, human_session_id
 
 
 def find_text_session_for_alignment(metadata, alignment_type):
@@ -2774,7 +2880,7 @@ def build_output_documents(
         "openWorld": metadata["openWorld"],
         "evalNumber": metadata.get("evalNumber"),
         "evalName": metadata.get("evalName"),
-        "timestamp": int(datetime.utcnow().timestamp() * 1000),
+        "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000),
         "eventTotals": event_totals,
         "actionAnalysis": action_analysis,
     }
@@ -2886,18 +2992,18 @@ def process_file(json_path, output_dir):
         )
         return False
 
-    csv_rows = load_csv_rows(csv_path)
+    run_json, csv_rows = scope_run_events(sim_json, load_csv_rows(csv_path))
 
     event_totals = extract_event_totals(csv_rows, metadata["env"])
-    action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"], metadata["pid"])
+    action_analysis = extract_action_analysis(csv_rows, run_json, metadata["env"], metadata["pid"])
     triage_times = compute_patient_interactions(csv_rows)
     tag_colors = compute_last_applied_tags(csv_rows)
     expected_tag_color = derive_expected_tag_color(csv_rows)
     correct_tag_breakdown = compute_correct_tag_breakdown(expected_tag_color, tag_colors)
     tag_distribution = compute_tag_distribution(csv_rows, expected_tag_color)
-    salt = derive_salt_categories(csv_rows, sim_json)
+    salt = derive_salt_categories(csv_rows, run_json)
     salt_errors = compute_salt_errors(csv_rows, salt)
-    _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, sim_json)
+    _, required_proc_for_injury = derive_required_injuries_and_procs(csv_rows, run_json)
     hem_metrics = compute_hemorrhage_control(csv_rows, required_proc_for_injury)
     patient_hc_time = compute_patient_hc_time(
         csv_rows,
@@ -2906,7 +3012,7 @@ def process_file(json_path, output_dir):
     )
     missed_hemorrhage_control = hem_metrics["missed_hemorrhage_control"]
     text_kdmas = extract_text_kdmas(metadata)
-    match_data, human_session_id = compute_openworld_match_data(sim_json, metadata)
+    match_data, human_session_id = compute_openworld_match_data(run_json, metadata)
     alignment_scores = compute_alignment_scores(metadata, human_session_id=human_session_id)
 
     raw_doc, analysis_doc = build_output_documents(
