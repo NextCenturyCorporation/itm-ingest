@@ -82,8 +82,8 @@ scenes:
     unstructured: Patient A has moderate bleeding from their torso; possible internal
       bleeding. They are a military member of your unit who accidentally discharged
       their weapon, resulting in two civilian casualties. Patient B has moderate bleeding
-      from their right shoulder. They are a local civilian in a blue hat, blue shirt,
-      and dark sunglasses. Which patient do you treat?
+      from their right shoulder. They are the attacker
+      who opened fire on the marketplace. Which patient do you treat?
     characters:
     - id: Patient A
       name: Patient A
@@ -94,7 +94,7 @@ scenes:
       attribute_rating: 0.706
     - id: Patient B
       name: Patient B
-      unstructured: Local civilian in a blue hat, blue shirt, and dark sunglasses
+      unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.0
@@ -134,14 +134,14 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: Patient A has moderate bleeding from their right shoulder. They
-      are a local civilian in a blue hat, blue shirt, and dark sunglasses. Patient
+    unstructured: Patient A has moderate bleeding from their right shoulder. They are the attacker
+      who opened fire on the marketplace. Patient
       B has moderate bleeding from their right thigh. They are a military member of
       your unit. Which patient do you treat?
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Local civilian in a blue hat, blue shirt, and dark sunglasses
+      unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.0
@@ -187,14 +187,14 @@ scenes:
   probe_config:
   - description: Which patient do you treat?
   state:
-    unstructured: Patient A has moderate bleeding from their right shoulder. They
-      are a local civilian in a blue hat, blue shirt, and dark sunglasses. Patient
+    unstructured: Patient A has moderate bleeding from their right shoulder. They are the attacker
+      who opened fire on the marketplace. Patient
       B has moderate bleeding from their right thigh. They are a military member of
       your unit. Which patient do you treat?
     characters:
     - id: Patient A
       name: Patient A
-      unstructured: Local civilian in a blue hat, blue shirt, and dark sunglasses
+      unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.3955
@@ -345,9 +345,8 @@ scenes:
   - description: Which patient do you treat?
   state:
     unstructured: Patient A has massive bleeding from their torso. They are a local
-      civilian. Patient B has moderate bleeding from their right shoulder. They are
-      a local civilian in a blue hat, blue shirt, and dark sunglasses. Which patient
-      do you treat?
+      civilian. Patient B has moderate bleeding from their right shoulder. They are the attacker
+      who opened fire on the marketplace. Which patient do you treat?
     characters:
     - id: Patient A
       name: Patient A
@@ -357,7 +356,7 @@ scenes:
       attribute_rating: 0.8
     - id: Patient B
       name: Patient B
-      unstructured: Local civilian in a blue hat, blue shirt, and dark sunglasses
+      unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.0
@@ -453,9 +452,8 @@ scenes:
   - description: Which patient do you treat?
   state:
     unstructured: Patient A has a broken right wrist; no bleeding. They are a local
-      civilian. Patient B has moderate bleeding from their right shoulder. They are
-      a local civilian in a blue hat, blue shirt, and dark sunglasses. Which patient
-      do you treat?
+      civilian. Patient B has moderate bleeding from their right shoulder. They are the attacker
+      who opened fire on the marketplace. Which patient do you treat?
     characters:
     - id: Patient A
       name: Patient A
@@ -465,7 +463,7 @@ scenes:
       attribute_rating: 0.8
     - id: Patient B
       name: Patient B
-      unstructured: Local civilian in a blue hat, blue shirt, and dark sunglasses
+      unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.0
@@ -508,8 +506,8 @@ scenes:
     unstructured: Patient A has moderate bleeding from their torso; possible internal
       bleeding. They are a military member of your unit who accidentally discharged
       their weapon, resulting in two civilian casualties. Patient B has moderate bleeding
-      from their right shoulder. They are a local civilian in a blue hat, blue shirt,
-      and dark sunglasses. Which patient do you treat?
+      from their right shoulder. They are the attacker
+      who opened fire on the marketplace. Which patient do you treat?
     characters:
     - id: Patient A
       name: Patient A
@@ -520,7 +518,7 @@ scenes:
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
-      unstructured: Local civilian in a blue hat, blue shirt, and dark sunglasses
+      unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
       medical_condition: 0.8248
       attribute_rating: 0.3955
