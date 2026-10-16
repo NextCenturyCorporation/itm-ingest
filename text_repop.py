@@ -10,8 +10,6 @@ Network/service failures abort a group instead of overwriting stored session IDs
 import argparse
 from collections import defaultdict
 from dataclasses import dataclass, field
-import hashlib
-import json
 import math
 import re
 from typing import Any, Dict, List, Optional
@@ -223,12 +221,6 @@ def group_responses(group):
     return list(responses.values())
 
 
-def response_fingerprint(responses, adept_url, enable_subpop="disabled"):
-    payload = {"adept_url": adept_url, "enable_subpop": enable_subpop,
-               "responses": sorted(responses, key=lambda item: (item["scenario_id"], item["probe_id"]))}
-    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
-
-
 class AdeptClient:
     def __init__(self, url, timeout=120, http=None):
         self.url = url.rstrip("/") + "/"
@@ -281,7 +273,6 @@ class AdeptClient:
 
 def repair_group(db, client, group, eval_number, dry_run=False, recreate=False, verbose=False):
     responses = group_responses(group)
-    fingerprint = response_fingerprint(responses, client.url, group.enable_subpop)
     problem = "no stored session ID" if not group.old_session_id else None
     profile = None
     if recreate:
@@ -291,12 +282,6 @@ def repair_group(db, client, group, eval_number, dry_run=False, recreate=False, 
         # different from an empty session, and must not trigger Mongo changes.
         profile = client.profile(group.old_session_id, group.enable_subpop)
         problem = profile_problem(profile, group.expected_kdmas)
-        if problem is None:
-            for doc in group.documents:
-                previous = (doc.get("textRepop") or {}).get(group.session_field, {}).get("fingerprint")
-                if previous and previous != fingerprint:
-                    problem = "recorded responses or ADEPT endpoint changed"
-                    break
 
     if problem:
         client.check_scenarios(responses)
@@ -320,14 +305,12 @@ def repair_group(db, client, group, eval_number, dry_run=False, recreate=False, 
     # Save the session ID and its verified profile together, including repaired
     # missing IDs and stale cached profiles when an existing session is reused.
     for doc in group.documents:
-        metadata = {"fingerprint": fingerprint}
-        values = {group.session_field: session_id,
-                  f"textRepop.{group.session_field}": metadata}
+        values = {group.session_field: session_id}
         for key in profile_fields(group.session_field, doc):
             values[key] = profile
         changed = doc.get(group.session_field) != session_id or any(
             doc.get(key) != profile for key in profile_fields(group.session_field, doc)
-        ) or (doc.get("textRepop") or {}).get(group.session_field) != metadata
+        )
         if changed:
             db["userScenarioResults"].update_one(
                 {"_id": doc["_id"], "evalNumber": {"$in": [eval_number, str(eval_number)]}}, {"$set": values}
