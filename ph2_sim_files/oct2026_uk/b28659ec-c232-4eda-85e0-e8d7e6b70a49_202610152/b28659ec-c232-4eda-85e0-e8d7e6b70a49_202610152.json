@@ -1,0 +1,3915 @@
+{
+    "configData": {
+        "scene": "sim-desert",
+        "CACIUploadToS3": true,
+        "CACIUploadToS3Bucket": "Triangle 2026 Open World",
+        "CACISaveMicAudio": false,
+        "evalNumber": 15,
+        "evalName": "Triangle2026 OW Desert",
+        "evacTimer": {
+            "maxTime": 0.0,
+            "audioMessages": [],
+            "timedGameObjectStateManagements": [],
+            "immediateEvac": {
+                "time": 0.0,
+                "audioClip": ""
+            }
+        },
+        "narrative": {
+            "narrativeDescription": "Triangle 2026 OW Desert",
+            "disableTimerUI": false,
+            "narrativeSections": [
+                {
+                    "sectionDescription": "Intro",
+                    "additionalInfo": "",
+                    "triggeredOnStart": true,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [
+                            "IED 2"
+                        ],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [
+                        {
+                            "mixer": "narrator",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "voice",
+                            "changeVolume": 4,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "environment",
+                            "changeVolume": 4,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        }
+                    ],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": false,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Mission Briefing Room Fade",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [
+                            "Moved Before Cleared by Command Zone 2"
+                        ],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": true,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Fade in",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": true
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [
+                        "Grid"
+                    ],
+                    "audioVolumeSettings": [
+                        {
+                            "mixer": "narrator",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "voice",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        },
+                        {
+                            "mixer": "environment",
+                            "changeVolume": 1,
+                            "returnVolume": 1,
+                            "duration": -1.0
+                        }
+                    ],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Hold your position for 15 seconds.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Hold your position for 15 seconds.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "Moved Before Cleared by Command Zone 2",
+                        "clearedByCommandTimer": 13.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Move to casualties.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 13,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Medevac inbound in 90 seconds.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": false,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Evac Question for one casualty.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 85,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Medevac loading up.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": true,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": false,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Medevac inbound time unknown.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 3,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": true,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Drone pass enabled.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [
+                            "Drones"
+                        ],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 110,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Drone Flyover and Keep Waiting for Medevac",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 1,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Medevac inbound in 2 minutes.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 110,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": false,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Evac Question for two casualties.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 110,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Medevac loading up.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": false,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": false,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                },
+                {
+                    "sectionDescription": "Narrative is over.",
+                    "additionalInfo": "",
+                    "triggeredOnStart": false,
+                    "narratorRadioAudio": {
+                        "audioVolume": 1.0,
+                        "audioPitch": 1.0
+                    },
+                    "characterAudioLineDelivery": {
+                        "characterName": "",
+                        "audioClip": "",
+                        "muteWorld": true
+                    },
+                    "gameObjectTeleportation": [],
+                    "gameObjectStateManagement": {
+                        "objectsToEnable": [],
+                        "objectsToDisable": []
+                    },
+                    "spawnedPrefabs": [],
+                    "patientsToChangeActiveState": [],
+                    "patientsToUpdate": [],
+                    "patientsToChangeVitals": [],
+                    "screenFadeSettings": {
+                        "fadeInOutBlack": false,
+                        "fadeInOutDuration": 1.0,
+                        "instantBlack": false,
+                        "fadeInBlack": true,
+                        "fadeFromBlack": false
+                    },
+                    "inputBlockingSettings": {},
+                    "automatedEntryPoint": "",
+                    "teleportPointsToActivate": [],
+                    "audioVolumeSettings": [],
+                    "delayInSeconds": 0,
+                    "availableInventory": {
+                        "tourniquetCount": 0,
+                        "gauzeWrapCount": 0,
+                        "hemostaticGauzeCount": 0,
+                        "decompressionNeedleCount": 0,
+                        "nasopharyngealAirwayCount": 0,
+                        "splintCount": 0,
+                        "painMedsCount": 0,
+                        "ivBloodCount": 0,
+                        "ivSalineCount": 0,
+                        "burnDressingCount": 0,
+                        "epiPenCount": 0,
+                        "chestSealCount": 0,
+                        "blanketCount": 0,
+                        "lollipopCount": 0,
+                        "antibioticsCount": 0,
+                        "foxShieldCount": 0,
+                        "scalpelCount": 0,
+                        "israeliWrapCount": 0,
+                        "pulseOximeterAvailable": false,
+                        "tabletAvailable": false,
+                        "addToBag": false
+                    },
+                    "showcaseTools": [],
+                    "autoplay": true,
+                    "hideControls": false,
+                    "radioAudioFirst": true,
+                    "allowSkip": true,
+                    "evacRadio": false,
+                    "missionBriefingRoomMapImage": [],
+                    "missionBriefingRoomImageFadeDuration": 1.0,
+                    "clearedByCommandCheck": {
+                        "clearedByCommandZone": "",
+                        "clearedByCommandTimer": 0.0
+                    },
+                    "playerPositionCheck": {
+                        "targetSquare": "",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "distance": 3.0,
+                        "unlockStrafeAfterTeleport": false
+                    }
+                }
+            ]
+        },
+        "levelSettings": {
+            "settingsFile": "",
+            "activations": [],
+            "lights": [],
+            "particles": [],
+            "audioMixers": [],
+            "skyboxMaterialName": "",
+            "optimizationGroups": [],
+            "shadowOptimizationGroups": []
+        },
+        "questions": [],
+        "teleportPointOverride": "Grid",
+        "scenarioData": {
+            "name": "February 2026 OW Desert",
+            "description": "February 2026 OW Desert",
+            "difficulty": 1,
+            "triageType": 1,
+            "scorecardEnabled": false,
+            "treatmentsHaveEffect": false,
+            "keepAppliedTreatments": true
+        },
+        "playerData": {
+            "startPosition": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "startAngle": 0.0,
+            "randomSpawnPoints": [
+                {
+                    "x": 9.199999809265137,
+                    "y": 0.0,
+                    "z": 4.099999904632568
+                },
+                {
+                    "x": -8.5,
+                    "y": 0.0,
+                    "z": -5.699999809265137
+                }
+            ],
+            "randomSpawnAngles": [
+                255.0,
+                72.0
+            ],
+            "randomSpawnPointNames": [
+                "smallBuilding",
+                "bigBuilding"
+            ]
+        },
+        "availableInventory": {
+            "tourniquetCount": 999,
+            "gauzeWrapCount": 999,
+            "hemostaticGauzeCount": 999,
+            "decompressionNeedleCount": 999,
+            "nasopharyngealAirwayCount": 999,
+            "splintCount": 999,
+            "painMedsCount": 0,
+            "ivBloodCount": 999,
+            "ivSalineCount": 0,
+            "burnDressingCount": 999,
+            "epiPenCount": 0,
+            "chestSealCount": 999,
+            "blanketCount": 999,
+            "lollipopCount": 999,
+            "antibioticsCount": 999,
+            "foxShieldCount": 999,
+            "scalpelCount": 0,
+            "israeliWrapCount": 999,
+            "pulseOximeterAvailable": false,
+            "tabletAvailable": false,
+            "addToBag": false
+        },
+        "patientDataList": [
+            {
+                "name": "US Military 1",
+                "patient": "Mike",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": 5.849999904632568,
+                        "y": 0.0,
+                        "z": 2.130000114440918
+                    },
+                    "angle": -170.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "tourniquet"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "L Shin Amputation",
+                        "requiredProcedure": "tourniquet",
+                        "bloodEnabled": true,
+                        "bloodPool": "Largest",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Pacific Islander",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": true,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Michael",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 5.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "original",
+                    "hairTexture": -1,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "#372B0F",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [
+                        2,
+                        3
+                    ],
+                    "beltGear": [
+                        3
+                    ],
+                    "legGear": [],
+                    "gunGear": [
+                        1
+                    ]
+                }
+            },
+            {
+                "name": "Civilian 1",
+                "patient": "Gary",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": 4.679999828338623,
+                        "y": 0.0,
+                        "z": -3.559999942779541
+                    },
+                    "angle": -50.0
+                },
+                "vitals": {
+                    "pulse": "normal",
+                    "breath": "normal",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "upset",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "delayed",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "fetal",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "israeliWrap"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "L Thigh Laceration",
+                        "requiredProcedure": "israeliWrap",
+                        "bloodEnabled": true,
+                        "bloodPool": "Medium",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Asian 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Adam",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": true,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": true,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "darkBrown",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "Attacker 1",
+                "patient": "Bob",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": 4.53000020980835,
+                        "y": 0.0,
+                        "z": 4.940000057220459
+                    },
+                    "angle": 213.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "prone",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "woundpack"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "R Stomach Puncture",
+                        "requiredProcedure": "woundpack",
+                        "bloodEnabled": true,
+                        "bloodPool": "Large",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "White 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Isaac",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": false,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 15.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "#A89064",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "black",
+                    "bottomColor": "black",
+                    "shoeColor": "black",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "US Military 2",
+                "patient": "Lily",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": 0.36000001430511477,
+                        "y": 0.0,
+                        "z": 4.0
+                    },
+                    "angle": -130.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "calm",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "minimal",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "splint"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "L Wrist Broken",
+                        "requiredProcedure": "splint",
+                        "bloodEnabled": true,
+                        "bloodPool": "None",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Hispanic",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": true,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Jessica",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "original",
+                    "hairTexture": -1,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": -1,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "#372B0F",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [
+                        1,
+                        2
+                    ],
+                    "faceGear": [
+                        0
+                    ],
+                    "backGear": [],
+                    "chestGear": [
+                        2
+                    ],
+                    "beltGear": [
+                        3
+                    ],
+                    "legGear": [
+                        1,
+                        2
+                    ],
+                    "gunGear": [
+                        1
+                    ]
+                }
+            },
+            {
+                "name": "Civilian 2",
+                "patient": "Helga",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": 2.8499999046325685,
+                        "y": 0.0,
+                        "z": 1.9299999475479127
+                    },
+                    "angle": -130.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "fetal",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "woundpack"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "R Stomach Puncture",
+                        "requiredProcedure": "woundpack",
+                        "bloodEnabled": true,
+                        "bloodPool": "Large",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "White 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Wendy",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": true,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": true,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "black",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "US Military 3",
+                "patient": "Mike",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -0.800000011920929,
+                        "y": 0.0,
+                        "z": -5.46999979019165
+                    },
+                    "angle": 50.0
+                },
+                "vitals": {
+                    "pulse": "faint",
+                    "breath": "collapsedLeft",
+                    "SpO2": "low",
+                    "hearing": "none",
+                    "mood": "unresponsive",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "expectant",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "decompressionNeedle",
+                    "chestSeal"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "L Chest Collapse",
+                        "requiredProcedure": "decompressionNeedle",
+                        "bloodEnabled": true,
+                        "bloodPool": "None",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    },
+                    {
+                        "type": "R Chest Puncture",
+                        "requiredProcedure": "chestSeal",
+                        "bloodEnabled": true,
+                        "bloodPool": "Large",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "White 1",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Brian",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "#372B0F",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [
+                        1,
+                        2
+                    ],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [
+                        2,
+                        3
+                    ],
+                    "legGear": [
+                        0
+                    ],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "US Military 4",
+                "patient": "Mike",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -0.9200000166893005,
+                        "y": 0.0,
+                        "z": 0.25
+                    },
+                    "angle": 2.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "woundpack"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "R Stomach Puncture",
+                        "requiredProcedure": "woundpack",
+                        "bloodEnabled": true,
+                        "bloodPool": "Medium",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Black 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "John",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "#372B0F",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [
+                        1,
+                        2
+                    ],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "legGear": [],
+                    "gunGear": [
+                        1
+                    ]
+                }
+            },
+            {
+                "name": "Attacker 2",
+                "patient": "Gary",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -3.0799999237060549,
+                        "y": 0.0,
+                        "z": 5.190000057220459
+                    },
+                    "angle": -142.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "normal",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "delayed",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "sittingGround",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "woundpack"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "L Shoulder Puncture",
+                        "requiredProcedure": "woundpack",
+                        "bloodEnabled": true,
+                        "bloodPool": "Medium",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "White 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": true,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "high",
+                    "firstName": "Robert",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 30.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": -1,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "black",
+                    "bottomColor": "black",
+                    "shoeColor": "black",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "Civilian 3",
+                "patient": "Lily",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -2.0999999046325685,
+                        "y": 0.0,
+                        "z": -2.0899999141693117
+                    },
+                    "angle": 110.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "recovery",
+                    "side": "right",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "tourniquet"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "R Shin Amputation",
+                        "requiredProcedure": "tourniquet",
+                        "bloodEnabled": true,
+                        "bloodPool": "Largest",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "Asian 2",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Rebecca",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": true,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": true,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "original",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [],
+                    "beltGear": [],
+                    "legGear": [],
+                    "gunGear": []
+                }
+            },
+            {
+                "name": "US Military 5",
+                "patient": "Mike",
+                "salt_category": "still",
+                "npc": false,
+                "draggable": true,
+                "coveredInBlood": false,
+                "bleedOut": false,
+                "useColoredDisarmEffects": false,
+                "enabledOnStart": true,
+                "engaged": true,
+                "positionAngle": {
+                    "position": {
+                        "x": -5.46999979019165,
+                        "y": 0.0,
+                        "z": -3.8399999141693117
+                    },
+                    "angle": 7.0
+                },
+                "vitals": {
+                    "pulse": "fast",
+                    "breath": "fast",
+                    "SpO2": "normal",
+                    "hearing": "normal",
+                    "mood": "agony",
+                    "discoverable": false,
+                    "showOnStart": false,
+                    "bleedOut": false
+                },
+                "triageStatus": {
+                    "triageLevel": "immediate",
+                    "sort": "still"
+                },
+                "animations": {
+                    "pose": "supine",
+                    "side": "left",
+                    "kinesicPose": ""
+                },
+                "requiredProcedures": [
+                    "tourniquet"
+                ],
+                "supplementalProcedures": [
+                    "Nasal Airway",
+                    "Blanket",
+                    "Fentanyl Lollipop",
+                    "IV Blood",
+                    "Antibiotics"
+                ],
+                "injuries": [
+                    {
+                        "type": "L Shin Amputation",
+                        "requiredProcedure": "tourniquet",
+                        "bloodEnabled": true,
+                        "bloodPool": "Largest",
+                        "pretreated": false,
+                        "treatmentCount": 1
+                    }
+                ],
+                "raceEthnicity": {
+                    "preset": "White 3",
+                    "skinEyeHairFromPreset": true,
+                    "hairOverride": false,
+                    "eyeOverride": false,
+                    "skinOverride": false,
+                    "isElder": false,
+                    "isTeen": false
+                },
+                "voice": {
+                    "pitch": "normal",
+                    "firstName": "Steve",
+                    "callouts": {
+                        "gender": "auto",
+                        "pitch": "auto",
+                        "volume": "normal",
+                        "cry": false,
+                        "groan": true,
+                        "scream": true,
+                        "helpMe": true,
+                        "cryWhenFullyTreated": false,
+                        "minCalloutTimeSeconds": 10.0,
+                        "maxCalloutTimeSeconds": 20.0,
+                        "specialCallouts": []
+                    }
+                },
+                "body": {
+                    "bodyTexture": 0,
+                    "bodyNormalMap": 0,
+                    "bodyColor": "original",
+                    "bodyColorBrightness": "#808080",
+                    "eyeColor": "blue",
+                    "hairTexture": 0,
+                    "hairColor": "original",
+                    "bodyDirtLevel": 0.0
+                },
+                "clothing": {
+                    "shoeTexture": 0,
+                    "topColor": "original",
+                    "bottomColor": "original",
+                    "shoeColor": "#372B0F",
+                    "topColorBrightness": "#808080",
+                    "bottomColorBrightness": "#808080",
+                    "topAlphaMask": -1,
+                    "bottomAlphaMask": -1,
+                    "topDirtLevel": 0.0,
+                    "bottomDirtLevel": 0.0,
+                    "shoeDirtLevel": 0.0
+                },
+                "militaryGear": {
+                    "headGear": [
+                        1,
+                        2
+                    ],
+                    "faceGear": [],
+                    "backGear": [],
+                    "chestGear": [
+                        2,
+                        3
+                    ],
+                    "beltGear": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "legGear": [],
+                    "gunGear": [
+                        1
+                    ]
+                }
+            }
+        ],
+        "crushObjectList": []
+    },
+    "sessionMetadata": {
+        "evalNumber": 15,
+        "evalName": "Triangle2026 OW Desert",
+        "spawnLocationID": 0,
+        "spawnPoint": "smallBuilding",
+        "patientMapShown": -1
+    },
+    "actionList": [
+        {
+            "actionType": "QuestionPrompted",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "What did the participant do when they received the warning to remain in place?",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:43:52.786Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Remain in place"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:00.493Z"
+        },
+        {
+            "actionType": "QuestionAnswered",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "What did the participant do when they received the warning to remain in place?",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Remain in place"
+            ],
+            "answerIds": [
+                "remain_in_place"
+            ],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:02.127Z"
+        },
+        {
+            "actionType": "MovedBeforeClearedByCommand",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:06.026Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "yellow",
+            "tagType": "DELAYED",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:12.248Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 1",
+            "treatment": "Tourniquet",
+            "treatmentLocation": "Left Shin",
+            "injuryType": "Amputation",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:14.274Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:15.058Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "yellow",
+            "tagType": "DELAYED",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:15.902Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:18.347Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:44:18.477Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Civilian 1",
+            "treatment": "Tourniquet",
+            "treatmentLocation": "Left Thigh",
+            "injuryType": "Laceration",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:04.208Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "Civilian 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:07.806Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:10.145Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:11.747Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Civilian 1",
+            "treatment": "Fentanyl Lollipop",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:15.351Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "normal",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:16.524Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "US Military 1"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:47.262Z"
+        },
+        {
+            "actionType": "AnswerDeselected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "US Military 1"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:51.629Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "US Military 1"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:53.530Z"
+        },
+        {
+            "actionType": "EvacSelection",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [
+                "US Military 1"
+            ],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:45:54.731Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Civilian 2",
+            "treatment": "Israeli Wrap",
+            "treatmentLocation": "Right Stomach",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:46:06.850Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Attacker 1",
+            "treatment": "Hemostatic Gauze",
+            "treatmentLocation": "Right Stomach",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:46:57.231Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Attacker 1",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:46:57.992Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Attacker 1",
+            "treatment": "Israeli Wrap",
+            "treatmentLocation": "Right Stomach",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:47:01.232Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:47:24.357Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Civilian 3",
+            "treatment": "Tourniquet",
+            "treatmentLocation": "Right Shin",
+            "injuryType": "Amputation",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:47:26.001Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "Civilian 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:47:29.843Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "Civilian 3",
+            "treatment": "Fentanyl Lollipop",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:47:35.124Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 3",
+            "treatment": "Hemostatic Gauze",
+            "treatmentLocation": "Right Chest",
+            "injuryType": "Puncture",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:47:59.380Z"
+        },
+        {
+            "actionType": "QuestionPrompted",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "What did the participant do when the drones flew over?",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:01.547Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 3",
+            "treatment": "Chest Seal Projector",
+            "treatmentLocation": "Right Chest",
+            "injuryType": "Puncture",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:07.634Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Verbal concern"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:11.557Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Stop and stare"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:15.009Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "faint",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:18.996Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Drag patients to house"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:25.758Z"
+        },
+        {
+            "actionType": "QuestionAnswered",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "What did the participant do when the drones flew over?",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Verbal concern",
+                "Stop and stare",
+                "Drag patients to house"
+            ],
+            "answerIds": [
+                "verbal_concern",
+                "stop_and_stare",
+                "drag_patients_to_house"
+            ],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:41.380Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 5",
+            "treatment": "Tourniquet",
+            "treatmentLocation": "Left Shin",
+            "injuryType": "Amputation",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:48:56.774Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:49:18.126Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:49:18.193Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:49:20.088Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:49:20.433Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 5",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:49:26.270Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 5",
+            "treatment": "Fentanyl Lollipop",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:49:35.968Z"
+        },
+        {
+            "actionType": "Treatment",
+            "casualty": "US Military 4",
+            "treatment": "Mental Assessment",
+            "treatmentLocation": "head",
+            "injuryType": "None",
+            "successfulTreatment": true,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:50:59.480Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:51:42.864Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "Civilian 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "fast",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:51:43.842Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "faint",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:14.838Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "faint",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:17.605Z"
+        },
+        {
+            "actionType": "Tag",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "red",
+            "tagType": "IMMEDIATE",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:27.040Z"
+        },
+        {
+            "actionType": "Pulse",
+            "casualty": "US Military 3",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "faint",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:27.093Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "US Military 4"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:41.579Z"
+        },
+        {
+            "actionType": "AnswerSelected",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 1,
+            "evacPatientIds": [],
+            "answerChoice": [
+                "Civilian 2"
+            ],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:46.244Z"
+        },
+        {
+            "actionType": "EvacSelection",
+            "casualty": "",
+            "treatment": "",
+            "treatmentLocation": "",
+            "injuryType": "",
+            "successfulTreatment": false,
+            "tagColor": "",
+            "tagType": "",
+            "pulse": "",
+            "breathing": "",
+            "SpO2": "",
+            "question": "",
+            "questionId": "",
+            "questionType": "",
+            "evacRound": 2,
+            "evacPatientIds": [
+                "US Military 4",
+                "Civilian 2"
+            ],
+            "answerChoice": [],
+            "answerIds": [],
+            "movedBeforeClearedByCommand": false,
+            "timestamp": "2026-10-13T08:52:47.352Z"
+        }
+    ],
+    "images": [
+        {
+            "name": "US Military 1",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_US Military 1.jpg"
+        },
+        {
+            "name": "Civilian 1",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_Civilian 1.jpg"
+        },
+        {
+            "name": "Attacker 1",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_Attacker 1.jpg"
+        },
+        {
+            "name": "US Military 2",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_US Military 2.jpg"
+        },
+        {
+            "name": "Civilian 2",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_Civilian 2.jpg"
+        },
+        {
+            "name": "US Military 3",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_US Military 3.jpg"
+        },
+        {
+            "name": "US Military 4",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_US Military 4.jpg"
+        },
+        {
+            "name": "Attacker 2",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_Attacker 2.jpg"
+        },
+        {
+            "name": "Civilian 3",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_Civilian 3.jpg"
+        },
+        {
+            "name": "US Military 5",
+            "filename": "b28659ec-c232-4eda-85e0-e8d7e6b70a49_202610152_US Military 5.jpg"
+        }
+    ],
+    "sessionId": "b28659ec-c232-4eda-85e0-e8d7e6b70a49",
+    "participantId": "202610152",
+    "scenarioDuration": "00h:09m:44s",
+    "localization": "UK"
+}
