@@ -253,7 +253,7 @@ class AdeptClient:
                 raise RepopError(f"ADEPT did not return a scenario definition for {scenario_id}")
             self.checked_scenarios.add(scenario_id)
 
-    def populate(self, responses, enable_subpop="disabled"):
+    def populate(self, responses, enable_subpop="disabled", justification="repopulated from userScenarioResults"):
         response = self.http.post(self.url + "api/v1/new_session", timeout=self.timeout)
         response.raise_for_status()
         try:
@@ -265,7 +265,7 @@ class AdeptClient:
         for selected in responses:
             response = self.http.post(self.url + "api/v1/response",
                                       json={"session_id": session_id, "response": dict(
-                                          selected, justification="repopulated from userScenarioResults")},
+                                          selected, justification=justification)},
                                       timeout=self.timeout)
             response.raise_for_status()
         return session_id, self.profile(session_id, enable_subpop)
