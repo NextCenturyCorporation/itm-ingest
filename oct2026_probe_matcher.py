@@ -2701,6 +2701,79 @@ def is_valid_midpoint_value(value):
     )
 
 
+def compute_midpoint_alignment_scores(
+    metadata, human_session_id=None, cache=None, text_collection=None,
+    existing_scores=None, strict=False,
+):
+    if not human_session_id:
+        logger.log(LogLevel.WARN, f"No open-world session for midpoint alignment (pid={metadata.get('pid')}).")
+        return {}
+    human_session_id = str(human_session_id)
+    cache = {} if cache is None else cache
+    existing_scores = existing_scores if isinstance(existing_scores, dict) else {}
+    scores = {}
+
+    for kdma, short_name in (("affiliation", "AF"), ("merit", "MF")):
+        text_session_id = find_text_session_for_alignment(
+            metadata, short_name, collection=text_collection, strict=strict,
+        )
+        if not text_session_id:
+            continue
+        previous = existing_scores.get(kdma)
+        if (isinstance(previous, dict)
+                and previous.get("open_world_sid") == human_session_id
+                and previous.get("text_sid") == text_session_id
+                and is_valid_midpoint_value(previous.get("score"))):
+            scores[kdma] = {
+                "open_world_sid": human_session_id,
+                "text_sid": text_session_id,
+                "score": previous["score"],
+            }
+            continue
+
+        key = (human_session_id, text_session_id, kdma)
+        if key not in cache:
+            try:
+                if requests is None or ADEPT_URL in ("", "/"):
+                    raise RuntimeError("requests and ADEPT_URL are required for midpoint alignment.")
+                response = requests.get(
+                    f"{ADEPT_URL}api/v1/alignment/compare_sessions_midpoint",
+                    params={
+                        "session_id_1": human_session_id,
+                        "session_id_2": text_session_id,
+                        "kdma_filter": kdma,
+                    },
+                    timeout=120,
+                )
+                response.raise_for_status()
+                payload = response.json()
+                if not isinstance(payload, dict):
+                    raise ValueError("Expected a midpoint alignment result object.")
+                if payload.get("alignment_warning"):
+                    logger.log(LogLevel.WARN, f"{short_name} midpoint alignment warning for pid {metadata.get('pid')}: {payload['alignment_warning']}")
+                score = payload.get("score")
+                if not is_valid_midpoint_value(score):
+                    logger.log(
+                        LogLevel.WARN,
+                        f"No valid {short_name} midpoint alignment score for pid {metadata.get('pid')} "
+                        f"(open-world session={human_session_id}, text session={text_session_id}, score={score}).",
+                    )
+                    score = None
+                cache[key] = score
+            except Exception as e:
+                logger.log(LogLevel.WARN, f"Midpoint alignment request failed for {short_name} / pid {metadata.get('pid')}: {e}")
+                if strict:
+                    raise
+                continue
+        if cache[key] is not None:
+            scores[kdma] = {
+                "open_world_sid": human_session_id,
+                "text_sid": text_session_id,
+                "score": cache[key],
+            }
+    return scores
+
+
 def get_midpoint_profile(session_id, cache=None, strict=False):
     if not session_id:
         return {}
@@ -2947,6 +3020,7 @@ def build_output_documents(
     alignment_scores=None,
     match_data=None,
     midpoint_values=None,
+    midpoint_alignment_scores=None,
 ):
     """Build the raw and analysis output documents."""
     pid = metadata["pid"]
@@ -3007,6 +3081,8 @@ def build_output_documents(
         analysis_doc["data"] = match_data
     if midpoint_values is not None:
         analysis_doc["midpoint_values"] = midpoint_values
+    if midpoint_alignment_scores is not None:
+        analysis_doc["midpoint_alignment_scores"] = midpoint_alignment_scores
 
     return raw_doc, analysis_doc
 
@@ -3065,7 +3141,7 @@ def save_to_mongo(raw_doc, analysis_doc):
 # PIPELINE EXECUTION
 # ============================================================
 
-def process_file(json_path, output_dir, midpoint_cache=None):
+def process_file(json_path, output_dir, midpoint_cache=None, midpoint_alignment_cache=None):
     """Process one simulation run from JSON/CSV inputs and write its analysis output."""
     filename = os.path.basename(json_path).replace(".json", "")
 
@@ -3111,6 +3187,9 @@ def process_file(json_path, output_dir, midpoint_cache=None):
     midpoint_values = compute_midpoint_values(
         metadata, human_session_id=human_session_id, cache=midpoint_cache,
     ) if CALC_KDMAS else None
+    midpoint_alignment_scores = compute_midpoint_alignment_scores(
+        metadata, human_session_id=human_session_id, cache=midpoint_alignment_cache,
+    ) if CALC_KDMAS else None
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -3132,6 +3211,7 @@ def process_file(json_path, output_dir, midpoint_cache=None):
         alignment_scores=alignment_scores,
         match_data=match_data,
         midpoint_values=midpoint_values,
+        midpoint_alignment_scores=midpoint_alignment_scores,
     )
 
     save_output(output_dir, filename, analysis_doc)
@@ -3169,7 +3249,7 @@ if __name__ == "__main__":
         "-k",
         "--calc_kdmas",
         action="store_true",
-        help="Hit ADEPT/TA1 to compute open-world KDMAs, Text/Open World midpoint values, and alignment scores",
+        help="Hit ADEPT/TA1 to compute open-world KDMAs, Text/Open World midpoint values, and regular/midpoint alignment scores",
     )
     parser.add_argument(
         "-v",
@@ -3213,8 +3293,12 @@ if __name__ == "__main__":
 
     processed = 0
     midpoint_cache = {}
+    midpoint_alignment_cache = {}
     for json_path in sorted(json_paths):
         if VERBOSE:
             logger.log(LogLevel.INFO, f"Processing file {json_path}")
-        processed += bool(process_file(json_path, args.output_dir, midpoint_cache=midpoint_cache))
+        processed += bool(process_file(
+            json_path, args.output_dir, midpoint_cache=midpoint_cache,
+            midpoint_alignment_cache=midpoint_alignment_cache,
+        ))
     print(f"Processed {processed} open-world runs; skipped {len(json_paths) - processed} runs.")
