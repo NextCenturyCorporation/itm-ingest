@@ -19,7 +19,7 @@
 #   -o / --output_dir    Output directory for analysis files (default: output_sim_analysis)
 #   -m / --send_to_mongo Enable MongoDB upsert using MONGO_URL from .env
 #   -k / --calc_kdmas     Enable ADEPT/TA1 calls to compute open-world KDMAs
-#                         and alignment compare values
+#                         plus midpoint profiles and alignment compare values
 #   -v / --verbose        Verbose command-line output
 #   --eval-number        Evaluation number (default: 18)
 #   --eval-name          Evaluation label (default: October 2026 Evaluation)
@@ -2554,14 +2554,15 @@ def compute_openworld_match_data(sim_json, metadata):
     }, human_session_id
 
 
-def find_text_session_for_alignment(metadata, alignment_type):
-    """Find the binomial combinedSessionId used for MF/AF alignment.
+def find_text_session_for_alignment(metadata, alignment_type, collection=None, strict=False):
+    """Find the binomial combinedSessionId for the selected Text KDMA.
 
     Both comparisons intentionally use the session populated from all four
     recorded text scenarios. Both the evaluation number and assessment IDs
     must match, so records from another evaluation or trinary set are excluded.
     """
-    if text_scenario_collection is None:
+    collection = text_scenario_collection if collection is None else collection
+    if collection is None:
         logger.log(LogLevel.WARN, f"text_scenario_collection is unavailable; cannot look up {alignment_type} text session.")
         return None
 
@@ -2586,10 +2587,12 @@ def find_text_session_for_alignment(metadata, alignment_type):
     for query in queries:
         try:
             try:
-                text_doc = text_scenario_collection.find_one(query, sort=[("timeComplete", -1)])
+                text_doc = collection.find_one(query, sort=[("timeComplete", -1)])
             except TypeError:
-                text_doc = text_scenario_collection.find_one(query)
+                text_doc = collection.find_one(query)
         except Exception:
+            if strict:
+                raise
             text_doc = None
 
         if not text_doc:
@@ -2687,6 +2690,167 @@ def compute_alignment_scores(metadata, human_session_id=None):
         f"MF Alignment_{env_name}": get_alignment_compare_score(human_session_id, metadata, "MF"),
         f"AF Alignment_{env_name}": get_alignment_compare_score(human_session_id, metadata, "AF"),
     }
+
+
+def is_valid_midpoint_value(value):
+    return (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and math.isfinite(value)
+        and 0 <= value <= 1
+    )
+
+
+def compute_midpoint_alignment_scores(
+    metadata, human_session_id=None, cache=None, text_collection=None,
+    existing_scores=None, strict=False,
+):
+    if not human_session_id:
+        logger.log(LogLevel.WARN, f"No open-world session for midpoint alignment (pid={metadata.get('pid')}).")
+        return {}
+    human_session_id = str(human_session_id)
+    cache = {} if cache is None else cache
+    existing_scores = existing_scores if isinstance(existing_scores, dict) else {}
+    scores = {}
+
+    for kdma, short_name in (("affiliation", "AF"), ("merit", "MF")):
+        text_session_id = find_text_session_for_alignment(
+            metadata, short_name, collection=text_collection, strict=strict,
+        )
+        if not text_session_id:
+            continue
+        previous = existing_scores.get(kdma)
+        if (isinstance(previous, dict)
+                and previous.get("open_world_sid") == human_session_id
+                and previous.get("text_sid") == text_session_id
+                and is_valid_midpoint_value(previous.get("score"))):
+            scores[kdma] = {
+                "open_world_sid": human_session_id,
+                "text_sid": text_session_id,
+                "score": previous["score"],
+            }
+            continue
+
+        key = (human_session_id, text_session_id, kdma)
+        if key not in cache:
+            try:
+                if requests is None or ADEPT_URL in ("", "/"):
+                    raise RuntimeError("requests and ADEPT_URL are required for midpoint alignment.")
+                response = requests.get(
+                    f"{ADEPT_URL}api/v1/alignment/compare_sessions_midpoint",
+                    params={
+                        "session_id_1": human_session_id,
+                        "session_id_2": text_session_id,
+                        "kdma_filter": kdma,
+                    },
+                    timeout=120,
+                )
+                response.raise_for_status()
+                payload = response.json()
+                if not isinstance(payload, dict):
+                    raise ValueError("Expected a midpoint alignment result object.")
+                if payload.get("alignment_warning"):
+                    logger.log(LogLevel.WARN, f"{short_name} midpoint alignment warning for pid {metadata.get('pid')}: {payload['alignment_warning']}")
+                score = payload.get("score")
+                if not is_valid_midpoint_value(score):
+                    logger.log(
+                        LogLevel.WARN,
+                        f"No valid {short_name} midpoint alignment score for pid {metadata.get('pid')} "
+                        f"(open-world session={human_session_id}, text session={text_session_id}, score={score}).",
+                    )
+                    score = None
+                cache[key] = score
+            except Exception as e:
+                logger.log(LogLevel.WARN, f"Midpoint alignment request failed for {short_name} / pid {metadata.get('pid')}: {e}")
+                if strict:
+                    raise
+                continue
+        if cache[key] is not None:
+            scores[kdma] = {
+                "open_world_sid": human_session_id,
+                "text_sid": text_session_id,
+                "score": cache[key],
+            }
+    return scores
+
+
+def get_midpoint_profile(session_id, cache=None, strict=False):
+    if not session_id:
+        return {}
+    session_id = str(session_id)
+    if cache is not None and session_id in cache:
+        return cache[session_id]
+
+    try:
+        if requests is None or ADEPT_URL in ("", "/"):
+            raise RuntimeError("requests and ADEPT_URL are required for midpoint calculation.")
+        response = requests.get(
+            f"{ADEPT_URL}api/v1/computed_kdma_profile_midpoint",
+            params={"session_id": session_id},
+            timeout=120,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        if not isinstance(payload, list):
+            raise ValueError("Expected a list of KDMA midpoint values.")
+
+        profile = {}
+        for item in payload:
+            if not isinstance(item, dict) or item.get("kdma") not in KDMA_MAP:
+                continue
+            kdma = item["kdma"]
+            value = item.get("value")
+            if not is_valid_midpoint_value(value):
+                logger.log(LogLevel.WARN, f"Invalid {kdma} midpoint for session {session_id}: {value}")
+                continue
+            if kdma in profile and profile[kdma] != value:
+                raise ValueError(f"Conflicting midpoint values for {kdma}.")
+            profile[kdma] = value
+        if not profile:
+            logger.log(LogLevel.WARN, f"No midpoint values returned for session {session_id}.")
+        if cache is not None:
+            cache[session_id] = profile
+        return profile
+    except Exception as e:
+        logger.log(LogLevel.WARN, f"Midpoint request failed for session {session_id}: {e}")
+        if strict:
+            raise
+        return {}
+
+
+def compute_midpoint_values(
+    metadata, human_session_id=None, cache=None, text_collection=None,
+    existing_values=None, strict=False,
+):
+    cache = {} if cache is None else cache
+    existing_values = existing_values if isinstance(existing_values, dict) else {}
+    values = {"text": {}, "open_world": {}}
+
+    def add_value(modality, kdma, session_id):
+        if not session_id:
+            logger.log(LogLevel.WARN, f"No {modality} session for {kdma} midpoint (pid={metadata.get('pid')}).")
+            return
+        session_id = str(session_id)
+        previous = existing_values.get(modality)
+        previous = previous.get(kdma) if isinstance(previous, dict) else None
+        if (isinstance(previous, dict) and previous.get("sid") == session_id
+                and is_valid_midpoint_value(previous.get("value"))):
+            values[modality][kdma] = {"sid": session_id, "value": previous["value"]}
+            return
+        profile = get_midpoint_profile(session_id, cache=cache, strict=strict)
+        if kdma in profile:
+            values[modality][kdma] = {"sid": session_id, "value": profile[kdma]}
+        else:
+            logger.log(LogLevel.WARN, f"Missing {kdma} midpoint for {modality} session {session_id} (pid={metadata.get('pid')}).")
+
+    for kdma, short_name in KDMA_MAP.items():
+        text_session_id = find_text_session_for_alignment(
+            metadata, short_name, collection=text_collection, strict=strict,
+        )
+        add_value("text", kdma, text_session_id)
+    for kdma in ("affiliation", "merit"):
+        add_value("open_world", kdma, human_session_id)
+    return values
 
 
 # ============================================================
@@ -2855,6 +3019,8 @@ def build_output_documents(
     text_kdmas=None,
     alignment_scores=None,
     match_data=None,
+    midpoint_values=None,
+    midpoint_alignment_scores=None,
 ):
     """Build the raw and analysis output documents."""
     pid = metadata["pid"]
@@ -2913,6 +3079,10 @@ def build_output_documents(
         analysis_doc["alignment_scores"] = alignment_scores
     if match_data is not None:
         analysis_doc["data"] = match_data
+    if midpoint_values is not None:
+        analysis_doc["midpoint_values"] = midpoint_values
+    if midpoint_alignment_scores is not None:
+        analysis_doc["midpoint_alignment_scores"] = midpoint_alignment_scores
 
     return raw_doc, analysis_doc
 
@@ -2971,7 +3141,7 @@ def save_to_mongo(raw_doc, analysis_doc):
 # PIPELINE EXECUTION
 # ============================================================
 
-def process_file(json_path, output_dir):
+def process_file(json_path, output_dir, midpoint_cache=None, midpoint_alignment_cache=None):
     """Process one simulation run from JSON/CSV inputs and write its analysis output."""
     filename = os.path.basename(json_path).replace(".json", "")
 
@@ -3014,6 +3184,12 @@ def process_file(json_path, output_dir):
     text_kdmas = extract_text_kdmas(metadata)
     match_data, human_session_id = compute_openworld_match_data(run_json, metadata)
     alignment_scores = compute_alignment_scores(metadata, human_session_id=human_session_id)
+    midpoint_values = compute_midpoint_values(
+        metadata, human_session_id=human_session_id, cache=midpoint_cache,
+    ) if CALC_KDMAS else None
+    midpoint_alignment_scores = compute_midpoint_alignment_scores(
+        metadata, human_session_id=human_session_id, cache=midpoint_alignment_cache,
+    ) if CALC_KDMAS else None
 
     raw_doc, analysis_doc = build_output_documents(
         metadata,
@@ -3034,6 +3210,8 @@ def process_file(json_path, output_dir):
         text_kdmas=text_kdmas,
         alignment_scores=alignment_scores,
         match_data=match_data,
+        midpoint_values=midpoint_values,
+        midpoint_alignment_scores=midpoint_alignment_scores,
     )
 
     save_output(output_dir, filename, analysis_doc)
@@ -3071,7 +3249,7 @@ if __name__ == "__main__":
         "-k",
         "--calc_kdmas",
         action="store_true",
-        help="Hit the ADEPT/TA1 server to compute open-world session KDMAs and alignment scores",
+        help="Hit ADEPT/TA1 to compute open-world KDMAs, Text/Open World midpoint values, and regular/midpoint alignment scores",
     )
     parser.add_argument(
         "-v",
@@ -3114,8 +3292,13 @@ if __name__ == "__main__":
             json_paths.append(os.path.join(root, file))
 
     processed = 0
+    midpoint_cache = {}
+    midpoint_alignment_cache = {}
     for json_path in sorted(json_paths):
         if VERBOSE:
             logger.log(LogLevel.INFO, f"Processing file {json_path}")
-        processed += bool(process_file(json_path, args.output_dir))
+        processed += bool(process_file(
+            json_path, args.output_dir, midpoint_cache=midpoint_cache,
+            midpoint_alignment_cache=midpoint_alignment_cache,
+        ))
     print(f"Processed {processed} open-world runs; skipped {len(json_paths) - processed} runs.")
