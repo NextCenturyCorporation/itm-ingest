@@ -28,7 +28,7 @@ Options:
 EVALUATION_NAME = 'Open World Experiment'
 ADEPT_URL = config("ADEPT_URL")
 HIT_TA1_SERVER = True # Useful for testing or if you can't reach the TA1 server
-FAIL_FAST = True # Exit program if there's an error getting session alignment
+FAIL_FAST = False # Exit program if there's an error getting session alignment
 
 # These are default values that can be overridden via the command line
 KDMAS = True
@@ -71,7 +71,6 @@ def get_ta1_calculations(req_session, probes: list, adm_name: str, scenario_id: 
             kdmas = req_session.get(f'{ADEPT_URL}api/v1/computed_kdma_profile_midpoint?session_id={session_id}').json() if KDMAS else []
             return session_id, session_alignment['score'], kdmas, session_alignment.get('alignment_warning')
         except Exception as ex:
-            print(f"--> Error: could not get alignment and/or kdmas for {adm_name} in scenario {scenario_id} at target {target}: {ex}")
             return session_id, None, None, None
     else:
         return 'random_ta1_id', random.random(), \
@@ -85,6 +84,7 @@ def update_adm_runs(adm_collection):
     adm_runs = list(adm_collection.find(query))
     num_adms = len(adm_runs)
     print(f"Retrieved {num_adms} matching docs from database.")
+    print(f"Updating {EVALUATION_NAME}{' Mistral' if MISTRAL else ''} ADM runs...")
     adm_num = 0
     error_count = 0
     increase_count = 0
@@ -100,8 +100,7 @@ def update_adm_runs(adm_collection):
 
     for adm_run in adm_runs:
         adm_num += 1
-        print(f"Processing ADM #{adm_num}/{num_adms}.")
-        scenario_name = adm_run['scenario']
+        scenario_id = adm_run['scenario']
         adm_name = adm_run['adm_name']
         target = adm_run['alignment_target']
         probes = []
@@ -109,8 +108,9 @@ def update_adm_runs(adm_collection):
             if h['command'] == 'Respond to TA1 Probe':
                 probes.append({'probe_id': h['parameters']['probe_id'], 'choice': h['parameters']['choice']})
         ta1_id, alignment_score, kdmas, warning = \
-            get_ta1_calculations(req_session, probes, adm_name, scenario_name, target)
-        if not alignment_score:
+            get_ta1_calculations(req_session, probes, adm_name, scenario_id, target)
+        if alignment_score is None:
+            print(f"--> Error: could not get alignment and/or kdmas for {adm_name} in scenario {scenario_id} at target {target}.")
             if FAIL_FAST:
                 print("Aborting.")
                 exit(1)
@@ -121,7 +121,7 @@ def update_adm_runs(adm_collection):
         old_score = results['alignment_score']
         old_kdmas = results['kdmas']
         if VERBOSE:
-            print(f"  ADM {adm_name}, scenario {scenario_name}, target {target}, probes {probes}")
+            print(f"  ADM {adm_name}, scenario {scenario_id}, target {target}, probes {probes}")
             print(f"  {docid}: Got alignment score of {alignment_score} with old score of {old_score}.")
             print(f"           Got kdmas of {kdmas}, with old kdmas of {old_kdmas}.")
 
@@ -137,7 +137,7 @@ def update_adm_runs(adm_collection):
             else:
                 decrease_count += 1
 
-        results['session_id'] = ta1_id
+        results['ta1_session_id'] = ta1_id
         results['alignment_score'] = alignment_score
         if kdmas:
             results['kdmas'] = kdmas
@@ -184,7 +184,6 @@ def main(mongo_db):
                     }}
                 )
 
-    print(f"Update {EVALUATION_NAME}{' Mistral' if MISTRAL else ''} ADM runs:")
     update_adm_runs(adm_collection)
     print('\nDone.')
 
