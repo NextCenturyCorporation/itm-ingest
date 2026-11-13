@@ -32,8 +32,8 @@ def extract_responses(document):
 
 
 def run(mongo_db, client, eval_number=18, pid=None, dry_run=False, verbose=False):
-    if eval_number not in (18, 19):
-        raise ValueError("Open World repopulation supports Canada eval 18 and UK eval 19 only.")
+    if eval_number not in (15, 18, 19):
+        raise ValueError("Open World repopulation supports February eval 15, Canada eval 18, and UK eval 19 only.")
     query = {"evalNumber": eval_number, "openWorld": True}
     if pid is not None:
         candidates = [str(pid)]
@@ -120,7 +120,7 @@ def main(mongo_db, dry_run=False, eval_number=18, pid=None, verbose=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Restore missing ADEPT Open World sessions from saved MongoDB probe matches.")
-    parser.add_argument("--eval-number", "-e", type=int, choices=(18, 19), default=18)
+    parser.add_argument("--eval-number", "-e", type=int, choices=(15, 18, 19), default=18)
     parser.add_argument("--pid", help="Restore sessions for one participant only")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--verbose", "-v", action="store_true")
