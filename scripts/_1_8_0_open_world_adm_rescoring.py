@@ -100,6 +100,8 @@ def update_adm_runs(adm_collection):
 
     for adm_run in adm_runs:
         adm_num += 1
+        if (adm_num % 100) == 0:
+            print(f"Processing ADM #{adm_num}/{num_adms}.")
         scenario_id = adm_run['scenario']
         adm_name = adm_run['adm_name']
         target = adm_run['alignment_target']
