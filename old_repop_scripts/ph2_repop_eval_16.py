@@ -149,7 +149,7 @@ def process_text_scenarios(mongo_db):
                     "$set": {
                         "combinedSessionId": combined_sid,
                         #"combinedMostLeastAligned": combined_mla,
-                        "combinedKdmas": combined_kdmas,
+                        "combinedKdmasNoSubpop": combined_kdmas,
                     }
                 },
             )
