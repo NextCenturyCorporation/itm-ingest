@@ -416,6 +416,7 @@ def main(mongo_db):
     #run_obs(mongo_db)      
     #redo comparisons          
     #gen_comp(mongo_db)
+    #gen_comp(mongo_db)
     # populates otherSubKDMA (used on participant-level)
     #populate_other_sub_kdma(mongo_db)
 
