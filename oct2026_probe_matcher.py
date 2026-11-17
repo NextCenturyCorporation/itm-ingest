@@ -2627,22 +2627,33 @@ def find_text_session_for_alignment(metadata, alignment_type, collection=None, s
     return None
 
 
-def get_alignment_compare_score(human_session_id, metadata, alignment_type):
+def get_alignment_compare_score(
+    human_session_id, metadata, alignment_type, text_session_id=None, strict=False,
+):
     """Compare the current human session against the matching text session."""
-    if not CALC_KDMAS:
+    if not CALC_KDMAS and not strict:
         return None
     if requests is None:
+        if strict:
+            raise RuntimeError("requests is required for alignment comparison.")
         logger.log(LogLevel.WARN, "requests is not installed; skipping alignment compare calculation.")
         return None
     if not human_session_id:
+        if strict:
+            raise ValueError("An open-world session is required for alignment comparison.")
         logger.log(LogLevel.WARN, f"No human session_id available for {alignment_type} alignment.")
         return None
     if not ADEPT_URL or ADEPT_URL == "/":
+        if strict:
+            raise RuntimeError("ADEPT_URL is required for alignment comparison.")
         logger.log(LogLevel.WARN, "ADEPT_URL not set; skipping alignment compare calculation.")
         return None
 
-    text_session_id = find_text_session_for_alignment(metadata, alignment_type)
+    if text_session_id is None:
+        text_session_id = find_text_session_for_alignment(metadata, alignment_type, strict=strict)
     if not text_session_id:
+        if strict:
+            raise ValueError(f"A text session is required for {alignment_type} alignment comparison.")
         return None
 
     kdma_filter = "merit" if alignment_type == "MF" else "affiliation"
@@ -2658,7 +2669,12 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         )
         response.raise_for_status()
         payload = response.json()
+        if strict and not isinstance(payload, dict):
+            raise ValueError("Expected an alignment result object.")
         score = payload.get("score")
+        if strict and (not isinstance(score, (int, float)) or isinstance(score, bool)
+                       or not math.isfinite(score)):
+            raise ValueError(f"Invalid {alignment_type} alignment score: {score!r}")
         if score is None:
             logger.log(LogLevel.WARN, f"{alignment_type} alignment compare returned null for pid {metadata.get('pid')}.")
             return None
@@ -2674,6 +2690,8 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         return score_value
     except Exception as e:
         logger.log(LogLevel.WARN, f"Alignment compare request failed for {alignment_type} / pid {metadata.get('pid')}: {e}")
+        if strict:
+            raise
         return None
 
 
@@ -2682,14 +2700,22 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
 # - AF Alignment_Desert
 # - MF Alignment_Urban
 # - AF Alignment_Urban
-def compute_alignment_scores(metadata, human_session_id=None):
+def compute_alignment_scores(
+    metadata, human_session_id=None, text_session_ids=None, strict=False,
+):
     """Return MF/AF alignment fields for the current run."""
     prefix = build_env_prefix(metadata.get("env", ""))
     env_name = prefix.strip() or metadata.get("env", "")
-    return {
-        f"MF Alignment_{env_name}": get_alignment_compare_score(human_session_id, metadata, "MF"),
-        f"AF Alignment_{env_name}": get_alignment_compare_score(human_session_id, metadata, "AF"),
-    }
+    scores = {}
+    for kdma, short_name in (("merit", "MF"), ("affiliation", "AF")):
+        if text_session_ids is not None and not text_session_ids.get(kdma):
+            continue
+        scores[f"{short_name} Alignment_{env_name}"] = get_alignment_compare_score(
+            human_session_id, metadata, short_name,
+            text_session_id=None if text_session_ids is None else text_session_ids[kdma],
+            strict=strict,
+        )
+    return scores
 
 
 def is_valid_midpoint_value(value):
@@ -2703,7 +2729,7 @@ def is_valid_midpoint_value(value):
 
 def compute_midpoint_alignment_scores(
     metadata, human_session_id=None, cache=None, text_collection=None,
-    existing_scores=None, strict=False,
+    existing_scores=None, strict=False, text_session_ids=None,
 ):
     if not human_session_id:
         logger.log(LogLevel.WARN, f"No open-world session for midpoint alignment (pid={metadata.get('pid')}).")
@@ -2714,8 +2740,10 @@ def compute_midpoint_alignment_scores(
     scores = {}
 
     for kdma, short_name in (("affiliation", "AF"), ("merit", "MF")):
-        text_session_id = find_text_session_for_alignment(
-            metadata, short_name, collection=text_collection, strict=strict,
+        text_session_id = (
+            find_text_session_for_alignment(
+                metadata, short_name, collection=text_collection, strict=strict,
+            ) if text_session_ids is None else text_session_ids.get(kdma)
         )
         if not text_session_id:
             continue
@@ -2753,6 +2781,8 @@ def compute_midpoint_alignment_scores(
                     logger.log(LogLevel.WARN, f"{short_name} midpoint alignment warning for pid {metadata.get('pid')}: {payload['alignment_warning']}")
                 score = payload.get("score")
                 if not is_valid_midpoint_value(score):
+                    if strict and text_session_ids is not None:
+                        raise ValueError(f"Invalid {short_name} midpoint alignment score: {score!r}")
                     logger.log(
                         LogLevel.WARN,
                         f"No valid {short_name} midpoint alignment score for pid {metadata.get('pid')} "
@@ -2774,11 +2804,14 @@ def compute_midpoint_alignment_scores(
     return scores
 
 
-def get_midpoint_profile(session_id, cache=None, strict=False):
+def get_midpoint_profile(session_id, cache=None, strict=False, validate=False):
     if not session_id:
         return {}
     session_id = str(session_id)
     if cache is not None and session_id in cache:
+        if validate and (not isinstance(cache[session_id], dict) or not cache[session_id]
+                         or not all(is_valid_midpoint_value(value) for value in cache[session_id].values())):
+            raise ValueError(f"Invalid cached midpoint profile for session {session_id}.")
         return cache[session_id]
 
     try:
@@ -2797,16 +2830,24 @@ def get_midpoint_profile(session_id, cache=None, strict=False):
         profile = {}
         for item in payload:
             if not isinstance(item, dict) or item.get("kdma") not in KDMA_MAP:
+                if validate and (not isinstance(item, dict) or not item.get("kdma")):
+                    raise ValueError("Malformed midpoint KDMA entry.")
                 continue
             kdma = item["kdma"]
             value = item.get("value")
             if not is_valid_midpoint_value(value):
+                if validate:
+                    raise ValueError(f"Invalid {kdma} midpoint for session {session_id}: {value!r}")
                 logger.log(LogLevel.WARN, f"Invalid {kdma} midpoint for session {session_id}: {value}")
                 continue
+            if validate and kdma in profile:
+                raise ValueError(f"Duplicate midpoint values for {kdma}.")
             if kdma in profile and profile[kdma] != value:
                 raise ValueError(f"Conflicting midpoint values for {kdma}.")
             profile[kdma] = value
         if not profile:
+            if validate:
+                raise ValueError(f"No midpoint values returned for session {session_id}.")
             logger.log(LogLevel.WARN, f"No midpoint values returned for session {session_id}.")
         if cache is not None:
             cache[session_id] = profile
@@ -2820,7 +2861,7 @@ def get_midpoint_profile(session_id, cache=None, strict=False):
 
 def compute_midpoint_values(
     metadata, human_session_id=None, cache=None, text_collection=None,
-    existing_values=None, strict=False,
+    existing_values=None, strict=False, text_session_ids=None,
 ):
     cache = {} if cache is None else cache
     existing_values = existing_values if isinstance(existing_values, dict) else {}
@@ -2837,15 +2878,22 @@ def compute_midpoint_values(
                 and is_valid_midpoint_value(previous.get("value"))):
             values[modality][kdma] = {"sid": session_id, "value": previous["value"]}
             return
-        profile = get_midpoint_profile(session_id, cache=cache, strict=strict)
+        profile = get_midpoint_profile(
+            session_id, cache=cache, strict=strict,
+            validate=(strict and text_session_ids is not None),
+        )
         if kdma in profile:
             values[modality][kdma] = {"sid": session_id, "value": profile[kdma]}
         else:
+            if strict and text_session_ids is not None:
+                raise ValueError(f"Missing {kdma} midpoint for {modality} session {session_id}.")
             logger.log(LogLevel.WARN, f"Missing {kdma} midpoint for {modality} session {session_id} (pid={metadata.get('pid')}).")
 
     for kdma, short_name in KDMA_MAP.items():
-        text_session_id = find_text_session_for_alignment(
-            metadata, short_name, collection=text_collection, strict=strict,
+        text_session_id = (
+            find_text_session_for_alignment(
+                metadata, short_name, collection=text_collection, strict=strict,
+            ) if text_session_ids is None else text_session_ids.get(kdma)
         )
         add_value("text", kdma, text_session_id)
     for kdma in ("affiliation", "merit"):
