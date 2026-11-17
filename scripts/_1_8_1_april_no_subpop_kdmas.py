@@ -22,3 +22,6 @@ def main(mongo_db):
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
     subprocess.run(command, cwd=str(repo_root), env=env, check=True)
+    
+    mongo_db['humanSimulator'].delete_one({"pid": "202604155"})
+    mongo_db['humanSimulator'].delete_many({"pid": "202604192"})
