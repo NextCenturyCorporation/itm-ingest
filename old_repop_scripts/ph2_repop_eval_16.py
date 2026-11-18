@@ -147,7 +147,7 @@ def process_text_scenarios(mongo_db):
                 {"_id": document["_id"]},
                 {
                     "$set": {
-                        "combinedSessionIdNew": combined_sid,
+                        "combinedSessionId": combined_sid,
                         #"combinedMostLeastAligned": combined_mla,
                         "combinedKdmasNew": combined_kdmas,
                     }
