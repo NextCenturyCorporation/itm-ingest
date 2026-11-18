@@ -2325,7 +2325,9 @@ def get_eval_prefix(metadata):
 
 
 def get_eval_prefix_candidates(metadata):
-    """Return the explicitly selected prefixes for recorded text responses."""
+    """Return the recorded text prefixes for the selected evaluation."""
+    if str(get_eval_number(metadata)) == "15":
+        return ["Feb2026"]
     return list(TEXT_SCENARIO_PREFIXES)
 
 
