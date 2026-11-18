@@ -71,7 +71,7 @@ def process_pair(collection, group_key, docs):
     for document in docs:
         db_utils.send_probes(RESPONSE_URL, extract_probes(document), pair_sid, document["scenario_id"])
 
-    mla = most_least_aligned(pair_sid, [None])  # skipKdmaFilter
+    # mla = most_least_aligned(pair_sid, [None])  # skipKdmaFilter
     kdmas = get_kdmas(pair_sid)
 
     for document in docs:
@@ -80,7 +80,7 @@ def process_pair(collection, group_key, docs):
             {
                 "$set": {
                     f"{group_key}_sessionId": pair_sid,
-                    f"{group_key}_mostLeastAligned": mla,
+                    #f"{group_key}_mostLeastAligned": mla,
                     f"{group_key}_kdmas": kdmas,
                 }
             },
@@ -99,10 +99,11 @@ def process_text_scenarios(mongo_db):
     for participant_id, all_docs in participant_groups.items():
         subpop_doc = next((d for d in all_docs if d.get("scenario_id") == SUBPOP_SCENARIO_ID), None)
         documents = [d for d in all_docs if d.get("scenario_id") != SUBPOP_SCENARIO_ID]
-
+        '''
         if not subpop_doc:
             print(f"Warning: Participant {participant_id} missing subpopulation document; skipping")
             continue
+        '''
         if len(documents) < 4:
             print(f"Warning: Participant {participant_id} has {len(documents)} documents instead of 4")
             continue
@@ -117,26 +118,29 @@ def process_text_scenarios(mongo_db):
             
 
         # --- combined session, seeded by the subpopulation scenario ---
-        combined_sid = new_session()
 
+        combined_sid = new_session()
+        '''
         # subpop responses first, then read the (possibly changed) subpopulation
         db_utils.send_probes(RESPONSE_URL, extract_probes(subpop_doc), combined_sid, subpop_doc["scenario_id"])
         sub_pop_result = requests.get(
             f"{ADEPT_URL}api/v1/subpopulation", params={"session_id": combined_sid}
         ).json()
-
+        '''
         # then all four regular scenarios into the same session
         for document in documents:
             db_utils.send_probes(RESPONSE_URL, extract_probes(document), combined_sid, document["scenario_id"])
 
-        combined_mla = most_least_aligned(combined_sid, COMBINED_TARGETS, enable_subpop=sub_pop_result)
-        combined_kdmas = get_kdmas(combined_sid, enable_subpop=sub_pop_result)
-
+        #combined_mla = most_least_aligned(combined_sid, COMBINED_TARGETS)#, enable_subpop=sub_pop_result)
+        combined_kdmas = get_kdmas(combined_sid)#, enable_subpop=sub_pop_result)
+        
+        '''
         # subpopulation doc: session id + (possibly updated) subpop result
         collection.update_one(
             {"_id": subpop_doc["_id"]},
             {"$set": {"combinedSessionId": combined_sid, "subPopResult": sub_pop_result}},
         )
+        '''
         # regular docs: combined session id + combined alignment + kdmas
         for document in documents:
             collection.update_one(
@@ -144,8 +148,8 @@ def process_text_scenarios(mongo_db):
                 {
                     "$set": {
                         "combinedSessionId": combined_sid,
-                        "combinedMostLeastAligned": combined_mla,
-                        "combinedKdmas": combined_kdmas,
+                        #"combinedMostLeastAligned": combined_mla,
+                        "combinedKdmasNoSubpop": combined_kdmas,
                     }
                 },
             )
@@ -154,7 +158,7 @@ def process_text_scenarios(mongo_db):
         process_pair(collection, "AF-PS", af_ps_docs)
         process_pair(collection, "MF-PS", mf_ps_docs)
 
-        print(f"Processed text scenarios for participant {participant_id} (subpop={sub_pop_result})")
+        print(f"Processed text scenarios for participant {participant_id}")
 
 
 def run_obs(mongo_db):
@@ -409,11 +413,12 @@ def main(mongo_db):
     # re run humans
     process_text_scenarios(mongo_db) 
     # re run observed adms
-    run_obs(mongo_db)      
+    #run_obs(mongo_db)      
     #redo comparisons          
-    gen_comp(mongo_db)
+    #gen_comp(mongo_db)
+    #gen_comp(mongo_db)
     # populates otherSubKDMA (used on participant-level)
-    populate_other_sub_kdma(mongo_db)
+    #populate_other_sub_kdma(mongo_db)
 
 
 if __name__ == "__main__":

@@ -1554,12 +1554,12 @@ def load_openworld_yaml_for_env(env):
 def get_ta1_calculations(scenario_id, probes):
     """Create a TA1 session, send probe choices, and fetch computed KDMAs."""
     if not CALC_KDMAS:
-        return None, None
+        return None, None, None
     if not probes:
-        return None, None
+        return None, None, None
     if not ADEPT_URL or ADEPT_URL == "/":
         logger.log(LogLevel.WARN, "ADEPT_URL not set; skipping KDMA computation.")
-        return None, None
+        return None, None, None
     try:
         session_id = requests.post(f"{ADEPT_URL}api/v1/new_session").text.replace('"', '').strip()
         if VERBOSE:
@@ -1582,9 +1582,15 @@ def get_ta1_calculations(scenario_id, probes):
             f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}",
             timeout=120,
         ).json()
+        '''
+        midpoint_kdma = requests.get(
+            f"{ADEPT_URL}api/v1/computed_kdma_profile_midpoint?session_id={session_id}",
+            timeout=120,
+        ).json()
+        '''
     except Exception:
-        return None, None
-    return session_id, kdmas
+        return None, None, None
+    return session_id, kdmas#, midpoint_kdma
 
 def _norm_casualty_name(name):
     """Normalize casualty naming differences between YAML and JSON."""
@@ -1683,6 +1689,7 @@ def compute_openworld_match_data(sim_json, metadata):
                 logger.log(LogLevel.WARN, "TA1 server request failed; no KDMAs generated.")
             ow_align["sid"] = human_session_id
             ow_align["kdmas"] = kdmas
+            # ow_align["midpoint_kdma"] = midpoint_kdma
     else:
         logger.log(LogLevel.INFO, "KDMA calculation disabled (use -k to enable).")
 
@@ -1782,13 +1789,26 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         response.raise_for_status()
         payload = response.json()
         score = payload.get("score")
-
+        '''
+        mid_reponse = requests.get(
+            f"{ADEPT_URL}api/v1/alignment/compare_sessions_midpoint",
+            params={
+                "session_id_1": str(human_session_id),
+                "session_id_2": str(text_session_id),
+                "kdma_filter": kdma_filter,
+            },
+            timeout=120,
+        )
+        mid_reponse.raise_for_status()
+        midpoint_payload = mid_reponse.json()
+        midpoint_score = midpoint_payload.get("score")
+        '''
         if score is None:
             logger.log(
                 LogLevel.WARN,
                 f"{alignment_type} alignment compare returned null for pid {metadata.get('pid')} "
                 f"(human_session_id={human_session_id}, text_session_id={text_session_id}). "
-                "The ADEPT server likely doesn't have the session id(s) needed to compute the value.",
+                "The ADEPT server likely doesn't have the session id(s) needed to compute the value."
             )
             return None
 
@@ -1831,6 +1851,7 @@ def compute_alignment_scores(metadata, human_session_id=None):
     if not env_name:
         env_name = metadata.get("env", "")
 
+    # get_alignment_compare_score returns None on any failure path.
     mf_alignment_score = get_alignment_compare_score(human_session_id, metadata, "MF")
     af_alignment_score = get_alignment_compare_score(human_session_id, metadata, "AF")
 
@@ -2078,6 +2099,48 @@ def initialize_mongo():
     text_scenario_collection = db["userScenarioResults"]
     return client
 
+def fetch_existing_scores(metadata):
+    """Return the KDMAs and alignment scores already stored for this pid/scenario_id.
+
+    If a previous run of this script already preserved `_old` values, those are
+    returned instead so a rerun never clobbers the original pre-midpoint data.
+    Returns None when no existing document is found.
+    """
+    if mongo_collection_analysis is None:
+        logger.log(LogLevel.WARN, "Analysis collection unavailable; cannot look up existing KDMAs/alignment scores.")
+        return None
+
+    pid = metadata.get("pid")
+    pid_candidates = [pid]
+    if str(pid).isdigit():
+        pid_candidates.append(int(pid))
+
+    try:
+        existing = mongo_collection_analysis.find_one(
+            {"pid": {"$in": pid_candidates}, "scenario_id": metadata.get("scenario_id")}
+        )
+    except Exception as e:
+        logger.log(LogLevel.WARN, f"Error looking up existing document for pid {pid}: {e}")
+        return None
+
+    if not existing:
+        logger.log(LogLevel.INFO, f"No existing document for pid {pid} / {metadata.get('scenario_id')}.")
+        return None
+
+    if "kdmas_old" in existing or "alignment_scores_old" in existing:
+        logger.log(LogLevel.INFO, f"Existing document for pid {pid} already has _old values; preserving them.")
+        return {
+            "kdmas_old": existing.get("kdmas_old"),
+            "alignment_scores_old": existing.get("alignment_scores_old"),
+        }
+
+    existing_alignment = (existing.get("data") or {}).get("alignment") or {}
+    logger.log(LogLevel.INFO, f"Found existing document for pid {pid}; storing prior KDMAs/alignment scores as _old.")
+    return {
+        "kdmas_old": existing_alignment.get("kdmas"),
+        "alignment_scores_old": existing.get("alignment_scores"),
+    }
+
 def save_to_mongo(raw_doc, analysis_doc):
     """Upsert raw and analysis documents into Mongo collections."""
     if mongo_collection_raw is None or mongo_collection_analysis is None:
@@ -2109,6 +2172,7 @@ def process_file(json_path, output_dir):
     csv_rows = load_csv_rows(csv_path)
 
     metadata = extract_run_metadata(sim_json, filename)
+    existing_scores = fetch_existing_scores(metadata)
     event_totals = extract_event_totals(csv_rows, metadata["env"])
     action_analysis = extract_action_analysis(csv_rows, sim_json, metadata["env"], pid=metadata["pid"])
     triage_times = compute_patient_interactions(csv_rows)
@@ -2146,6 +2210,9 @@ def process_file(json_path, output_dir):
         alignment_scores=alignment_scores,
         match_data=match_data,
     )
+
+    if existing_scores is not None:
+        analysis_doc.update(existing_scores)
 
     save_output(output_dir, filename, analysis_doc)
 
