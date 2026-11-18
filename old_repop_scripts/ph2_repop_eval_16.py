@@ -147,16 +147,16 @@ def process_text_scenarios(mongo_db):
                 {"_id": document["_id"]},
                 {
                     "$set": {
-                        "combinedSessionId": combined_sid,
+                        "combinedSessionIdNew": combined_sid,
                         #"combinedMostLeastAligned": combined_mla,
-                        "combinedKdmasNoSubpop": combined_kdmas,
+                        "combinedKdmasNew": combined_kdmas,
                     }
                 },
             )
 
         # pair sessions 
-        process_pair(collection, "AF-PS", af_ps_docs)
-        process_pair(collection, "MF-PS", mf_ps_docs)
+        # process_pair(collection, "AF-PS", af_ps_docs)
+        # process_pair(collection, "MF-PS", mf_ps_docs)
 
         print(f"Processed text scenarios for participant {participant_id}")
 
