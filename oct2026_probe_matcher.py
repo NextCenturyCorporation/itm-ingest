@@ -2630,12 +2630,12 @@ def find_text_session_for_alignment(metadata, alignment_type, collection=None, s
 
 
 def get_alignment_compare_score(
-    human_session_id, metadata, alignment_type, text_session_id=None, strict=False,
+    human_session_id, metadata, alignment_type, text_session_id=None, strict=False, http=None,
 ):
     """Compare the current human session against the matching text session."""
     if not CALC_KDMAS and not strict:
         return None
-    if requests is None:
+    if http is None and requests is None:
         if strict:
             raise RuntimeError("requests is required for alignment comparison.")
         logger.log(LogLevel.WARN, "requests is not installed; skipping alignment compare calculation.")
@@ -2660,7 +2660,7 @@ def get_alignment_compare_score(
 
     kdma_filter = "merit" if alignment_type == "MF" else "affiliation"
     try:
-        response = requests.get(
+        response = (http or requests).get(
             f"{ADEPT_URL}api/v1/alignment/compare_sessions",
             params={
                 "session_id_1": str(human_session_id),
@@ -2703,7 +2703,7 @@ def get_alignment_compare_score(
 # - MF Alignment_Urban
 # - AF Alignment_Urban
 def compute_alignment_scores(
-    metadata, human_session_id=None, text_session_ids=None, strict=False,
+    metadata, human_session_id=None, text_session_ids=None, strict=False, http=None,
 ):
     """Return MF/AF alignment fields for the current run."""
     prefix = build_env_prefix(metadata.get("env", ""))
@@ -2715,7 +2715,7 @@ def compute_alignment_scores(
         scores[f"{short_name} Alignment_{env_name}"] = get_alignment_compare_score(
             human_session_id, metadata, short_name,
             text_session_id=None if text_session_ids is None else text_session_ids[kdma],
-            strict=strict,
+            strict=strict, http=http,
         )
     return scores
 
@@ -2731,7 +2731,7 @@ def is_valid_midpoint_value(value):
 
 def compute_midpoint_alignment_scores(
     metadata, human_session_id=None, cache=None, text_collection=None,
-    existing_scores=None, strict=False, text_session_ids=None,
+    existing_scores=None, strict=False, text_session_ids=None, http=None,
 ):
     if not human_session_id:
         logger.log(LogLevel.WARN, f"No open-world session for midpoint alignment (pid={metadata.get('pid')}).")
@@ -2764,9 +2764,9 @@ def compute_midpoint_alignment_scores(
         key = (human_session_id, text_session_id, kdma)
         if key not in cache:
             try:
-                if requests is None or ADEPT_URL in ("", "/"):
+                if (http is None and requests is None) or ADEPT_URL in ("", "/"):
                     raise RuntimeError("requests and ADEPT_URL are required for midpoint alignment.")
-                response = requests.get(
+                response = (http or requests).get(
                     f"{ADEPT_URL}api/v1/alignment/compare_sessions_midpoint",
                     params={
                         "session_id_1": human_session_id,
@@ -2806,7 +2806,7 @@ def compute_midpoint_alignment_scores(
     return scores
 
 
-def get_midpoint_profile(session_id, cache=None, strict=False, validate=False):
+def get_midpoint_profile(session_id, cache=None, strict=False, validate=False, http=None):
     if not session_id:
         return {}
     session_id = str(session_id)
@@ -2817,9 +2817,9 @@ def get_midpoint_profile(session_id, cache=None, strict=False, validate=False):
         return cache[session_id]
 
     try:
-        if requests is None or ADEPT_URL in ("", "/"):
+        if (http is None and requests is None) or ADEPT_URL in ("", "/"):
             raise RuntimeError("requests and ADEPT_URL are required for midpoint calculation.")
-        response = requests.get(
+        response = (http or requests).get(
             f"{ADEPT_URL}api/v1/computed_kdma_profile_midpoint",
             params={"session_id": session_id},
             timeout=120,
@@ -2863,7 +2863,7 @@ def get_midpoint_profile(session_id, cache=None, strict=False, validate=False):
 
 def compute_midpoint_values(
     metadata, human_session_id=None, cache=None, text_collection=None,
-    existing_values=None, strict=False, text_session_ids=None,
+    existing_values=None, strict=False, text_session_ids=None, http=None,
 ):
     cache = {} if cache is None else cache
     existing_values = existing_values if isinstance(existing_values, dict) else {}
@@ -2882,7 +2882,7 @@ def compute_midpoint_values(
             return
         profile = get_midpoint_profile(
             session_id, cache=cache, strict=strict,
-            validate=(strict and text_session_ids is not None),
+            validate=(strict and text_session_ids is not None), http=http,
         )
         if kdma in profile:
             values[modality][kdma] = {"sid": session_id, "value": profile[kdma]}
