@@ -9,15 +9,6 @@ from decouple import config
 from typing import Any
 import copy
 
-SCENARIO_IDS = [
-    "June2025-OW_desert3",
-    "June2025-OW_urban3",
-    "April2026-OW_desert3",
-    "April2026-OW_urban3",
-    "Feb2026-OW_desert3",
-    "Feb2026-OW_urban3",
-]
-
 TAG_TO_COLOR = {
     "IMMEDIATE": "red",
     "DELAYED": "yellow",
@@ -241,34 +232,30 @@ PROBE_PAIRS = {
     },
 }
 
-ADM_NAMES_TO_KEEP = [
+# List of Mistral ADMs to keep, straight from TA2
+MISTRAL_ADM_NAMES_TO_KEEP = [
     'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__1d017d2f-f582-452d-929e-41cec2db608b',
     'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__51f09362-fb95-4044-b939-7a2d58e32f9f',
     'ALIGN-ADM-OutlinesBaseline-Mistral-7B-Instruct-v0.3__3adc2c84-ce5b-4027-8f31-7d9eb1731ce6',
     'ALIGN-ADM-Ph2-Zeroshot-ComparativeRegression-Mistral-7B-Instruct-v0.3__145a6e95-1de3-4a24-86a5-709ea70a351f',
     'ALIGN-ADM-Ph2-Zeroshot-ComparativeRegression-Mistral-7B-Instruct-v0.3__0a055284-08f7-40a1-b034-09f471d7221d',
     'ALIGN-ADM-Ph2-Zeroshot-ComparativeRegression-Mistral-7B-Instruct-v0.3__6ce19d20-3e47-4a9d-b4ad-d373203c6a61',
-    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__b8960983-5c60-4c85-9acc-29dccfffb114',
-    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__8f39dcf2-99c2-44e0-a4b4-a57125c09919',
-    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__82cdafd4-5d11-4469-adbd-5bcc6d424a4c',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__b929a3c6-b81e-4c54-bfd4-7348716d4a92',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__da39d531-d67a-4db0-9492-aa1eb745154a',
+    'ALIGN-ADM-Ph2-ComparativeRegression-Mistral-7B-Instruct-v0.3__db99e957-34d6-4df8-8a33-d03f126d194c',
     'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__8e506168-235a-4d0b-930a-1b589839b112',
     'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__8681e0dd-39c3-4d80-92f1-fc7df79b138c',
     'ALIGN-ADM-Ph2-DirectRegression-Mistral-7B-Instruct-v0.3__e64937a4-54a9-4e6f-9356-bb0234cccd51'
 ]
 
-EVAL_NAMES = [
-    "April 2026 Open World Experiment Part 3", 
-    "Feb 2026 Open World Experiment Part 3", 
-    "June 2025 Open World Experiment Part 3"
-]
+EVAL_BASENAME = "Open World Experiment Part 3"
 
-CUT_OFF_START_TIME = '2026-09-15'
-
-def build_query() -> dict[str, Any]:
+def build_delete_query() -> dict[str, Any]:
     return {
-        "evaluation.evalName": {"$in": EVAL_NAMES},
-        "evaluation.start_time": {"$gte": CUT_OFF_START_TIME},
-        "adm_name": {"$nin": ADM_NAMES_TO_KEEP}
+        "evaluation.evalName": {"$regex": EVAL_BASENAME},
+        "$and": [{"adm_name": {"$regex": "Mistral"}},
+                 {"adm_name": {"$nin": MISTRAL_ADM_NAMES_TO_KEEP}}
+                 ]
     }
 
 def print_matching_documents(collection: Any, query: dict[str, Any]) -> None:
@@ -609,7 +596,7 @@ def process_adm(adm):
     return action_analysis
 
 def delete_adms(collection, write_to_db=True, verbose=True):
-    query = build_query()
+    query = build_delete_query()
     matched_count = collection.count_documents(query)
 
     if verbose:
@@ -646,10 +633,7 @@ def delete_adms(collection, write_to_db=True, verbose=True):
 def main(mongo_db):
     collection = mongo_db["admTargetRuns"]
     delete_adms(collection)
-    open_world_adms = list(collection.find({
-        "scenario": {"$in": SCENARIO_IDS},
-        "adm_name": {"$in": ADM_NAMES_TO_KEEP}
-        }))
+    open_world_adms = list(collection.find({"evalName": {"$regex": EVAL_BASENAME}}))
 
     updated = 0
     unchanged = []
