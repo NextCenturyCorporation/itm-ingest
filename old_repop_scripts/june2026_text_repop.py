@@ -128,6 +128,17 @@ def send_probe_response(
     response = requests.post(f"{adept_url}api/v1/response", json=payload, timeout=timeout)
     response.raise_for_status()
 
+def get_computed_midpoint(adept_url: str, session_id: str, timeout: int) -> Optional[List[Dict[str, Any]]]:
+    """Return the midpoint KDMA profile ([{kdma, value}, ...]) for a populated ADEPT session."""
+    response = requests.get(
+        f"{adept_url}api/v1/computed_kdma_profile_midpoint",
+        params={"session_id": session_id},
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return payload if isinstance(payload, list) else None
+
 
 def get_computed_kdmas(adept_url: str, session_id: str, timeout: int) -> Optional[List[Dict[str, Any]]]:
     """Return computed KDMAs for a populated ADEPT session, if available."""
@@ -495,10 +506,18 @@ def process_participant(
             set_values = {"combinedSessionId": combined_sid}
             if combined_kdmas is not None:
                 set_values["combinedKdmasNew"] = combined_kdmas
+            if not dry_run:
+                try:
+                    combined_midpoint = get_computed_midpoint(adept_url, combined_sid, timeout)
+                except Exception as exc:
+                    combined_midpoint = None
+                    log(f"  Warning: could not fetch midpoint KDMAs for combined binomial session {combined_sid}: {exc}")
+                if combined_midpoint is not None:
+                    set_values["combinedMidpoint"] = combined_midpoint
             update_documents(collection, binomial_docs, set_values, dry_run)
             for old_sid in old_combined_ids:
                 update_session_references(mongo_db, old_sid, combined_sid, dry_run)
-
+                
     if update_af_ss:
         af_ss_docs = find_docs(documents, AF_SS_SCENARIOS)
         if af_ss_docs:
