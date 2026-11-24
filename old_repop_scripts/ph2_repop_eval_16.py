@@ -133,6 +133,7 @@ def process_text_scenarios(mongo_db):
 
         #combined_mla = most_least_aligned(combined_sid, COMBINED_TARGETS)#, enable_subpop=sub_pop_result)
         combined_kdmas = get_kdmas(combined_sid)#, enable_subpop=sub_pop_result)
+        combined_mid = requests.get(f"{ADEPT_URL}api/v1/computed_kdma_profile_midpoint", params={"session_id": combined_sid}).json()
         
         '''
         # subpopulation doc: session id + (possibly updated) subpop result
@@ -149,14 +150,15 @@ def process_text_scenarios(mongo_db):
                     "$set": {
                         "combinedSessionId": combined_sid,
                         #"combinedMostLeastAligned": combined_mla,
-                        "combinedKdmasNoSubpop": combined_kdmas,
+                        "combinedKdmasNew": combined_kdmas,
+                        "combinedMidpoint": combined_mid,
                     }
                 },
             )
 
         # pair sessions 
-        process_pair(collection, "AF-PS", af_ps_docs)
-        process_pair(collection, "MF-PS", mf_ps_docs)
+        # process_pair(collection, "AF-PS", af_ps_docs)
+        # process_pair(collection, "MF-PS", mf_ps_docs)
 
         print(f"Processed text scenarios for participant {participant_id}")
 

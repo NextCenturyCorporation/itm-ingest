@@ -12,13 +12,13 @@ state:
     name: Patient A
     unstructured: Military member of your unit with moderate bleeding from their right
       thigh; US Military 3
-    medical_condition: 0.8248
+    medical_condition: 0.5883
     attribute_rating: 1.0
   - id: Patient B
     name: Patient B
     unstructured: A local civilian with a chest wound and gasping for breath; Civilian
       2
-    medical_condition: 0.9848
+    medical_condition: 0.9421
     attribute_rating: 0.3955
 scenes:
 - id: Scene 6
@@ -36,13 +36,13 @@ scenes:
       name: Patient A
       unstructured: Local civilian with massive bleeding from their torso; Civilian
         3
-      medical_condition: 0.9869
-      attribute_rating: 0.8
+      medical_condition: 0.9977
+      attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 0.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -60,15 +60,15 @@ scenes:
     probe_id: Feb2026-MF-OW_urban.Probe 3
     choice: Response 3-A
     kdma_association:
-      medical: 0.9869
-      merit: 0.8
+      medical: 0.9977
+      merit: 1.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
     probe_id: Feb2026-MF-OW_urban.Probe 3
     choice: Response 3-B
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       merit: 0.0
     character_id: Patient B
   transitions:
@@ -88,13 +88,13 @@ scenes:
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
         right thigh; US Military 3
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: A local civilian with a chest wound and gasping for breath; Civilian
         2
-      medical_condition: 0.9848
+      medical_condition: 0.9421
       attribute_rating: 0.3955
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -112,7 +112,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 1
     choice: Response 1-A
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       affiliation: 1.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -120,7 +120,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 1
     choice: Response 1-B
     kdma_association:
-      medical: 0.9848
+      medical: 0.9421
       affiliation: 0.3955
     character_id: Patient B
   transitions:
@@ -140,13 +140,13 @@ scenes:
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
         right thigh; US Military 3
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: A local civilian with massive bleeding from their torso; Civilian
         3
-      medical_condition: 0.9869
+      medical_condition: 0.9977
       attribute_rating: 0.3955
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -164,7 +164,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 2
     choice: Response 2-A
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       affiliation: 1.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -172,7 +172,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 2
     choice: Response 2-B
     kdma_association:
-      medical: 0.9869
+      medical: 0.9977
       affiliation: 0.3955
     character_id: Patient B
   transitions:
@@ -193,13 +193,13 @@ scenes:
       name: Patient A
       unstructured: Local civilian with a broken right wrist; no bleeding; Civilian
         1
-      medical_condition: 0.0162
-      attribute_rating: 0.8
+      medical_condition: 0.0125
+      attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 0.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -217,15 +217,15 @@ scenes:
     probe_id: Feb2026-MF-OW_urban.Probe 2
     choice: Response 2-A
     kdma_association:
-      medical: 0.0162
-      merit: 0.8
+      medical: 0.0125
+      merit: 1.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
     probe_id: Feb2026-MF-OW_urban.Probe 2
     choice: Response 2-B
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       merit: 0.0
     character_id: Patient B
   transitions:
@@ -247,13 +247,13 @@ scenes:
       unstructured: Military member of your unit with moderate bleeding from their
         torso; possible internal bleeding; accidentally discharged their weapon, resulting
         in two civilian casualties; US Military 2
-      medical_condition: 0.8377
+      medical_condition: 0.5982
       attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 0.3955
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -271,7 +271,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 4a
     choice: Response 4a-A
     kdma_association:
-      medical: 0.8377
+      medical: 0.5982
       affiliation: 1.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -279,7 +279,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 4a
     choice: Response 4a-B
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       affiliation: 0.3955
     character_id: Patient B
   transitions:
@@ -299,13 +299,13 @@ scenes:
       name: Patient A
       unstructured: Local civilian with massive bleeding from their torso; Civilian
         3
-      medical_condition: 0.9869
+      medical_condition: 0.9977
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with massive bleeding from their
         torso; US Military 4
-      medical_condition: 0.9869
+      medical_condition: 0.9977
       attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -323,7 +323,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 3
     choice: Response 3-A
     kdma_association:
-      medical: 0.9869
+      medical: 0.9977
       affiliation: 0.3955
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -331,7 +331,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 3
     choice: Response 3-B
     kdma_association:
-      medical: 0.9869
+      medical: 0.9977
       affiliation: 1.0
     character_id: Patient B
   transitions:
@@ -353,15 +353,15 @@ scenes:
       name: Patient A
       unstructured: Military member of your unit with moderate bleeding from their
         right bicep; US Military 1
-      medical_condition: 0.8248
-      attribute_rating: 0.8
+      medical_condition: 0.5883
+      attribute_rating: 1.0
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with moderate bleeding from their
         torso; possible internal bleeding; accidentally discharged their weapon, resulting
         in two civilian casualties; US Military 2
-      medical_condition: 0.8377
-      attribute_rating: 0.706
+      medical_condition: 0.5982
+      attribute_rating: 0.8825
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
         foreign city. An active shooter incident occurred in the marketplace. Multiple
@@ -378,16 +378,16 @@ scenes:
     probe_id: Feb2026-MF-OW_urban.Probe 1
     choice: Response 1-A
     kdma_association:
-      medical: 0.8248
-      merit: 0.8
+      medical: 0.5883
+      merit: 1.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
     probe_id: Feb2026-MF-OW_urban.Probe 1
     choice: Response 1-B
     kdma_association:
-      medical: 0.8377
-      merit: 0.706
+      medical: 0.5982
+      merit: 0.8825
     character_id: Patient B
   transitions:
     probes:
@@ -407,14 +407,14 @@ scenes:
       name: Patient A
       unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 0.0
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with moderate bleeding from their
         right thigh; US Military 3
-      medical_condition: 0.8248
-      attribute_rating: 0.8
+      medical_condition: 0.5883
+      attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
         foreign city. An active shooter incident occurred in the marketplace. Multiple
@@ -431,7 +431,7 @@ scenes:
     probe_id: Feb2026-MF-OW_urban.Probe 5b
     choice: Response 5b-A
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       merit: 0.0
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -439,8 +439,8 @@ scenes:
     probe_id: Feb2026-MF-OW_urban.Probe 5b
     choice: Response 5b-B
     kdma_association:
-      medical: 0.8248
-      merit: 0.8
+      medical: 0.5883
+      merit: 1.0
     character_id: Patient B
   transitions:
     probes:
@@ -461,13 +461,13 @@ scenes:
       unstructured: Military member of your unit with moderate bleeding from their
         torso; possible internal bleeding; accidentally discharged their weapon, resulting
         in two civilian casualties; US Military 2
-      medical_condition: 0.8377
-      attribute_rating: 0.706
+      medical_condition: 0.5982
+      attribute_rating: 0.8825
     - id: Patient B
       name: Patient B
       unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 0.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -485,15 +485,15 @@ scenes:
     probe_id: Feb2026-MF-OW_urban.Probe 4b
     choice: Response 4b-A
     kdma_association:
-      medical: 0.8377
-      merit: 0.706
+      medical: 0.5982
+      merit: 0.8825
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
     unstructured: Treat Patient B
     probe_id: Feb2026-MF-OW_urban.Probe 4b
     choice: Response 4b-B
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       merit: 0.0
     character_id: Patient B
   transitions:
@@ -514,13 +514,13 @@ scenes:
       name: Patient A
       unstructured: Local civilian, the attacker who opened fire on the marketplace,
         with moderate bleeding from their right shoulder; Shooter 1
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 0.3955
     - id: Patient B
       name: Patient B
       unstructured: Military member of your unit with moderate bleeding from their
         right thigh; US Military 3
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 1.0
     threat_state:
       unstructured: You are the assigned Combat Medic for US forces operating in a
@@ -538,7 +538,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 5a
     choice: Response 5a-A
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       affiliation: 0.3955
   - action_id: treat_patient_b
     action_type: TREAT_PATIENT
@@ -546,7 +546,7 @@ scenes:
     probe_id: Feb2026-AF-OW_urban.Probe 5a
     choice: Response 5a-B
     kdma_association:
-      medical: 0.8248
+      medical: 0.5883
       affiliation: 1.0
     character_id: Patient B
   transitions:

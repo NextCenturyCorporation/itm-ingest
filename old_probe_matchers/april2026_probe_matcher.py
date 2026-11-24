@@ -1582,15 +1582,13 @@ def get_ta1_calculations(scenario_id, probes):
             f"{ADEPT_URL}api/v1/computed_kdma_profile?session_id={session_id}",
             timeout=120,
         ).json()
-        '''
         midpoint_kdma = requests.get(
             f"{ADEPT_URL}api/v1/computed_kdma_profile_midpoint?session_id={session_id}",
             timeout=120,
         ).json()
-        '''
     except Exception:
         return None, None, None
-    return session_id, kdmas#, midpoint_kdma
+    return session_id, kdmas, midpoint_kdma
 
 def _norm_casualty_name(name):
     """Normalize casualty naming differences between YAML and JSON."""
@@ -1682,14 +1680,14 @@ def compute_openworld_match_data(sim_json, metadata):
             logger.log(LogLevel.WARN, "No probes available for KDMA calculation.")
         else:
             logger.log(LogLevel.INFO, f"Calling TA1 server for KDMA calculation with {len(probes)} probes...")
-            human_session_id, kdmas = get_ta1_calculations(ow_yaml.get("id", ""), probes)
+            human_session_id, kdmas, midpoint_kdma = get_ta1_calculations(ow_yaml.get("id", ""), probes)
             if human_session_id and kdmas is not None:
                 logger.log(LogLevel.INFO, f"KDMA calculation complete (session_id={human_session_id})")
             else:
                 logger.log(LogLevel.WARN, "TA1 server request failed; no KDMAs generated.")
             ow_align["sid"] = human_session_id
             ow_align["kdmas"] = kdmas
-            # ow_align["midpoint_kdma"] = midpoint_kdma
+            ow_align["midpoint_kdma"] = midpoint_kdma
     else:
         logger.log(LogLevel.INFO, "KDMA calculation disabled (use -k to enable).")
 
@@ -1789,7 +1787,7 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         response.raise_for_status()
         payload = response.json()
         score = payload.get("score")
-        '''
+
         mid_reponse = requests.get(
             f"{ADEPT_URL}api/v1/alignment/compare_sessions_midpoint",
             params={
@@ -1802,8 +1800,8 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
         mid_reponse.raise_for_status()
         midpoint_payload = mid_reponse.json()
         midpoint_score = midpoint_payload.get("score")
-        '''
-        if score is None:
+
+        if score is None or midpoint_score is None:
             logger.log(
                 LogLevel.WARN,
                 f"{alignment_type} alignment compare returned null for pid {metadata.get('pid')} "
@@ -1814,6 +1812,7 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
 
         try:
             score_value = float(score)
+            mid_value = float(midpoint_score)
         except (TypeError, ValueError):
             logger.log(
                 LogLevel.WARN,
@@ -1822,7 +1821,7 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
             )
             return None
 
-        if math.isnan(score_value):
+        if math.isnan(score_value) or math.isnan(mid_value):
             logger.log(
                 LogLevel.WARN,
                 f"{alignment_type} alignment compare returned NaN for pid {metadata.get('pid')} "
@@ -1831,7 +1830,7 @@ def get_alignment_compare_score(human_session_id, metadata, alignment_type):
             )
             return None
 
-        return score_value
+        return score_value, mid_value
     except Exception as e:
         logger.log(
             LogLevel.WARN,
@@ -1852,12 +1851,14 @@ def compute_alignment_scores(metadata, human_session_id=None):
         env_name = metadata.get("env", "")
 
     # get_alignment_compare_score returns None on any failure path.
-    mf_alignment_score = get_alignment_compare_score(human_session_id, metadata, "MF")
-    af_alignment_score = get_alignment_compare_score(human_session_id, metadata, "AF")
+    mf_alignment_score, mf_midpoint_score = get_alignment_compare_score(human_session_id, metadata, "MF") or (None, None)
+    af_alignment_score, af_midpoint_score = get_alignment_compare_score(human_session_id, metadata, "AF") or (None, None)
 
     return {
         f"MF Alignment_{env_name}": mf_alignment_score,
         f"AF Alignment_{env_name}": af_alignment_score,
+        f"MF Midpoint Alignment_{env_name}": mf_midpoint_score,
+        f"AF Midpoint Alignment_{env_name}": af_midpoint_score,
     }
 
 # ============================================================

@@ -3,9 +3,12 @@ June 2026 text scenario ADEPT repopulation script.
 
 Replays June 2026 text scenario probe responses from Mongo userScenarioResults
 into the ADEPT server and writes the resulting ADEPT session IDs back to Mongo.
+Computed KDMAs are written to new fields with "New" appended (combinedKdmasNew,
+AF-SS_kdmasNew, individualKdmasNew) so the original KDMA fields are preserved.
 
-By default, existing session IDs are validated against ADEPT and reused when
-possible. Use --recreate-sessions to intentionally create fresh sessions.
+By default, fresh ADEPT sessions are created for every participant (existing
+session IDs are ignored). Use --reuse-sessions to instead validate existing
+session IDs against ADEPT and reuse them when possible.
 
 Available flags:
 --eval-number <number> Eval number to process. Defaults to 17.
@@ -13,9 +16,9 @@ Available flags:
 --adept-url <url> ADEPT server URL. Defaults to ADEPT_URL.
 --db-name <name> Mongo database name. Defaults to "dashboard".
 --pid <participantID> Process only one participant.
---dry-run Validate existing sessions and print what would happen
-without creating sessions or updating Mongo.
---recreate-sessions Create fresh ADEPT sessions even if valid ones exist.
+--dry-run Print what would happen without creating sessions or updating Mongo.
+--reuse-sessions Reuse existing ADEPT sessions when they are still valid
+                 instead of creating fresh ones (fresh is the default).
 --verbose, -v Print detailed progress messages.
 --timeout <seconds> ADEPT request timeout. Defaults to 120.
 --skip-af-ss Skip AF-SS_sessionId creation/update.
@@ -25,7 +28,7 @@ without creating sessions or updating Mongo.
 Examples:
 py june2026_text_repop.py --eval-number 17 --pid 202606112 --dry-run -v
 py june2026_text_repop.py --eval-number 17 -v
-py june2026_text_repop.py --eval-number 17 --recreate-sessions -v
+py june2026_text_repop.py --eval-number 17 --reuse-sessions -v
 """
 
 # Support direct execution from the archive while importing repo utilities.
@@ -59,7 +62,7 @@ except ImportError:
 
 DEFAULT_EVAL_NUMBER = 17
 DEFAULT_DB_NAME = "dashboard"
-SCRIPT_VERSION = "2026-06-24-dry-run-validates-existing-sessions"
+SCRIPT_VERSION = "2026-11-18-new-kdma-fields-recreate-by-default"
 
 BINOMIAL_SCENARIOS = {
     "June2026-SS-assess",
@@ -124,6 +127,17 @@ def send_probe_response(
     }
     response = requests.post(f"{adept_url}api/v1/response", json=payload, timeout=timeout)
     response.raise_for_status()
+
+def get_computed_midpoint(adept_url: str, session_id: str, timeout: int) -> Optional[List[Dict[str, Any]]]:
+    """Return the midpoint KDMA profile ([{kdma, value}, ...]) for a populated ADEPT session."""
+    response = requests.get(
+        f"{adept_url}api/v1/computed_kdma_profile_midpoint",
+        params={"session_id": session_id},
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return payload if isinstance(payload, list) else None
 
 
 def get_computed_kdmas(adept_url: str, session_id: str, timeout: int) -> Optional[List[Dict[str, Any]]]:
@@ -401,8 +415,9 @@ def ensure_session_for_docs(
     """Reuse a valid existing session, or create one when needed.
 
     Returns (session_id, probe_count, kdmas, created_new_session).
-    In dry-run mode this still validates existing sessions against ADEPT, but it
-    never creates a new session or sends probe responses.
+    In dry-run mode (with --reuse-sessions) this still validates existing
+    sessions against ADEPT, but it never creates a new session or sends probe
+    responses.
     """
     if not documents:
         return None, 0, None, False
@@ -411,14 +426,14 @@ def ensure_session_for_docs(
     if len(existing_ids) > 1:
         log(
             f"  Warning: found multiple existing {label} session ids in Mongo: "
-            f"{', '.join(existing_ids)}. The first valid one will be reused unless --recreate-sessions is set."
+            f"{', '.join(existing_ids)}. The first valid one will be reused because --reuse-sessions is set."
         )
 
     if recreate_sessions:
         if existing_ids:
-            log(f"  --recreate-sessions set; ignoring existing {label} session id(s): {', '.join(existing_ids)}")
+            log(f"  Recreating sessions (default); ignoring existing {label} session id(s): {', '.join(existing_ids)}")
         else:
-            log(f"  --recreate-sessions set; no existing {label} session id was found.")
+            log(f"  Recreating sessions (default); no existing {label} session id was found.")
     else:
         if not existing_ids:
             log(f"  No existing {label} session id found in Mongo.")
@@ -490,11 +505,19 @@ def process_participant(
         if combined_sid and created:
             set_values = {"combinedSessionId": combined_sid}
             if combined_kdmas is not None:
-                set_values["combinedKdmas"] = combined_kdmas
+                set_values["combinedKdmasNew"] = combined_kdmas
+            if not dry_run:
+                try:
+                    combined_midpoint = get_computed_midpoint(adept_url, combined_sid, timeout)
+                except Exception as exc:
+                    combined_midpoint = None
+                    log(f"  Warning: could not fetch midpoint KDMAs for combined binomial session {combined_sid}: {exc}")
+                if combined_midpoint is not None:
+                    set_values["combinedMidpoint"] = combined_midpoint
             update_documents(collection, binomial_docs, set_values, dry_run)
             for old_sid in old_combined_ids:
                 update_session_references(mongo_db, old_sid, combined_sid, dry_run)
-
+                
     if update_af_ss:
         af_ss_docs = find_docs(documents, AF_SS_SCENARIOS)
         if af_ss_docs:
@@ -514,7 +537,7 @@ def process_participant(
             if af_ss_sid and created:
                 set_values = {"AF-SS_sessionId": af_ss_sid}
                 if af_ss_kdmas is not None:
-                    set_values["AF-SS_kdmas"] = af_ss_kdmas
+                    set_values["AF-SS_kdmasNew"] = af_ss_kdmas
                 update_documents(collection, af_ss_docs, set_values, dry_run)
                 for old_sid in old_af_ss_ids:
                     update_session_references(mongo_db, old_sid, af_ss_sid, dry_run)
@@ -539,11 +562,11 @@ def process_participant(
                 log(
                     "  Error: the new combined trinary session did not return a "
                     "computed KDMA profile. Mongo will not be updated, preventing "
-                    "a new session id from being paired with stale combinedKdmas."
+                    "a new session id from being paired with stale combinedKdmasNew."
                 )
             elif trinary_sid and created:
                 set_values = {"combinedSessionId": trinary_sid}
-                set_values["combinedKdmas"] = trinary_kdmas
+                set_values["combinedKdmasNew"] = trinary_kdmas
                 update_documents(collection, trinary_docs, set_values, dry_run)
                 for old_sid in old_trinary_ids:
                     update_session_references(mongo_db, old_sid, trinary_sid, dry_run)
@@ -566,12 +589,90 @@ def process_participant(
             if mf_sid and created:
                 set_values = {"individualSessionId": mf_sid}
                 if mf_kdmas is not None:
-                    set_values["individualKdmas"] = mf_kdmas
+                    set_values["individualKdmasNew"] = mf_kdmas
                 update_documents(collection, [mf_doc], set_values, dry_run)
                 update_session_references(mongo_db, old_individual_sid, mf_sid, dry_run)
 
 
-def main() -> int:
+def main(
+    mongo_db: Any,
+    eval_number: int = DEFAULT_EVAL_NUMBER,
+    adept_url: Optional[str] = None,
+    pid: Optional[str] = None,
+    dry_run: bool = False,
+    verbose: bool = False,
+    timeout: int = 120,
+    reuse_sessions: bool = False,
+    skip_af_ss: bool = False,
+    skip_trinary: bool = False,
+    create_mf_individual: bool = False,
+) -> int:
+    """Repopulate June 2026 text ADEPT sessions using an existing Mongo database.
+
+    Importable entry point, matching the eval 16 script: call ``main(mongo_db)``
+    from a deployment script. By default this creates fresh ADEPT sessions,
+    sends every probe response, fetches the computed KDMAs, and writes them to
+    the ``*New`` KDMA fields. Raises RuntimeError if any participant fails.
+    Returns the number of participants processed.
+    """
+    adept_url = normalize_adept_url(adept_url or config("ADEPT_URL", default=""))
+    if not adept_url:
+        raise RuntimeError("ADEPT_URL is not set. Set it in .env or pass adept_url.")
+
+    query: Dict[str, Any] = {"evalNumber": eval_number}
+    if pid:
+        # participantID may be stored as string or int depending on ingest.
+        pid_candidates: List[Any] = [pid]
+        if str(pid).isdigit():
+            pid_candidates.append(int(pid))
+        query["participantID"] = {"$in": pid_candidates}
+
+    log(f"Running {os.path.basename(__file__)} version {SCRIPT_VERSION}")
+
+    documents = list(mongo_db["userScenarioResults"].find(query))
+    if not documents:
+        log(f"No userScenarioResults found for query: {query}")
+        return 0
+
+    participant_groups: Dict[Any, List[Dict[str, Any]]] = defaultdict(list)
+    for document in documents:
+        participant_groups[document.get("participantID")].append(document)
+
+    log(f"Found {len(documents)} text documents for {len(participant_groups)} participant(s).")
+    if dry_run:
+        log("Dry run enabled: no sessions will be created and Mongo will not be updated.")
+
+    failed: List[Any] = []
+    for participant_id, participant_docs in sorted(participant_groups.items(), key=lambda item: str(item[0])):
+        try:
+            process_participant(
+                mongo_db=mongo_db,
+                participant_id=participant_id,
+                documents=participant_docs,
+                adept_url=adept_url,
+                timeout=timeout,
+                dry_run=dry_run,
+                verbose=verbose,
+                update_af_ss=not skip_af_ss,
+                update_trinary=not skip_trinary,
+                update_mf_individual=create_mf_individual,
+                recreate_sessions=not reuse_sessions,
+            )
+        except Exception as exc:
+            log(f"Error processing participant {participant_id}: {exc}")
+            failed.append(participant_id)
+
+    log("\nDone.")
+    if failed:
+        raise RuntimeError(
+            f"June 2026 text repop failed for {len(failed)} participant(s): "
+            f"{', '.join(str(p) for p in failed)}"
+        )
+    return len(participant_groups)
+
+
+def cli() -> int:
+    """Command-line entry point: parse flags, connect to Mongo, call main()."""
     parser = argparse.ArgumentParser(
         description="Repopulate ADEPT sessions for June 2026 text scenario results."
     )
@@ -580,8 +681,14 @@ def main() -> int:
     parser.add_argument("--adept-url", default=config("ADEPT_URL", default=""))
     parser.add_argument("--db-name", default=DEFAULT_DB_NAME)
     parser.add_argument("--pid", help="Optional participantID to process for a test run")
-    parser.add_argument("--dry-run", action="store_true", help="Validate existing ADEPT sessions and print what would be done without creating sessions or updating Mongo")
-    parser.add_argument("--recreate-sessions", action="store_true", help="Ignore valid existing session IDs and create fresh ADEPT sessions")
+    parser.add_argument("--dry-run", action="store_true", help="Print what would be done without creating sessions or updating Mongo (with --reuse-sessions, existing sessions are still validated against ADEPT)")
+    parser.add_argument(
+        "--reuse-sessions",
+        action="store_true",
+        help="Reuse valid existing ADEPT session IDs instead of creating fresh sessions (fresh sessions are the default)",
+    )
+    # Kept for backwards compatibility; recreating sessions is now the default.
+    parser.add_argument("--recreate-sessions", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--verbose", "-v", action="store_true")
     parser.add_argument("--timeout", type=int, default=120)
     parser.add_argument("--skip-af-ss", action="store_true", help="Do not create/update AF-SS_sessionId")
@@ -598,65 +705,32 @@ def main() -> int:
         log("Error: pymongo is not installed.")
         return 1
 
-    mongo_url = args.mongo_url
-    adept_url = normalize_adept_url(args.adept_url)
-
-    if not mongo_url:
+    if not args.mongo_url:
         log("Error: MONGO_URL is not set. Set it in .env or pass --mongo-url.")
         return 1
 
-    if not adept_url:
-        log("Error: ADEPT_URL is not set. Set it in .env or pass --adept-url.")
-        return 1
-
-    query: Dict[str, Any] = {"evalNumber": args.eval_number}
-    if args.pid:
-        # participantID may be stored as string or int depending on ingest.
-        pid_candidates: List[Any] = [args.pid]
-        if str(args.pid).isdigit():
-            pid_candidates.append(int(args.pid))
-        query["participantID"] = {"$in": pid_candidates}
-
-    log(f"Running {os.path.basename(__file__)} version {SCRIPT_VERSION}")
-    log(f"Script path: {os.path.abspath(__file__)}")
     log(f"Connecting to Mongo database '{args.db_name}'")
-    client = MongoClient(mongo_url)
-    mongo_db = client[args.db_name]
-
-    documents = list(mongo_db["userScenarioResults"].find(query))
-    if not documents:
-        log(f"No userScenarioResults found for query: {query}")
-        return 0
-
-    participant_groups: Dict[Any, List[Dict[str, Any]]] = defaultdict(list)
-    for document in documents:
-        participant_groups[document.get("participantID")].append(document)
-
-    log(f"Found {len(documents)} text documents for {len(participant_groups)} participant(s).")
-    if args.dry_run:
-        log("Dry run enabled: existing ADEPT sessions will be validated, but no sessions will be created and Mongo will not be updated.")
-
-    for participant_id, participant_docs in sorted(participant_groups.items(), key=lambda item: str(item[0])):
-        try:
-            process_participant(
-                mongo_db=mongo_db,
-                participant_id=participant_id,
-                documents=participant_docs,
-                adept_url=adept_url,
-                timeout=args.timeout,
-                dry_run=args.dry_run,
-                verbose=args.verbose,
-                update_af_ss=not args.skip_af_ss,
-                update_trinary=not args.skip_trinary,
-                update_mf_individual=args.create_mf_individual and not args.skip_mf_individual,
-                recreate_sessions=args.recreate_sessions,
-            )
-        except Exception as exc:
-            log(f"Error processing participant {participant_id}: {exc}")
-
-    log("\nDone.")
+    client = MongoClient(args.mongo_url)
+    try:
+        main(
+            client[args.db_name],
+            eval_number=args.eval_number,
+            adept_url=args.adept_url,
+            pid=args.pid,
+            dry_run=args.dry_run,
+            verbose=args.verbose,
+            timeout=args.timeout,
+            reuse_sessions=args.reuse_sessions,
+            skip_af_ss=args.skip_af_ss,
+            skip_trinary=args.skip_trinary,
+            create_mf_individual=args.create_mf_individual and not args.skip_mf_individual,
+        )
+    except RuntimeError as exc:
+        log(f"Error: {exc}")
+        return 1
+    finally:
+        client.close()
     return 0
 
-
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(cli())

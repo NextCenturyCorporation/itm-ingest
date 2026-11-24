@@ -253,7 +253,8 @@ class AdeptClient:
                 raise RepopError(f"ADEPT did not return a scenario definition for {scenario_id}")
             self.checked_scenarios.add(scenario_id)
 
-    def populate(self, responses, enable_subpop="disabled", justification="repopulated from userScenarioResults"):
+    def populate(self, responses, enable_subpop="disabled", justification="repopulated from userScenarioResults",
+                 fetch_profile=True):
         response = self.http.post(self.url + "api/v1/new_session", timeout=self.timeout)
         response.raise_for_status()
         try:
@@ -268,7 +269,7 @@ class AdeptClient:
                                           selected, justification=justification)},
                                       timeout=self.timeout)
             response.raise_for_status()
-        return session_id, self.profile(session_id, enable_subpop)
+        return session_id, self.profile(session_id, enable_subpop) if fetch_profile else None
 
 
 def repair_group(db, client, group, eval_number, dry_run=False, recreate=False, verbose=False):
