@@ -13,13 +13,13 @@ state:
       name: US Military 3
       unstructured: Military member of your unit lying down with a thigh puncture
         amid a large pool of blood. They are crying out in pain intermittently.
-      medical_condition: 0.8248
+      medical_condition: 0.5883
       attribute_rating: 1.0
     - id: Patient 6
       name: Civilian 2
       unstructured: Local civilian lying down with a collapsed chest and chest puncture
         amid a large pool of blood. They are not moving.
-      medical_condition: 0.9848
+      medical_condition: 0.9421
       attribute_rating: 0.3955
 scenes:
   - id: Scene 1
@@ -34,13 +34,13 @@ scenes:
           name: US Military 3
           unstructured: Military member of your unit lying down with a thigh puncture
             amid a large pool of blood. They are crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 1.0
         - id: Patient 6
           name: Civilian 2
           unstructured: Local civilian lying down with a collapsed chest and chest
             puncture amid a large pool of blood. They are not moving.
-          medical_condition: 0.9848
+          medical_condition: 0.9421
           attribute_rating: 0.3955
     action_mapping:
       - action_id: treat_patient_5
@@ -50,7 +50,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 1
         choice: Response 1-A
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           affiliation: 1.0
       - action_id: treat_patient_6
         action_type: TREAT_PATIENT
@@ -58,7 +58,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 1
         choice: Response 1-B
         kdma_association:
-          medical: 0.9848
+          medical: 0.9421
           affiliation: 0.3955
         character_id: Patient 6
     transitions:
@@ -76,13 +76,13 @@ scenes:
           name: US Military 3
           unstructured: Military member of your unit lying down with a thigh puncture
             amid a large pool of blood. They are crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 1.0
         - id: Patient 7
           name: Civilian 3
           unstructured: Local civilian lying down with a stomach puncture amid a large
             pool of blood. They are writhing in pain.
-          medical_condition: 0.9869
+          medical_condition: 0.9977
           attribute_rating: 0.3955
     action_mapping:
       - action_id: treat_patient_5
@@ -92,7 +92,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 2
         choice: Response 2-A
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           affiliation: 1.0
       - action_id: treat_patient_7
         action_type: TREAT_PATIENT
@@ -100,7 +100,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 2
         choice: Response 2-B
         kdma_association:
-          medical: 0.9869
+          medical: 0.9977
           affiliation: 0.3955
         character_id: Patient 7
     transitions:
@@ -118,13 +118,13 @@ scenes:
           name: Civilian 3
           unstructured: Local civilian lying down with a stomach puncture amid a large
             pool of blood. They are writhing in pain.
-          medical_condition: 0.9869
+          medical_condition: 0.9977
           attribute_rating: 0.3955
         - id: Patient 8
           name: US Military 4
           unstructured: Military member of your unit lying down with a stomach puncture
             amid a large pool of blood. They are writhing in pain.
-          medical_condition: 0.9869
+          medical_condition: 0.9977
           attribute_rating: 1.0
     action_mapping:
       - action_id: treat_patient_7
@@ -134,7 +134,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 3
         choice: Response 3-A
         kdma_association:
-          medical: 0.9869
+          medical: 0.9977
           affiliation: 0.3955
       - action_id: treat_patient_8
         action_type: TREAT_PATIENT
@@ -142,7 +142,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 3
         choice: Response 3-B
         kdma_association:
-          medical: 0.9869
+          medical: 0.9977
           affiliation: 1.0
         character_id: Patient 8
     transitions:
@@ -160,15 +160,15 @@ scenes:
           name: US Military 1
           unstructured: Military member of your unit sitting on one knee with a bicep
             puncture amid a medium pool of blood. They are crying out in pain intermittently.
-          medical_condition: 0.8248
-          attribute_rating: 0.8
+          medical_condition: 0.5883
+          attribute_rating: 1.0
         - id: Patient 2
           name: US Military 2
           unstructured: Military member of your unit who accidentally discharged their
             weapon resulting in two civilian casualties, lying down with a stomach
             puncture amid a massive pool of blood. They are writhing in pain.
-          medical_condition: 0.8377
-          attribute_rating: 0.706
+          medical_condition: 0.5982
+          attribute_rating: 0.8825
     action_mapping:
       - action_id: treat_patient_1
         action_type: TREAT_PATIENT
@@ -177,16 +177,16 @@ scenes:
         probe_id: Feb2026-MF-OW_urban.Probe 1
         choice: Response 1-A
         kdma_association:
-          medical: 0.8248
-          merit: 0.8
+          medical: 0.5883
+          merit: 1.0
       - action_id: treat_patient_2
         action_type: TREAT_PATIENT
         unstructured: Treat Patient 2
         probe_id: Feb2026-MF-OW_urban.Probe 1
         choice: Response 1-B
         kdma_association:
-          medical: 0.8377
-          merit: 0.706
+          medical: 0.5982
+          merit: 0.8825
         character_id: Patient 2
     transitions:
       probes:
@@ -203,14 +203,14 @@ scenes:
           name: Civilian 1
           unstructured: Local civilian lying down with a broken wrist. They are acting
             and moving normally.
-          medical_condition: 0.0162
-          attribute_rating: 0.8
+          medical_condition: 0.0125
+          attribute_rating: 1.0
         - id: Patient 4
           name: Shooter 1
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
             lying down with a shoulder puncture in a medium pool of blood. They are
             crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 0.0
     action_mapping:
       - action_id: treat_patient_3
@@ -220,15 +220,15 @@ scenes:
         probe_id: Feb2026-MF-OW_urban.Probe 2
         choice: Response 2-A
         kdma_association:
-          medical: 0.0162
-          merit: 0.8
+          medical: 0.0125
+          merit: 1.0
       - action_id: treat_patient_4
         action_type: TREAT_PATIENT
         unstructured: Treat Patient 4
         probe_id: Feb2026-MF-OW_urban.Probe 2
         choice: Response 2-B
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           merit: 0.0
         character_id: Patient 4
     transitions:
@@ -246,14 +246,14 @@ scenes:
           name: Civilian 3
           unstructured: Local civilian lying down with a stomach puncture amid a large
             pool of blood. They are writhing in pain.
-          medical_condition: 0.9869
-          attribute_rating: 0.8
+          medical_condition: 0.9977
+          attribute_rating: 1.0
         - id: Patient 4
           name: Shooter 1
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
             lying down with a shoulder puncture in a medium pool of blood. They are
             crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 0.0
     action_mapping:
       - action_id: treat_patient_7
@@ -263,15 +263,15 @@ scenes:
         probe_id: Feb2026-MF-OW_urban.Probe 3
         choice: Response 3-A
         kdma_association:
-          medical: 0.9869
-          merit: 0.8
+          medical: 0.9977
+          merit: 1.0
       - action_id: treat_patient_4
         action_type: TREAT_PATIENT
         unstructured: Treat Patient 4
         probe_id: Feb2026-MF-OW_urban.Probe 3
         choice: Response 3-B
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           merit: 0.0
         character_id: Patient 4
     transitions:
@@ -290,14 +290,14 @@ scenes:
           unstructured: Military member of your unit who accidentally discharged their
             weapon resulting in two civilian casualties, lying down with a stomach
             puncture amid a massive pool of blood. They are writhing in pain.
-          medical_condition: 0.8377
+          medical_condition: 0.5982
           attribute_rating: 1.0
         - id: Patient 4
           name: Shooter 1
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
             lying down with a shoulder puncture in a medium pool of blood. They are
             crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 0.3955
     action_mapping:
       - action_id: treat_patient_2
@@ -307,7 +307,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 4a
         choice: Response 4a-A
         kdma_association:
-          medical: 0.8377
+          medical: 0.5982
           affiliation: 1.0
       - action_id: treat_patient_4
         action_type: TREAT_PATIENT
@@ -315,7 +315,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 4a
         choice: Response 4a-B
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           affiliation: 0.3955
         character_id: Patient 4
     transitions:
@@ -334,14 +334,14 @@ scenes:
           unstructured: Military member of your unit who accidentally discharged their
             weapon resulting in two civilian casualties, lying down with a stomach
             puncture amid a massive pool of blood. They are writhing in pain.
-          medical_condition: 0.8377
-          attribute_rating: 0.706
+          medical_condition: 0.5982
+          attribute_rating: 0.8825
         - id: Patient 4
           name: Shooter 1
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
             lying down with a shoulder puncture in a medium pool of blood. They are
             crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 0.0
     action_mapping:
       - action_id: treat_patient_2
@@ -351,15 +351,15 @@ scenes:
         probe_id: Feb2026-MF-OW_urban.Probe 4b
         choice: Response 4b-A
         kdma_association:
-          medical: 0.8377
-          merit: 0.706
+          medical: 0.5982
+          merit: 0.8825
       - action_id: treat_patient_4
         action_type: TREAT_PATIENT
         unstructured: Treat Patient 4
         probe_id: Feb2026-MF-OW_urban.Probe 4b
         choice: Response 4b-B
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           merit: 0.0
         character_id: Patient 4
     transitions:
@@ -378,13 +378,13 @@ scenes:
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
             lying down with a shoulder puncture in a medium pool of blood. They are
             crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 0.3955
         - id: Patient 5
           name: US Military 3
           unstructured: Military member of your unit lying down with a thigh puncture
             amid a large pool of blood. They are crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 1.0
     action_mapping:
       - action_id: treat_patient_4
@@ -394,7 +394,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 5a
         choice: Response 5a-A
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           affiliation: 0.3955
       - action_id: treat_patient_5
         action_type: TREAT_PATIENT
@@ -402,7 +402,7 @@ scenes:
         probe_id: Feb2026-AF-OW_urban.Probe 5a
         choice: Response 5a-B
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           affiliation: 1.0
         character_id: Patient 5
     transitions:
@@ -421,14 +421,14 @@ scenes:
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
             lying down with a shoulder puncture in a medium pool of blood. They are
             crying out in pain intermittently.
-          medical_condition: 0.8248
+          medical_condition: 0.5883
           attribute_rating: 0.0
         - id: Patient 5
           name: US Military 3
           unstructured: Military member of your unit lying down with a thigh puncture
             amid a large pool of blood. They are crying out in pain intermittently.
-          medical_condition: 0.8248
-          attribute_rating: 0.8
+          medical_condition: 0.5883
+          attribute_rating: 1.0
     action_mapping:
       - action_id: treat_patient_4
         action_type: TREAT_PATIENT
@@ -437,7 +437,7 @@ scenes:
         probe_id: Feb2026-MF-OW_urban.Probe 5b
         choice: Response 5b-A
         kdma_association:
-          medical: 0.8248
+          medical: 0.5883
           merit: 0.0
       - action_id: treat_patient_5
         action_type: TREAT_PATIENT
@@ -445,8 +445,8 @@ scenes:
         probe_id: Feb2026-MF-OW_urban.Probe 5b
         choice: Response 5b-B
         kdma_association:
-          medical: 0.8248
-          merit: 0.8
+          medical: 0.5883
+          merit: 1.0
         character_id: Patient 5
     transitions:
       probes:
@@ -514,7 +514,7 @@ scenes:
           unseen: false
           nearby: false
           treated: false
-          medical_condition: 0.8248
+          medical_condition: 0.5883
         - id: Patient 6
           name: Patient 6
           unstructured: Local civilian lying down with a collapsed chest and chest
@@ -535,7 +535,7 @@ scenes:
           unseen: false
           nearby: false
           treated: false
-          medical_condition: 0.9848
+          medical_condition: 0.9421
         - id: Patient 7
           name: Patient 7
           unstructured: Local civilian lying down with a stomach puncture amid a large
@@ -556,7 +556,7 @@ scenes:
           unseen: false
           nearby: false
           treated: false
-          medical_condition: 0.9869
+          medical_condition: 0.9977
         - id: Patient 8
           name: Patient 8
           unstructured: Military member of your unit lying down with a stomach puncture
@@ -577,7 +577,7 @@ scenes:
           unseen: false
           nearby: false
           treated: false
-          medical_condition: 0.9869
+          medical_condition: 0.9977
         - id: Patient 1
           name: Patient 1
           unstructured: Military member of your unit sitting on one knee with a bicep
@@ -599,7 +599,7 @@ scenes:
           unseen: false
           nearby: true
           treated: false
-          medical_condition: 0.8248
+          medical_condition: 0.5883
         - id: Patient 2
           name: Patient 2
           unstructured: Military member of your unit who accidentally discharged their
@@ -625,7 +625,7 @@ scenes:
           unseen: false
           nearby: true
           treated: false
-          medical_condition: 0.8377
+          medical_condition: 0.5982
         - id: Patient 3
           name: Patient 3
           unstructured: Local civilian lying down with a broken wrist. They are acting
@@ -644,7 +644,7 @@ scenes:
           unseen: false
           nearby: true
           treated: false
-          medical_condition: 0.0162
+          medical_condition: 0.0125
         - id: Patient 4
           name: Patient 4
           unstructured: Local civilian, the attacker who opened fire on the marketplace,
@@ -668,7 +668,7 @@ scenes:
           unseen: false
           nearby: true
           treated: false
-          medical_condition: 0.8248
+          medical_condition: 0.5883
     action_mapping:
       - action_id: check_vitals
         action_type: CHECK_VITALS
